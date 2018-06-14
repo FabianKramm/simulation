@@ -48,7 +48,6 @@ namespace Simulation.Game.World
         public void Draw(SpriteBatch spriteBatch)
         {
             Rectangle visibleBounds = Rectangle.Empty;
-
             SimulationGame.getVisibleArea(out visibleBounds);
 
             for (int y=0;y < dimensions.Y; y++)

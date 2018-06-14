@@ -32,7 +32,7 @@ namespace Simulation.Game.World
         {
             this.blockType = blockType;
 
-            int randomTexture = random.Next(0, Blocks[blockType].Length - 1);
+            int randomTexture = random.Next(0, Blocks[blockType].Length);
 
             texture = SimulationGame.contentManager.Load<Texture2D>(Blocks[blockType][randomTexture].Item1);
             spritePosition = Blocks[blockType][randomTexture].Item2;
