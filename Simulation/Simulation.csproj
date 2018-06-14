@@ -45,6 +45,7 @@
     <Compile Include="Game\Environment\Terrain.cs" />
     <Compile Include="Game\Movement.cs" />
     <Compile Include="Game\Player.cs" />
+    <Compile Include="Game\Spells\Fireball.cs" />
     <Compile Include="Game\World\Block.cs" />
     <Compile Include="Game\World\World.cs" />
     <Compile Include="Program.cs" />

@@ -47,16 +47,13 @@ namespace Simulation.Game.World
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            Rectangle visibleBounds = Rectangle.Empty;
-            SimulationGame.getVisibleArea(out visibleBounds);
-
             for (int y=0;y < dimensions.Y; y++)
             {
                 for (int x=0; x < dimensions.X; x++)
                 {
                     Rectangle blockBounds = new Rectangle(x * BlockSize.X - 1, y * BlockSize.Y - 1, BlockSize.X + 1, BlockSize.Y + 1);
 
-                    if(visibleBounds.Intersects(blockBounds))
+                    if(SimulationGame.visibleArea.Intersects(blockBounds))
                     {
                         Vector2 worldPosition = new Vector2(x * BlockSize.X, y * BlockSize.Y);
 

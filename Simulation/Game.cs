@@ -7,6 +7,8 @@ using Simulation.Game.World;
 using Simulation.Spritesheet;
 using Comora;
 using System;
+using System.Collections.Generic;
+using Simulation.Game.Spells;
 
 namespace Simulation
 {
@@ -38,12 +40,16 @@ namespace Simulation
         private World world;
         private Player player;
 
+        private List<Fireball> fireballs = new List<Fireball>();
+
         public static Size resolution = new Size(1280, 768); 
 
         public static ContentManager contentManager
         {
             get; private set;
         }
+
+        public static Rectangle visibleArea;
 
         public SimulationGame()
         {
@@ -59,16 +65,24 @@ namespace Simulation
 
             player = new Player();
             world = new World();
+
+            visibleArea = Rectangle.Empty;
         }
 
-        public static void getVisibleArea(out Microsoft.Xna.Framework.Rectangle visibleArea)
+        private void updateVisibleArea()
         {
-
             visibleArea.X = (int)(SimulationGame.camera.Position.X - resolution.Width * 0.5f);
             visibleArea.Y = (int)(SimulationGame.camera.Position.Y - resolution.Height * 0.5f);
 
             visibleArea.Width = resolution.Width;
             visibleArea.Height = resolution.Height;
+        }
+
+        private Vector2 mouseToWorld()
+        {
+            var mousePosition = Mouse.GetState().Position;
+
+            return new Vector2(visibleArea.X + mousePosition.X, visibleArea.Y + mousePosition.Y);
         }
 
         /// <summary>
@@ -124,7 +138,22 @@ namespace Simulation
             // TODO: Add your update logic here
 
             player.Update(gameTime);
-            // camera.Update(gameTime);
+            camera.Update(gameTime);
+
+            if(Keyboard.GetState().IsKeyDown(Keys.D1) && fireballs.Count == 0)
+            {
+                var mousePosition = mouseToWorld();
+                var direction = new Vector2(mousePosition.X - camera.Position.X, mousePosition.Y - camera.Position.Y);
+
+                direction.Normalize();
+
+                fireballs.Add(new Fireball(camera.Position, direction));
+            }
+
+            foreach(Fireball fireball in fireballs)
+            {
+                fireball.Update(gameTime);
+            }
 
             base.Update(gameTime);
         }
@@ -135,14 +164,28 @@ namespace Simulation
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            Console.WriteLine(camera.ViewportOffset.Local);
-
+            updateVisibleArea();
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(camera);
 
             world.Draw(spriteBatch);
             player.Draw(spriteBatch);
+
+            for(int i=0;i<fireballs.Count;i++)
+            {
+                Fireball fireball = fireballs[i];
+
+                if (SimulationGame.visibleArea.Contains(fireball.Position))
+                {
+                    fireball.Draw(spriteBatch);
+                }
+                else
+                {
+                    fireballs.Remove(fireball);
+                    i--;
+                }
+            }
 
             spriteBatch.End();
 

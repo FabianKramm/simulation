@@ -20,7 +20,8 @@ namespace Simulation.Game.World
             { BlockType.GRASS, new (string, Rectangle)[] {
                 ("terrain_atlas", new Rectangle(672, 160, 32, 32)),
                 ("terrain_atlas", new Rectangle(704, 160, 32, 32)),
-                ("terrain_atlas", new Rectangle(736, 160, 32, 32))
+                ("terrain_atlas", new Rectangle(736, 160, 32, 32)),
+                ("terrain_atlas", new Rectangle(708, 96, 32, 32))
             }}
         };
 
