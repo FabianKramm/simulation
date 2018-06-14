@@ -41,9 +41,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Game1.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="Game\Environment\Terrain.cs" />
     <Compile Include="Game\Movement.cs" />
     <Compile Include="Game\Player.cs" />
+    <Compile Include="Game\World\Block.cs" />
+    <Compile Include="Game\World\World.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spritesheet\Animation.cs" />
@@ -54,6 +57,9 @@
     <Compile Include="Spritesheet\Spritesheet.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Comora, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Comora.0.5.0\lib\portable-net45+win8+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Comora.dll</HintPath>
+    </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>

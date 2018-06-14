@@ -59,6 +59,7 @@ namespace Simulation.Game
 
             if (state.IsKeyDown(Keys.Right))
             {
+                SimulationGame.camera.Position += new Vector2(5, 0);
                 curDirection = curDirection | WalkingDirection.Right;
             }
             else
@@ -68,6 +69,7 @@ namespace Simulation.Game
 
             if (state.IsKeyDown(Keys.Left))
             {
+                SimulationGame.camera.Position += new Vector2(-5, 0);
                 curDirection = curDirection | WalkingDirection.Left;
             }
             else
@@ -77,6 +79,7 @@ namespace Simulation.Game
 
             if (state.IsKeyDown(Keys.Up))
             {
+                SimulationGame.camera.Position += new Vector2(0, -5);
                 curDirection = curDirection | WalkingDirection.Up;
             }
             else
@@ -86,6 +89,7 @@ namespace Simulation.Game
 
             if (state.IsKeyDown(Keys.Down))
             {
+                SimulationGame.camera.Position += new Vector2(0, 5);
                 curDirection = curDirection | WalkingDirection.Down;
             }
             else
@@ -117,9 +121,9 @@ namespace Simulation.Game
             curAnimation.Update(gameTime);
         }
         
-        public void Draw(SpriteBatch spriteBatch, GraphicsDeviceManager graphics)
+        public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(curAnimation, new Vector2(graphics.GraphicsDevice.Viewport.Width / 2, graphics.GraphicsDevice.Viewport.Height / 2));
+            spriteBatch.Draw(curAnimation, SimulationGame.camera.Position);
         }
     }
 }

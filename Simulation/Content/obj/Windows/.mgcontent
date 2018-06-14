@@ -4,6 +4,8 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/fabkr/source/repos/Simulation/Simulation/Content/Player.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Player.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/base_out_atlas.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/terrain_atlas.png</File>
   </SourceFiles>
 </SourceFileCollection>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 
 namespace Simulation
 {
@@ -14,7 +15,7 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
-            using (var game = new Game1())
+            using (var game = new SimulationGame())
                 game.Run();
         }
     }
