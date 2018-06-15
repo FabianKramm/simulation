@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game;
+using Simulation.Game.World;
+using Simulation.Util;
 using System;
 using System.Collections.Generic;
 
@@ -17,21 +19,14 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
-            //using (var game = new SimulationGame())
-            //    game.Run();
-            Vector2[] poly1 = new Vector2[] {
-                new Vector2(0, 0),
-                new Vector2(3, 3),
-                new Vector2(3, 0)
-            };
+            using (var game = new SimulationGame())
+                game.Run();
+            //var a = World.getTouchedWorldBlocksCoordinates(new Rectangle(32, 32, 32, 32)).ToArray();
 
-            Vector2[] poly2 = new Vector2[] {
-                new Vector2(1, 0),
-                new Vector2(3, 3),
-                new Vector2(3, 0)
-            };
-
-            Console.WriteLine(CollisionDetection.intersect(poly1, poly2));
+            //foreach (var b in a)
+            //{
+            //    Console.WriteLine(b);
+            //}
         }
     }
 #endif

@@ -92,6 +92,7 @@
             var value = Repeat.Calculate(this.repeat, amount);
             var i = Math.Max(0, Math.Min(Frames.Length - 1, (int)(value * Frames.Length)));
             this.CurrentFrame = this.Frames[i];
+
             return amount;
         }
 

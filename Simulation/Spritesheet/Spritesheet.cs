@@ -55,6 +55,11 @@
 
         #region Frame default settings
 
+        public Spritesheet WithCellOrigin(Point cellOrigin)
+        {
+            return new Spritesheet(this.Texture, this.CellSize, this.CellOffset, cellOrigin, this.FrameDefaultDuration, this.FrameDefaultEffects);
+        }
+
         public Spritesheet WithFrameDuration(double durationInMs)
         {
             return new Spritesheet(this.Texture, this.CellSize, this.CellOffset, this.CellOrigin, durationInMs, this.FrameDefaultEffects);

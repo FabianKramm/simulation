@@ -2,21 +2,26 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Simulation.Game.Basics;
 using Simulation.Spritesheet;
 using System;
 
 namespace Simulation.Game
 {
-    class Player
+    class Player: CollidableRectangleObject
     {
         Simulation.Spritesheet.Spritesheet sheet;
         WalkingDirection curDirection = WalkingDirection.Idle;
         Animation curAnimation = null;
 
+        private float velocity = 0.3f;
+
+        public Player(): base(new Point(0, 0), new Point(-10, -20), new Point(20, 20)) {}
+
         public void LoadContent(ContentManager content)
         {
             Texture2D texture = content.Load<Texture2D>("player");
-            sheet = new Simulation.Spritesheet.Spritesheet(texture).WithGrid((64, 64)).WithFrameDuration(120);
+            sheet = new Simulation.Spritesheet.Spritesheet(texture).WithGrid((64, 64)).WithCellOrigin(new Point(32, 64)).WithFrameDuration(120);
 
             curAnimation = getAnimation(curDirection);
         }
@@ -57,9 +62,11 @@ namespace Simulation.Game
             int oldAnimationOffset = getAnimationOffset(curDirection);
             int newAnimationOffset = 0;
 
-            if (state.IsKeyDown(Keys.Right))
+            Point newPosition = position;
+
+            if (state.IsKeyDown(Keys.D))
             {
-                SimulationGame.camera.Position += new Vector2(5, 0);
+                newPosition.X += (int)(velocity * gameTime.ElapsedGameTime.Milliseconds);
                 curDirection = curDirection | WalkingDirection.Right;
             }
             else
@@ -67,9 +74,9 @@ namespace Simulation.Game
                 curDirection = curDirection & (WalkingDirection.Mask ^ WalkingDirection.Right);
             }
 
-            if (state.IsKeyDown(Keys.Left))
+            if (state.IsKeyDown(Keys.A))
             {
-                SimulationGame.camera.Position += new Vector2(-5, 0);
+                newPosition.X -= (int)(velocity * gameTime.ElapsedGameTime.Milliseconds);
                 curDirection = curDirection | WalkingDirection.Left;
             }
             else
@@ -77,9 +84,9 @@ namespace Simulation.Game
                 curDirection = curDirection & (WalkingDirection.Mask ^ WalkingDirection.Left);
             }
 
-            if (state.IsKeyDown(Keys.Up))
+            if (state.IsKeyDown(Keys.W))
             {
-                SimulationGame.camera.Position += new Vector2(0, -5);
+                newPosition.Y -= (int)(velocity * gameTime.ElapsedGameTime.Milliseconds);
                 curDirection = curDirection | WalkingDirection.Up;
             }
             else
@@ -87,9 +94,9 @@ namespace Simulation.Game
                 curDirection = curDirection & (WalkingDirection.Mask ^ WalkingDirection.Up);
             }
 
-            if (state.IsKeyDown(Keys.Down))
+            if (state.IsKeyDown(Keys.S))
             {
-                SimulationGame.camera.Position += new Vector2(0, 5);
+                newPosition.Y += (int)(velocity * gameTime.ElapsedGameTime.Milliseconds);
                 curDirection = curDirection | WalkingDirection.Down;
             }
             else
@@ -118,12 +125,20 @@ namespace Simulation.Game
                 curAnimation.Start(Repeat.Mode.Loop);
             }
 
+            if((position.X != newPosition.X || position.Y != newPosition.Y) && !isCollision(newPosition))
+            {
+                position = newPosition;
+                SimulationGame.camera.Position = new Vector2(position.X, position.Y);
+            }
+            
             curAnimation.Update(gameTime);
         }
         
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(curAnimation, SimulationGame.camera.Position);
+
+            base.Draw(spriteBatch);
         }
     }
 }

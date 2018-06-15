@@ -9,6 +9,7 @@ using Comora;
 using System;
 using System.Collections.Generic;
 using Simulation.Game.Spells;
+using Simulation.Util;
 
 namespace Simulation
 {
@@ -29,27 +30,43 @@ namespace Simulation
     /// </summary>
     public class SimulationGame : Microsoft.Xna.Framework.Game
     {
+        public static bool isDebug
+        {
+            get; private set;
+        }
+
         public static Camera camera
         {
             get; private set;
         }
 
-        private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
-
-        private World world;
-        private Player player;
-
-        private List<Fireball> fireballs = new List<Fireball>();
-
-        public static Size resolution = new Size(1280, 768); 
+        public static World world
+        {
+            get; private set;
+        }
 
         public static ContentManager contentManager
         {
             get; private set;
         }
 
+        public static Primitive primitiveDrawer
+        {
+            get; private set;
+        }
+
+        public static string StringToDraw = "";
+
+        public static Size resolution = new Size(1280, 768);
         public static Rectangle visibleArea;
+
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+        
+        private SpriteFont font;
+        private Player player;
+
+        private List<Fireball> fireballs = new List<Fireball>();
 
         public SimulationGame()
         {
@@ -67,6 +84,48 @@ namespace Simulation
             world = new World();
 
             visibleArea = Rectangle.Empty;
+
+            isDebug = false;
+        }
+
+        /// <summary>
+        /// Allows the game to perform any initialization it needs to before starting to run.
+        /// This is where it can query for any required services and load any non-graphic
+        /// related content.  Calling base.Initialize will enumerate through any components
+        /// and initialize them as well.
+        /// </summary>
+        protected override void Initialize()
+        {
+            // TODO: Add your initialization logic here
+            camera = new Camera(graphics.GraphicsDevice);
+
+            base.Initialize();
+        }
+
+        /// <summary>
+        /// LoadContent will be called once per game and is the place to load
+        /// all of your content.
+        /// </summary>
+        protected override void LoadContent()
+        {
+            // Create a new SpriteBatch, which can be used to draw textures.
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            primitiveDrawer = new Primitive(graphics.GraphicsDevice, spriteBatch);
+
+            player.LoadContent(Content);
+            camera.LoadContent();
+
+            font = Content.Load<SpriteFont>("Arial");
+        }
+
+        /// <summary>
+        /// UnloadContent will be called once per game and is the place to unload
+        /// game-specific content.
+        /// </summary>
+        protected override void UnloadContent()
+        {
+            // TODO: Unload any non ContentManager content here
         }
 
         private void updateVisibleArea()
@@ -83,46 +142,6 @@ namespace Simulation
             var mousePosition = Mouse.GetState().Position;
 
             return new Vector2(visibleArea.X + mousePosition.X, visibleArea.Y + mousePosition.Y);
-        }
-
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
-        protected override void Initialize()
-        {
-            // TODO: Add your initialization logic here
-            camera = new Camera(graphics.GraphicsDevice);
-            //camera.Debug.IsVisible = true;
-            camera.Position = new Vector2(64, 64);
-
-            base.Initialize();
-        }
-
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
-        protected override void LoadContent()
-        {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            player.LoadContent(Content);
-
-            //camera.LoadContent();
-            //camera.Debug.Grid.AddLines(32, Color.White, 2);
-        }
-
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
-        /// </summary>
-        protected override void UnloadContent()
-        {
-            // TODO: Unload any non ContentManager content here
         }
 
         /// <summary>
@@ -150,7 +169,24 @@ namespace Simulation
                 fireballs.Add(new Fireball(camera.Position, direction));
             }
 
-            foreach(Fireball fireball in fireballs)
+            if (Keyboard.GetState().IsKeyDown(Keys.F1))
+            {
+                isDebug = true;
+                camera.Debug.IsVisible = true;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.F2))
+            {
+                isDebug = false;
+                camera.Debug.IsVisible = false;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.F3))
+            {
+                camera.Debug.Grid.AddLines(32, Color.White, 2);
+            }
+
+            foreach (Fireball fireball in fireballs)
             {
                 fireball.Update(gameTime);
             }
@@ -189,8 +225,15 @@ namespace Simulation
 
             spriteBatch.End();
 
-            // spriteBatch.Draw(camera.Debug);
+            spriteBatch.Draw(camera.Debug);
 
+            if(StringToDraw.Length > 0)
+            {
+                spriteBatch.Begin();
+                spriteBatch.DrawString(font, StringToDraw, new Vector2(10, 10), Color.White);
+                spriteBatch.End();
+            }
+            
             base.Draw(gameTime);
         }
     }

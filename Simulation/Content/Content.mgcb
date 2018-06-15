@@ -61,3 +61,10 @@
 /processorParam:TextureFormat=Color
 /build:Spells/Fireball/Lv1UFireballp.png
 
+#begin Arial.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Arial.spritefont
+
