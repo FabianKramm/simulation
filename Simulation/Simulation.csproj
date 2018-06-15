@@ -44,6 +44,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="Game\Basics\CollidableRectangleObject.cs" />
     <Compile Include="Game\Basics\DrawableObject.cs" />
+    <Compile Include="Game\Hud\Hud.cs" />
     <Compile Include="Game\World\CollisionDetection.cs" />
     <Compile Include="Game\Environment\Terrain.cs" />
     <Compile Include="Game\Movement.cs" />

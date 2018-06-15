@@ -38,6 +38,8 @@ namespace Simulation.Game.World
         private BlockType blockType;
         private Texture2D texture;
         private Rectangle spritePosition;
+        private Vector2 worldPosition;
+
         public Rectangle blockBounds
         {
             get; private set;
@@ -58,6 +60,7 @@ namespace Simulation.Game.World
         {
             this.blockType = blockType;
             this.position = position;
+            worldPosition = new Vector2(position.X * World.BlockSize.X, position.Y * World.BlockSize.Y);
             blockBounds = new Rectangle(position.X * World.BlockSize.X, position.Y * World.BlockSize.Y, World.BlockSize.X, World.BlockSize.Y);
 
             int randomTexture = random.Next(0, Blocks[blockType].Length);
@@ -75,9 +78,9 @@ namespace Simulation.Game.World
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, ref Vector2 position)
+        public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, position, spritePosition, Color.White);
+            spriteBatch.Draw(texture, worldPosition, spritePosition, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
         }
     }
 }

@@ -18,9 +18,9 @@ namespace Simulation.Game
 
         public Player(): base(new Point(0, 0), new Point(-10, -20), new Point(20, 20)) {}
 
-        public void LoadContent(ContentManager content)
+        public void LoadContent()
         {
-            Texture2D texture = content.Load<Texture2D>("player");
+            Texture2D texture = SimulationGame.contentManager.Load<Texture2D>("player");
             sheet = new Simulation.Spritesheet.Spritesheet(texture).WithGrid((64, 64)).WithCellOrigin(new Point(32, 64)).WithFrameDuration(120);
 
             curAnimation = getAnimation(curDirection);

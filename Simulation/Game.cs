@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using Simulation.Game.Spells;
 using Simulation.Util;
+using Simulation.Game.Hud;
 
 namespace Simulation
 {
@@ -55,6 +56,11 @@ namespace Simulation
             get; private set;
         }
 
+        public static Hud hud
+        {
+            get; private set;
+        }
+
         public static string StringToDraw = "";
 
         public static Size resolution = new Size(1280, 768);
@@ -82,6 +88,7 @@ namespace Simulation
 
             player = new Player();
             world = new World();
+            hud = new Hud();
 
             visibleArea = Rectangle.Empty;
 
@@ -113,8 +120,9 @@ namespace Simulation
 
             primitiveDrawer = new Primitive(graphics.GraphicsDevice, spriteBatch);
 
-            player.LoadContent(Content);
+            player.LoadContent();
             camera.LoadContent();
+            hud.LoadContent();
 
             font = Content.Load<SpriteFont>("Arial");
         }
@@ -191,6 +199,7 @@ namespace Simulation
                 fireball.Update(gameTime);
             }
 
+            hud.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -203,7 +212,7 @@ namespace Simulation
             updateVisibleArea();
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin(camera);
+            spriteBatch.Begin(camera, SpriteSortMode.BackToFront);
 
             world.Draw(spriteBatch);
             player.Draw(spriteBatch);
@@ -227,13 +236,16 @@ namespace Simulation
 
             spriteBatch.Draw(camera.Debug);
 
-            if(StringToDraw.Length > 0)
+            spriteBatch.Begin();
+
+            if (StringToDraw.Length > 0)
             {
-                spriteBatch.Begin();
                 spriteBatch.DrawString(font, StringToDraw, new Vector2(10, 10), Color.White);
-                spriteBatch.End();
             }
-            
+
+            hud.Draw(spriteBatch);
+            spriteBatch.End();
+
             base.Draw(gameTime);
         }
     }

@@ -18,7 +18,7 @@ namespace Simulation.Game.World
 
         public World()
         {
-            dimensions = new Point(100, 100);
+            dimensions = new Point(1000, 1000);
 
             Initialize();
         }
@@ -110,17 +110,17 @@ namespace Simulation.Game.World
         }
 
         public void Draw(SpriteBatch spriteBatch)
-        {
-            for (int y=0;y < dimensions.Y; y++)
-            {
-                for (int x=0; x < dimensions.X; x++)
-                {
-                    if(SimulationGame.visibleArea.Intersects(grid[x][y].blockBounds))
-                    {
-                        Vector2 worldPosition = new Vector2(x * BlockSize.X, y * BlockSize.Y);
+        { 
+            int x = Math.Max(0, (SimulationGame.visibleArea.Left - SimulationGame.visibleArea.Left % BlockSize.X) / BlockSize.X);
+            int maxX = Math.Min(dimensions.X, (SimulationGame.visibleArea.Right + (BlockSize.X - SimulationGame.visibleArea.Right % BlockSize.X)) / BlockSize.X);
+            int startY = Math.Max(0, (SimulationGame.visibleArea.Top - SimulationGame.visibleArea.Top % BlockSize.Y) / BlockSize.Y);
+            int maxY = Math.Min(dimensions.Y, (SimulationGame.visibleArea.Bottom + (BlockSize.Y - SimulationGame.visibleArea.Bottom % BlockSize.Y)) / BlockSize.Y);
 
-                        grid[x][y].Draw(spriteBatch, ref worldPosition);
-                    }
+            for (; x < maxX; x++)
+            {
+                for (int y= startY; y < maxY; y++)
+                {
+                    grid[x][y].Draw(spriteBatch);
                 }
             }
         }
