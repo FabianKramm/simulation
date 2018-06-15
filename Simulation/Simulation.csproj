@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
+    <Compile Include="Game\CollisionDetection.cs" />
     <Compile Include="Game\Environment\Terrain.cs" />
     <Compile Include="Game\Movement.cs" />
     <Compile Include="Game\Player.cs" />

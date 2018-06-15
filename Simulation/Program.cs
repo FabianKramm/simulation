@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game;
 using System;
+using System.Collections.Generic;
 
 namespace Simulation
 {
@@ -15,8 +17,21 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
-            using (var game = new SimulationGame())
-                game.Run();
+            //using (var game = new SimulationGame())
+            //    game.Run();
+            Vector2[] poly1 = new Vector2[] {
+                new Vector2(0, 0),
+                new Vector2(3, 3),
+                new Vector2(3, 0)
+            };
+
+            Vector2[] poly2 = new Vector2[] {
+                new Vector2(1, 0),
+                new Vector2(3, 3),
+                new Vector2(3, 0)
+            };
+
+            Console.WriteLine(CollisionDetection.intersect(poly1, poly2));
         }
     }
 #endif
