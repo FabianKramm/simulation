@@ -35,7 +35,7 @@ namespace Simulation.Game.Effect
             GameConsole.WriteLine("", angle + "");
 
             Texture2D texture = SimulationGame.contentManager.Load<Texture2D>(@"Spells\Fireball\Lv1UFireballp");
-            var sheet = new Simulation.Spritesheet.Spritesheet(texture).WithGrid((15, 29)).WithFrameDuration(120);
+            var sheet = new Simulation.Spritesheet.Spritesheet(texture).WithGrid((15, 29)).WithFrameDuration(120).WithCellOrigin(new Point(7, 0));
 
             flying = sheet.CreateAnimation((0, 0), (1, 0), (2, 0));
             flying.Start(Repeat.Mode.Loop);
@@ -55,7 +55,7 @@ namespace Simulation.Game.Effect
 
                 if (SimulationGame.worldDimensions.Contains(position))
                 {
-                    var rotateVector = new Vector2(position.X + 11.25f, position.Y + 7.5f);
+                    var rotateVector = new Vector2(position.X, position.Y + 7.5f);
                     var rotatedPoint = GeometryUtils.Rotate(angle, ref position, ref rotateVector);
                     var collisionRect = new Rectangle((int)(rotatedPoint.X - 7.5f), (int)(rotatedPoint.Y - 7.5f), 15, 15);
                     var touchedBlocks = SimulationGame.world.getTouchedWorldBlocks(ref collisionRect);
@@ -99,7 +99,7 @@ namespace Simulation.Game.Effect
                 {
                     if(impact.IsStarted)
                     {
-                        spriteBatch.Draw(impact, position, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.getLayerDepthFromYPosition(position.Y));
+                        spriteBatch.Draw(impact, position, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.getLayerDepthFromYPosition(position.Y + World.World.BlockSize.Y));
                     }
                 }
                 else
@@ -110,7 +110,7 @@ namespace Simulation.Game.Effect
 
             if(SimulationGame.isDebug)
             {
-                var rotateVector = new Vector2(position.X + 11.25f, position.Y + 7.5f);
+                var rotateVector = new Vector2(position.X, position.Y + 7.5f);
                 var rotatedPoint = GeometryUtils.Rotate(angle, ref position, ref rotateVector);
 
                 SimulationGame.primitiveDrawer.Rectangle(new Rectangle((int)(rotatedPoint.X - 7.5f), (int)(rotatedPoint.Y - 7.5f), 15, 15), Color.Red);

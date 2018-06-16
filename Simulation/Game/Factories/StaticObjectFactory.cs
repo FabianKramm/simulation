@@ -25,12 +25,12 @@ namespace Simulation.Game.Factories
             int textureWidth = 79;
             int textureHeight = 91;
 
-            return new StaticObject(@"Environment\Tree01", new Rectangle(0, 0, textureWidth, textureHeight), new Vector2(position.X, position.Y + World.World.BlockSize.Y - textureHeight), new Point(6, 55), new Point(67, 36), World.CollisionType.SOLID_OBJECT);
+            return new StaticObject(@"Environment\Tree01", new Rectangle(0, 0, textureWidth, textureHeight), new Vector2(position.X, position.Y + World.World.BlockSize.Y), new Point(6, -36), new Point(67, 36), World.CollisionType.SOLID_OBJECT);
         }
 
         public static StaticSoftObject createSmallRocks(Vector2 position)
         {
-            return new StaticSoftObject(rocksTextures[random.Next(0, rocksTextures.Length - 1)], new Rectangle(0, 0, 25, 20), new Vector2(position.X - 12.5f + World.World.BlockSize.X / 2, position.Y - 10 + World.World.BlockSize.Y / 2));
+            return new StaticSoftObject(rocksTextures[random.Next(0, rocksTextures.Length - 1)], new Rectangle(0, 0, 25, 20), new Vector2(position.X - 12.5f + World.World.BlockSize.X / 2, position.Y + 10 + World.World.BlockSize.Y / 2));
         }
     }
 }

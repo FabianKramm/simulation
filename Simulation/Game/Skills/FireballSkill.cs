@@ -16,7 +16,7 @@ namespace Simulation.Game.Skills
     {
         private Vector2 relativeOriginPosition;
 
-        public FireballSkill(LivingEntity owner, Vector2? relativeOriginPosition = null) : base(owner, 500)
+        public FireballSkill(LivingEntity owner, Vector2? relativeOriginPosition = null) : base(owner, 200)
         {
             this.relativeOriginPosition = relativeOriginPosition ?? Vector2.Zero;
         }
