@@ -9,43 +9,71 @@ using System.Threading.Tasks;
 
 namespace Simulation.Game.Basics
 {
-    class CollidableRectangleObject: DrawableObject
+    public class CollidableRectangleObject: DrawableObject
     {
         private Point upperLeftPointVector;
         private Point collisionRectSize;
+        public Rectangle collisionBounds;
+        public CollisionType collisionType;
 
-        public CollidableRectangleObject(Point position, Point upperLeftPointVector, Point collisionRectSize): base(position)
+        public CollidableRectangleObject(Vector2 position, Point upperLeftPointVector, Point collisionRectSize, CollisionType collisionType = CollisionType.NO_COLLISION): base(position)
         {
             this.upperLeftPointVector = upperLeftPointVector;
             this.collisionRectSize = collisionRectSize;
+            this.collisionType = collisionType;
+
+            onPositionChange();
         }
 
-        public bool isCollision(Point newPosition)
+        public bool canMove(Vector2 newPosition)
         {
-            List<Block> blocks = SimulationGame.world.getTouchedWorldBlocks(new Rectangle(newPosition.X + upperLeftPointVector.X, newPosition.Y + upperLeftPointVector.Y, collisionRectSize.X, collisionRectSize.Y));
+            Rectangle newBounds = new Rectangle((int)newPosition.X + upperLeftPointVector.X, (int)newPosition.Y + upperLeftPointVector.Y, collisionRectSize.X, collisionRectSize.Y);
+            List<Block> blocks = SimulationGame.world.getTouchedWorldBlocks(ref newBounds);
 
             foreach(Block block in blocks)
-                if(block.collisionType == CollisionType.UNPASSABLE)
-                    return true;
+            {
+                if (block.collisionType == CollisionType.UNPASSABLE)
+                    return false;
+
+                foreach(CollidableRectangleObject collidableObject in block.collidableObjects)
+                {
+                    if((collidableObject.collisionType == CollisionType.UNPASSABLE || collidableObject.collisionType == CollisionType.SOLID_OBJECT) 
+                        && collidableObject.collisionBounds.Intersects(newBounds))
+                    {
+                        return false;
+                    }
+                }
+            }
 
             if(SimulationGame.isDebug)
             {
                 string DebugString = "";
 
                 foreach (Block block in blocks)
-                    DebugString += " (" + block.position.X + "," + block.position.Y + ")";
+                {
+                    DebugString += " (" + block.position.X + "," + block.position.Y;
 
+                    DebugString += ",CO: " + block.collidableObjects.Count;
+
+                    DebugString += ")";
+                }
+                    
                 SimulationGame.StringToDraw = DebugString;
             }
 
-            return false;
+            return true;
+        }
+        
+        protected override void onPositionChange()
+        {
+            collisionBounds = new Rectangle((int)position.X + upperLeftPointVector.X, (int)position.Y + upperLeftPointVector.Y, collisionRectSize.X, collisionRectSize.Y);
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
             if(SimulationGame.isDebug)
             {
-                SimulationGame.primitiveDrawer.Rectangle(new Rectangle(position.X + upperLeftPointVector.X, position.Y + upperLeftPointVector.Y, collisionRectSize.X, collisionRectSize.Y), Color.Red);
+                SimulationGame.primitiveDrawer.Rectangle(new Rectangle((int)position.X + upperLeftPointVector.X, (int)position.Y + upperLeftPointVector.Y, collisionRectSize.X, collisionRectSize.Y), Color.Red);
             }
         }
     }

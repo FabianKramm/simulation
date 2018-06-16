@@ -27,9 +27,9 @@ namespace Simulation.Game.Hud
         {
             var position = Mouse.GetState().Position;
 
-            SimulationGame.StringToDraw = position.X + "," + position.Y;
+            // SimulationGame.StringToDraw = position.X + "," + position.Y;
 
-            spriteBatch.Draw(cursor, new Vector2(position.X, position.Y), scale: new Vector2(0.75f, 0.75f), color: Color.White);
+            spriteBatch.Draw(cursor, new Vector2(position.X, position.Y), null, Color.White, 0.0f, Vector2.Zero, new Vector2(0.75f, 0.75f), SpriteEffects.None, 1.0f);
         }
     }
 }

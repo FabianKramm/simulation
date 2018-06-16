@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Simulation.Game.Basics;
 using Simulation.Spritesheet;
+using Simulation.Util;
 using System;
 
 namespace Simulation.Game
@@ -16,7 +17,7 @@ namespace Simulation.Game
 
         private float velocity = 0.3f;
 
-        public Player(): base(new Point(0, 0), new Point(-10, -20), new Point(20, 20)) {}
+        public Player(): base(new Vector2(0, 0), new Point(-10, -20), new Point(20, 20)) {}
 
         public void LoadContent()
         {
@@ -62,7 +63,7 @@ namespace Simulation.Game
             int oldAnimationOffset = getAnimationOffset(curDirection);
             int newAnimationOffset = 0;
 
-            Point newPosition = position;
+            Vector2 newPosition = position;
 
             if (state.IsKeyDown(Keys.D))
             {
@@ -125,7 +126,7 @@ namespace Simulation.Game
                 curAnimation.Start(Repeat.Mode.Loop);
             }
 
-            if((position.X != newPosition.X || position.Y != newPosition.Y) && !isCollision(newPosition))
+            if((position.X != newPosition.X || position.Y != newPosition.Y) && canMove(newPosition))
             {
                 position = newPosition;
                 SimulationGame.camera.Position = new Vector2(position.X, position.Y);
@@ -136,7 +137,7 @@ namespace Simulation.Game
         
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(curAnimation, SimulationGame.camera.Position);
+            spriteBatch.Draw(curAnimation, SimulationGame.camera.Position, layerDepth: GeometryUtils.getLayerDepthFromYPosition(position.Y));
 
             base.Draw(spriteBatch);
         }

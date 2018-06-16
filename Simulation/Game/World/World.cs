@@ -1,24 +1,23 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Simulation.Game.Basics;
+using Simulation.Game.Factories;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Game.World
 {
     public class World
     {
         public static Point BlockSize = new Point(32, 32);
+        public static int RenderOuterBlockRange = 3;
 
         private Block[][] grid;
         private Point dimensions;
 
         public World()
         {
-            dimensions = new Point(1000, 1000);
+            dimensions = new Point(100, 100);
 
             Initialize();
         }
@@ -56,7 +55,7 @@ namespace Simulation.Game.World
             return retList;
         }
 
-        public List<Block> getTouchedWorldBlocks(Rectangle rect)
+        public List<Block> getTouchedWorldBlocks(ref Rectangle rect)
         {
             List<Block> retList = new List<Block>();
             int worldWidth = dimensions.X * BlockSize.X;
@@ -66,11 +65,11 @@ namespace Simulation.Game.World
             int right = rect.Right + (BlockSize.X - rect.Right % BlockSize.X);
             int bottom = rect.Bottom + (BlockSize.Y - rect.Bottom % BlockSize.Y);
 
-            for (;left<=worldWidth && left < right; left += BlockSize.X)
+            for (;left<worldWidth && left < right; left += BlockSize.X)
             {
                 if(left >= 0)
                 {
-                    for (int top = rect.Top - rect.Top % BlockSize.Y; top <= worldHeight && top < bottom; top += BlockSize.Y)
+                    for (int top = rect.Top - rect.Top % BlockSize.Y; top < worldHeight && top < bottom; top += BlockSize.Y)
                     {
                         if (top >= 0)
                         {
@@ -107,18 +106,50 @@ namespace Simulation.Game.World
                     }
                 }
             }
+
+            // Add static objects
+            for (int i = 0; i < dimensions.X; i++)
+                for (int j = 0; j < dimensions.Y; j++)
+                {
+                    int Value = random.Next(0, 100);
+
+                    if (Value >= 10 && Value <= 11)
+                    {
+                        StaticObject tree = StaticObjectFactory.createTree(new Vector2(i * BlockSize.X, (j + 1) * BlockSize.Y));
+
+                        grid[i][j].staticObjects.Add(tree);
+
+                        addCollidableObject(tree);
+                    }
+                }
+        }
+
+        public void addCollidableObject(CollidableRectangleObject collidableObject)
+        {
+            List<Block> blocks = getTouchedWorldBlocks(ref collidableObject.collisionBounds);
+
+            foreach (Block block in blocks)
+                block.collidableObjects.Add(collidableObject);
+        }
+
+        public void removeCollidableObject(CollidableRectangleObject collidableObject)
+        {
+            List<Block> blocks = getTouchedWorldBlocks(ref collidableObject.collisionBounds);
+
+            foreach (Block block in blocks)
+                block.collidableObjects.Remove(collidableObject);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         { 
-            int x = Math.Max(0, (SimulationGame.visibleArea.Left - SimulationGame.visibleArea.Left % BlockSize.X) / BlockSize.X);
-            int maxX = Math.Min(dimensions.X, (SimulationGame.visibleArea.Right + (BlockSize.X - SimulationGame.visibleArea.Right % BlockSize.X)) / BlockSize.X);
-            int startY = Math.Max(0, (SimulationGame.visibleArea.Top - SimulationGame.visibleArea.Top % BlockSize.Y) / BlockSize.Y);
-            int maxY = Math.Min(dimensions.Y, (SimulationGame.visibleArea.Bottom + (BlockSize.Y - SimulationGame.visibleArea.Bottom % BlockSize.Y)) / BlockSize.Y);
+            int x = Math.Max(0, ((SimulationGame.visibleArea.Left - SimulationGame.visibleArea.Left % BlockSize.X) / BlockSize.X));
+            int maxX = Math.Min(dimensions.X, ((SimulationGame.visibleArea.Right + (BlockSize.X - SimulationGame.visibleArea.Right % BlockSize.X)) / BlockSize.X));
+            int startY = Math.Max(0, ((SimulationGame.visibleArea.Top - SimulationGame.visibleArea.Top % BlockSize.Y) / BlockSize.Y));
+            int maxY = Math.Min(dimensions.Y, ((SimulationGame.visibleArea.Bottom + (BlockSize.Y - SimulationGame.visibleArea.Bottom % BlockSize.Y)) / BlockSize.Y));
 
             for (; x < maxX; x++)
             {
-                for (int y= startY; y < maxY; y++)
+                for (int y = startY; y < maxY; y++)
                 {
                     grid[x][y].Draw(spriteBatch);
                 }

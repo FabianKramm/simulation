@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,34 +8,28 @@ using System.Threading.Tasks;
 
 namespace Simulation.Game.Basics
 {
-    class DrawableObject
+    public abstract class DrawableObject
     {
-        protected Point position;
+        private Vector2 _position;
+        public Vector2 position
+        {
+            get
+            {
+                return _position;
+            }
+            set
+            {
+                _position = value;
+                onPositionChange();
+            }
+        }
 
-        public DrawableObject(Point position)
+        public DrawableObject(Vector2 position)
         {
             this.position = position;
         }
 
-        public void moveTo(Point p)
-        {
-            position = p;
-        }
-
-        public void moveX(int distance)
-        {
-            position.X += distance;
-        }
-
-        public void moveY(int distance)
-        {
-            position.Y += distance;
-        }
-
-        public void move(Vector2 vector)
-        {
-            position.X = (int)(position.X + vector.X);
-            position.Y = (int)(position.X + vector.X);
-        }
+        protected abstract void onPositionChange();
+        public abstract void Draw(SpriteBatch spriteBatch);
     }
 }

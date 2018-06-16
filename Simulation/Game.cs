@@ -119,6 +119,7 @@ namespace Simulation
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             primitiveDrawer = new Primitive(graphics.GraphicsDevice, spriteBatch);
+            primitiveDrawer.Depth = 1.0f;
 
             player.LoadContent();
             camera.LoadContent();
@@ -138,11 +139,11 @@ namespace Simulation
 
         private void updateVisibleArea()
         {
-            visibleArea.X = (int)(SimulationGame.camera.Position.X - resolution.Width * 0.5f);
-            visibleArea.Y = (int)(SimulationGame.camera.Position.Y - resolution.Height * 0.5f);
+            visibleArea.X = (int)(SimulationGame.camera.Position.X - resolution.Width * 0.5f) - World.RenderOuterBlockRange * World.BlockSize.X;
+            visibleArea.Y = (int)(SimulationGame.camera.Position.Y - resolution.Height * 0.5f) - World.RenderOuterBlockRange * World.BlockSize.Y;
 
-            visibleArea.Width = resolution.Width;
-            visibleArea.Height = resolution.Height;
+            visibleArea.Width = resolution.Width + 2 * World.RenderOuterBlockRange * World.BlockSize.X;
+            visibleArea.Height = resolution.Height + 2 * World.RenderOuterBlockRange * World.BlockSize.Y;
         }
 
         private Vector2 mouseToWorld()
@@ -212,7 +213,7 @@ namespace Simulation
             updateVisibleArea();
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin(camera, SpriteSortMode.BackToFront);
+            spriteBatch.Begin(camera, SpriteSortMode.FrontToBack);
 
             world.Draw(spriteBatch);
             player.Draw(spriteBatch);

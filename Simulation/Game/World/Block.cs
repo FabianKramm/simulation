@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Simulation.Game.Basics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace Simulation.Game.World
     {
         NO_COLLISION = 0,
         UNPASSABLE = 1,
+        SOLID_OBJECT,
     }
 
     public class Block
@@ -55,6 +57,8 @@ namespace Simulation.Game.World
             get; private set;
         }
 
+        public List<CollidableRectangleObject> collidableObjects = new List<CollidableRectangleObject>();
+        public List<StaticObject> staticObjects = new List<StaticObject>();
 
         public Block(Point position, BlockType blockType = BlockType.GRASS)
         {
@@ -80,7 +84,10 @@ namespace Simulation.Game.World
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, worldPosition, spritePosition, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
+            spriteBatch.Draw(texture, worldPosition, spritePosition, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+           
+            foreach (StaticObject staticObject in staticObjects)
+                staticObject.Draw(spriteBatch);
         }
     }
 }
