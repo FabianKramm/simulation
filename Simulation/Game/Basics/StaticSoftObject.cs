@@ -1,0 +1,31 @@
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Simulation.Util;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Simulation.Game.Basics
+{
+    public class StaticSoftObject: DrawableObject
+    {
+        private string texture;
+        private Rectangle spriteRectangle;
+
+        public StaticSoftObject(string texture, Rectangle spriteRectangle, Vector2 position) :
+            base(position)
+        {
+            this.texture = texture;
+            this.spriteRectangle = spriteRectangle;
+        }
+
+        protected override void onPositionChange() {}
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(texture), position, spriteRectangle, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, GeometryUtils.getLayerDepthFromYPosition(position.Y));
+        }
+    }
+}

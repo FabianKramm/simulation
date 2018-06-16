@@ -96,7 +96,7 @@ namespace Simulation.Game.World
                 {
                     int Value = random.Next(0, 100);
 
-                    if(Value <= 4)
+                    if(Value <= 2)
                     {
                         grid[i][j] = new Block(new Point(i, j), BlockType.GRASS_WATERHOLE);
                     }
@@ -111,15 +111,21 @@ namespace Simulation.Game.World
             for (int i = 0; i < dimensions.X; i++)
                 for (int j = 0; j < dimensions.Y; j++)
                 {
+                    if (grid[i][j].blockType == BlockType.GRASS_WATERHOLE) continue;
+
                     int Value = random.Next(0, 100);
 
-                    if (Value >= 10 && Value <= 11)
+                    if (Value == 10)
                     {
                         StaticObject tree = StaticObjectFactory.createTree(new Vector2(i * BlockSize.X, (j + 1) * BlockSize.Y));
 
                         grid[i][j].staticObjects.Add(tree);
 
                         addCollidableObject(tree);
+                    }
+                    else if(Value < 4)
+                    {
+                        grid[i][j].staticObjects.Add(StaticObjectFactory.createSmallRocks(new Vector2(i * BlockSize.X, j * BlockSize.Y)));
                     }
                 }
         }

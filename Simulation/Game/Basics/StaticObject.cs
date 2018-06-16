@@ -16,7 +16,7 @@ namespace Simulation.Game.Basics
         private Rectangle spriteRectangle;
         private Vector2 drawPosition;
 
-        public StaticObject(string texture, Rectangle spriteRectangle, Vector2 position, Point upperLeftPointVector, Point collisionRectSize, CollisionType collisionType = CollisionType.NO_COLLISION):
+        public StaticObject(string texture, Rectangle spriteRectangle, Vector2 position, Point upperLeftPointVector, Point collisionRectSize, CollisionType collisionType = CollisionType.SOLID_OBJECT):
             base(position, new Point(upperLeftPointVector.X, upperLeftPointVector.Y - spriteRectangle.Height), collisionRectSize, collisionType)
         {
             this.texture = texture;

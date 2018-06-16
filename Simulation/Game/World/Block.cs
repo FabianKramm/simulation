@@ -37,7 +37,7 @@ namespace Simulation.Game.World
             }}
         };
 
-        private BlockType blockType;
+        public BlockType blockType;
         private Texture2D texture;
         private Rectangle spritePosition;
         private Vector2 worldPosition;
@@ -58,7 +58,7 @@ namespace Simulation.Game.World
         }
 
         public List<CollidableRectangleObject> collidableObjects = new List<CollidableRectangleObject>();
-        public List<StaticObject> staticObjects = new List<StaticObject>();
+        public List<DrawableObject> staticObjects = new List<DrawableObject>();
 
         public Block(Point position, BlockType blockType = BlockType.GRASS)
         {
@@ -86,7 +86,7 @@ namespace Simulation.Game.World
         {
             spriteBatch.Draw(texture, worldPosition, spritePosition, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
            
-            foreach (StaticObject staticObject in staticObjects)
+            foreach (DrawableObject staticObject in staticObjects)
                 staticObject.Draw(spriteBatch);
         }
     }
