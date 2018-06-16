@@ -29,7 +29,10 @@ namespace Simulation.Game.Effect
 
             direction = new Vector2(target.X - position.X, target.Y - position.Y);
             direction.Normalize();
-            
+
+            position.X += (direction.X * World.World.BlockSize.X);
+            position.Y += (direction.Y * World.World.BlockSize.Y);
+
             angle = (float)Math.Atan2(direction.Y, direction.X) + (float)Math.PI * 0.5f;
 
             GameConsole.WriteLine("", angle + "");

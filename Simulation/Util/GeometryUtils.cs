@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.Hud;
 using Simulation.Game.World;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,31 @@ using System.Threading.Tasks;
 
 namespace Simulation.Util
 {
+    public enum ReservedDepthLayers
+    {
+        Block = 0,
+        BlockDecoration = 1
+    }
+
     public class GeometryUtils
     {
+        public static int reservedDepthLayers = 100;
+
+        public static float getLayerDepthFromReservedLayer(ReservedDepthLayers layer)
+        {
+            // GameConsole.WriteLine("", "" + getLayerDepthFromYPosition(SimulationGame.visibleArea.Top - reservedDepthLayers + 1));
+
+            return getLayerDepthFromYPosition(SimulationGame.visibleArea.Top - (reservedDepthLayers - (int)layer));
+        }
+
+        public static float getLayerDepthFromReservedLayer(int zIndex)
+        {
+            return getLayerDepthFromYPosition(SimulationGame.visibleArea.Top - (reservedDepthLayers - zIndex));
+        }
+
         public static float getLayerDepthFromYPosition(float Y)
         {
-            return Normalize(Y, SimulationGame.visibleArea.Top, SimulationGame.visibleArea.Top + SimulationGame.resolution.Height);
+            return Normalize(Y + reservedDepthLayers, SimulationGame.visibleArea.Top, SimulationGame.visibleArea.Top + SimulationGame.resolution.Height + reservedDepthLayers);
         }
 
         public static float Normalize(float value, float min, float max)

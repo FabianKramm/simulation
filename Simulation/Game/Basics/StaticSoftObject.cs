@@ -14,12 +14,14 @@ namespace Simulation.Game.Basics
         private string texture;
         private Rectangle spriteRectangle;
         private Vector2 origin;
+        private bool hasDepth;
 
-        public StaticSoftObject(string texture, Rectangle spriteRectangle, Vector2 position) :
+        public StaticSoftObject(string texture, Rectangle spriteRectangle, Vector2 position, bool hasDepth = false) :
             base(position)
         {
             this.texture = texture;
             this.spriteRectangle = spriteRectangle;
+            this.hasDepth = hasDepth;
 
             origin = new Vector2(0, spriteRectangle.Height);
         }
@@ -28,7 +30,7 @@ namespace Simulation.Game.Basics
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(texture), position, spriteRectangle, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, GeometryUtils.getLayerDepthFromYPosition(position.Y));
+            spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(texture), position, spriteRectangle, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, hasDepth ? GeometryUtils.getLayerDepthFromYPosition(position.Y) : GeometryUtils.getLayerDepthFromReservedLayer(ReservedDepthLayers.BlockDecoration));
         }
     }
 }
