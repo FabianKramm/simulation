@@ -3,21 +3,27 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Simulation.Game.Basics;
+using Simulation.Game.Hud;
+using Simulation.Game.Skills;
 using Simulation.Spritesheet;
 using Simulation.Util;
 using System;
 
 namespace Simulation.Game
 {
-    class Player: CollidableRectangleObject
+    public class Player: LivingEntity
     {
         Simulation.Spritesheet.Spritesheet sheet;
         WalkingDirection curDirection = WalkingDirection.Idle;
         Animation curAnimation = null;
 
         private float velocity = 0.3f;
+        private FireballSkill fireballSkill;
 
-        public Player(): base(new Vector2(0, 0), new Point(-10, -20), new Point(20, 20)) {}
+        public Player(): base(new Vector2(0, 0), new Point(-10, -30), new Point(20, 30))
+        {
+            fireballSkill = new FireballSkill(this, new Vector2(0, -30));
+        }
 
         public void LoadContent()
         {
@@ -105,6 +111,11 @@ namespace Simulation.Game
                 curDirection = curDirection & (WalkingDirection.Mask ^ WalkingDirection.Down);
             }
 
+            if (state.IsKeyDown(Keys.D1))
+            {
+                fireballSkill.use(SimulationGame.mousePosition);
+            }
+
             newAnimationOffset = getAnimationOffset(curDirection);
 
             if (curDirection == WalkingDirection.Idle)
@@ -128,16 +139,21 @@ namespace Simulation.Game
 
             if((position.X != newPosition.X || position.Y != newPosition.Y) && canMove(newPosition))
             {
+                SimulationGame.world.removeCollidableObject(this);
+
                 position = newPosition;
                 SimulationGame.camera.Position = new Vector2(position.X, position.Y);
+
+                SimulationGame.world.addCollidableObject(this);
             }
-            
+
+            fireballSkill.Update(gameTime);
             curAnimation.Update(gameTime);
         }
         
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(curAnimation, SimulationGame.camera.Position, layerDepth: GeometryUtils.getLayerDepthFromYPosition(position.Y));
+            spriteBatch.Draw(curAnimation, position, layerDepth: GeometryUtils.getLayerDepthFromYPosition(position.Y));
 
             base.Draw(spriteBatch);
         }

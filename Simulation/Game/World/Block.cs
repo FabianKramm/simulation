@@ -15,11 +15,18 @@ namespace Simulation.Game.World
         GRASS_WATERHOLE = 1,
     }
 
-    public enum CollisionType
+    public enum BlockCollisionType
     {
         NO_COLLISION = 0,
         UNPASSABLE = 1,
+    }
+
+    public enum CollisionType
+    {
+        NO_COLLISION = 0,
         SOLID_OBJECT,
+        SOFT_OBJECT,
+        LIVING_ENTITY
     }
 
     public class Block
@@ -52,7 +59,7 @@ namespace Simulation.Game.World
             get; private set;
         }
 
-        public CollisionType collisionType
+        public BlockCollisionType collisionType
         {
             get; private set;
         }
@@ -74,11 +81,11 @@ namespace Simulation.Game.World
 
             if(blockType == BlockType.GRASS_WATERHOLE)
             {
-                collisionType = CollisionType.UNPASSABLE;
+                collisionType = BlockCollisionType.UNPASSABLE;
             }
             else
             {
-                collisionType = CollisionType.NO_COLLISION;
+                collisionType = BlockCollisionType.NO_COLLISION;
             }
         }
 

@@ -8,7 +8,6 @@ using Simulation.Spritesheet;
 using Comora;
 using System;
 using System.Collections.Generic;
-using Simulation.Game.Spells;
 using Simulation.Util;
 using Simulation.Game.Hud;
 
@@ -61,18 +60,24 @@ namespace Simulation
             get; private set;
         }
 
-        public static string StringToDraw = "";
-
         public static Size resolution = new Size(1280, 768);
         public static Rectangle visibleArea;
 
+        public static Rectangle worldDimensions
+        {
+            get; private set;
+        }
+
+        public static Vector2 mousePosition
+        {
+            get; private set;
+        }
+
+        public static List<Simulation.Game.Effect.Effect> effects = new List<Simulation.Game.Effect.Effect>();
+        public static Player player;
+
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        
-        private SpriteFont font;
-        private Player player;
-
-        private List<Fireball> fireballs = new List<Fireball>();
 
         public SimulationGame()
         {
@@ -91,6 +96,7 @@ namespace Simulation
             hud = new Hud();
 
             visibleArea = Rectangle.Empty;
+            worldDimensions = new Rectangle(0, 0, World.dimensions.X * World.BlockSize.X, World.dimensions.Y * World.BlockSize.Y);
 
             isDebug = false;
         }
@@ -124,8 +130,6 @@ namespace Simulation
             player.LoadContent();
             camera.LoadContent();
             hud.LoadContent();
-
-            font = Content.Load<SpriteFont>("Arial");
         }
 
         /// <summary>
@@ -146,11 +150,11 @@ namespace Simulation
             visibleArea.Height = resolution.Height + 2 * World.RenderOuterBlockRange * World.BlockSize.Y;
         }
 
-        private Vector2 mouseToWorld()
+        private void updateMousePosition()
         {
-            var mousePosition = Mouse.GetState().Position;
+            var _mousePosition = Mouse.GetState().Position;
 
-            return new Vector2(visibleArea.X + mousePosition.X, visibleArea.Y + mousePosition.Y);
+            mousePosition = new Vector2((SimulationGame.camera.Position.X - resolution.Width * 0.5f) + _mousePosition.X, (SimulationGame.camera.Position.Y - resolution.Height * 0.5f) + _mousePosition.Y);
         }
 
         /// <summary>
@@ -167,16 +171,6 @@ namespace Simulation
 
             player.Update(gameTime);
             camera.Update(gameTime);
-
-            if(Keyboard.GetState().IsKeyDown(Keys.D1) && fireballs.Count == 0)
-            {
-                var mousePosition = mouseToWorld();
-                var direction = new Vector2(mousePosition.X - camera.Position.X, mousePosition.Y - camera.Position.Y);
-
-                direction.Normalize();
-
-                fireballs.Add(new Fireball(camera.Position, direction));
-            }
 
             if (Keyboard.GetState().IsKeyDown(Keys.F1))
             {
@@ -195,9 +189,17 @@ namespace Simulation
                 camera.Debug.Grid.AddLines(32, Color.White, 2);
             }
 
-            foreach (Fireball fireball in fireballs)
+            for(int i=0;i<effects.Count;i++)
             {
-                fireball.Update(gameTime);
+                var effect = effects[i];
+
+                effect.Update(gameTime);
+
+                if(effect.isFinished)
+                {
+                    effects.Remove(effect);
+                    i--;
+                }
             }
 
             hud.Update(gameTime);
@@ -211,6 +213,8 @@ namespace Simulation
         protected override void Draw(GameTime gameTime)
         {
             updateVisibleArea();
+            updateMousePosition();
+
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(camera, SpriteSortMode.FrontToBack);
@@ -218,32 +222,18 @@ namespace Simulation
             world.Draw(spriteBatch);
             player.Draw(spriteBatch);
 
-            for(int i=0;i<fireballs.Count;i++)
+            foreach (var effect in effects)
             {
-                Fireball fireball = fireballs[i];
-
-                if (SimulationGame.visibleArea.Contains(fireball.Position))
-                {
-                    fireball.Draw(spriteBatch);
-                }
-                else
-                {
-                    fireballs.Remove(fireball);
-                    i--;
-                }
+                effect.Draw(spriteBatch);
             }
 
             spriteBatch.End();
 
+            // Debug
             spriteBatch.Draw(camera.Debug);
 
+            // Hud
             spriteBatch.Begin();
-
-            if (StringToDraw.Length > 0)
-            {
-                spriteBatch.DrawString(font, StringToDraw, new Vector2(10, 10), Color.White);
-            }
-
             hud.Draw(spriteBatch);
             spriteBatch.End();
 

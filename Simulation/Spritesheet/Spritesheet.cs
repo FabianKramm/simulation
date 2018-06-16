@@ -13,7 +13,7 @@
             this.Texture = texture;
             this.CellSize = cellSize ?? new Point(32, 32);
             this.CellOffset = cellOffset ?? new Point(0, 0);
-            this.CellOrigin = cellOrigin ?? this.CellSize / new Point(2, 2);
+            this.CellOrigin = cellOrigin ?? new Point(0, 0);
             this.FrameDefaultDuration = frameDuration;
             this.FrameDefaultEffects = frameEffects;
         }
@@ -43,12 +43,12 @@
 
         public Spritesheet WithGrid((int w, int h) cell, (int x, int y) offset)
         {
-            return this.WithGrid(cell, offset, (cell.w / 2, cell.h / 2));
+            return this.WithGrid(cell, offset, (0, 0));
         }
 
         public Spritesheet WithGrid((int w, int h) cell)
         {
-            return this.WithGrid(cell, (0, 0), (cell.w / 2, cell.h / 2));
+            return this.WithGrid(cell, (0, 0), (0, 0));
         }
 
         #endregion

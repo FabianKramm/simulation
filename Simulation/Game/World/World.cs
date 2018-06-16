@@ -11,21 +11,12 @@ namespace Simulation.Game.World
     {
         public static Point BlockSize = new Point(32, 32);
         public static int RenderOuterBlockRange = 3;
+        public static Point dimensions = new Point(100, 100);
 
         private Block[][] grid;
-        private Point dimensions;
-
+        
         public World()
         {
-            dimensions = new Point(100, 100);
-
-            Initialize();
-        }
-
-        public World(Point dimensions)
-        {
-            this.dimensions = dimensions;
-
             Initialize();
         }
 
@@ -117,7 +108,7 @@ namespace Simulation.Game.World
 
                     if (Value == 10)
                     {
-                        StaticObject tree = StaticObjectFactory.createTree(new Vector2(i * BlockSize.X, (j + 1) * BlockSize.Y));
+                        StaticObject tree = StaticObjectFactory.createTree(new Vector2(i * BlockSize.X, j * BlockSize.Y));
 
                         grid[i][j].staticObjects.Add(tree);
 

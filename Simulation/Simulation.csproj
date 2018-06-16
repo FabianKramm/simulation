@@ -43,16 +43,22 @@
   <ItemGroup>
     <Compile Include="Game.cs" />
     <Compile Include="Game\Basics\CollidableRectangleObject.cs" />
+    <Compile Include="Game\Basics\DestroyableObject.cs" />
     <Compile Include="Game\Basics\DrawableObject.cs" />
+    <Compile Include="Game\Basics\LivingEntity.cs" />
     <Compile Include="Game\Basics\StaticSoftObject.cs" />
     <Compile Include="Game\Basics\StaticObject.cs" />
+    <Compile Include="Game\Effect\Effect.cs" />
+    <Compile Include="Game\Effect\Fireball.cs" />
     <Compile Include="Game\Factories\StaticObjectFactory.cs" />
+    <Compile Include="Game\Hud\GameConsole.cs" />
     <Compile Include="Game\Hud\Hud.cs" />
+    <Compile Include="Game\Skills\Skill.cs" />
     <Compile Include="Game\World\CollisionDetection.cs" />
     <Compile Include="Game\Environment\Terrain.cs" />
     <Compile Include="Game\Movement.cs" />
     <Compile Include="Game\Player.cs" />
-    <Compile Include="Game\Spells\Fireball.cs" />
+    <Compile Include="Game\Skills\FireballSkill.cs" />
     <Compile Include="Game\World\Block.cs" />
     <Compile Include="Game\World\World.cs" />
     <Compile Include="Program.cs" />

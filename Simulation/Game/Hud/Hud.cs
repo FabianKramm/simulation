@@ -12,9 +12,13 @@ namespace Simulation.Game.Hud
     public class Hud
     {
         private Texture2D cursor;
+        private GameConsole console;
 
         public void LoadContent()
         {
+            console = new GameConsole();
+            console.LoadContent();
+
             cursor = SimulationGame.contentManager.Load<Texture2D>(@"Misc\cursorDefault");
         }
 
@@ -28,6 +32,8 @@ namespace Simulation.Game.Hud
             var position = Mouse.GetState().Position;
 
             // SimulationGame.StringToDraw = position.X + "," + position.Y;
+
+            console.Draw(spriteBatch);
 
             spriteBatch.Draw(cursor, new Vector2(position.X, position.Y), null, Color.White, 0.0f, Vector2.Zero, new Vector2(0.75f, 0.75f), SpriteEffects.None, 1.0f);
         }

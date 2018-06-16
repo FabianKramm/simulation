@@ -20,10 +20,12 @@ namespace Simulation.Game.Factories
             @"Environment\Rock05",
         };
 
-
         public static StaticObject createTree(Vector2 position)
         {
-            return new StaticObject(@"Environment\Tree01", new Rectangle(0, 0, 79, 91), position, new Point(6, 55), new Point(67, 36), World.CollisionType.SOLID_OBJECT);
+            int textureWidth = 79;
+            int textureHeight = 91;
+
+            return new StaticObject(@"Environment\Tree01", new Rectangle(0, 0, textureWidth, textureHeight), new Vector2(position.X, position.Y + World.World.BlockSize.Y - textureHeight), new Point(6, 55), new Point(67, 36), World.CollisionType.SOLID_OBJECT);
         }
 
         public static StaticSoftObject createSmallRocks(Vector2 position)

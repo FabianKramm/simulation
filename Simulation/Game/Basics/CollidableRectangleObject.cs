@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Simulation.Game.Hud;
 using Simulation.Game.World;
 using System;
 using System.Collections.Generic;
@@ -32,13 +33,12 @@ namespace Simulation.Game.Basics
 
             foreach(Block block in blocks)
             {
-                if (block.collisionType == CollisionType.UNPASSABLE)
+                if (block.collisionType == BlockCollisionType.UNPASSABLE)
                     return false;
 
                 foreach(CollidableRectangleObject collidableObject in block.collidableObjects)
                 {
-                    if((collidableObject.collisionType == CollisionType.UNPASSABLE || collidableObject.collisionType == CollisionType.SOLID_OBJECT) 
-                        && collidableObject.collisionBounds.Intersects(newBounds))
+                    if(collidableObject.collisionType == CollisionType.SOLID_OBJECT && collidableObject.collisionBounds.Intersects(newBounds))
                     {
                         return false;
                     }
@@ -57,8 +57,8 @@ namespace Simulation.Game.Basics
 
                     DebugString += ")";
                 }
-                    
-                SimulationGame.StringToDraw = DebugString;
+
+                GameConsole.WriteLine("CanMoveCollision", DebugString);
             }
 
             return true;
