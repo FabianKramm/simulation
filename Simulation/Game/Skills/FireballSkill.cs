@@ -1,14 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.Basics;
+using Simulation.Game.Base;
 using Simulation.Game.Effect;
 using Simulation.Game.Hud;
-using Simulation.Spritesheet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Game.Skills
 {

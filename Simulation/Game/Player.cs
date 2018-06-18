@@ -1,13 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Simulation.Game.Basics;
-using Simulation.Game.Hud;
+using Simulation.Game.Base;
 using Simulation.Game.Skills;
 using Simulation.Spritesheet;
 using Simulation.Util;
-using System;
 
 namespace Simulation.Game
 {
@@ -20,34 +17,34 @@ namespace Simulation.Game
         private float velocity = 0.3f;
         private FireballSkill fireballSkill;
 
-        public Player(): base(new Vector2(0, 0), new Point(-10, -30), new Point(20, 30))
+        public Player(): base(new Vector2(0, 0), new Rectangle(-8, -20, 16, 20))
         {
-            fireballSkill = new FireballSkill(this, new Vector2(0, -30));
+            fireballSkill = new FireballSkill(this, new Vector2(0, -20));
         }
 
         public void LoadContent()
         {
             Texture2D texture = SimulationGame.contentManager.Load<Texture2D>("player");
-            sheet = new Simulation.Spritesheet.Spritesheet(texture).WithGrid((64, 64)).WithCellOrigin(new Point(32, 64)).WithFrameDuration(120);
+            sheet = new Simulation.Spritesheet.Spritesheet(texture).WithGrid((32, 48)).WithCellOrigin(new Point(16, 48)).WithFrameDuration(160);
 
             curAnimation = getAnimation(curDirection);
         }
 
         private int getAnimationOffset(WalkingDirection direction)
         {
-            int offset = 10; /* 8 top 9 left 10 down 11 right */
+            int offset = 0; /* 8 top 9 left 10 down 11 right */
 
             if ((direction & WalkingDirection.Left) == WalkingDirection.Left)
             {
-                offset = 9;
+                offset = 1;
             }
             else if ((direction & WalkingDirection.Right) == WalkingDirection.Right)
             {
-                offset = 11;
+                offset = 2;
             }
             else if ((direction & WalkingDirection.Up) == WalkingDirection.Up)
             {
-                offset = 8;
+                offset = 3;
             }
 
             return offset;
@@ -58,9 +55,9 @@ namespace Simulation.Game
             int offset = getAnimationOffset(direction);
 
             // anim.Start(Repeat.Mode.Loop);
-            return sheet.CreateAnimation((0, offset), (1, offset), (2, offset), (3, offset), (4, offset), (5, offset), (6, offset), (7, offset), (8, offset)); 
-        }
 
+            return sheet.CreateAnimation((0, offset), (1, offset), (2, offset), (3, offset)); 
+        }
 
         public void Update(GameTime gameTime)
         {
@@ -139,12 +136,12 @@ namespace Simulation.Game
 
             if((position.X != newPosition.X || position.Y != newPosition.Y) && canMove(newPosition))
             {
-                SimulationGame.world.removeCollidableObject(this);
+                SimulationGame.world.removeHitableObject(this);
 
-                position = newPosition;
+                updatePosition(newPosition);
+                
                 SimulationGame.camera.Position = new Vector2(position.X, position.Y);
-
-                SimulationGame.world.addCollidableObject(this);
+                SimulationGame.world.addHitableObject(this);
             }
 
             fireballSkill.Update(gameTime);

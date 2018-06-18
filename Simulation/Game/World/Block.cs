@@ -1,11 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.Basics;
+using Simulation.Game.Base;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Game.World
 {
@@ -15,17 +12,17 @@ namespace Simulation.Game.World
         GRASS_WATERHOLE = 1,
     }
 
-    public enum BlockCollisionType
+    public enum BlockingType
     {
-        NO_COLLISION = 0,
-        UNPASSABLE = 1,
+        NOT_BLOCKING = 0,
+        BLOCKING
     }
 
-    public enum CollisionType
+    public enum HitBoxType
     {
-        NO_COLLISION = 0,
-        SOLID_OBJECT,
-        SOFT_OBJECT,
+        NO_HITBOX = 0,
+        STATIC_OBJECT,
+        MOVING_OBJECT,
         LIVING_ENTITY
     }
 
@@ -59,13 +56,19 @@ namespace Simulation.Game.World
             get; private set;
         }
 
-        public BlockCollisionType collisionType
+        public BlockingType blockingType
         {
             get; private set;
         }
 
-        public List<CollidableRectangleObject> collidableObjects = new List<CollidableRectangleObject>();
-        public List<DrawableObject> staticObjects = new List<DrawableObject>();
+        // Objects that are hitable and can block the path
+        public List<HitableObject> hitableObjects = new List<HitableObject>();
+
+        // Not yet defined
+        // public List<HitBoxRectangle> interactiveObjects = new List<HitBoxRectangle>();
+
+        // Objects that should be drawn on this tile
+        public List<DrawableObject> ambientObjects = new List<DrawableObject>();
 
         public Block(Point position, BlockType blockType = BlockType.GRASS)
         {
@@ -81,11 +84,11 @@ namespace Simulation.Game.World
 
             if(blockType == BlockType.GRASS_WATERHOLE)
             {
-                collisionType = BlockCollisionType.UNPASSABLE;
+                blockingType = BlockingType.BLOCKING;
             }
             else
             {
-                collisionType = BlockCollisionType.NO_COLLISION;
+                blockingType = BlockingType.NOT_BLOCKING;
             }
         }
 
@@ -93,8 +96,8 @@ namespace Simulation.Game.World
         {
             spriteBatch.Draw(texture, worldPosition, spritePosition, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
            
-            foreach (DrawableObject staticObject in staticObjects)
-                staticObject.Draw(spriteBatch);
+            foreach (DrawableObject ambientObject in ambientObjects)
+                ambientObject.Draw(spriteBatch);
         }
     }
 }

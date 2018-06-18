@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Basics;
+using Simulation.Game.Base;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Game.Factories
 {
@@ -20,17 +16,17 @@ namespace Simulation.Game.Factories
             @"Environment\Rock05",
         };
 
-        public static StaticObject createTree(Vector2 position)
+        public static StaticBlockingObject createTree(Vector2 position)
         {
             int textureWidth = 79;
             int textureHeight = 91;
 
-            return new StaticObject(@"Environment\Tree01", new Rectangle(0, 0, textureWidth, textureHeight), new Vector2(position.X, position.Y + World.World.BlockSize.Y), new Point(6, -36), new Point(67, 36), World.CollisionType.SOLID_OBJECT);
+            return new StaticBlockingObject(@"Environment\Tree01", new Rectangle(0, 0, textureWidth, textureHeight), new Vector2(position.X, position.Y + World.World.BlockSize.Y), new Rectangle(6, -36, 67, 36));
         }
 
-        public static StaticSoftObject createSmallRocks(Vector2 position)
+        public static StaticObject createSmallRocks(Vector2 position)
         {
-            return new StaticSoftObject(rocksTextures[random.Next(0, rocksTextures.Length - 1)], new Rectangle(0, 0, 25, 20), new Vector2(position.X - 12.5f + World.World.BlockSize.X / 2, position.Y + 10 + World.World.BlockSize.Y / 2));
+            return new StaticObject(rocksTextures[random.Next(0, rocksTextures.Length - 1)], new Rectangle(0, 0, 25, 20), new Vector2(position.X - 12.5f + World.World.BlockSize.X / 2, position.Y + 10 + World.World.BlockSize.Y / 2));
         }
     }
 }

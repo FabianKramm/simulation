@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.Basics;
+using Simulation.Game.Base;
 using Simulation.Game.Factories;
+using Simulation.Game.Hud;
 using System;
 using System.Collections.Generic;
 
@@ -20,59 +21,6 @@ namespace Simulation.Game.World
             Initialize();
         }
 
-        public static List<(int x, int y)> getTouchedWorldBlocksCoordinates(Rectangle rect)
-        {
-            List<(int x, int y)> retList = new List<(int x, int y)>();
-            int worldWidth = 100 * BlockSize.X;
-            int worldHeight = 100 * BlockSize.Y;
-
-            int moduloX = rect.Left % BlockSize.X;
-            int moduloY = rect.Top % BlockSize.Y;
-
-            for (int left = rect.Left; left <= worldWidth && left < rect.Right; left += BlockSize.X)
-            {
-                if (left >= 0)
-                {
-                    for (int top = rect.Top; top <= worldHeight && top < rect.Bottom; top += BlockSize.Y)
-                    {
-                        if (top >= 0)
-                        {
-                            retList.Add(((left - moduloX) / BlockSize.X, (top - moduloY) / BlockSize.Y));
-                        }
-                    }
-                }
-            }
-
-            return retList;
-        }
-
-        public List<Block> getTouchedWorldBlocks(ref Rectangle rect)
-        {
-            List<Block> retList = new List<Block>();
-            int worldWidth = dimensions.X * BlockSize.X;
-            int worldHeight = dimensions.Y * BlockSize.Y;
-
-            int left = rect.Left - rect.Left % BlockSize.X;
-            int right = rect.Right + (BlockSize.X - rect.Right % BlockSize.X);
-            int bottom = rect.Bottom + (BlockSize.Y - rect.Bottom % BlockSize.Y);
-
-            for (;left<worldWidth && left < right; left += BlockSize.X)
-            {
-                if(left >= 0)
-                {
-                    for (int top = rect.Top - rect.Top % BlockSize.Y; top < worldHeight && top < bottom; top += BlockSize.Y)
-                    {
-                        if (top >= 0)
-                        {
-                            retList.Add(grid[left / BlockSize.X][top / BlockSize.Y]);
-                        }
-                    }
-                }
-            }
-
-            return retList;
-        }
-
         private void Initialize()
         {
             Random random = new Random();
@@ -87,7 +35,7 @@ namespace Simulation.Game.World
                 {
                     int Value = random.Next(0, 100);
 
-                    if(Value <= 2)
+                    if (Value <= 2)
                     {
                         grid[i][j] = new Block(new Point(i, j), BlockType.GRASS_WATERHOLE);
                     }
@@ -108,33 +56,103 @@ namespace Simulation.Game.World
 
                     if (Value == 10)
                     {
-                        StaticObject tree = StaticObjectFactory.createTree(new Vector2(i * BlockSize.X, j * BlockSize.Y));
+                        StaticBlockingObject tree = StaticObjectFactory.createTree(new Vector2(i * BlockSize.X, j * BlockSize.Y));
 
-                        grid[i][j].staticObjects.Add(tree);
+                        grid[i][j].ambientObjects.Add(tree);
 
-                        addCollidableObject(tree);
+                        addHitableObject(tree);
                     }
-                    else if(Value < 4)
+                    else if (Value < 4)
                     {
-                        grid[i][j].staticObjects.Add(StaticObjectFactory.createSmallRocks(new Vector2(i * BlockSize.X, j * BlockSize.Y)));
+                        grid[i][j].ambientObjects.Add(StaticObjectFactory.createSmallRocks(new Vector2(i * BlockSize.X, j * BlockSize.Y)));
                     }
                 }
         }
 
-        public void addCollidableObject(CollidableRectangleObject collidableObject)
+        public List<Block> getTouchedWorldBlocks(ref Rectangle rect)
         {
-            List<Block> blocks = getTouchedWorldBlocks(ref collidableObject.collisionBounds);
+            List<Block> retList = new List<Block>();
+            int worldWidth = dimensions.X * BlockSize.X;
+            int worldHeight = dimensions.Y * BlockSize.Y;
 
-            foreach (Block block in blocks)
-                block.collidableObjects.Add(collidableObject);
+            int left = Math.Max(0, rect.Left - rect.Left % BlockSize.X);
+            int right = Math.Min(worldWidth, rect.Right + (BlockSize.X - rect.Right % BlockSize.X));
+
+            int startTop = Math.Max(0, rect.Top - rect.Top % BlockSize.Y);
+            int bottom = Math.Min(worldHeight, rect.Bottom + (BlockSize.Y - rect.Bottom % BlockSize.Y));
+
+            for (; left < right; left += BlockSize.X)
+                for (int top = startTop; top < bottom; top += BlockSize.Y)
+                    retList.Add(grid[left / BlockSize.X][top / BlockSize.Y]);
+
+            return retList;
         }
 
-        public void removeCollidableObject(CollidableRectangleObject collidableObject)
+        public bool canMove(Rectangle rect)
         {
-            List<Block> blocks = getTouchedWorldBlocks(ref collidableObject.collisionBounds);
+            int worldWidth = dimensions.X * BlockSize.X;
+            int worldHeight = dimensions.Y * BlockSize.Y;
 
-            foreach (Block block in blocks)
-                block.collidableObjects.Remove(collidableObject);
+            int left = Math.Max(0, rect.Left - rect.Left % BlockSize.X);
+            int right = Math.Min(worldWidth, rect.Right + (BlockSize.X - rect.Right % BlockSize.X));
+
+            int startTop = Math.Max(0, rect.Top - rect.Top % BlockSize.Y);
+            int bottom = Math.Min(worldHeight, rect.Bottom + (BlockSize.Y - rect.Bottom % BlockSize.Y));
+
+            for (; left < right; left += BlockSize.X)
+                for (int top = startTop; top < bottom; top += BlockSize.Y)
+                {
+                    Block block = grid[left / BlockSize.X][top / BlockSize.Y];
+
+                    if (block.blockingType == BlockingType.BLOCKING)
+                        return false;
+
+                    foreach (HitableObject hitableObject in block.hitableObjects)
+                        if (hitableObject.blockingType == BlockingType.BLOCKING && hitableObject.blockingBounds.Intersects(rect))
+                        {
+                            return false;
+                        }
+                }
+
+            return true;
+        }
+
+        public void addHitableObject(HitableObject hitableObject)
+        {
+            if(hitableObject.useSameBounds)
+            {
+                List<Block> blocks = getTouchedWorldBlocks(ref hitableObject.hitBoxBounds);
+
+                foreach (Block block in blocks)
+                    block.hitableObjects.Add(hitableObject);
+            }
+            else
+            {
+                Rectangle union = Rectangle.Union(hitableObject.hitBoxBounds, hitableObject.blockingBounds);
+                List<Block> blocks = getTouchedWorldBlocks(ref union);
+
+                foreach (Block block in blocks)
+                    block.hitableObjects.Add(hitableObject);
+            }
+        }
+
+        public void removeHitableObject(HitableObject hitableObject)
+        {
+            if (hitableObject.useSameBounds)
+            {
+                List<Block> blocks = getTouchedWorldBlocks(ref hitableObject.hitBoxBounds);
+
+                foreach (Block block in blocks)
+                    block.hitableObjects.Remove(hitableObject);
+            }
+            else
+            {
+                Rectangle union = Rectangle.Union(hitableObject.hitBoxBounds, hitableObject.blockingBounds);
+                List<Block> blocks = getTouchedWorldBlocks(ref union);
+
+                foreach (Block block in blocks)
+                    block.hitableObjects.Remove(hitableObject);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)

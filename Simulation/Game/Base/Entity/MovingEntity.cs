@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Simulation.Game.Basics
+namespace Simulation.Game.Base
 {
-    public class LivingEntity: CollidableRectangleObject
+    public class MovingEntity: LivingEntity
     {
-        public LivingEntity(Vector2 position, Point upperLeftPointVector, Point collisionRectSize, CollisionType collisionType = CollisionType.LIVING_ENTITY) :
-            base(position, upperLeftPointVector, collisionRectSize, collisionType)
+        public MovingEntity(Vector2 position, Rectangle relativeHitBoxBounds) :
+            base(position, relativeHitBoxBounds)
         {
 
         }

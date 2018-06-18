@@ -42,12 +42,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
-    <Compile Include="Game\Basics\CollidableRectangleObject.cs" />
-    <Compile Include="Game\Basics\DestroyableObject.cs" />
-    <Compile Include="Game\Basics\DrawableObject.cs" />
-    <Compile Include="Game\Basics\LivingEntity.cs" />
-    <Compile Include="Game\Basics\StaticSoftObject.cs" />
-    <Compile Include="Game\Basics\StaticObject.cs" />
+    <Compile Include="Game\Base\Entity\LivingEntity.cs" />
+    <Compile Include="Game\Base\DrawableObject.cs" />
+    <Compile Include="Game\Base\Entity\MovingEntity.cs" />
+    <Compile Include="Game\Base\Entity\PersonEntity.cs" />
+    <Compile Include="Game\Base\StaticBlockingObject.cs" />
+    <Compile Include="Game\Base\StaticObject.cs" />
+    <Compile Include="Game\Base\HitableObject.cs" />
     <Compile Include="Game\Effect\Effect.cs" />
     <Compile Include="Game\Effect\Fireball.cs" />
     <Compile Include="Game\Factories\StaticObjectFactory.cs" />

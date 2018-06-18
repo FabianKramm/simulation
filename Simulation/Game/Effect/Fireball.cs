@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.Basics;
+using Simulation.Game.Base;
 using Simulation.Game.Hud;
 using Simulation.Spritesheet;
 using Simulation.Util;
@@ -64,12 +64,11 @@ namespace Simulation.Game.Effect
                     var touchedBlocks = SimulationGame.world.getTouchedWorldBlocks(ref collisionRect);
 
                     foreach (var block in touchedBlocks)
-                        foreach (var entity in block.collidableObjects)
+                        foreach (var entity in block.hitableObjects)
                         {
                             if (entity == origin) continue;
 
-                            if ((entity.collisionType == World.CollisionType.SOLID_OBJECT || entity.collisionType == World.CollisionType.LIVING_ENTITY) && 
-                                collisionRect.Intersects(entity.collisionBounds))
+                            if (collisionRect.Intersects(entity.hitBoxBounds))
                             {
                                 hasHitTarget = true;
                                 impact.Start(Repeat.Mode.Once);

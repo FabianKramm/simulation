@@ -1,23 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.World;
 using Simulation.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Simulation.Game.Basics
+namespace Simulation.Game.Base
 {
-    public class StaticObject: CollidableRectangleObject
+    public class StaticBlockingObject: HitableObject
     {
         private string texture;
         private Rectangle spriteRectangle;
         private Vector2 origin;
 
-        public StaticObject(string texture, Rectangle spriteRectangle, Vector2 position, Point upperLeftPointVector, Point collisionRectSize, CollisionType collisionType = CollisionType.SOLID_OBJECT):
-            base(position, upperLeftPointVector, collisionRectSize, collisionType)
+        public StaticBlockingObject(string texture, Rectangle spriteRectangle, Vector2 position, Rectangle relativeBlockingRectangle):
+            base(position, relativeBlockingRectangle, World.BlockingType.BLOCKING)
         {
             this.texture = texture;
             this.spriteRectangle = spriteRectangle;

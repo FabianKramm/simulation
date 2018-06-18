@@ -1,22 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Simulation.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Simulation.Game.Basics
+namespace Simulation.Game.Base
 {
-    public class StaticSoftObject: DrawableObject
+    public class StaticObject: DrawableObject
     {
         private string texture;
         private Rectangle spriteRectangle;
         private Vector2 origin;
         private bool hasDepth;
 
-        public StaticSoftObject(string texture, Rectangle spriteRectangle, Vector2 position, bool hasDepth = false) :
+        public StaticObject(string texture, Rectangle spriteRectangle, Vector2 position, bool hasDepth = false) :
             base(position)
         {
             this.texture = texture;
@@ -25,8 +20,6 @@ namespace Simulation.Game.Basics
 
             origin = new Vector2(0, spriteRectangle.Height);
         }
-
-        protected override void onPositionChange() {}
 
         public override void Draw(SpriteBatch spriteBatch)
         {
