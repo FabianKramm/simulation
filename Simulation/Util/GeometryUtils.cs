@@ -1,11 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Hud;
-using Simulation.Game.World;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Util
 {
@@ -21,19 +15,23 @@ namespace Simulation.Util
 
         public static float getLayerDepthFromReservedLayer(ReservedDepthLayers layer)
         {
-            // GameConsole.WriteLine("", "" + getLayerDepthFromYPosition(SimulationGame.visibleArea.Top - reservedDepthLayers + 1));
+            float minValue = SimulationGame.visibleArea.Left + SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Top;
 
-            return getLayerDepthFromYPosition(SimulationGame.visibleArea.Top - (reservedDepthLayers - (int)layer));
+            return getLayerDepthFromPosition(minValue - (reservedDepthLayers - (int)layer), 0);
         }
 
         public static float getLayerDepthFromReservedLayer(int zIndex)
         {
-            return getLayerDepthFromYPosition(SimulationGame.visibleArea.Top - (reservedDepthLayers - zIndex));
+            float minValue = SimulationGame.visibleArea.Left + SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Top;
+
+            return getLayerDepthFromPosition(minValue - (reservedDepthLayers - zIndex), 0);
         }
 
-        public static float getLayerDepthFromYPosition(float Y)
+        public static float getLayerDepthFromPosition(float X, float Y)
         {
-            return Normalize(Y + reservedDepthLayers, SimulationGame.visibleArea.Top, SimulationGame.visibleArea.Top + SimulationGame.resolution.Height + reservedDepthLayers);
+            return Normalize(Y * SimulationGame.visibleArea.Width + X + reservedDepthLayers, 
+                SimulationGame.visibleArea.Left + SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Top,
+                SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Bottom + reservedDepthLayers);
         }
 
         public static float Normalize(float value, float min, float max)

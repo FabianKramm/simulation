@@ -150,7 +150,7 @@ namespace Simulation.Game
         
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(curAnimation, position, layerDepth: GeometryUtils.getLayerDepthFromYPosition(position.Y));
+            spriteBatch.Draw(curAnimation, position, layerDepth: GeometryUtils.getLayerDepthFromPosition(position.X, position.Y));
 
             base.Draw(spriteBatch);
         }

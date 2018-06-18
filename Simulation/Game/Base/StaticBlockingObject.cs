@@ -21,7 +21,7 @@ namespace Simulation.Game.Base
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(texture), position, spriteRectangle, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, GeometryUtils.getLayerDepthFromYPosition(position.Y));
+            spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(texture), position, spriteRectangle, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, GeometryUtils.getLayerDepthFromPosition(position.X, position.Y));
 
             base.Draw(spriteBatch);
         }

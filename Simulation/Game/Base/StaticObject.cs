@@ -23,7 +23,7 @@ namespace Simulation.Game.Base
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(texture), position, spriteRectangle, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, hasDepth ? GeometryUtils.getLayerDepthFromYPosition(position.Y) : GeometryUtils.getLayerDepthFromReservedLayer(ReservedDepthLayers.BlockDecoration));
+            spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(texture), position, spriteRectangle, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, hasDepth ? GeometryUtils.getLayerDepthFromPosition(position.X, position.Y) : GeometryUtils.getLayerDepthFromReservedLayer(ReservedDepthLayers.BlockDecoration));
         }
     }
 }

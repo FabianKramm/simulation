@@ -13,7 +13,7 @@ namespace Simulation.Game.Effect
         private Animation flying;
         private Animation impact;
 
-        private float velocity = 0.3f; // 10 per second
+        private float velocity = 0.4f; // 10 per second
         private float angle;
 
         public Vector2 position;
@@ -101,12 +101,12 @@ namespace Simulation.Game.Effect
                 {
                     if(impact.IsStarted)
                     {
-                        spriteBatch.Draw(impact, position, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.getLayerDepthFromYPosition(position.Y + World.World.BlockSize.Y));
+                        spriteBatch.Draw(impact, position, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.getLayerDepthFromPosition(position.X, position.Y + World.World.BlockSize.Y));
                     }
                 }
                 else
                 {
-                    spriteBatch.Draw(flying, position, rotation: angle, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.getLayerDepthFromYPosition(position.Y));
+                    spriteBatch.Draw(flying, position, rotation: angle, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.getLayerDepthFromPosition(position.X, position.Y));
                 }
             }
 
