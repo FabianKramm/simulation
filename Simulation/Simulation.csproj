@@ -54,13 +54,16 @@
     <Compile Include="Game\Factories\StaticObjectFactory.cs" />
     <Compile Include="Game\Hud\GameConsole.cs" />
     <Compile Include="Game\Hud\Hud.cs" />
+    <Compile Include="Game\Renderer\BlockRenderer.cs" />
+    <Compile Include="Game\Renderer\Renderer.cs" />
+    <Compile Include="Game\Renderer\WorldRenderer.cs" />
     <Compile Include="Game\Skills\Skill.cs" />
     <Compile Include="Game\World\CollisionDetection.cs" />
-    <Compile Include="Game\Environment\Terrain.cs" />
     <Compile Include="Game\Movement.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\Skills\FireballSkill.cs" />
     <Compile Include="Game\World\Block.cs" />
+    <Compile Include="Game\World\Generation\WorldGeneration.cs" />
     <Compile Include="Game\World\World.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

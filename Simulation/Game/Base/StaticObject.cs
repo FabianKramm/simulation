@@ -2,6 +2,12 @@
 using Microsoft.Xna.Framework.Graphics;
 using Simulation.Util;
 
+/*
+Requirements:
+    - Travel through large area
+    - Enable background actions for some npcs
+ 
+ */
 namespace Simulation.Game.Base
 {
     public class StaticObject: DrawableObject
@@ -10,7 +16,7 @@ namespace Simulation.Game.Base
         private Rectangle spriteRectangle;
         private Vector2 origin;
         private bool hasDepth;
-
+        
         public StaticObject(string texture, Rectangle spriteRectangle, Vector2 position, bool hasDepth = false) :
             base(position)
         {

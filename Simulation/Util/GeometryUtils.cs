@@ -15,23 +15,27 @@ namespace Simulation.Util
 
         public static float getLayerDepthFromReservedLayer(ReservedDepthLayers layer)
         {
-            float minValue = SimulationGame.visibleArea.Left + SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Top;
-
-            return getLayerDepthFromPosition(minValue - (reservedDepthLayers - (int)layer), 0);
+            return Normalize((int)layer,
+                            0,
+                            SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Height + reservedDepthLayers);
         }
 
         public static float getLayerDepthFromReservedLayer(int zIndex)
         {
-            float minValue = SimulationGame.visibleArea.Left + SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Top;
-
-            return getLayerDepthFromPosition(minValue - (reservedDepthLayers - zIndex), 0);
+            return Normalize(zIndex,
+                            0,
+                            SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Height + reservedDepthLayers);
         }
 
         public static float getLayerDepthFromPosition(float X, float Y)
         {
-            return Normalize(Y * SimulationGame.visibleArea.Width + X + reservedDepthLayers, 
-                SimulationGame.visibleArea.Left + SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Top,
-                SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Bottom + reservedDepthLayers);
+            // float min = SimulationGame.visibleArea.Left + SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Top;
+            // float max = SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Bottom + reservedDepthLayers;
+            float value = (Y - SimulationGame.visibleArea.Top) * SimulationGame.visibleArea.Width + (X - SimulationGame.visibleArea.Left) + reservedDepthLayers;
+
+            return Normalize(value,
+                            0,
+                            SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Height + reservedDepthLayers);
         }
 
         public static float Normalize(float value, float min, float max)

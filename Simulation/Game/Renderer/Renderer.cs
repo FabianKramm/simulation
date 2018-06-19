@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Simulation.Game.Environment
+namespace Simulation.Game.Renderer
 {
-    class Terrain
+    class Renderer
     {
 
     }

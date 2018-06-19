@@ -1,17 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Base;
+using Simulation.Game.Renderer;
 using System;
 using System.Collections.Generic;
+using static Simulation.Game.Renderer.BlockRenderer;
 
 namespace Simulation.Game.World
 {
-    public enum BlockType
-    {
-        GRASS = 0,
-        GRASS_WATERHOLE = 1,
-    }
-
     public enum BlockingType
     {
         NOT_BLOCKING = 0,
@@ -28,30 +24,8 @@ namespace Simulation.Game.World
 
     public class Block
     {
-        private static Random random = new Random();
-        private static Dictionary<BlockType, (string, Rectangle)[]> Blocks = new Dictionary <BlockType, (string, Rectangle)[]> {
-            { BlockType.GRASS, new (string, Rectangle)[] {
-                ("terrain_atlas", new Rectangle(672, 160, 32, 32)),
-                ("terrain_atlas", new Rectangle(704, 160, 32, 32)),
-                ("terrain_atlas", new Rectangle(736, 160, 32, 32)),
-                ("terrain_atlas", new Rectangle(708, 96, 32, 32))
-            }},
-            { BlockType.GRASS_WATERHOLE, new (string, Rectangle)[] {
-                ("terrain_atlas", new Rectangle(192, 288, 32, 32))
-            }}
-        };
-
-        public BlockType blockType;
-        private Texture2D texture;
-        private Rectangle spritePosition;
-        private Vector2 worldPosition;
-
+        public BlockRenderType blockType;
         public Rectangle blockBounds
-        {
-            get; private set;
-        }
-
-        public Point position
         {
             get; private set;
         }
@@ -62,42 +36,55 @@ namespace Simulation.Game.World
         }
 
         // Objects that are hitable and can block the path
-        public List<HitableObject> hitableObjects = new List<HitableObject>();
+        public List<HitableObject> hitableObjects
+        {
+            get; private set;
+        }
 
         // Not yet defined
-        // public List<HitBoxRectangle> interactiveObjects = new List<HitBoxRectangle>();
+        // public List<HitBoxRectangle> interactiveObjects;
 
         // Objects that should be drawn on this tile
-        public List<DrawableObject> ambientObjects = new List<DrawableObject>();
+        public List<DrawableObject> ambientObjects
+        {
+            get; private set;
+        }
 
-        public Block(Point position, BlockType blockType = BlockType.GRASS)
+        public Block(Point position, BlockRenderType blockType = BlockRenderType.GRASS_01, BlockingType blockingType = BlockingType.NOT_BLOCKING)
         {
             this.blockType = blockType;
-            this.position = position;
-            worldPosition = new Vector2(position.X * World.BlockSize.X, position.Y * World.BlockSize.Y);
+            this.blockingType = blockingType;
+
             blockBounds = new Rectangle(position.X * World.BlockSize.X, position.Y * World.BlockSize.Y, World.BlockSize.X, World.BlockSize.Y);
+        }
 
-            int randomTexture = random.Next(0, Blocks[blockType].Length);
+        public void addHitableObject(HitableObject hitableObject)
+        {
+            if (hitableObjects == null)
+                hitableObjects = new List<HitableObject>();
 
-            texture = SimulationGame.contentManager.Load<Texture2D>(Blocks[blockType][randomTexture].Item1);
-            spritePosition = Blocks[blockType][randomTexture].Item2;
+            hitableObjects.Add(hitableObject);
+        }
 
-            if(blockType == BlockType.GRASS_WATERHOLE)
+        public void removeHitableObject(HitableObject hitableObject)
+        {
+            if (hitableObjects != null)
             {
-                blockingType = BlockingType.BLOCKING;
-            }
-            else
-            {
-                blockingType = BlockingType.NOT_BLOCKING;
+                hitableObjects.Remove(hitableObject);
+
+                if(hitableObjects.Count == 0)
+                {
+                    hitableObjects = null;
+                }
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void addAmbientObject(DrawableObject ambientObject)
         {
-            spriteBatch.Draw(texture, worldPosition, spritePosition, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
-           
-            foreach (DrawableObject ambientObject in ambientObjects)
-                ambientObject.Draw(spriteBatch);
+            if (ambientObjects == null)
+                ambientObjects = new List<DrawableObject>();
+
+            ambientObjects.Add(ambientObject);
         }
     }
 }

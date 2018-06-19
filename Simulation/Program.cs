@@ -4,6 +4,7 @@ using Simulation.Game.World;
 using Simulation.Util;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Simulation
 {
@@ -21,6 +22,8 @@ namespace Simulation
         {
             using (var game = new SimulationGame())
                 game.Run();
+
+
             //var a = World.getTouchedWorldBlocksCoordinates(new Rectangle(32, 32, 32, 32)).ToArray();
 
             //foreach (var b in a)

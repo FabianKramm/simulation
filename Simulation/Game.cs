@@ -6,10 +6,17 @@ using Simulation.Game;
 using Simulation.Game.World;
 using Simulation.Spritesheet;
 using Comora;
-using System;
 using System.Collections.Generic;
 using Simulation.Util;
 using Simulation.Game.Hud;
+using Simulation.Game.Renderer;
+
+/*
+    Open Points:
+    - World Generation
+    - Pathfinding
+    - AI
+*/
 
 namespace Simulation
 {
@@ -78,6 +85,7 @@ namespace Simulation
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
+        private float zoom = 1.0f;
 
         public SimulationGame()
         {
@@ -92,7 +100,10 @@ namespace Simulation
             contentManager = Content;
 
             player = new Player();
+
             world = new World();
+            world.Load();
+
             hud = new Hud();
 
             visibleArea = Rectangle.Empty;
@@ -111,6 +122,7 @@ namespace Simulation
         {
             // TODO: Add your initialization logic here
             camera = new Camera(graphics.GraphicsDevice);
+            camera.Zoom = zoom;
 
             base.Initialize();
         }
@@ -143,11 +155,11 @@ namespace Simulation
 
         private void updateVisibleArea()
         {
-            visibleArea.X = (int)(SimulationGame.camera.Position.X - resolution.Width * 0.5f) - World.RenderOuterBlockRange * World.BlockSize.X;
-            visibleArea.Y = (int)(SimulationGame.camera.Position.Y - resolution.Height * 0.5f) - World.RenderOuterBlockRange * World.BlockSize.Y;
+            visibleArea.X = (int)(SimulationGame.camera.Position.X - resolution.Width * 0.5f * (1/zoom)) - World.RenderOuterBlockRange * World.BlockSize.X;
+            visibleArea.Y = (int)(SimulationGame.camera.Position.Y - resolution.Height * 0.5f * (1/zoom)) - World.RenderOuterBlockRange * World.BlockSize.Y;
 
-            visibleArea.Width = resolution.Width + 2 * World.RenderOuterBlockRange * World.BlockSize.X;
-            visibleArea.Height = resolution.Height + 2 * World.RenderOuterBlockRange * World.BlockSize.Y;
+            visibleArea.Width = (int)(resolution.Width * (1 / zoom) + 2 * World.RenderOuterBlockRange * World.BlockSize.X);
+            visibleArea.Height = (int)(resolution.Height * (1 / zoom) + 2 * World.RenderOuterBlockRange * World.BlockSize.Y);
         }
 
         private void updateMousePosition()
@@ -219,7 +231,7 @@ namespace Simulation
 
             spriteBatch.Begin(camera, SpriteSortMode.FrontToBack);
 
-            world.Draw(spriteBatch);
+            WorldRenderer.Draw(spriteBatch);
             player.Draw(spriteBatch);
 
             foreach (var effect in effects)

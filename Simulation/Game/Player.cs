@@ -10,7 +10,7 @@ namespace Simulation.Game
 {
     public class Player: LivingEntity
     {
-        Simulation.Spritesheet.Spritesheet sheet;
+        Spritesheet.Spritesheet sheet;
         WalkingDirection curDirection = WalkingDirection.Idle;
         Animation curAnimation = null;
 

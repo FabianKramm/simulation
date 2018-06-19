@@ -64,16 +64,17 @@ namespace Simulation.Game.Effect
                     var touchedBlocks = SimulationGame.world.getTouchedWorldBlocks(ref collisionRect);
 
                     foreach (var block in touchedBlocks)
-                        foreach (var entity in block.hitableObjects)
-                        {
-                            if (entity == origin) continue;
-
-                            if (collisionRect.Intersects(entity.hitBoxBounds))
+                        if(block.hitableObjects != null)
+                            foreach (var entity in block.hitableObjects)
                             {
-                                hasHitTarget = true;
-                                impact.Start(Repeat.Mode.Once);
+                                if (entity == origin) continue;
+
+                                if (collisionRect.Intersects(entity.hitBoxBounds))
+                                {
+                                    hasHitTarget = true;
+                                    impact.Start(Repeat.Mode.Once);
+                                }
                             }
-                        }
 
                     flying.Update(gameTime);
                 }
