@@ -6,23 +6,14 @@ using System.Collections.Generic;
 
 namespace Simulation.Game.Renderer
 {
-    public enum BlockRenderType
-    {
-        GRASS_01 = 0,
-        GRASS_02,
-        GRASS_03,
-        GRASS_04,
-        GRASS_WATERHOLE,
-    }
-
     public class BlockRenderer
     { 
-        private static Dictionary<BlockRenderType, (string, Rectangle)> Blocks = new Dictionary<BlockRenderType, (string, Rectangle)> {
-            { BlockRenderType.GRASS_01, ("terrain_atlas", new Rectangle(672, 160, 32, 32)) },
-            { BlockRenderType.GRASS_02, ("terrain_atlas", new Rectangle(704, 160, 32, 32)) },
-            { BlockRenderType.GRASS_03, ("terrain_atlas", new Rectangle(736, 160, 32, 32)) },
-            { BlockRenderType.GRASS_04, ("terrain_atlas", new Rectangle(708, 96, 32, 32)) },
-            { BlockRenderType.GRASS_WATERHOLE, ("terrain_atlas", new Rectangle(192, 288, 32, 32)) }
+        private static Dictionary<BlockType, (string, Rectangle)> Blocks = new Dictionary<BlockType, (string, Rectangle)> {
+            { BlockType.GRASS_01, ("terrain_atlas", new Rectangle(672, 160, 32, 32)) },
+            { BlockType.GRASS_02, ("terrain_atlas", new Rectangle(704, 160, 32, 32)) },
+            { BlockType.GRASS_03, ("terrain_atlas", new Rectangle(736, 160, 32, 32)) },
+            { BlockType.GRASS_04, ("terrain_atlas", new Rectangle(708, 96, 32, 32)) },
+            { BlockType.GRASS_WATERHOLE, ("terrain_atlas", new Rectangle(192, 288, 32, 32)) }
         };
 
         public static void Draw(SpriteBatch spriteBatch, Block block)

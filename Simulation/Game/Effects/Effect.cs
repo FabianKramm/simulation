@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Base;
 
-namespace Simulation.Game.Effect
+namespace Simulation.Game.Effects
 {
     abstract public class Effect
     {

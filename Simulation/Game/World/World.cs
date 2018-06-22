@@ -1,24 +1,42 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Base;
-using Simulation.Game.World.Generation;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Simulation.Game.World
 {
     public class World
     {
+        private Block[,] grid;
+        public static Point dimensions = new Point(100, 100);
+
         public static Point BlockSize = new Point(32, 32);
-        public static Point dimensions = new Point(1000, 1000);
+        public static Point WorldChunkSize = new Point(32, 32);
+
         public static int RenderOuterBlockRange = 3;
 
-        private Block[,] grid;
+        private Dictionary<(int, int), WorldGridChunk> worldGrid = new Dictionary<(int, int), WorldGridChunk>();
+        private Dictionary<(int, int), TaskCompletionSource<bool>> chunksLoading = new Dictionary<(int, int), TaskCompletionSource<bool>>();
 
-        public void Load()
+        private Dictionary<string, DrawableObject> drawableObjects;
+        private WalkableGrid walkableGrid = new WalkableGrid();
+
+        private void loadChunk(int x, int y)
         {
-            grid = WorldGeneration.generateWorld(dimensions);
+            var chunkPath = ""; // worldSavePath + (x < 0 ? "m" + Math.Abs(x) : "" + x) + (y < 0 ? "y" + Math.Abs(y) : "" + y);
 
-            WorldGeneration.addStaticObjects(dimensions);
+            if (!File.Exists(chunkPath))
+            {
+                // Generate new World Chunk if it doesn't exist
+                SimulationGame.worldGenerator.generateChunk(x * WorldChunkSize.X, y * WorldChunkSize.Y);
+            }
+        }
+
+        public static void saveChunk(int x, int y, WorldGridChunk chunk)
+        {
+            var chunkPath = ""; // worldSavePath + (x < 0 ? "m" + Math.Abs(x) : "" + x) + (y < 0 ? "y" + Math.Abs(y) : "" + y);
         }
 
         public List<Block> getTouchedWorldBlocks(ref Rectangle rect)

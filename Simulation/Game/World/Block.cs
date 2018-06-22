@@ -24,7 +24,8 @@ namespace Simulation.Game.World
 
     public class Block
     {
-        public BlockRenderType blockType;
+        public BlockType blockType;
+
         public Rectangle blockBounds
         {
             get; private set;
@@ -50,7 +51,7 @@ namespace Simulation.Game.World
             get; private set;
         }
 
-        public Block(Point position, BlockRenderType blockType = BlockRenderType.GRASS_01, BlockingType blockingType = BlockingType.NOT_BLOCKING)
+        public Block(Point position, BlockType blockType = BlockType.GRASS_01, BlockingType blockingType = BlockingType.NOT_BLOCKING)
         {
             this.blockType = blockType;
             this.blockingType = blockingType;

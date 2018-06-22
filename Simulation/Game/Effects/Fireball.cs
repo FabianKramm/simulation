@@ -6,7 +6,7 @@ using Simulation.Spritesheet;
 using Simulation.Util;
 using System;
 
-namespace Simulation.Game.Effect
+namespace Simulation.Game.Effects
 {
     public class Fireball: Effect
     {

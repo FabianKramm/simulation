@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using Simulation.Util;
 using Simulation.Game.Hud;
 using Simulation.Game.Renderer;
+using Simulation.Game.World.Generator;
+using System.IO;
 
 /*
     Open Points:
@@ -52,6 +54,11 @@ namespace Simulation
             get; private set;
         }
 
+        public static WorldGenerator worldGenerator;
+        //{
+        //    get; private set;
+        //}
+
         public static ContentManager contentManager
         {
             get; private set;
@@ -80,7 +87,7 @@ namespace Simulation
             get; private set;
         }
 
-        public static List<Simulation.Game.Effect.Effect> effects = new List<Simulation.Game.Effect.Effect>();
+        public static List<Simulation.Game.Effects.Effect> effects = new List<Simulation.Game.Effects.Effect>();
         public static Player player;
 
         private GraphicsDeviceManager graphics;
@@ -100,11 +107,9 @@ namespace Simulation
             contentManager = Content;
 
             player = new Player();
-
             world = new World();
-            world.Load();
-
             hud = new Hud();
+            worldGenerator = new WorldGenerator(1);
 
             visibleArea = Rectangle.Empty;
             worldDimensions = new Rectangle(0, 0, World.dimensions.X * World.BlockSize.X, World.dimensions.Y * World.BlockSize.Y);
@@ -120,6 +125,8 @@ namespace Simulation
         /// </summary>
         protected override void Initialize()
         {
+            Util.Util.createGameFolders();
+
             // TODO: Add your initialization logic here
             camera = new Camera(graphics.GraphicsDevice);
             camera.Zoom = zoom;

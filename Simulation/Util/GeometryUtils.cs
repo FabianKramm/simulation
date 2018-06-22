@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Simulation.Util
 {
@@ -29,8 +30,6 @@ namespace Simulation.Util
 
         public static float getLayerDepthFromPosition(float X, float Y)
         {
-            // float min = SimulationGame.visibleArea.Left + SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Top;
-            // float max = SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Bottom + reservedDepthLayers;
             float value = (Y - SimulationGame.visibleArea.Top) * SimulationGame.visibleArea.Width + (X - SimulationGame.visibleArea.Left) + reservedDepthLayers;
 
             return Normalize(value,
@@ -58,6 +57,24 @@ namespace Simulation.Util
             rotatedPoint.Y += pivot.Y;
 
             return rotatedPoint;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int getIndexFromPoint(int x, int y, int chunkWidth, int chunkHeight)
+        {
+            return (x < 0 ? -x - 1 : x) % chunkWidth + chunkWidth * ((y < 0 ? -y - 1 : y) % chunkHeight);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Point projectPosition(int x, int y, int chunkWidth, int chunkHeight)
+        {
+            return new Point((int)Math.Floor((double)x / chunkWidth), (int)Math.Floor((double)y / chunkHeight));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Point getPositionWithinChunk(int x, int y, int chunkWidth, int chunkHeight)
+        {
+            return new Point(x - (int)Math.Floor((double)x / chunkWidth) * chunkWidth, y - (int)Math.Floor((double)y / chunkHeight) * chunkHeight);
         }
     }
 }

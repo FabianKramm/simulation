@@ -10,14 +10,14 @@ Requirements:
  */
 namespace Simulation.Game.Base
 {
-    public class StaticObject: DrawableObject
+    public class AmbientObject: DrawableObject
     {
         private string texture;
         private Rectangle spriteRectangle;
         private Vector2 origin;
         private bool hasDepth;
         
-        public StaticObject(string texture, Rectangle spriteRectangle, Vector2 position, bool hasDepth = false) :
+        public AmbientObject(string texture, Rectangle spriteRectangle, Vector2 position, bool hasDepth = false) :
             base(position)
         {
             this.texture = texture;

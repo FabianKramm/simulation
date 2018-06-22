@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Base;
-using Simulation.Game.Effect;
+using Simulation.Game.Effects;
 using Simulation.Game.Hud;
 
 namespace Simulation.Game.Skills
