@@ -1,11 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Game.World.Generator
 {
@@ -13,7 +9,7 @@ namespace Simulation.Game.World.Generator
     {
         public static void saveWalkableGridChunk(int chunkX, int chunkY, WalkableGridChunk chunk)
         {
-            var chunkPath = Path.Combine(Util.Util.GetWalkableGridSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "y" + Math.Abs(chunkY) : "" + chunkY));
+            var chunkPath = Path.Combine(Util.Util.GetWalkableGridSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
             byte[] bytes;
 
             chunk.copyDataTo(out bytes);
@@ -23,7 +19,7 @@ namespace Simulation.Game.World.Generator
 
         public static WalkableGridChunk loadWalkableGridChunk(int chunkX, int chunkY)
         {
-            var chunkPath = Path.Combine(Util.Util.GetWalkableGridSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "y" + Math.Abs(chunkY) : "" + chunkY));
+            var chunkPath = Path.Combine(Util.Util.GetWalkableGridSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 
             if (!File.Exists(chunkPath))
             {
@@ -37,7 +33,7 @@ namespace Simulation.Game.World.Generator
 
         public static WorldGridChunk loadWorldGridChunk(int chunkX, int chunkY)
         {
-            var chunkPath = Path.Combine(Util.Util.GetWorldSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "y" + Math.Abs(chunkY) : "" + chunkY));
+            var chunkPath = Path.Combine(Util.Util.GetWorldSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 
             if (!File.Exists(chunkPath))
             {
@@ -62,7 +58,7 @@ namespace Simulation.Game.World.Generator
 
         public static void saveWorldGridChunk(int chunkX, int chunkY, WorldGridChunk chunk)
         {
-            var chunkPath = Path.Combine(Util.Util.GetWorldSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "y" + Math.Abs(chunkY) : "" + chunkY));
+            var chunkPath = Path.Combine(Util.Util.GetWorldSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 
             using (var stream = File.OpenWrite(chunkPath))
             using (var writer = new BsonWriter(stream))

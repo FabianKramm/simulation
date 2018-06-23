@@ -1,14 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Simulation.Game.Base;
+using Simulation.Game.Base.Entity;
 using Simulation.Game.Skills;
 using Simulation.Spritesheet;
 using Simulation.Util;
 
 namespace Simulation.Game
 {
-    public class Player: LivingEntity
+    public class Player: DurableEntity
     {
         Spritesheet.Spritesheet sheet;
         WalkingDirection curDirection = WalkingDirection.Idle;
@@ -17,7 +17,7 @@ namespace Simulation.Game
         private float velocity = 0.3f;
         private FireballSkill fireballSkill;
 
-        public Player(): base(new Vector2(0, 0), new Rectangle(-8, -20, 16, 20))
+        public Player(): base(new Vector2(0, 0), new Rectangle(-8, -20, 16, 20), 1)
         {
             fireballSkill = new FireballSkill(this, new Vector2(0, -20));
         }

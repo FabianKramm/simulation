@@ -42,7 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
-    <Compile Include="Game\Base\Entity\SpecialEntity.cs" />
+    <Compile Include="Game\Base\Entity\DurableEntity.cs" />
     <Compile Include="Game\Base\Entity\LivingEntity.cs" />
     <Compile Include="Game\Base\DrawableObject.cs" />
     <Compile Include="Game\Base\Entity\MovingEntity.cs" />
@@ -79,6 +79,7 @@
     <Compile Include="Spritesheet\Extensions\SpriteBatchExtensions.cs" />
     <Compile Include="Spritesheet\Frame.cs" />
     <Compile Include="Spritesheet\Spritesheet.cs" />
+    <Compile Include="Util\CollisionUtils.cs" />
     <Compile Include="Util\GeometryUtils.cs" />
     <Compile Include="Util\IPrimitive.cs" />
     <Compile Include="Util\Primitive.cs" />

@@ -1,19 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Bson;
 using Simulation.Game.Base;
-using System;
+using Simulation.Game.Base.Entity;
+using Simulation.Game.World.Generator;
+using Simulation.Util;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace Simulation.Game.World
 {
     public class World
     {
-        private Block[,] grid;
-        public static Point dimensions = new Point(100, 100);
-
         public static Point BlockSize = new Point(32, 32);
 
         public static Point WorldChunkBlockSize = new Point(32, 32); // 32 * 32 BlockSize
@@ -21,52 +16,57 @@ namespace Simulation.Game.World
 
         public static int RenderOuterBlockRange = 3;
 
-        private Dictionary<(int, int), WorldGridChunk> worldGrid = new Dictionary<(int, int), WorldGridChunk>();
-        private Dictionary<(int, int), TaskCompletionSource<bool>> chunksLoading = new Dictionary<(int, int), TaskCompletionSource<bool>>();
+        private Dictionary<string, WorldGridChunk> worldGrid = new Dictionary<string, WorldGridChunk>();
+       
+        private Dictionary<string, HitableObject> interactiveObjects;
+        private Dictionary<string, DrawableObject> effects;
 
-        private Dictionary<string, DrawableObject> drawableObjects;
+        private Dictionary<string, DurableEntity> durableEntities;
+
         private WalkableGrid walkableGrid = new WalkableGrid();
 
-        public List<Block> getTouchedWorldBlocks(ref Rectangle rect)
+        public WorldGridChunk getWorldGridChunk(int chunkX, int chunkY)
         {
-            List<Block> retList = new List<Block>();
-            int worldWidth = dimensions.X * BlockSize.X;
-            int worldHeight = dimensions.Y * BlockSize.Y;
+            var chunkKey = chunkX + "," + chunkY;
 
-            int left = Math.Max(0, rect.Left - rect.Left % BlockSize.X);
-            int right = Math.Min(worldWidth, rect.Right + (BlockSize.X - rect.Right % BlockSize.X));
+            if(worldGrid.ContainsKey(chunkKey) == false)
+            {
+                worldGrid[chunkKey] = WorldLoader.loadWorldGridChunk(chunkX, chunkY);
+            }
 
-            int startTop = Math.Max(0, rect.Top - rect.Top % BlockSize.Y);
-            int bottom = Math.Min(worldHeight, rect.Bottom + (BlockSize.Y - rect.Bottom % BlockSize.Y));
-
-            for (; left < right; left += BlockSize.X)
-                for (int top = startTop; top < bottom; top += BlockSize.Y)
-                    retList.Add(grid[left / BlockSize.X, top / BlockSize.Y]);
-
-            return retList;
+            return worldGrid[chunkKey];
         }
 
         public bool canMove(Rectangle rect)
         {
-            int worldWidth = dimensions.X * BlockSize.X;
-            int worldHeight = dimensions.Y * BlockSize.Y;
+            // Check if blocks are of type blocking
+            Point topLeft = GeometryUtils.getChunkPosition(rect.Left, rect.Top, BlockSize.X, BlockSize.Y);
+            Point bottomRight = GeometryUtils.getChunkPosition(rect.Right, rect.Bottom, BlockSize.X, BlockSize.Y);
 
-            int left = Math.Max(0, rect.Left - rect.Left % BlockSize.X);
-            int right = Math.Min(worldWidth, rect.Right + (BlockSize.X - rect.Right % BlockSize.X));
-
-            int startTop = Math.Max(0, rect.Top - rect.Top % BlockSize.Y);
-            int bottom = Math.Min(worldHeight, rect.Bottom + (BlockSize.Y - rect.Bottom % BlockSize.Y));
-
-            for (; left < right; left += BlockSize.X)
-                for (int top = startTop; top < bottom; top += BlockSize.Y)
+            for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
+                for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
                 {
-                    Block block = grid[left / BlockSize.X, top / BlockSize.Y];
+                    Point chunkPos = GeometryUtils.getChunkPosition(blockX, blockY, WorldChunkBlockSize.X, WorldChunkBlockSize.Y);
+                    WorldGridChunk worldGridChunk = getWorldGridChunk(chunkPos.X, chunkPos.Y);
 
-                    if (block.blockingType == BlockingType.BLOCKING)
+                    BlockType blockType = worldGridChunk.getBlockType(blockX, blockY);
+
+                    if (CollisionUtils.getBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
                         return false;
+                }
 
-                    if (block.hitableObjects != null) 
-                        foreach (HitableObject hitableObject in block.hitableObjects)
+
+            // Check collision with interactive objects
+            Point chunkTopLeft = GeometryUtils.getChunkPosition(rect.Left, rect.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
+            Point chunkBottomRight = GeometryUtils.getChunkPosition(rect.Right, rect.Bottom, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
+
+            for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
+                for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
+                {
+                    WorldGridChunk worldGridChunk = getWorldGridChunk(chunkX, chunkY);
+
+                    if (worldGridChunk.interactiveObjects != null) 
+                        foreach (HitableObject hitableObject in worldGridChunk.interactiveObjects)
                             if (hitableObject.blockingType == BlockingType.BLOCKING && hitableObject.blockingBounds.Intersects(rect))
                                 return false;
                 }
@@ -76,7 +76,7 @@ namespace Simulation.Game.World
 
         public void addHitableObject(HitableObject hitableObject)
         {
-            if(hitableObject.useSameBounds)
+            /* if(hitableObject.useSameBounds)
             {
                 List<Block> blocks = getTouchedWorldBlocks(ref hitableObject.hitBoxBounds);
 
@@ -90,12 +90,12 @@ namespace Simulation.Game.World
 
                 foreach (Block block in blocks)
                     block.addHitableObject(hitableObject);
-            }
+            } */
         }
 
         public void removeHitableObject(HitableObject hitableObject)
         {
-            if (hitableObject.useSameBounds)
+            /* if (hitableObject.useSameBounds)
             {
                 List<Block> blocks = getTouchedWorldBlocks(ref hitableObject.hitBoxBounds);
 
@@ -109,12 +109,7 @@ namespace Simulation.Game.World
 
                 foreach (Block block in blocks)
                     block.removeHitableObject(hitableObject);
-            }
-        }
-
-        public Block GetBlock(int x, int y)
-        {
-            return grid[x, y];
+            } */
         }
     }
 }

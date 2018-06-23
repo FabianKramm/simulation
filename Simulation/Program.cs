@@ -34,19 +34,6 @@ namespace Simulation
 
             //Console.WriteLine(WalkableGrid.getBit(loadedChunk[arrayPosition / 32], arrayPosition % 32));
 
-            SimulationGame.worldGenerator = new Game.World.Generator.WorldGenerator(123);
-            WorldGridChunk chunk = new WorldGridChunk(0, 0);
-
-            chunk.addAmbientObject(StaticObjectFactory.createSmallRocks(new Vector2(0, 0)));
-
-            WorldLoader.saveWorldGridChunk(0, 0, chunk);
-
-            WorldGridChunk wank = WorldLoader.loadWorldGridChunk(0, 0);
-
-            Console.WriteLine(JsonConvert.SerializeObject(wank, new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.All
-            }));
             //SimulationGame.worldGenerator.resetWorld();
             /*
             WalkableGrid walkableGrid = new WalkableGrid();
@@ -94,8 +81,8 @@ namespace Simulation
             }*/
 
 
-            //using (var game = new SimulationGame())
-            //    game.Run();
+            using (var game = new SimulationGame())
+                game.Run();
 
             //var a = World.getTouchedWorldBlocksCoordinates(new Rectangle(32, 32, 32, 32)).ToArray();
 

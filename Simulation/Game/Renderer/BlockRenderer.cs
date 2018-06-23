@@ -16,13 +16,10 @@ namespace Simulation.Game.Renderer
             { BlockType.GRASS_WATERHOLE, ("terrain_atlas", new Rectangle(192, 288, 32, 32)) }
         };
 
-        public static void Draw(SpriteBatch spriteBatch, Block block)
+        public static void Draw(SpriteBatch spriteBatch, int realX, int realY, BlockType blockType)
         {
-            spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(Blocks[block.blockType].Item1), new Vector2(block.blockBounds.X, block.blockBounds.Y), Blocks[block.blockType].Item2, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
-
-            if(block.ambientObjects != null)
-                foreach (DrawableObject ambientObject in block.ambientObjects)
-                    ambientObject.Draw(spriteBatch);
+            spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(Blocks[blockType].Item1), 
+                new Vector2(realX, realY), Blocks[blockType].Item2, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
         }
     }
 }

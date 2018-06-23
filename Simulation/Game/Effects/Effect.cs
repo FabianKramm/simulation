@@ -6,6 +6,11 @@ namespace Simulation.Game.Effects
 {
     abstract public class Effect
     {
+        public string ID
+        {
+            get; private set;
+        }
+
         public LivingEntity origin
         {
             get; private set;
@@ -20,6 +25,8 @@ namespace Simulation.Game.Effects
         {
             this.origin = origin;
             isFinished = false;
+
+            ID = Util.Util.getUUID();
         }
 
         public abstract void Update(GameTime gameTime);

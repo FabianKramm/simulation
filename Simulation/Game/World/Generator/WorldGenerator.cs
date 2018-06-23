@@ -9,7 +9,7 @@ namespace Simulation.Game.World.Generator
 {
     public class WorldGenerator
     {
-        private static Point generatedChunkBlockSize = new Point(576, 576);
+        private static Point generatedChunkBlockSize = new Point(128, 128);
 
         private Random random;
         private object generatorLock = new object();
@@ -44,8 +44,8 @@ namespace Simulation.Game.World.Generator
             Dictionary<(int, int), WorldGridChunk> worldGrid = new Dictionary<(int, int), WorldGridChunk>();
             Dictionary<(int, int), WalkableGridChunk> walkableGrid = new Dictionary<(int, int), WalkableGridChunk>();
 
-            var newX = blockX * generatedChunkBlockSize.X;
-            var newY = blockY * generatedChunkBlockSize.Y;
+            var newX = chunkPosition.X * generatedChunkBlockSize.X;
+            var newY = chunkPosition.Y * generatedChunkBlockSize.Y;
 
             // Loop over Blocks
             for (int i = newX; i < (newX + generatedChunkBlockSize.X); i++)
@@ -69,6 +69,7 @@ namespace Simulation.Game.World.Generator
                     if (Value <= 2)
                     {
                         worldGrid[(worldGridChunk.X, worldGridChunk.Y)].setBlockType(i, j, BlockType.GRASS_WATERHOLE);
+
                         WalkableGrid.changeBlockInChunk(walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)], i, j, true);
                     }
                     else
@@ -80,7 +81,7 @@ namespace Simulation.Game.World.Generator
 
                     if (Value <= 6 && Value >= 4)
                     {
-                        StaticBlockingObject tree = StaticObjectFactory.createTree(new Vector2(i, j));
+                        StaticBlockingObject tree = StaticObjectFactory.createTree(new Vector2(i * World.BlockSize.X, j * World.BlockSize.Y));
 
                         worldGrid[(worldGridChunk.X, worldGridChunk.Y)].addAmbientObject(tree);
 
@@ -89,8 +90,6 @@ namespace Simulation.Game.World.Generator
                     else if (Value < 4)
                     {
                         worldGrid[(worldGridChunk.X, worldGridChunk.Y)].addAmbientObject(StaticObjectFactory.createSmallRocks(new Vector2(i * World.BlockSize.X, j * World.BlockSize.Y)));
-
-                        // block.addAmbientObject(StaticObjectFactory.createSmallRocks(new Vector2(i * World.BlockSize.X, j * World.BlockSize.Y)));
                     }
                 }
 

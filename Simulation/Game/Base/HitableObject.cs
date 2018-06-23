@@ -1,12 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 using Simulation.Game.World;
 
 namespace Simulation.Game.Base
 {
     public abstract class HitableObject: DrawableObject
     {
+        [JsonProperty]
         private Rectangle relativeHitBoxBounds;
+
+        [JsonProperty]
         private Rectangle relativeBlockingBounds;
 
         public bool useSameBounds

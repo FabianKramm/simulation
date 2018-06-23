@@ -77,11 +77,6 @@ namespace Simulation
         public static Size resolution = new Size(1280, 768);
         public static Rectangle visibleArea;
 
-        public static Rectangle worldDimensions
-        {
-            get; private set;
-        }
-
         public static Vector2 mousePosition
         {
             get; private set;
@@ -106,14 +101,11 @@ namespace Simulation
 
             contentManager = Content;
 
-            player = new Player();
             world = new World();
             hud = new Hud();
-            worldGenerator = new WorldGenerator(1);
 
             visibleArea = Rectangle.Empty;
-            worldDimensions = new Rectangle(0, 0, World.dimensions.X * World.BlockSize.X, World.dimensions.Y * World.BlockSize.Y);
-
+            
             isDebug = false;
         }
 
@@ -127,9 +119,14 @@ namespace Simulation
         {
             Util.Util.createGameFolders();
 
+            worldGenerator = new WorldGenerator(1);
+            worldGenerator.resetWorld();
+
             // TODO: Add your initialization logic here
             camera = new Camera(graphics.GraphicsDevice);
             camera.Zoom = zoom;
+
+            player = new Player();
 
             base.Initialize();
         }

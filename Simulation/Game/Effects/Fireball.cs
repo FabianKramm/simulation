@@ -56,12 +56,12 @@ namespace Simulation.Game.Effects
                 position.X += (direction.X * velocity * gameTime.ElapsedGameTime.Milliseconds);
                 position.Y += (direction.Y * velocity * gameTime.ElapsedGameTime.Milliseconds);
 
-                if (SimulationGame.worldDimensions.Contains(position))
+                if (SimulationGame.visibleArea.Contains(position))
                 {
                     var rotateVector = new Vector2(position.X, position.Y + 7.5f);
                     var rotatedPoint = GeometryUtils.Rotate(angle, ref position, ref rotateVector);
                     var collisionRect = new Rectangle((int)(rotatedPoint.X - 7.5f), (int)(rotatedPoint.Y - 7.5f), 15, 15);
-                    var touchedBlocks = SimulationGame.world.getTouchedWorldBlocks(ref collisionRect);
+                    /*var touchedBlocks = SimulationGame.world.getTouchedWorldBlocks(ref collisionRect);
 
                     foreach (var block in touchedBlocks)
                         if(block.hitableObjects != null)
@@ -76,7 +76,7 @@ namespace Simulation.Game.Effects
                                 }
                             }
 
-                    flying.Update(gameTime);
+                    flying.Update(gameTime);*/
                 }
                 else
                 {
