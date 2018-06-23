@@ -120,7 +120,6 @@ namespace Simulation
             Util.Util.createGameFolders();
 
             worldGenerator = new WorldGenerator(1);
-            worldGenerator.resetWorld();
 
             // TODO: Add your initialization logic here
             camera = new Camera(graphics.GraphicsDevice);

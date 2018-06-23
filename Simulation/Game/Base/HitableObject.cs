@@ -26,6 +26,8 @@ namespace Simulation.Game.Base
         public Rectangle hitBoxBounds;
         public Rectangle blockingBounds;
 
+        public Rectangle unionBounds;
+
         public HitableObject(Vector2 position, Rectangle relativeHitBoxBounds, BlockingType blockingType = BlockingType.NOT_BLOCKING, Rectangle? relativeBlockingBounds = null) : base(position)
         {
             this.blockingType = blockingType;
@@ -51,6 +53,8 @@ namespace Simulation.Game.Base
         {
             hitBoxBounds = new Rectangle((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height);
             blockingBounds = useSameBounds ? hitBoxBounds : new Rectangle((int)(relativeBlockingBounds.X + newPosition.X), (int)(relativeBlockingBounds.Y + newPosition.Y), relativeBlockingBounds.Width, relativeBlockingBounds.Height);
+
+            unionBounds = useSameBounds ? hitBoxBounds : Rectangle.Union(hitBoxBounds, blockingBounds);
         }
         
         public bool canMove(Vector2 newPosition)

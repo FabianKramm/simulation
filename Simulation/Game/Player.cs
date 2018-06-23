@@ -17,7 +17,7 @@ namespace Simulation.Game
         private float velocity = 0.3f;
         private FireballSkill fireballSkill;
 
-        public Player(): base(new Vector2(0, 0), new Rectangle(-8, -20, 16, 20), 1)
+        public Player(): base(new Vector2(0, 0), new Rectangle(-8, -20, 16, 20), 3)
         {
             fireballSkill = new FireballSkill(this, new Vector2(0, -20));
         }

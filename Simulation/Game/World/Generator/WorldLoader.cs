@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
+using Simulation.Game.Hud;
 using System;
 using System.IO;
 
@@ -33,6 +34,8 @@ namespace Simulation.Game.World.Generator
 
         public static WorldGridChunk loadWorldGridChunk(int chunkX, int chunkY)
         {
+            GameConsole.WriteLine("Load Chunk " + chunkX + "," + chunkY);
+
             var chunkPath = Path.Combine(Util.Util.GetWorldSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 
             if (!File.Exists(chunkPath))

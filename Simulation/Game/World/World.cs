@@ -4,6 +4,7 @@ using Simulation.Game.Base.Entity;
 using Simulation.Game.World.Generator;
 using Simulation.Util;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Simulation.Game.World
 {
@@ -25,6 +26,12 @@ namespace Simulation.Game.World
 
         private WalkableGrid walkableGrid = new WalkableGrid();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool isWorldGridChunkLoaded(int chunkX, int chunkY)
+        {
+            return worldGrid.ContainsKey(chunkX + "," + chunkY);
+        }
+
         public WorldGridChunk getWorldGridChunk(int chunkX, int chunkY)
         {
             var chunkKey = chunkX + "," + chunkY;
@@ -32,9 +39,52 @@ namespace Simulation.Game.World
             if(worldGrid.ContainsKey(chunkKey) == false)
             {
                 worldGrid[chunkKey] = WorldLoader.loadWorldGridChunk(chunkX, chunkY);
+
+                onChunkLoaded(worldGrid[chunkKey], chunkX, chunkY);
             }
 
             return worldGrid[chunkKey];
+        }
+
+        /*
+            This function is executed when a new chunk was loaded and objects from other chunks could overlap with this chunk
+         */
+        public void onChunkLoaded(WorldGridChunk chunk, int chunkX, int chunkY)
+        {
+            foreach(DrawableObject drawableObject in chunk.ambientObjects)
+            {
+                if(drawableObject is HitableObject)
+                {
+                    chunk.addHitableObject((HitableObject)drawableObject);
+                }
+            }
+
+            for(int i=-1;i<=1;i++)
+                for(int j=-1;j<1;j++)
+                {
+                    if (i == 0 && j == 0) continue;
+
+                    string neighborKey = (chunkX + i) + "," + (chunkY + j);
+
+                    if (worldGrid.ContainsKey(neighborKey) == true)
+                    {
+                        foreach (HitableObject hitableObject in chunk.interactiveObjects)
+                        {
+                            if (hitableObject.unionBounds.Intersects(worldGrid[neighborKey].realChunkBounds))
+                            {
+                                worldGrid[neighborKey].addHitableObject(hitableObject);
+                            }
+                        }
+
+                        foreach (HitableObject hitableObject in worldGrid[neighborKey].interactiveObjects)
+                        {
+                            if (hitableObject.unionBounds.Intersects(chunk.realChunkBounds))
+                            {
+                                chunk.addHitableObject(hitableObject);
+                            }
+                        }
+                    }
+                }
         }
 
         public bool canMove(Rectangle rect)
@@ -76,40 +126,32 @@ namespace Simulation.Game.World
 
         public void addHitableObject(HitableObject hitableObject)
         {
-            /* if(hitableObject.useSameBounds)
-            {
-                List<Block> blocks = getTouchedWorldBlocks(ref hitableObject.hitBoxBounds);
+            Point chunkTopLeft = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Left, hitableObject.unionBounds.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
+            Point chunkBottomRight = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Right, hitableObject.unionBounds.Bottom, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
 
-                foreach (Block block in blocks)
-                    block.addHitableObject(hitableObject);
-            }
-            else
-            {
-                Rectangle union = Rectangle.Union(hitableObject.hitBoxBounds, hitableObject.blockingBounds);
-                List<Block> blocks = getTouchedWorldBlocks(ref union);
-
-                foreach (Block block in blocks)
-                    block.addHitableObject(hitableObject);
-            } */
+            for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
+                for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
+                {
+                    if(isWorldGridChunkLoaded(chunkX, chunkY))
+                    {
+                        getWorldGridChunk(chunkX, chunkY).addHitableObject(hitableObject);
+                    }
+                }
         }
 
         public void removeHitableObject(HitableObject hitableObject)
         {
-            /* if (hitableObject.useSameBounds)
-            {
-                List<Block> blocks = getTouchedWorldBlocks(ref hitableObject.hitBoxBounds);
+            Point chunkTopLeft = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Left, hitableObject.unionBounds.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
+            Point chunkBottomRight = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Right, hitableObject.unionBounds.Bottom, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
 
-                foreach (Block block in blocks)
-                    block.removeHitableObject(hitableObject);
-            }
-            else
-            {
-                Rectangle union = Rectangle.Union(hitableObject.hitBoxBounds, hitableObject.blockingBounds);
-                List<Block> blocks = getTouchedWorldBlocks(ref union);
-
-                foreach (Block block in blocks)
-                    block.removeHitableObject(hitableObject);
-            } */
+            for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
+                for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
+                {
+                    if (isWorldGridChunkLoaded(chunkX, chunkY))
+                    {
+                        getWorldGridChunk(chunkX, chunkY).removeHitableObject(hitableObject);
+                    }
+                }
         }
     }
 }

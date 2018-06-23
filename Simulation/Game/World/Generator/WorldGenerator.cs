@@ -29,12 +29,9 @@ namespace Simulation.Game.World.Generator
             }
         }
 
-        public void resetWorld()
+        public static void ResetWorld()
         {
-            lock (generatorLock)
-            {
-                Util.Util.clearWorldFiles();
-            }
+            Util.Util.clearWorldFiles();
         }
 
         private void generateWorld(int blockX, int blockY)
@@ -46,6 +43,8 @@ namespace Simulation.Game.World.Generator
 
             var newX = chunkPosition.X * generatedChunkBlockSize.X;
             var newY = chunkPosition.Y * generatedChunkBlockSize.Y;
+
+            GameConsole.WriteLine("Generate new Chunk at " + chunkPosition.X + "," + chunkPosition.Y);
 
             // Loop over Blocks
             for (int i = newX; i < (newX + generatedChunkBlockSize.X); i++)
@@ -79,17 +78,16 @@ namespace Simulation.Game.World.Generator
                         worldGrid[(worldGridChunk.X, worldGridChunk.Y)].setBlockType(i, j, (BlockType)randomTexture);
                     }
 
-                    if (Value <= 6 && Value >= 4)
+                    if (Value <= 10 && Value > 6)
+                    {
+                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].addAmbientObject(StaticObjectFactory.createSmallRocks(new Vector2(i * World.BlockSize.X, j * World.BlockSize.Y)));
+                    }
+                    else if (Value <= 6 && Value >= 4)
                     {
                         StaticBlockingObject tree = StaticObjectFactory.createTree(new Vector2(i * World.BlockSize.X, j * World.BlockSize.Y));
 
                         worldGrid[(worldGridChunk.X, worldGridChunk.Y)].addAmbientObject(tree);
-
                         //block.addAmbientObject(tree);
-                    }
-                    else if (Value < 4)
-                    {
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].addAmbientObject(StaticObjectFactory.createSmallRocks(new Vector2(i * World.BlockSize.X, j * World.BlockSize.Y)));
                     }
                 }
 

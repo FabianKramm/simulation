@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
+using Simulation.Game.Hud;
 using Simulation.Util;
 
 namespace Simulation.Game.Base.Entity
@@ -27,8 +28,8 @@ namespace Simulation.Game.Base.Entity
             Point chunkPosition = GeometryUtils.getChunkPosition((int)position.X, (int)position.Y, World.World.WorldChunkPixelSize.X, World.World.WorldChunkPixelSize.Y);
             preloadedWorldGridChunkBounds = new Rectangle(chunkPosition.X - preloadedSurroundingWorldGridChunkRadius, chunkPosition.Y - preloadedSurroundingWorldGridChunkRadius, preloadedSurroundingWorldGridChunkRadius * 2, preloadedSurroundingWorldGridChunkRadius * 2);
 
-            for (int i = -preloadedSurroundingWorldGridChunkRadius; i < preloadedSurroundingWorldGridChunkRadius; i++)
-                for (int j = -preloadedSurroundingWorldGridChunkRadius; j < preloadedSurroundingWorldGridChunkRadius; j++)
+            for (int i = -preloadedSurroundingWorldGridChunkRadius; i <= preloadedWorldGridChunkBounds.Right; i++)
+                for (int j = -preloadedSurroundingWorldGridChunkRadius; j <= preloadedWorldGridChunkBounds.Bottom; j++)
                 {
                     SimulationGame.world.getWorldGridChunk(i + chunkPosition.X, j + chunkPosition.Y);
                 }

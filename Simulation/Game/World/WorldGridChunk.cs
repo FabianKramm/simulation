@@ -20,7 +20,7 @@ namespace Simulation.Game.World
         [JsonProperty]
         private BlockType[,] blockingGrid;
 
-        public Rectangle chunkBounds;
+        public Rectangle realChunkBounds;
 
         public List<HitableObject> interactiveObjects;
         public List<DrawableObject> ambientObjects;
@@ -28,7 +28,7 @@ namespace Simulation.Game.World
         public WorldGridChunk(int realX, int realY)
         {
             blockingGrid = new BlockType[World.WorldChunkBlockSize.X, World.WorldChunkBlockSize.Y];
-            chunkBounds = new Rectangle(realX, realY, realX + World.WorldChunkPixelSize.X, realY + World.WorldChunkPixelSize.Y);
+            realChunkBounds = new Rectangle(realX, realY, realX + World.WorldChunkPixelSize.X, realY + World.WorldChunkPixelSize.Y);
         }
 
         public BlockType getBlockType(int blockX, int blockY)

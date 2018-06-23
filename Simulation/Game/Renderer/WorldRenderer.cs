@@ -28,6 +28,11 @@ namespace Simulation.Game.Renderer
             for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                 for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
                 {
+                    if(SimulationGame.isDebug)
+                    {
+                        SimulationGame.primitiveDrawer.Rectangle(new Rectangle(chunkX * World.World.WorldChunkPixelSize.X, chunkY * World.World.WorldChunkPixelSize.X, World.World.WorldChunkPixelSize.X, World.World.WorldChunkPixelSize.Y), Color.Red);
+                    }
+
                     WorldGridChunk worldGridChunk = SimulationGame.world.getWorldGridChunk(chunkX, chunkY);
 
                     if (worldGridChunk.ambientObjects != null)

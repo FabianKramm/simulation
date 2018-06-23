@@ -26,6 +26,11 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
+            // WorldGenerator.ResetWorld();
+
+            using (var game = new SimulationGame())
+                game.Run();
+
             //UInt32[] loadedChunk = new UInt32[WalkableGrid.WalkableGridChunkCount];
 
             //WalkableGrid.changePositionInChunk(loadedChunk, 1, 4, true);
@@ -79,10 +84,6 @@ namespace Simulation
 
                 Console.Write("\n");
             }*/
-
-
-            using (var game = new SimulationGame())
-                game.Run();
 
             //var a = World.getTouchedWorldBlocksCoordinates(new Rectangle(32, 32, 32, 32)).ToArray();
 

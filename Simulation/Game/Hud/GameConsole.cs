@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,9 +13,23 @@ namespace Simulation.Game.Hud
     {
         private static int consoleLines = 40;
         private static List<string> messages = new List<string>();
+
         private SpriteFont font;
         private static List<string> blackList = new List<string>();
         private static List<string> whiteList = new List<string>();
+
+        public static void WriteLine(string message)
+        {
+            lock (messages)
+            {
+                messages.Add(DateTime.Now.ToString("mm:ss") + ": " + message);
+
+                if (messages.Count >= consoleLines)
+                {
+                    messages.RemoveAt(0);
+                }
+            }
+        }
 
         public static void WriteLine(string ID, string message)
         {
@@ -22,11 +37,14 @@ namespace Simulation.Game.Hud
             {
                 if(!blackList.Contains(ID))
                 {
-                    messages.Add("[" + ID + "] " + DateTime.Now.ToString("mm:ss") + ": " + message);
-
-                    if (messages.Count >= consoleLines)
+                    lock(messages)
                     {
-                        messages.RemoveAt(0);
+                        messages.Add("[" + ID + "] " + DateTime.Now.ToString("mm:ss") + ": " + message);
+
+                        if (messages.Count >= consoleLines)
+                        {
+                            messages.RemoveAt(0);
+                        }
                     }
                 }
             }
@@ -41,11 +59,14 @@ namespace Simulation.Game.Hud
         {
             if(SimulationGame.isDebug)
             {
-                for(int i=0;i<messages.Count;i++)
+                lock(messages)
                 {
-                    var message = messages[i];
+                    for (int i = 0; i < messages.Count; i++)
+                    {
+                        var message = messages.ElementAt(i);
 
-                    spriteBatch.DrawString(font, message, new Vector2(5, 5 + i * 16), Color.White);
+                        spriteBatch.DrawString(font, message, new Vector2(5, 5 + i * 16), Color.White);
+                    }
                 }
             }
         }
