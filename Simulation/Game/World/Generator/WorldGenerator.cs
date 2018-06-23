@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Base;
 using Simulation.Game.Factories;
+using Simulation.Game.Hud;
 using Simulation.Util;
 using System;
 using System.Collections.Generic;
