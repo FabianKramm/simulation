@@ -60,21 +60,21 @@ namespace Simulation.Util
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int getIndexFromPoint(int x, int y, int chunkWidth, int chunkHeight)
+        public static int getIndexFromPoint(int realX, int realY, int chunkWidth, int chunkHeight)
         {
-            return (x < 0 ? -x - 1 : x) % chunkWidth + chunkWidth * ((y < 0 ? -y - 1 : y) % chunkHeight);
+            return (realX < 0 ? -realX - 1 : realX) % chunkWidth + chunkWidth * ((realY < 0 ? -realY - 1 : realY) % chunkHeight);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Point projectPosition(int x, int y, int chunkWidth, int chunkHeight)
+        public static Point getChunkPosition(int realX, int realY, int chunkWidth, int chunkHeight)
         {
-            return new Point((int)Math.Floor((double)x / chunkWidth), (int)Math.Floor((double)y / chunkHeight));
+            return new Point((int)Math.Floor((double)realX / chunkWidth), (int)Math.Floor((double)realY / chunkHeight));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Point getPositionWithinChunk(int x, int y, int chunkWidth, int chunkHeight)
+        public static Point getPositionWithinChunk(int realX, int realY, int chunkWidth, int chunkHeight)
         {
-            return new Point(x - (int)Math.Floor((double)x / chunkWidth) * chunkWidth, y - (int)Math.Floor((double)y / chunkHeight) * chunkHeight);
+            return new Point(realX - (int)Math.Floor((double)realX / chunkWidth) * chunkWidth, realY - (int)Math.Floor((double)realY / chunkHeight) * chunkHeight);
         }
     }
 }

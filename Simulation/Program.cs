@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using Simulation.Game;
+using Simulation.Game.Factories;
 using Simulation.Game.World;
+using Simulation.Game.World.Generator;
 using Simulation.Util;
 using System;
 using System.Collections.Generic;
@@ -32,8 +35,20 @@ namespace Simulation
             //Console.WriteLine(WalkableGrid.getBit(loadedChunk[arrayPosition / 32], arrayPosition % 32));
 
             SimulationGame.worldGenerator = new Game.World.Generator.WorldGenerator(123);
-            //SimulationGame.worldGenerator.resetWorld();
+            WorldGridChunk chunk = new WorldGridChunk(0, 0);
 
+            chunk.addAmbientObject(StaticObjectFactory.createSmallRocks(new Vector2(0, 0)));
+
+            WorldLoader.saveWorldGridChunk(0, 0, chunk);
+
+            WorldGridChunk wank = WorldLoader.loadWorldGridChunk(0, 0);
+
+            Console.WriteLine(JsonConvert.SerializeObject(wank, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All
+            }));
+            //SimulationGame.worldGenerator.resetWorld();
+            /*
             WalkableGrid walkableGrid = new WalkableGrid();
 
             var stopwatch = Stopwatch.StartNew();
@@ -44,7 +59,7 @@ namespace Simulation
 
             stopwatch.Stop();
             Console.WriteLine(stopwatch.ElapsedMilliseconds);
-
+            */
             /*List<Task> taskList = new List<Task>();
 
             for (int i = 0; i < 10; i++)

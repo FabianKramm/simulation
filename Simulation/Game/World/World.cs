@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
 using Simulation.Game.Base;
 using System;
 using System.Collections.Generic;
@@ -13,7 +15,9 @@ namespace Simulation.Game.World
         public static Point dimensions = new Point(100, 100);
 
         public static Point BlockSize = new Point(32, 32);
-        public static Point WorldChunkSize = new Point(32, 32);
+
+        public static Point WorldChunkBlockSize = new Point(32, 32); // 32 * 32 BlockSize
+        public static Point WorldChunkPixelSize = new Point(WorldChunkBlockSize.X * BlockSize.X, WorldChunkBlockSize.Y * BlockSize.Y);
 
         public static int RenderOuterBlockRange = 3;
 
@@ -22,22 +26,6 @@ namespace Simulation.Game.World
 
         private Dictionary<string, DrawableObject> drawableObjects;
         private WalkableGrid walkableGrid = new WalkableGrid();
-
-        private void loadChunk(int x, int y)
-        {
-            var chunkPath = ""; // worldSavePath + (x < 0 ? "m" + Math.Abs(x) : "" + x) + (y < 0 ? "y" + Math.Abs(y) : "" + y);
-
-            if (!File.Exists(chunkPath))
-            {
-                // Generate new World Chunk if it doesn't exist
-                SimulationGame.worldGenerator.generateChunk(x * WorldChunkSize.X, y * WorldChunkSize.Y);
-            }
-        }
-
-        public static void saveChunk(int x, int y, WorldGridChunk chunk)
-        {
-            var chunkPath = ""; // worldSavePath + (x < 0 ? "m" + Math.Abs(x) : "" + x) + (y < 0 ? "y" + Math.Abs(y) : "" + y);
-        }
 
         public List<Block> getTouchedWorldBlocks(ref Rectangle rect)
         {

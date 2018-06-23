@@ -9,7 +9,7 @@ namespace Simulation.Game.World.Generator
 {
     public class WorldGenerator
     {
-        private static Point generatedChunkSize = new Point(576, 576);
+        private static Point generatedChunkBlockSize = new Point(576, 576);
 
         private Random random;
         private object generatorLock = new object();
@@ -19,11 +19,13 @@ namespace Simulation.Game.World.Generator
             random = new Random(seed);
         }
 
-        public void generateChunk(int x, int y)
+        public void generateChunk(int blockX, int blockY)
         {
             lock(generatorLock)
             {
-                generateWorld(x, y);
+                // TODO: Check if chunk already exists
+
+                generateWorld(blockX, blockY);
             }
         }
 
@@ -35,30 +37,31 @@ namespace Simulation.Game.World.Generator
             }
         }
 
-        private void generateWorld(int x, int y)
+        private void generateWorld(int blockX, int blockY)
         {
-            Point chunkPosition = GeometryUtils.projectPosition(x, y, generatedChunkSize.X, generatedChunkSize.Y);
+            Point chunkPosition = GeometryUtils.getChunkPosition(blockX, blockY, generatedChunkBlockSize.X, generatedChunkBlockSize.Y);
 
             Dictionary<(int, int), WorldGridChunk> worldGrid = new Dictionary<(int, int), WorldGridChunk>();
-            Dictionary<(int, int), UInt32[]> walkableGrid = new Dictionary<(int, int), UInt32[]>();
+            Dictionary<(int, int), WalkableGridChunk> walkableGrid = new Dictionary<(int, int), WalkableGridChunk>();
 
-            var newX = x * generatedChunkSize.X;
-            var newY = y * generatedChunkSize.Y;
+            var newX = blockX * generatedChunkBlockSize.X;
+            var newY = blockY * generatedChunkBlockSize.Y;
 
-            for (int i = newX; i < (newX + generatedChunkSize.X); i++)
-                for (int j = newY; j < (newY + generatedChunkSize.Y); j++)
+            // Loop over Blocks
+            for (int i = newX; i < (newX + generatedChunkBlockSize.X); i++)
+                for (int j = newY; j < (newY + generatedChunkBlockSize.Y); j++)
                 {
-                    Point worldGridChunk = GeometryUtils.projectPosition(i, j, World.WorldChunkSize.X, World.WorldChunkSize.Y);
-                    Point walkableGridChunk = GeometryUtils.projectPosition(i, j, WalkableGrid.WalkableGridChunkSize.X, WalkableGrid.WalkableGridChunkSize.Y);
+                    Point worldGridChunk = GeometryUtils.getChunkPosition(i, j, World.WorldChunkBlockSize.X, World.WorldChunkBlockSize.Y);
+                    Point walkableGridChunk = GeometryUtils.getChunkPosition(i, j, WalkableGrid.WalkableGridBlockChunkSize.X, WalkableGrid.WalkableGridBlockChunkSize.Y);
 
                     if(worldGrid.ContainsKey((worldGridChunk.X, worldGridChunk.Y)) == false)
                     {
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)] = new WorldGridChunk();
+                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)] = new WorldGridChunk(worldGridChunk.X * World.WorldChunkPixelSize.X, worldGridChunk.Y * World.WorldChunkPixelSize.Y);
                     }
 
                     if (walkableGrid.ContainsKey((walkableGridChunk.X, walkableGridChunk.Y)) == false)
                     {
-                        walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)] = new UInt32[WalkableGrid.WalkableGridChunkCount];
+                        walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)] = WalkableGridChunk.createEmpty();
                     }
                     
                     int Value = random.Next(0, 100);
@@ -66,7 +69,7 @@ namespace Simulation.Game.World.Generator
                     if (Value <= 2)
                     {
                         worldGrid[(worldGridChunk.X, worldGridChunk.Y)].setBlockType(i, j, BlockType.GRASS_WATERHOLE);
-                        WalkableGrid.changePositionInChunk(walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)], i, j, true);
+                        WalkableGrid.changeBlockInChunk(walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)], i, j, true);
                     }
                     else
                     {
@@ -91,14 +94,14 @@ namespace Simulation.Game.World.Generator
                     }
                 }
 
-            foreach(KeyValuePair<(int,int), UInt32[]> walkableGridChunk in walkableGrid)
+            foreach(KeyValuePair<(int,int), WalkableGridChunk> walkableGridChunk in walkableGrid)
             {
-                WalkableGrid.saveChunk(walkableGridChunk.Key.Item1, walkableGridChunk.Key.Item2, walkableGridChunk.Value);
+                WorldLoader.saveWalkableGridChunk(walkableGridChunk.Key.Item1, walkableGridChunk.Key.Item2, walkableGridChunk.Value);
             }
 
             foreach (KeyValuePair<(int, int), WorldGridChunk> worldGridChunk in worldGrid)
             {
-                // World.saveChunk(worldGridChunk.Key.Item1, worldGridChunk.Key.Item2, worldGridChunk.Value);
+                WorldLoader.saveWorldGridChunk(worldGridChunk.Key.Item1, worldGridChunk.Key.Item2, worldGridChunk.Value);
             }
         }
     }

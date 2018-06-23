@@ -1,4 +1,6 @@
-﻿using Simulation.Game.Base;
+﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
+using Simulation.Game.Base;
 using Simulation.Util;
 using System.Collections.Generic;
 
@@ -15,26 +17,30 @@ namespace Simulation.Game.World
 
     public class WorldGridChunk
     {
+        [JsonProperty]
         private BlockType[,] blockingGrid;
+
+        public Rectangle chunkBounds;
 
         public List<HitableObject> interactiveObjects;
         public List<DrawableObject> ambientObjects;
 
-        public WorldGridChunk()
+        public WorldGridChunk(int realX, int realY)
         {
-            blockingGrid = new BlockType[World.WorldChunkSize.X, World.WorldChunkSize.Y];
+            blockingGrid = new BlockType[World.WorldChunkBlockSize.X, World.WorldChunkBlockSize.Y];
+            chunkBounds = new Rectangle(realX, realY, realX + World.WorldChunkPixelSize.X, realY + World.WorldChunkPixelSize.Y);
         }
 
-        public BlockType getBlockType(int x, int y)
+        public BlockType getBlockType(int blockX, int blockY)
         {
-            var projectedPosition = GeometryUtils.getPositionWithinChunk(x, y, World.WorldChunkSize.X, World.WorldChunkSize.Y);
+            var projectedPosition = GeometryUtils.getPositionWithinChunk(blockX, blockY, World.WorldChunkBlockSize.X, World.WorldChunkBlockSize.Y);
 
             return blockingGrid[projectedPosition.X, projectedPosition.Y];
         }
 
-        public void setBlockType(int x, int y, BlockType blockType)
+        public void setBlockType(int blockX, int blockY, BlockType blockType)
         {
-            var projectedPosition = GeometryUtils.getPositionWithinChunk(x, y, World.WorldChunkSize.X, World.WorldChunkSize.Y);
+            var projectedPosition = GeometryUtils.getPositionWithinChunk(blockX, blockY, World.WorldChunkBlockSize.X, World.WorldChunkBlockSize.Y);
 
             blockingGrid[projectedPosition.X, projectedPosition.Y] = blockType;
         }
