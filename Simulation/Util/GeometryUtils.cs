@@ -68,13 +68,13 @@ namespace Simulation.Util
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Point getChunkPosition(int realX, int realY, int chunkWidth, int chunkHeight)
         {
-            return new Point((int)Math.Floor((double)realX / chunkWidth), (int)Math.Floor((double)realY / chunkHeight));
+            return new Point(realX < 0 ? (realX / chunkWidth) - (realX % chunkWidth != 0 ? 1 : 0) : realX / chunkWidth, realY < 0 ? (realY / chunkHeight) - (realY % chunkHeight != 0 ? 1 : 0) : realY / chunkHeight);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Point getPositionWithinChunk(int realX, int realY, int chunkWidth, int chunkHeight)
         {
-            return new Point(realX - (int)Math.Floor((double)realX / chunkWidth) * chunkWidth, realY - (int)Math.Floor((double)realY / chunkHeight) * chunkHeight);
+            return new Point(realX - (realX < 0 ? (realX / chunkWidth) - (realX % chunkWidth != 0 ? 1 : 0) : realX / chunkWidth) * chunkWidth, realY - (realY < 0 ? (realY / chunkHeight) - (realY % chunkHeight != 0 ? 1 : 0) : realY / chunkHeight) * chunkHeight);
         }
     }
 }

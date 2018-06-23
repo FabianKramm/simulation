@@ -26,6 +26,34 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
+            //Console.WriteLine(GeometryUtils.getPositionWithinChunk(-1, -1, 32, 32));
+
+            /*var stopwatch = Stopwatch.StartNew();
+
+            stopwatch.Start();
+
+            for (int i = 0; i < 1000000; i++)
+            {
+                GeometryUtils.getChunkPositionOld(-32, -32, 32, 32);
+            }
+
+            Console.WriteLine(stopwatch.ElapsedMilliseconds);
+            stopwatch.Stop();
+
+            stopwatch.Reset();
+
+            stopwatch.Start();
+
+            for (int i = 0; i < 1000000; i++)
+            {
+                GeometryUtils.getChunkPosition(-32, -32, 32, 32);
+            }
+            
+            stopwatch.Stop();
+            Console.WriteLine(stopwatch.ElapsedMilliseconds);*/
+
+
+
             // WorldGenerator.ResetWorld();
 
             using (var game = new SimulationGame())
