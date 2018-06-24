@@ -1,10 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Base;
 using Simulation.Game.Base.Entity;
+using Simulation.Game.Hud;
 using Simulation.Game.World.Generator;
 using Simulation.Util;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Simulation.Game.World
 {
@@ -24,6 +28,9 @@ namespace Simulation.Game.World
 
         private Dictionary<string, DurableEntity> durableEntities;
 
+        private NamedLock chunkLocks = new NamedLock();
+        private ConcurrentQueue<WorldGridChunk> chunksLoaded = new ConcurrentQueue<WorldGridChunk>();
+
         private WalkableGrid walkableGrid = new WalkableGrid();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -32,8 +39,84 @@ namespace Simulation.Game.World
             return worldGrid.ContainsKey(chunkX + "," + chunkY);
         }
 
+        public void loadGridChunkAsync(int chunkX, int chunkY)
+        {
+            if(isWorldGridChunkLoaded(chunkX, chunkY) == false)
+            {
+                Task.Run(() =>
+                {
+                    string chunkKey = chunkX + "," + chunkY;
+
+                    bool couldLock = chunkLocks.TryEnter(chunkKey);
+
+                    if (!couldLock)
+                    {
+                        return;
+                    }
+
+                    try
+                    {
+                        foreach(WorldGridChunk worldGridChunk in chunksLoaded)
+                        {
+                            Point chunkPosition = GeometryUtils.getChunkPosition(worldGridChunk.realChunkBounds.X, worldGridChunk.realChunkBounds.Y, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
+
+                            if (chunkPosition.X == chunkX && chunkPosition.Y == chunkY)
+                            {
+                                return;
+                            }
+                        }
+
+                        chunksLoaded.Enqueue(WorldLoader.loadWorldGridChunk(chunkX, chunkY));
+                    }
+                    finally
+                    {
+                        chunkLocks.Exit(chunkKey);
+                    }
+                });
+            }
+        }
+
+        public void applyLoadedChunks()
+        {
+            ThreadingUtils.checkIfMainThread();
+
+            int amountChunksLoaded = 0;
+
+            while (chunksLoaded.IsEmpty == false)
+            {
+                WorldGridChunk worldGridChunk;
+
+                bool dequeued = chunksLoaded.TryDequeue(out worldGridChunk);
+
+                if(!dequeued)
+                {
+                    break;
+                }
+
+                int chunkX = (worldGridChunk.realChunkBounds.X / WorldChunkPixelSize.X);
+                int chunkY = (worldGridChunk.realChunkBounds.Y / WorldChunkPixelSize.Y);
+                string chunkKey = chunkX + "," + chunkY;
+
+                if (worldGrid.ContainsKey(chunkKey) == false)
+                {
+                    worldGrid[chunkKey] = worldGridChunk;
+
+                    onChunkLoaded(worldGridChunk, chunkX, chunkY);
+
+                    amountChunksLoaded++;
+                }
+            }
+
+            if(amountChunksLoaded > 0)
+            {
+                GameConsole.WriteLine(amountChunksLoaded + " chunks preloaded");
+            }
+        }
+
         public WorldGridChunk getWorldGridChunk(int chunkX, int chunkY)
         {
+            ThreadingUtils.checkIfMainThread();
+
             var chunkKey = chunkX + "," + chunkY;
 
             if(worldGrid.ContainsKey(chunkKey) == false)
@@ -51,7 +134,9 @@ namespace Simulation.Game.World
          */
         public void onChunkLoaded(WorldGridChunk chunk, int chunkX, int chunkY)
         {
-            foreach(DrawableObject drawableObject in chunk.ambientObjects)
+            ThreadingUtils.checkIfMainThread();
+
+            foreach (DrawableObject drawableObject in chunk.ambientObjects)
             {
                 if(drawableObject is HitableObject)
                 {
@@ -89,6 +174,8 @@ namespace Simulation.Game.World
 
         public bool canMove(Rectangle rect)
         {
+            ThreadingUtils.checkIfMainThread();
+
             // Check if blocks are of type blocking
             Point topLeft = GeometryUtils.getChunkPosition(rect.Left, rect.Top, BlockSize.X, BlockSize.Y);
             Point bottomRight = GeometryUtils.getChunkPosition(rect.Right, rect.Bottom, BlockSize.X, BlockSize.Y);
@@ -126,6 +213,8 @@ namespace Simulation.Game.World
 
         public void addHitableObject(HitableObject hitableObject)
         {
+            ThreadingUtils.checkIfMainThread();
+
             Point chunkTopLeft = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Left, hitableObject.unionBounds.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
             Point chunkBottomRight = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Right, hitableObject.unionBounds.Bottom, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
 
@@ -141,6 +230,8 @@ namespace Simulation.Game.World
 
         public void removeHitableObject(HitableObject hitableObject)
         {
+            ThreadingUtils.checkIfMainThread();
+
             Point chunkTopLeft = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Left, hitableObject.unionBounds.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
             Point chunkBottomRight = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Right, hitableObject.unionBounds.Bottom, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
 
@@ -152,6 +243,11 @@ namespace Simulation.Game.World
                         getWorldGridChunk(chunkX, chunkY).removeHitableObject(hitableObject);
                     }
                 }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            applyLoadedChunks();
         }
     }
 }

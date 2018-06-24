@@ -24,8 +24,6 @@ namespace Simulation.Game.World.Generator
         {
             lock(generatorLock)
             {
-                // TODO: Check if chunk already exists
-
                 generateWorld(blockX, blockY);
             }
         }
@@ -38,12 +36,19 @@ namespace Simulation.Game.World.Generator
         private void generateWorld(int blockX, int blockY)
         {
             Point chunkPosition = GeometryUtils.getChunkPosition(blockX, blockY, generatedChunkBlockSize.X, generatedChunkBlockSize.Y);
+            
+            var newX = chunkPosition.X * generatedChunkBlockSize.X;
+            var newY = chunkPosition.Y * generatedChunkBlockSize.Y;
+
+            Point worldGridChunkPosition = GeometryUtils.getChunkPosition(newX, newY, World.WorldChunkBlockSize.X, World.WorldChunkBlockSize.Y);
+
+            if(WorldLoader.doesWorldGridChunkExist(worldGridChunkPosition.X, worldGridChunkPosition.Y))
+            {
+                return;
+            }
 
             Dictionary<(int, int), WorldGridChunk> worldGrid = new Dictionary<(int, int), WorldGridChunk>();
             Dictionary<(int, int), WalkableGridChunk> walkableGrid = new Dictionary<(int, int), WalkableGridChunk>();
-
-            var newX = chunkPosition.X * generatedChunkBlockSize.X;
-            var newY = chunkPosition.Y * generatedChunkBlockSize.Y;
 
             GameConsole.WriteLine("Generate new Chunk at " + chunkPosition.X + "," + chunkPosition.Y);
 
@@ -88,7 +93,6 @@ namespace Simulation.Game.World.Generator
                         StaticBlockingObject tree = StaticObjectFactory.createTree(new Vector2(i * World.BlockSize.X, j * World.BlockSize.Y));
 
                         worldGrid[(worldGridChunk.X, worldGridChunk.Y)].addAmbientObject(tree);
-                        //block.addAmbientObject(tree);
                     }
                 }
 

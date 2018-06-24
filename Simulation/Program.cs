@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Simulation
@@ -26,6 +27,11 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
+            // WorldGenerator.ResetWorld();
+
+            using (var game = new SimulationGame())
+                game.Run();
+
             //Console.WriteLine(GeometryUtils.getPositionWithinChunk(-1, -1, 32, 32));
 
             /*var stopwatch = Stopwatch.StartNew();
@@ -56,8 +62,7 @@ namespace Simulation
 
             // WorldGenerator.ResetWorld();
 
-            using (var game = new SimulationGame())
-                game.Run();
+
 
             //UInt32[] loadedChunk = new UInt32[WalkableGrid.WalkableGridChunkCount];
 
@@ -80,17 +85,30 @@ namespace Simulation
             stopwatch.Stop();
             Console.WriteLine(stopwatch.ElapsedMilliseconds);
             */
-            /*List<Task> taskList = new List<Task>();
+
+            /*
+            DictionaryLock dicLock = new DictionaryLock();
+
+            List<Task> taskList = new List<Task>();
+            var stopwatch = Stopwatch.StartNew();
+
+            stopwatch.Start();
 
             for (int i = 0; i < 10; i++)
             {
                 taskList.Add(Task.Run(() => {
-                    Console.WriteLine("Start: " + i);
-                    Console.WriteLine(i + ": " + walkableGrid.IsPositionWalkable(i, 1));
+                    dicLock.executeGuardedSync("test", () =>
+                    {
+                        Thread.Sleep(100);
+                        Console.WriteLine("Start: " + i);
+                    });
                 }));
             }
+        
+            Task.WaitAll(taskList.ToArray());
+            stopwatch.Stop();
+            Console.WriteLine(stopwatch.ElapsedMilliseconds);*/
 
-            Task.WaitAll(taskList.ToArray());*/
 
             //stopwatch.Stop();
 

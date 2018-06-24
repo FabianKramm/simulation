@@ -218,6 +218,8 @@ namespace Simulation
             }
 
             hud.Update(gameTime);
+            world.Update(gameTime);
+
             base.Update(gameTime);
         }
 

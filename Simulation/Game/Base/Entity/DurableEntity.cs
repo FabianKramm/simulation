@@ -31,7 +31,7 @@ namespace Simulation.Game.Base.Entity
             for (int i = -preloadedSurroundingWorldGridChunkRadius; i <= preloadedWorldGridChunkBounds.Right; i++)
                 for (int j = -preloadedSurroundingWorldGridChunkRadius; j <= preloadedWorldGridChunkBounds.Bottom; j++)
                 {
-                    SimulationGame.world.getWorldGridChunk(i + chunkPosition.X, j + chunkPosition.Y);
+                    SimulationGame.world.loadGridChunkAsync(i + chunkPosition.X, j + chunkPosition.Y);
                 }
         }
 

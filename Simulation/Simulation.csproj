@@ -79,6 +79,8 @@
     <Compile Include="Spritesheet\Extensions\SpriteBatchExtensions.cs" />
     <Compile Include="Spritesheet\Frame.cs" />
     <Compile Include="Spritesheet\Spritesheet.cs" />
+    <Compile Include="Util\NamedLock.cs" />
+    <Compile Include="Util\ThreadingUtils.cs" />
     <Compile Include="Util\CollisionUtils.cs" />
     <Compile Include="Util\GeometryUtils.cs" />
     <Compile Include="Util\IPrimitive.cs" />
