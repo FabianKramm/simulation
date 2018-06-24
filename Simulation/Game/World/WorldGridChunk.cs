@@ -22,13 +22,20 @@ namespace Simulation.Game.World
 
         public Rectangle realChunkBounds;
 
+        [JsonIgnore]
         public List<HitableObject> interactiveObjects;
+
         public List<DrawableObject> ambientObjects;
 
         public WorldGridChunk(int realX, int realY)
         {
             blockingGrid = new BlockType[World.WorldChunkBlockSize.X, World.WorldChunkBlockSize.Y];
-            realChunkBounds = new Rectangle(realX, realY, realX + World.WorldChunkPixelSize.X, realY + World.WorldChunkPixelSize.Y);
+            realChunkBounds = new Rectangle(realX, realY, World.WorldChunkPixelSize.X, World.WorldChunkPixelSize.Y);
+        }
+
+        public Point getChunkPosition()
+        {
+            return GeometryUtils.getChunkPosition(realChunkBounds.X, realChunkBounds.Y, World.WorldChunkPixelSize.X, World.WorldChunkPixelSize.Y);
         }
 
         public BlockType getBlockType(int blockX, int blockY)

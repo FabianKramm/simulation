@@ -4,10 +4,10 @@ using Simulation.Game.Base.Entity;
 using Simulation.Game.Hud;
 using Simulation.Game.World.Generator;
 using Simulation.Util;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Simulation.Game.World
@@ -26,12 +26,15 @@ namespace Simulation.Game.World
         private Dictionary<string, HitableObject> interactiveObjects;
         private Dictionary<string, DrawableObject> effects;
 
-        private Dictionary<string, DurableEntity> durableEntities;
+        private Dictionary<string, DurableEntity> durableEntities = new Dictionary<string, DurableEntity>();
 
         private NamedLock chunkLocks = new NamedLock();
         private ConcurrentQueue<WorldGridChunk> chunksLoaded = new ConcurrentQueue<WorldGridChunk>();
 
         private WalkableGrid walkableGrid = new WalkableGrid();
+
+        private TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
+        private static TimeSpan garbageCollectInterval = TimeSpan.FromSeconds(30);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool isWorldGridChunkLoaded(int chunkX, int chunkY)
@@ -245,9 +248,59 @@ namespace Simulation.Game.World
                 }
         }
 
+        public void addDurableEntity(DurableEntity durableEntity)
+        {
+            ThreadingUtils.checkIfMainThread();
+
+            if (durableEntities.ContainsKey(durableEntity.ID) == false)
+                durableEntities[durableEntity.ID] = durableEntity;
+        }
+
+        private void garbageCollectChunks()
+        {
+            ThreadingUtils.checkIfMainThread();
+            List<string> deleteList = new List<string>();
+
+            foreach (var chunk in worldGrid)
+            {
+                var found = false;
+
+                foreach (var durableEntity in durableEntities)
+                {
+                    if (chunk.Value.realChunkBounds.Intersects(durableEntity.Value.preloadedWorldGridChunkPixelBounds))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if(!found)
+                {
+                    deleteList.Add(chunk.Key);
+                }
+            }
+
+            foreach(var key in deleteList)
+            {
+                worldGrid.Remove(key);
+
+                // Save async
+            }
+
+            GameConsole.WriteLine("Garbage Collector unloaded " + deleteList.Count + " chunks");
+        }
+
         public void Update(GameTime gameTime)
         {
             applyLoadedChunks();
+
+            timeSinceLastGarbageCollect += gameTime.ElapsedGameTime;
+
+            if(timeSinceLastGarbageCollect > garbageCollectInterval)
+            {
+                timeSinceLastGarbageCollect = TimeSpan.Zero;
+                garbageCollectChunks();
+            }
         }
     }
 }

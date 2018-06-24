@@ -127,6 +127,8 @@ namespace Simulation
 
             player = new Player();
 
+            world.addDurableEntity(player);
+
             base.Initialize();
         }
 
