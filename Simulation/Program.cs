@@ -28,23 +28,10 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
-            BaseGrid searchGrid = new StaticGrid(64, 32);
+            WorldGenerator.ResetWorld();
 
-            searchGrid.SetWalkableAt(10, 20, true);
-
-            GridPos startPos = new GridPos(10, 10);
-            GridPos endPos = new GridPos(20, 11);
-            JumpPointParam jpParam = new JumpPointParam(searchGrid, startPos, endPos, EndNodeUnWalkableTreatment.DISALLOW, DiagonalMovement.OnlyWhenNoObstacles);
-
-            List<GridPos> resultPathList = JumpPointFinder.FindPath(jpParam);
-
-            foreach (GridPos pos in resultPathList)
-                Console.WriteLine(pos.x + "," + pos.y);
-
-            //WorldGenerator.ResetWorld();
-
-            //using (var game = new SimulationGame())
-            //    game.Run();
+            using (var game = new SimulationGame())
+                game.Run();
 
             //Console.WriteLine(GeometryUtils.getPositionWithinChunk(-1, -1, 32, 32));
 

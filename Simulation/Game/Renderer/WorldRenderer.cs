@@ -38,6 +38,10 @@ namespace Simulation.Game.Renderer
                     if (worldGridChunk.ambientObjects != null)
                         foreach (DrawableObject ambientObject in worldGridChunk.ambientObjects)
                             ambientObject.Draw(spriteBatch);
+
+                    if (worldGridChunk.containedObjects != null)
+                        foreach (DrawableObject containedObject in worldGridChunk.containedObjects)
+                            containedObject.Draw(spriteBatch);
                 }
         }
     }

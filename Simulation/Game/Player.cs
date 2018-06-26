@@ -136,15 +136,13 @@ namespace Simulation.Game
 
             if((position.X != newPosition.X || position.Y != newPosition.Y) && canMove(newPosition))
             {
-                SimulationGame.world.removeHitableObject(this);
+                SimulationGame.world.removeInteractiveObject(this);
 
                 updatePosition(newPosition);
-                
+
                 SimulationGame.camera.Position = new Vector2(position.X, position.Y);
-                SimulationGame.world.addHitableObject(this);
+                SimulationGame.world.addInteractiveObject(this);
             }
-
-
 
             fireballSkill.Update(gameTime);
             curAnimation.Update(gameTime);

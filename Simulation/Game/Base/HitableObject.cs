@@ -20,7 +20,7 @@ namespace Simulation.Game.Base
 
         public BlockingType blockingType
         {
-            get; private set;
+            get; protected set;
         }
 
         public Rectangle hitBoxBounds;

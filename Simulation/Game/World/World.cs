@@ -26,11 +26,12 @@ namespace Simulation.Game.World
         private Dictionary<string, HitableObject> interactiveObjects;
         private Dictionary<string, DrawableObject> effects;
 
-        private Dictionary<string, DurableEntity> durableEntities = new Dictionary<string, DurableEntity>();
+        public Dictionary<string, DurableEntity> durableEntities = new Dictionary<string, DurableEntity>();
 
         private NamedLock chunkLocks = new NamedLock();
 
         private ConcurrentQueue<WorldGridChunk> worldGridChunksLoaded = new ConcurrentQueue<WorldGridChunk>();
+
         public WalkableGrid walkableGrid { get; private set; } = new WalkableGrid();
 
         private TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
@@ -40,12 +41,6 @@ namespace Simulation.Game.World
         public bool isWorldGridChunkLoaded(int chunkX, int chunkY)
         {
             return worldGrid.ContainsKey(chunkX + "," + chunkY);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void loadWalkableGridChunkAsync(int chunkX, int chunkY)
-        {
-            walkableGrid.loadGridChunkAsync(chunkX, chunkY);
         }
 
         public void loadWorldGridChunkAsync(int chunkX, int chunkY)
@@ -75,6 +70,9 @@ namespace Simulation.Game.World
                             }
                         }
 
+                        var walkableGridChunkPosition = GeometryUtils.getChunkPosition(chunkX * WorldChunkPixelSize.X, chunkY * WorldChunkPixelSize.Y, WalkableGrid.WalkableGridPixelChunkSize.X, WalkableGrid.WalkableGridPixelChunkSize.Y);
+
+                        walkableGrid.loadGridChunkGuarded(walkableGridChunkPosition.X, walkableGridChunkPosition.Y);
                         worldGridChunksLoaded.Enqueue(WorldLoader.loadWorldGridChunk(chunkX, chunkY));
                     }
                     finally
@@ -145,11 +143,13 @@ namespace Simulation.Game.World
         {
             ThreadingUtils.assertMainThread();
 
-            foreach (DrawableObject drawableObject in chunk.ambientObjects)
+            foreach (DrawableObject drawableObject in chunk.containedObjects)
             {
                 if(drawableObject is HitableObject)
                 {
                     chunk.addInteractiveObject((HitableObject)drawableObject);
+
+                    walkableGrid.addInteractiveObject((HitableObject)drawableObject);
                 }
             }
 
@@ -175,6 +175,8 @@ namespace Simulation.Game.World
                             if (hitableObject.unionBounds.Intersects(chunk.realChunkBounds))
                             {
                                 chunk.addInteractiveObject(hitableObject);
+
+                                walkableGrid.addInteractiveObject(hitableObject);
                             }
                         }
                     }
@@ -220,7 +222,9 @@ namespace Simulation.Game.World
             return true;
         }
 
-        public void addHitableObject(HitableObject hitableObject)
+
+
+        public void addInteractiveObject(HitableObject hitableObject)
         {
             ThreadingUtils.assertMainThread();
 
@@ -235,9 +239,11 @@ namespace Simulation.Game.World
                         getWorldGridChunk(chunkX, chunkY).addInteractiveObject(hitableObject);
                     }
                 }
+
+            walkableGrid.addInteractiveObject(hitableObject);
         }
 
-        public void removeHitableObject(HitableObject hitableObject)
+        public void removeInteractiveObject(HitableObject hitableObject)
         {
             ThreadingUtils.assertMainThread();
 
@@ -252,6 +258,8 @@ namespace Simulation.Game.World
                         getWorldGridChunk(chunkX, chunkY).removeInteractiveObject(hitableObject);
                     }
                 }
+
+            walkableGrid.removeInteractiveObject(hitableObject);
         }
 
         public void addDurableEntity(DurableEntity durableEntity)
@@ -262,7 +270,7 @@ namespace Simulation.Game.World
                 durableEntities[durableEntity.ID] = durableEntity;
         }
 
-        private void garbageCollectChunks()
+        private void garbageCollectWorldGridChunks()
         {
             ThreadingUtils.assertMainThread();
             List<string> deleteList = new List<string>();
@@ -305,8 +313,10 @@ namespace Simulation.Game.World
             if(timeSinceLastGarbageCollect > garbageCollectInterval)
             {
                 timeSinceLastGarbageCollect = TimeSpan.Zero;
-                garbageCollectChunks();
+                garbageCollectWorldGridChunks();
             }
+
+            walkableGrid.Update(gameTime);
         }
     }
 }

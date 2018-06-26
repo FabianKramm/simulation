@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using System;
 
 namespace Simulation.Game.World
@@ -6,20 +7,28 @@ namespace Simulation.Game.World
     public class WalkableGridChunk
     {
         public UInt32[] chunkData;
-        private WalkableGridChunk() {}
-
-        public static WalkableGridChunk createEmpty()
+        public Rectangle realChunkBounds
         {
-            WalkableGridChunk walkableGridChunk = new WalkableGridChunk();
+            get; private set;
+        }
+
+        private WalkableGridChunk(int chunkX, int chunkY)
+        {
+            realChunkBounds = new Rectangle(chunkX * WalkableGrid.WalkableGridPixelChunkSize.X, chunkY * WalkableGrid.WalkableGridPixelChunkSize.Y, WalkableGrid.WalkableGridPixelChunkSize.X, WalkableGrid.WalkableGridPixelChunkSize.Y);
+        }
+
+        public static WalkableGridChunk createEmpty(int chunkX, int chunkY)
+        {
+            WalkableGridChunk walkableGridChunk = new WalkableGridChunk(chunkX, chunkY);
 
             walkableGridChunk.chunkData = new UInt32[WalkableGrid.WalkableGridArrayChunkCount];
 
             return walkableGridChunk;
         }
 
-        public static WalkableGridChunk createChunkFrom(ref byte[] fromData)
+        public static WalkableGridChunk createChunkFrom(int chunkX, int chunkY, ref byte[] fromData)
         {
-            WalkableGridChunk walkableGridChunk = new WalkableGridChunk();
+            WalkableGridChunk walkableGridChunk = new WalkableGridChunk(chunkX, chunkY);
 
             walkableGridChunk.chunkData = new UInt32[WalkableGrid.WalkableGridArrayChunkCount];
 

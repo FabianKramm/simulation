@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
-using Simulation.Game.Hud;
+using Simulation.Game.World;
 using Simulation.Util;
 
 namespace Simulation.Game.Base.Entity
@@ -24,6 +24,7 @@ namespace Simulation.Game.Base.Entity
             base(position, relativeHitBoxBounds)
         {
             this.preloadedSurroundingWorldGridChunkRadius = preloadedSurroundingWorldGridChunkRadius;
+            this.blockingType = BlockingType.BLOCKING;
 
             preloadGridChunks();
         }
@@ -36,12 +37,7 @@ namespace Simulation.Game.Base.Entity
 
             for (int i = preloadedWorldGridChunkBounds.Left; i < preloadedWorldGridChunkBounds.Right; i++)
                 for (int j = preloadedWorldGridChunkBounds.Top; j < preloadedWorldGridChunkBounds.Bottom; j++)
-                {
-                    var walkableGridChunkPosition = GeometryUtils.getChunkPosition(i * World.World.WorldChunkPixelSize.X, j * World.World.WorldChunkPixelSize.Y, World.WalkableGrid.WalkableGridPixelChunkSize.X, World.WalkableGrid.WalkableGridPixelChunkSize.Y);
-
-                    SimulationGame.world.loadWalkableGridChunkAsync(walkableGridChunkPosition.X, walkableGridChunkPosition.Y);
                     SimulationGame.world.loadWorldGridChunkAsync(i, j);
-                }
         }
 
         public override void updatePosition(Vector2 newPosition)

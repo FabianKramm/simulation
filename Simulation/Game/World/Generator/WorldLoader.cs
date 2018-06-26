@@ -68,7 +68,7 @@ namespace Simulation.Game.World.Generator
             {
                 var content = File.ReadAllBytes(chunkPath);
 
-                return WalkableGridChunk.createChunkFrom(ref content);
+                return WalkableGridChunk.createChunkFrom(chunkX, chunkY, ref content);
             }
             finally
             {
@@ -78,7 +78,6 @@ namespace Simulation.Game.World.Generator
 
         public static WorldGridChunk loadWorldGridChunk(int chunkX, int chunkY)
         {
-            
             var chunkPath = Path.Combine(Util.Util.GetWorldSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 
             if (!File.Exists(chunkPath))

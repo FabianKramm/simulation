@@ -66,7 +66,7 @@ namespace Simulation.Game.World.Generator
 
                     if (walkableGrid.ContainsKey((walkableGridChunk.X, walkableGridChunk.Y)) == false)
                     {
-                        walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)] = WalkableGridChunk.createEmpty();
+                        walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)] = WalkableGridChunk.createEmpty(walkableGridChunk.X, walkableGridChunk.Y);
                     }
                     
                     int Value = random.Next(0, 100);
@@ -75,7 +75,7 @@ namespace Simulation.Game.World.Generator
                     {
                         worldGrid[(worldGridChunk.X, worldGridChunk.Y)].setBlockType(i, j, BlockType.GRASS_WATERHOLE);
 
-                        WalkableGrid.setBlockWalkableInChunk(walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)], i, j, true);
+                        WalkableGrid.setBlockNotWalkableInChunk(walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)], i, j, true);
                     }
                     else
                     {
