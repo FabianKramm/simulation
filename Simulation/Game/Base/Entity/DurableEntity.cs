@@ -24,8 +24,8 @@ namespace Simulation.Game.Base.Entity
             base(position, relativeHitBoxBounds)
         {
             this.preloadedSurroundingWorldGridChunkRadius = preloadedSurroundingWorldGridChunkRadius;
-            this.blockingType = BlockingType.BLOCKING;
 
+            setBlockingType(BlockingType.BLOCKING);
             preloadGridChunks();
         }
 

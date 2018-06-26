@@ -116,7 +116,7 @@ namespace Simulation.Game.World
 
             if(amountChunksLoaded > 0)
             {
-                GameConsole.WriteLine(amountChunksLoaded + " chunks preloaded");
+                GameConsole.WriteLine("WGChunkLoading", amountChunksLoaded + " chunks preloaded");
             }
         }
 
@@ -183,7 +183,7 @@ namespace Simulation.Game.World
                 }
         }
 
-        public bool canMove(Rectangle rect)
+        public bool canMove(HitableObject origin, Rectangle rect)
         {
             ThreadingUtils.assertMainThread();
 
@@ -215,7 +215,7 @@ namespace Simulation.Game.World
 
                     if (worldGridChunk.interactiveObjects != null) 
                         foreach (HitableObject hitableObject in worldGridChunk.interactiveObjects)
-                            if (hitableObject.blockingType == BlockingType.BLOCKING && hitableObject.blockingBounds.Intersects(rect))
+                            if (hitableObject.blockingType == BlockingType.BLOCKING && hitableObject != origin && hitableObject.blockingBounds.Intersects(rect))
                                 return false;
                 }
 
@@ -301,7 +301,7 @@ namespace Simulation.Game.World
                 // Save async
             }
 
-            GameConsole.WriteLine("Garbage Collector unloaded " + deleteList.Count + " chunks");
+            GameConsole.WriteLine("WGChunkLoading", "Garbage Collector unloaded " + deleteList.Count + " chunks");
         }
 
         public void Update(GameTime gameTime)

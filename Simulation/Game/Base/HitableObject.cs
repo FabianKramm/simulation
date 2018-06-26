@@ -20,7 +20,7 @@ namespace Simulation.Game.Base
 
         public BlockingType blockingType
         {
-            get; protected set;
+            get; private set;
         }
 
         public Rectangle hitBoxBounds;
@@ -30,9 +30,15 @@ namespace Simulation.Game.Base
 
         public HitableObject(Vector2 position, Rectangle relativeHitBoxBounds, BlockingType blockingType = BlockingType.NOT_BLOCKING, Rectangle? relativeBlockingBounds = null) : base(position)
         {
-            this.blockingType = blockingType;
             this.relativeHitBoxBounds = relativeHitBoxBounds;
-            useSameBounds = false;
+
+            setBlockingType(blockingType);
+            updateHitableBounds(position);
+        }
+
+        public void setBlockingType(BlockingType blockingType, Rectangle? relativeBlockingBounds = null)
+        {
+            this.blockingType = blockingType;
 
             if (blockingType == BlockingType.BLOCKING)
             {
@@ -45,8 +51,10 @@ namespace Simulation.Game.Base
                     useSameBounds = true;
                 }
             }
-
-            updateHitableBounds(position);
+            else
+            {
+                useSameBounds = false;
+            }
         }
 
         private void updateHitableBounds(Vector2 newPosition)
@@ -61,11 +69,11 @@ namespace Simulation.Game.Base
         {
             if(blockingType == BlockingType.NOT_BLOCKING)
             {
-                return SimulationGame.world.canMove(new Rectangle((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height));
+                return SimulationGame.world.canMove(this, new Rectangle((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height));
             }
             else
             {
-                return SimulationGame.world.canMove(useSameBounds ?
+                return SimulationGame.world.canMove(this, useSameBounds ?
                     new Rectangle((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height) :
                     new Rectangle((int)(relativeBlockingBounds.X + newPosition.X), (int)(relativeBlockingBounds.Y + newPosition.Y), relativeBlockingBounds.Width, relativeBlockingBounds.Height));
             }

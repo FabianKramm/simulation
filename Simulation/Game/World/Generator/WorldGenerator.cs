@@ -50,7 +50,7 @@ namespace Simulation.Game.World.Generator
             Dictionary<(int, int), WorldGridChunk> worldGrid = new Dictionary<(int, int), WorldGridChunk>();
             Dictionary<(int, int), WalkableGridChunk> walkableGrid = new Dictionary<(int, int), WalkableGridChunk>();
 
-            GameConsole.WriteLine("Generate new Chunk at " + chunkPosition.X + "," + chunkPosition.Y);
+            GameConsole.WriteLine("WorldGeneration", "Generate new Chunk at " + chunkPosition.X + "," + chunkPosition.Y);
 
             // Loop over Blocks
             for (int i = newX; i < (newX + generatedChunkBlockSize.X); i++)
