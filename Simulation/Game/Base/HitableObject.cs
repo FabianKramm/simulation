@@ -92,12 +92,11 @@ namespace Simulation.Game.Base
             {
                 if(blockingType == BlockingType.BLOCKING)
                 {
-                    SimulationGame.primitiveDrawer.Rectangle(hitBoxBounds, Color.Black);
-                    SimulationGame.primitiveDrawer.Rectangle(blockingBounds, Color.Red);
+                    SimulationGame.primitiveDrawer.Rectangle(unionBounds, Color.Red);
                 }
                 else
                 {
-                    SimulationGame.primitiveDrawer.Rectangle(hitBoxBounds, Color.Red);
+                    SimulationGame.primitiveDrawer.Rectangle(hitBoxBounds, Color.White);
                 }
             }
         }

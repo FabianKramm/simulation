@@ -203,7 +203,6 @@ namespace Simulation.Game.World
                         return false;
                 }
 
-
             // Check collision with interactive objects
             Point chunkTopLeft = GeometryUtils.getChunkPosition(rect.Left, rect.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
             Point chunkBottomRight = GeometryUtils.getChunkPosition(rect.Right, rect.Bottom, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
@@ -301,7 +300,7 @@ namespace Simulation.Game.World
                 // Save async
             }
 
-            GameConsole.WriteLine("WGChunkLoading", "Garbage Collector unloaded " + deleteList.Count + " chunks");
+            GameConsole.WriteLine("ChunkLoading", "Garbage Collector unloaded " + deleteList.Count + " world grid chunks");
         }
 
         public void Update(GameTime gameTime)

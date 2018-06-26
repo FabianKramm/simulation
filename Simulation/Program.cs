@@ -28,7 +28,7 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
-            WorldGenerator.ResetWorld();
+            // WorldGenerator.ResetWorld();
 
             using (var game = new SimulationGame())
                 game.Run();

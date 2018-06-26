@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Base;
+using Simulation.Game.Hud;
 using Simulation.Game.World.Generator;
 using Simulation.Util;
 using System;
@@ -123,9 +124,9 @@ namespace Simulation.Game.World
                 Point blockBottomRight = GeometryUtils.getChunkPosition(hitableObject.blockingBounds.Right, hitableObject.blockingBounds.Bottom, World.BlockSize.X, World.BlockSize.Y);
 
                 for (int blockX = blockTopLeft.X; blockX <= blockBottomRight.X; blockX++)
-                    for (int blockY = blockBottomRight.Y; blockY <= blockBottomRight.Y; blockY++)
+                    for (int blockY = blockTopLeft.Y; blockY <= blockBottomRight.Y; blockY++)
                     {
-                        Point walkableGridChunkPos = GeometryUtils.getChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGrid.WalkableGridBlockChunkSize.Y);
+                        Point walkableGridChunkPos = GeometryUtils.getChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
 
                         if (IsChunkLoaded(walkableGridChunkPos.X, walkableGridChunkPos.Y))
                         {
@@ -143,7 +144,7 @@ namespace Simulation.Game.World
                 Point blockBottomRight = GeometryUtils.getChunkPosition(hitableObject.blockingBounds.Right, hitableObject.blockingBounds.Bottom, World.BlockSize.X, World.BlockSize.Y);
 
                 for (int blockX = blockTopLeft.X; blockX <= blockBottomRight.X; blockX++)
-                    for (int blockY = blockBottomRight.Y; blockY <= blockBottomRight.Y; blockY++)
+                    for (int blockY = blockTopLeft.Y; blockY <= blockBottomRight.Y; blockY++)
                     {
                         Point walkableGridChunkPos = GeometryUtils.getChunkPosition(blockX, blockY, WalkableGrid.WalkableGridBlockChunkSize.X, WalkableGrid.WalkableGridBlockChunkSize.Y);
 
@@ -177,6 +178,7 @@ namespace Simulation.Game.World
         private void garbageCollectWalkableGrid()
         {
             ThreadingUtils.assertMainThread();
+            int chunksUnloaded = 0;
 
             foreach(var walkableGridChunkItem in walkableGrid)
             {
@@ -201,12 +203,20 @@ namespace Simulation.Game.World
                         WalkableGridChunk removedItem;
 
                         walkableGrid.TryRemove(key, out removedItem);
+
+                        // Save async
+                        chunksUnloaded++;
                     }
                 }
                 finally
                 {
                     chunkLocks.Exit(key);
                 }
+            }
+
+            if(chunksUnloaded > 0)
+            {
+                GameConsole.WriteLine("ChunkLoading", "Garbage Collector unloaded " + chunksUnloaded + " walkable grid chunks");
             }
         }
 

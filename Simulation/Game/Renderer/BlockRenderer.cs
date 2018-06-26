@@ -18,8 +18,15 @@ namespace Simulation.Game.Renderer
 
         public static void Draw(SpriteBatch spriteBatch, int realX, int realY, BlockType blockType)
         {
+            Color color = Color.White;
+
+            if(SimulationGame.isDebug && !SimulationGame.world.walkableGrid.IsPositionWalkable(realX, realY))
+            {
+                color = Color.Red;
+            }
+
             spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(Blocks[blockType].Item1), 
-                new Vector2(realX, realY), Blocks[blockType].Item2, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+                new Vector2(realX, realY), Blocks[blockType].Item2, color, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
         }
     }
 }
