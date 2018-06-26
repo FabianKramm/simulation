@@ -71,6 +71,16 @@
     <Compile Include="Game\World\Generator\WorldGenerator.cs" />
     <Compile Include="Game\World\WalkableGrid.cs" />
     <Compile Include="Game\World\World.cs" />
+    <Compile Include="PathFinding\DiagonalMovement.cs" />
+    <Compile Include="PathFinding\DynamicGrid.cs" />
+    <Compile Include="PathFinding\GridPos.cs" />
+    <Compile Include="PathFinding\BaseGrid.cs" />
+    <Compile Include="PathFinding\Heuristic.cs" />
+    <Compile Include="PathFinding\JumpPointFinder.cs" />
+    <Compile Include="PathFinding\Node.cs" />
+    <Compile Include="PathFinding\ParamBase.cs" />
+    <Compile Include="PathFinding\PathFinding.cs" />
+    <Compile Include="PathFinding\Util.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Spritesheet\Animation.cs" />
@@ -88,6 +98,9 @@
     <Compile Include="Util\Util.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="C5, Version=2.5.0.0, Culture=neutral, PublicKeyToken=282361b99ded7e8e, processorArchitecture=MSIL">
+      <HintPath>..\packages\C5.2.5.3\lib\net45\C5.dll</HintPath>
+    </Reference>
     <Reference Include="Comora, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Comora.0.5.0\lib\portable-net45+win8+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Comora.dll</HintPath>
     </Reference>

@@ -144,6 +144,8 @@ namespace Simulation.Game
                 SimulationGame.world.addHitableObject(this);
             }
 
+
+
             fireballSkill.Update(gameTime);
             curAnimation.Update(gameTime);
         }

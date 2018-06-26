@@ -29,9 +29,9 @@ namespace Simulation.Game.World
         private Dictionary<string, DurableEntity> durableEntities = new Dictionary<string, DurableEntity>();
 
         private NamedLock chunkLocks = new NamedLock();
-        private ConcurrentQueue<WorldGridChunk> chunksLoaded = new ConcurrentQueue<WorldGridChunk>();
 
-        private WalkableGrid walkableGrid = new WalkableGrid();
+        private ConcurrentQueue<WorldGridChunk> worldGridChunksLoaded = new ConcurrentQueue<WorldGridChunk>();
+        public WalkableGrid walkableGrid { get; private set; } = new WalkableGrid();
 
         private TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
         private static TimeSpan garbageCollectInterval = TimeSpan.FromSeconds(30);
@@ -42,7 +42,13 @@ namespace Simulation.Game.World
             return worldGrid.ContainsKey(chunkX + "," + chunkY);
         }
 
-        public void loadGridChunkAsync(int chunkX, int chunkY)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void loadWalkableGridChunkAsync(int chunkX, int chunkY)
+        {
+            walkableGrid.loadGridChunkAsync(chunkX, chunkY);
+        }
+
+        public void loadWorldGridChunkAsync(int chunkX, int chunkY)
         {
             if(isWorldGridChunkLoaded(chunkX, chunkY) == false)
             {
@@ -59,7 +65,7 @@ namespace Simulation.Game.World
 
                     try
                     {
-                        foreach(WorldGridChunk worldGridChunk in chunksLoaded)
+                        foreach(WorldGridChunk worldGridChunk in worldGridChunksLoaded)
                         {
                             Point chunkPosition = GeometryUtils.getChunkPosition(worldGridChunk.realChunkBounds.X, worldGridChunk.realChunkBounds.Y, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
 
@@ -69,7 +75,7 @@ namespace Simulation.Game.World
                             }
                         }
 
-                        chunksLoaded.Enqueue(WorldLoader.loadWorldGridChunk(chunkX, chunkY));
+                        worldGridChunksLoaded.Enqueue(WorldLoader.loadWorldGridChunk(chunkX, chunkY));
                     }
                     finally
                     {
@@ -81,15 +87,15 @@ namespace Simulation.Game.World
 
         public void applyLoadedChunks()
         {
-            ThreadingUtils.checkIfMainThread();
+            ThreadingUtils.assertMainThread();
 
             int amountChunksLoaded = 0;
 
-            while (chunksLoaded.IsEmpty == false)
+            while (worldGridChunksLoaded.IsEmpty == false)
             {
                 WorldGridChunk worldGridChunk;
 
-                bool dequeued = chunksLoaded.TryDequeue(out worldGridChunk);
+                bool dequeued = worldGridChunksLoaded.TryDequeue(out worldGridChunk);
 
                 if(!dequeued)
                 {
@@ -118,7 +124,7 @@ namespace Simulation.Game.World
 
         public WorldGridChunk getWorldGridChunk(int chunkX, int chunkY)
         {
-            ThreadingUtils.checkIfMainThread();
+            ThreadingUtils.assertMainThread();
 
             var chunkKey = chunkX + "," + chunkY;
 
@@ -137,13 +143,13 @@ namespace Simulation.Game.World
          */
         public void onChunkLoaded(WorldGridChunk chunk, int chunkX, int chunkY)
         {
-            ThreadingUtils.checkIfMainThread();
+            ThreadingUtils.assertMainThread();
 
             foreach (DrawableObject drawableObject in chunk.ambientObjects)
             {
                 if(drawableObject is HitableObject)
                 {
-                    chunk.addHitableObject((HitableObject)drawableObject);
+                    chunk.addInteractiveObject((HitableObject)drawableObject);
                 }
             }
 
@@ -160,7 +166,7 @@ namespace Simulation.Game.World
                         {
                             if (hitableObject.unionBounds.Intersects(worldGrid[neighborKey].realChunkBounds))
                             {
-                                worldGrid[neighborKey].addHitableObject(hitableObject);
+                                worldGrid[neighborKey].addInteractiveObject(hitableObject);
                             }
                         }
 
@@ -168,7 +174,7 @@ namespace Simulation.Game.World
                         {
                             if (hitableObject.unionBounds.Intersects(chunk.realChunkBounds))
                             {
-                                chunk.addHitableObject(hitableObject);
+                                chunk.addInteractiveObject(hitableObject);
                             }
                         }
                     }
@@ -177,7 +183,7 @@ namespace Simulation.Game.World
 
         public bool canMove(Rectangle rect)
         {
-            ThreadingUtils.checkIfMainThread();
+            ThreadingUtils.assertMainThread();
 
             // Check if blocks are of type blocking
             Point topLeft = GeometryUtils.getChunkPosition(rect.Left, rect.Top, BlockSize.X, BlockSize.Y);
@@ -216,7 +222,7 @@ namespace Simulation.Game.World
 
         public void addHitableObject(HitableObject hitableObject)
         {
-            ThreadingUtils.checkIfMainThread();
+            ThreadingUtils.assertMainThread();
 
             Point chunkTopLeft = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Left, hitableObject.unionBounds.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
             Point chunkBottomRight = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Right, hitableObject.unionBounds.Bottom, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
@@ -226,14 +232,14 @@ namespace Simulation.Game.World
                 {
                     if(isWorldGridChunkLoaded(chunkX, chunkY))
                     {
-                        getWorldGridChunk(chunkX, chunkY).addHitableObject(hitableObject);
+                        getWorldGridChunk(chunkX, chunkY).addInteractiveObject(hitableObject);
                     }
                 }
         }
 
         public void removeHitableObject(HitableObject hitableObject)
         {
-            ThreadingUtils.checkIfMainThread();
+            ThreadingUtils.assertMainThread();
 
             Point chunkTopLeft = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Left, hitableObject.unionBounds.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
             Point chunkBottomRight = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Right, hitableObject.unionBounds.Bottom, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
@@ -243,14 +249,14 @@ namespace Simulation.Game.World
                 {
                     if (isWorldGridChunkLoaded(chunkX, chunkY))
                     {
-                        getWorldGridChunk(chunkX, chunkY).removeHitableObject(hitableObject);
+                        getWorldGridChunk(chunkX, chunkY).removeInteractiveObject(hitableObject);
                     }
                 }
         }
 
         public void addDurableEntity(DurableEntity durableEntity)
         {
-            ThreadingUtils.checkIfMainThread();
+            ThreadingUtils.assertMainThread();
 
             if (durableEntities.ContainsKey(durableEntity.ID) == false)
                 durableEntities[durableEntity.ID] = durableEntity;
@@ -258,7 +264,7 @@ namespace Simulation.Game.World
 
         private void garbageCollectChunks()
         {
-            ThreadingUtils.checkIfMainThread();
+            ThreadingUtils.assertMainThread();
             List<string> deleteList = new List<string>();
 
             foreach (var chunk in worldGrid)

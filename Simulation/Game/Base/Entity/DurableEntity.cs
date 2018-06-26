@@ -25,10 +25,10 @@ namespace Simulation.Game.Base.Entity
         {
             this.preloadedSurroundingWorldGridChunkRadius = preloadedSurroundingWorldGridChunkRadius;
 
-            preloadWorldGridChunks();
+            preloadGridChunks();
         }
 
-        private void preloadWorldGridChunks()
+        private void preloadGridChunks()
         {
             Point chunkPosition = GeometryUtils.getChunkPosition((int)position.X, (int)position.Y, World.World.WorldChunkPixelSize.X, World.World.WorldChunkPixelSize.Y);
             preloadedWorldGridChunkBounds = new Rectangle(chunkPosition.X - preloadedSurroundingWorldGridChunkRadius, chunkPosition.Y - preloadedSurroundingWorldGridChunkRadius, preloadedSurroundingWorldGridChunkRadius * 2 + 1, preloadedSurroundingWorldGridChunkRadius * 2 + 1);
@@ -37,7 +37,10 @@ namespace Simulation.Game.Base.Entity
             for (int i = preloadedWorldGridChunkBounds.Left; i < preloadedWorldGridChunkBounds.Right; i++)
                 for (int j = preloadedWorldGridChunkBounds.Top; j < preloadedWorldGridChunkBounds.Bottom; j++)
                 {
-                    SimulationGame.world.loadGridChunkAsync(i, j);
+                    var walkableGridChunkPosition = GeometryUtils.getChunkPosition(i * World.World.WorldChunkPixelSize.X, j * World.World.WorldChunkPixelSize.Y, World.WalkableGrid.WalkableGridPixelChunkSize.X, World.WalkableGrid.WalkableGridPixelChunkSize.Y);
+
+                    SimulationGame.world.loadWalkableGridChunkAsync(walkableGridChunkPosition.X, walkableGridChunkPosition.Y);
+                    SimulationGame.world.loadWorldGridChunkAsync(i, j);
                 }
         }
 
@@ -45,7 +48,7 @@ namespace Simulation.Game.Base.Entity
         {
             base.updatePosition(newPosition);
 
-            preloadWorldGridChunks();
+            preloadGridChunks();
         }
     }
 }

@@ -2,10 +2,9 @@
 using Simulation.Game.World.Generator;
 using Simulation.Util;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 /*
  * The WalkableGrid is only used for quick pathfinding
@@ -20,91 +19,105 @@ namespace Simulation.Game.World
 
         public static int WalkableGridArrayChunkCount = WalkableGridBlockChunkSize.X * WalkableGridBlockChunkSize.Y / 32;
 
-        private ConcurrentDictionary<string, WalkableGridChunk> walkableGrid = new ConcurrentDictionary<string, WalkableGridChunk>();
-        private Dictionary<string, object> chunkLocks = new Dictionary<string, object>();
+        private Dictionary<string, WalkableGridChunk> walkableGrid = new Dictionary<string, WalkableGridChunk>();
+        private NamedLock chunkLocks = new NamedLock();
 
-        private void waitTillChunkIsLoaded(int x, int y)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void loadGridChunk(int chunkX, int chunkY)
         {
-            string key = x + "," + y;
-            bool wait = false;
-            object temp;
+            walkableGrid[chunkX + "," + chunkY] = WorldLoader.loadWalkableGridChunk(chunkX, chunkY);
+        }
 
-            lock (chunkLocks)
+        public void loadGridChunkAsync(int chunkX, int chunkY)
+        {
+            if(IsChunkLoaded(chunkX, chunkY) == false)
             {
-                if (chunkLocks.ContainsKey(key) == true)
+                Task.Run(() =>
                 {
-                    wait = true;
-                    temp = chunkLocks[key];
-                }
-                else
-                {
-                    temp = new object();
-                    
-                    chunkLocks[key] = temp;
-                    Monitor.Enter(temp);
-                }
-            }
+                    var key = chunkX + "," + chunkY;
 
-            if(wait)
-            {
-                Monitor.Enter(temp);
-                Monitor.Exit(temp);
-                return;
+                    chunkLocks.Enter(key);
+
+                    try
+                    {
+                        if (walkableGrid.ContainsKey(key) == false)
+                            walkableGrid[key] = WorldLoader.loadWalkableGridChunk(chunkX, chunkY);
+                    }
+                    finally
+                    {
+                        chunkLocks.Exit(key);
+                    }
+                });
             }
+        }
+
+        private bool IsChunkLoaded(int chunkX, int chunkY)
+        {
+            var key = chunkX + "," + chunkY;
+
+            chunkLocks.Enter(key);
 
             try
             {
-                walkableGrid[key] = WorldLoader.loadWalkableGridChunk(x, y);
+                return walkableGrid.ContainsKey(key);
             }
             finally
             {
-                lock(chunkLocks)
-                {
-                    chunkLocks.Remove(key);
-                    Monitor.Exit(temp);
-                }
+                chunkLocks.Exit(key);
             }
         }
 
         public bool IsPositionWalkable(int realX, int realY)
         {
             var blockPosition = GeometryUtils.getChunkPosition(realX, realY, World.BlockSize.X, World.BlockSize.Y);
-            var chunkPosition = GeometryUtils.getChunkPosition(blockPosition.X, blockPosition.Y, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
-            var arrayPosition = GeometryUtils.getIndexFromPoint(blockPosition.X, blockPosition.Y, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
 
-            if (walkableGrid.ContainsKey(chunkPosition.X + "," + chunkPosition.Y) == false)
-            {
-                waitTillChunkIsLoaded(chunkPosition.X, chunkPosition.Y);
-            }
-
-            return getBit(walkableGrid[chunkPosition.X + "," + chunkPosition.Y].chunkData[arrayPosition / 32], arrayPosition % 32);
+            return IsBlockWalkable(blockPosition.X, blockPosition.Y);
         }
 
         public bool IsBlockWalkable(int blockX, int blockY)
         {
             var chunkPosition = GeometryUtils.getChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
             var arrayPosition = GeometryUtils.getIndexFromPoint(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
+            var key = chunkPosition.X + "," + chunkPosition.Y;
 
-            if (walkableGrid.ContainsKey(chunkPosition.X + "," + chunkPosition.Y) == false)
+            chunkLocks.Enter(key);
+
+            try
             {
-                waitTillChunkIsLoaded(chunkPosition.X, chunkPosition.Y);
-            }
+                if (walkableGrid.ContainsKey(key) == false)
+                    walkableGrid[key] = WorldLoader.loadWalkableGridChunk(chunkPosition.X, chunkPosition.Y);
 
-            return getBit(walkableGrid[chunkPosition.X + "," + chunkPosition.Y].chunkData[arrayPosition / 32], arrayPosition % 32);
+                return getBit(walkableGrid[key].chunkData[arrayPosition / 32], arrayPosition % 32);
+            }
+            finally
+            {
+                chunkLocks.Exit(key);
+            }
         }
 
-        public void changeBlockWalkable(int blockX, int blockY, bool notWalkable)
+        public void setBlockWalkable(int blockX, int blockY, bool notWalkable)
         {
             var chunkPosition = GeometryUtils.getChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
             var arrayPosition = GeometryUtils.getIndexFromPoint(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
+            var key = chunkPosition.X + "," + chunkPosition.Y;
 
-            if (walkableGrid.ContainsKey(chunkPosition.X + "," + chunkPosition.X) == false)
-                waitTillChunkIsLoaded(chunkPosition.X, chunkPosition.Y);
+            chunkLocks.Enter(key);
 
-            setBit(ref walkableGrid[chunkPosition.X + "," + chunkPosition.Y].chunkData[arrayPosition / 32], arrayPosition % 32, notWalkable);
+            try
+            {
+                if (walkableGrid.ContainsKey(chunkPosition.X + "," + chunkPosition.X) == false)
+                    walkableGrid[key] = WorldLoader.loadWalkableGridChunk(chunkPosition.X, chunkPosition.Y);
+
+                setBit(ref walkableGrid[chunkPosition.X + "," + chunkPosition.Y].chunkData[arrayPosition / 32], arrayPosition % 32, notWalkable);
+            }
+            finally
+            {
+                chunkLocks.Exit(key);
+            }
         }
 
-        public static void changeBlockInChunk(WalkableGridChunk chunk, int blockX, int blockY, bool notWalkable)
+        // Don't care about concurrency
+        public static void setBlockWalkableInChunk(WalkableGridChunk chunk, int blockX, int blockY, bool notWalkable)
         {
             var arrayPosition = GeometryUtils.getIndexFromPoint(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
 

@@ -75,7 +75,7 @@ namespace Simulation.Game.World.Generator
                     {
                         worldGrid[(worldGridChunk.X, worldGridChunk.Y)].setBlockType(i, j, BlockType.GRASS_WATERHOLE);
 
-                        WalkableGrid.changeBlockInChunk(walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)], i, j, true);
+                        WalkableGrid.setBlockWalkableInChunk(walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)], i, j, true);
                     }
                     else
                     {
@@ -92,7 +92,7 @@ namespace Simulation.Game.World.Generator
                     {
                         StaticBlockingObject tree = StaticObjectFactory.createTree(new Vector2(i * World.BlockSize.X, j * World.BlockSize.Y));
 
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].addAmbientObject(tree);
+                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].addContainedObject(tree);
                     }
                 }
 

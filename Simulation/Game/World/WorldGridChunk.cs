@@ -22,9 +22,14 @@ namespace Simulation.Game.World
 
         public Rectangle realChunkBounds;
 
+        // These objects are just passing by or are overlapping with this chunk
         [JsonIgnore]
         public List<HitableObject> interactiveObjects;
 
+        // These objects stay on this chunk and are drawn
+        public List<DrawableObject> containedObjects;
+
+        // These objects are not important for the world and just displayed here
         public List<DrawableObject> ambientObjects;
 
         public WorldGridChunk(int realX, int realY)
@@ -52,7 +57,28 @@ namespace Simulation.Game.World
             blockingGrid[projectedPosition.X, projectedPosition.Y] = blockType;
         }
 
-        public void addHitableObject(HitableObject hitableObject)
+        public void addContainedObject(DrawableObject drawableObject)
+        {
+            if (containedObjects == null)
+                containedObjects = new List<DrawableObject>();
+
+            containedObjects.Add(drawableObject);
+        }
+
+        public void removeContainedObject(DrawableObject drawableObject)
+        {
+            if (containedObjects != null)
+            {
+                containedObjects.Remove(drawableObject);
+
+                if (containedObjects.Count == 0)
+                {
+                    containedObjects = null;
+                }
+            }
+        }
+
+        public void addInteractiveObject(HitableObject hitableObject)
         {
             if (interactiveObjects == null)
                 interactiveObjects = new List<HitableObject>();
@@ -60,7 +86,7 @@ namespace Simulation.Game.World
             interactiveObjects.Add(hitableObject);
         }
 
-        public void removeHitableObject(HitableObject hitableObject)
+        public void removeInteractiveObject(HitableObject hitableObject)
         {
             if (interactiveObjects != null)
             {

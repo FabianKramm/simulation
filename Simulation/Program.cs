@@ -4,6 +4,7 @@ using Simulation.Game;
 using Simulation.Game.Factories;
 using Simulation.Game.World;
 using Simulation.Game.World.Generator;
+using Simulation.PathFinding;
 using Simulation.Util;
 using System;
 using System.Collections.Generic;
@@ -27,10 +28,23 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
-            // WorldGenerator.ResetWorld();
+            BaseGrid searchGrid = new StaticGrid(64, 32);
 
-            using (var game = new SimulationGame())
-                game.Run();
+            searchGrid.SetWalkableAt(10, 20, true);
+
+            GridPos startPos = new GridPos(10, 10);
+            GridPos endPos = new GridPos(20, 11);
+            JumpPointParam jpParam = new JumpPointParam(searchGrid, startPos, endPos, EndNodeUnWalkableTreatment.DISALLOW, DiagonalMovement.OnlyWhenNoObstacles);
+
+            List<GridPos> resultPathList = JumpPointFinder.FindPath(jpParam);
+
+            foreach (GridPos pos in resultPathList)
+                Console.WriteLine(pos.x + "," + pos.y);
+
+            //WorldGenerator.ResetWorld();
+
+            //using (var game = new SimulationGame())
+            //    game.Run();
 
             //Console.WriteLine(GeometryUtils.getPositionWithinChunk(-1, -1, 32, 32));
 
