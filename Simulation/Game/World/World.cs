@@ -295,6 +295,27 @@ namespace Simulation.Game.World
 
             foreach(var key in deleteList)
             {
+                string[] pos = key.Split(',');
+
+                // Remove containedEntities from interactiveObjects in other neighbor tiles
+                for (int i = -1; i <= 1; i++)
+                    for (int j = -1; j < 1; j++)
+                    {
+                        if (i == 0 && j == 0) continue;
+
+                        var neighborChunkX = i + Int32.Parse(pos[0]);
+                        var neighborChunkY = j + Int32.Parse(pos[1]);
+                        var neighborKey = neighborChunkX + "," + neighborChunkY;
+
+                        if (isWorldGridChunkLoaded(neighborChunkX, neighborChunkY))
+                        {
+                            foreach (var containedEntity in worldGrid[key].containedObjects)
+                            {
+                                worldGrid[neighborKey].interactiveObjects.Remove(containedEntity);
+                            }
+                        }
+                    }
+
                 worldGrid.Remove(key);
 
                 // Save async

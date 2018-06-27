@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
+using Simulation.Game.Renderer;
 using Simulation.Game.World;
 
 namespace Simulation.Game.Base
@@ -12,6 +13,9 @@ namespace Simulation.Game.Base
 
         [JsonProperty]
         private Rectangle relativeBlockingBounds;
+
+        [JsonProperty]
+        public InteractiveObjectType interactiveObjectType;
 
         public bool useSameBounds
         {
@@ -28,9 +32,21 @@ namespace Simulation.Game.Base
 
         public Rectangle unionBounds;
 
-        public HitableObject(Vector2 position, Rectangle relativeHitBoxBounds, BlockingType blockingType = BlockingType.NOT_BLOCKING, Rectangle? relativeBlockingBounds = null) : base(position)
+        public HitableObject(Vector2 position, Rectangle relativeHitBoxBounds, BlockingType blockingType = BlockingType.NOT_BLOCKING, Rectangle? relativeBlockingBounds = null)
+            :base(position)
         {
             this.relativeHitBoxBounds = relativeHitBoxBounds;
+            interactiveObjectType = InteractiveObjectType.NO_OBJECT;
+
+            setBlockingType(blockingType);
+            updateHitableBounds(position);
+        }
+
+        public HitableObject(InteractiveObjectType interactiveObjectType, Vector2 position, Rectangle relativeHitBoxBounds, BlockingType blockingType = BlockingType.NOT_BLOCKING, Rectangle? relativeBlockingBounds = null)
+            : base(position)
+        {
+            this.relativeHitBoxBounds = relativeHitBoxBounds;
+            this.interactiveObjectType = interactiveObjectType;
 
             setBlockingType(blockingType);
             updateHitableBounds(position);
@@ -84,21 +100,6 @@ namespace Simulation.Game.Base
             base.updatePosition(newPosition);
 
             updateHitableBounds(position);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            if (SimulationGame.isDebug)
-            {
-                if(blockingType == BlockingType.BLOCKING)
-                {
-                    SimulationGame.primitiveDrawer.Rectangle(unionBounds, Color.Red);
-                }
-                else
-                {
-                    SimulationGame.primitiveDrawer.Rectangle(hitBoxBounds, Color.White);
-                }
-            }
         }
     }
 }

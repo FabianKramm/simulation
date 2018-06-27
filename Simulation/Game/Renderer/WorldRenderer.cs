@@ -36,12 +36,19 @@ namespace Simulation.Game.Renderer
                     WorldGridChunk worldGridChunk = SimulationGame.world.getWorldGridChunk(chunkX, chunkY);
 
                     if (worldGridChunk.ambientObjects != null)
-                        foreach (DrawableObject ambientObject in worldGridChunk.ambientObjects)
-                            ambientObject.Draw(spriteBatch);
+                        foreach (AmbientObject ambientObject in worldGridChunk.ambientObjects)
+                            AmbientObjectRenderer.Draw(spriteBatch, ambientObject);
 
                     if (worldGridChunk.containedObjects != null)
-                        foreach (DrawableObject containedObject in worldGridChunk.containedObjects)
-                            containedObject.Draw(spriteBatch);
+                        foreach (HitableObject containedObject in worldGridChunk.containedObjects)
+                        {
+                            InteractiveObjectRenderer.Draw(spriteBatch, containedObject);
+
+                            if (containedObject is LivingEntity)
+                            {
+                                EntityRenderer.Draw(spriteBatch, (LivingEntity)containedObject);
+                            }
+                        }
                 }
         }
     }

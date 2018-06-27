@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
+using Simulation.Game.Renderer;
 using Simulation.Util;
 
 /*
@@ -13,31 +14,15 @@ namespace Simulation.Game.Base
 {
     public class AmbientObject: DrawableObject
     {
-        [JsonProperty]
-        private string texture;
-
-        [JsonProperty]
-        private Rectangle spriteRectangle;
-
-        [JsonProperty]
-        private Vector2 origin;
-
-        [JsonProperty]
-        private bool hasDepth;
-        
-        public AmbientObject(string texture, Rectangle spriteRectangle, Vector2 position, bool hasDepth = false) :
-            base(position)
+        public AmbientObjectType ambientObjectType
         {
-            this.texture = texture;
-            this.spriteRectangle = spriteRectangle;
-            this.hasDepth = hasDepth;
-
-            origin = new Vector2(0, spriteRectangle.Height);
+            get; private set;
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public AmbientObject(AmbientObjectType ambientObjectType, Vector2 position, bool hasDepth = false) :
+            base(position)
         {
-            spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(texture), position, spriteRectangle, Color.White, 0.0f, origin, 1.0f, SpriteEffects.None, hasDepth ? GeometryUtils.getLayerDepthFromPosition(position.X, position.Y) : GeometryUtils.getLayerDepthFromReservedLayer(ReservedDepthLayers.BlockDecoration));
+            this.ambientObjectType = ambientObjectType;
         }
     }
 }

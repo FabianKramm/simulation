@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Simulation.Game.Base
 {
@@ -25,7 +24,5 @@ namespace Simulation.Game.Base
         {
             position = newPosition;
         }
-
-        public abstract void Draw(SpriteBatch spriteBatch);
     }
 }

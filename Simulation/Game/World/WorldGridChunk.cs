@@ -27,10 +27,10 @@ namespace Simulation.Game.World
         public List<HitableObject> interactiveObjects;
 
         // These objects stay on this chunk and are drawn
-        public List<DrawableObject> containedObjects;
+        public List<HitableObject> containedObjects;
 
         // These objects are not important for the world and just displayed here
-        public List<DrawableObject> ambientObjects;
+        public List<AmbientObject> ambientObjects;
 
         public WorldGridChunk(int realX, int realY)
         {
@@ -57,19 +57,19 @@ namespace Simulation.Game.World
             blockingGrid[projectedPosition.X, projectedPosition.Y] = blockType;
         }
 
-        public void addContainedObject(DrawableObject drawableObject)
+        public void addContainedObject(HitableObject interactiveObject)
         {
             if (containedObjects == null)
-                containedObjects = new List<DrawableObject>();
+                containedObjects = new List<HitableObject>();
 
-            containedObjects.Add(drawableObject);
+            containedObjects.Add(interactiveObject);
         }
 
-        public void removeContainedObject(DrawableObject drawableObject)
+        public void removeContainedObject(HitableObject interactiveObject)
         {
             if (containedObjects != null)
             {
-                containedObjects.Remove(drawableObject);
+                containedObjects.Remove(interactiveObject);
 
                 if (containedObjects.Count == 0)
                 {
@@ -99,15 +99,15 @@ namespace Simulation.Game.World
             }
         }
 
-        public void addAmbientObject(DrawableObject ambientObject)
+        public void addAmbientObject(AmbientObject ambientObject)
         {
             if (ambientObjects == null)
-                ambientObjects = new List<DrawableObject>();
+                ambientObjects = new List<AmbientObject>();
 
             ambientObjects.Add(ambientObject);
         }
 
-        public void removeAmbientObject(DrawableObject ambientObject)
+        public void removeAmbientObject(AmbientObject ambientObject)
         {
             if (ambientObjects != null)
             {

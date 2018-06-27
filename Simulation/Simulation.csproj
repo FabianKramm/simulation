@@ -57,6 +57,9 @@
     <Compile Include="Game\Hud\Hud.cs" />
     <Compile Include="Game\Renderer\BlockRenderer.cs" />
     <Compile Include="Game\Renderer\Effects\FireballRenderer.cs" />
+    <Compile Include="Game\Renderer\EntityRenderer.cs" />
+    <Compile Include="Game\Renderer\AmbientObjectRenderer.cs" />
+    <Compile Include="Game\Renderer\InteractiveObjectRenderer.cs" />
     <Compile Include="Game\Renderer\Renderer.cs" />
     <Compile Include="Game\Renderer\WorldRenderer.cs" />
     <Compile Include="Game\Skills\Skill.cs" />

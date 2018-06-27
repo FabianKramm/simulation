@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
+using Simulation.Game.Renderer;
 using Simulation.Game.World;
 using Simulation.Util;
 
@@ -20,8 +21,8 @@ namespace Simulation.Game.Base.Entity
             get; private set;
         }
 
-        public DurableEntity(Vector2 position, Rectangle relativeHitBoxBounds, int preloadedSurroundingWorldGridChunkRadius = 1) :
-            base(position, relativeHitBoxBounds)
+        public DurableEntity(LivingEntityType livingEntityType, Vector2 position, Rectangle relativeHitBoxBounds, int preloadedSurroundingWorldGridChunkRadius = 1) :
+            base(livingEntityType, position, relativeHitBoxBounds)
         {
             this.preloadedSurroundingWorldGridChunkRadius = preloadedSurroundingWorldGridChunkRadius;
 

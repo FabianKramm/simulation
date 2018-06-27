@@ -1,18 +1,20 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Simulation.Game.Renderer;
 
 namespace Simulation.Game.Base
 {
     public class LivingEntity: HitableObject
     {
-        public LivingEntity(Vector2 position, Rectangle relativeHitBoxBounds) : 
-            base(position, relativeHitBoxBounds )
+        public LivingEntityType livingEntityType
         {
+            get; private set;
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public LivingEntity(LivingEntityType livingEntityType, Vector2 position, Rectangle relativeHitBoxBounds) : 
+            base(position, relativeHitBoxBounds)
         {
-            base.Draw(spriteBatch);
+            this.livingEntityType = livingEntityType;
         }
     }
 }

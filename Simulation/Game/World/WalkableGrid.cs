@@ -5,9 +5,7 @@ using Simulation.Game.World.Generator;
 using Simulation.Util;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 /*
  * The WalkableGrid is only used for quick pathfinding
