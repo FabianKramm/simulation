@@ -1,11 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.Renderer;
+using Newtonsoft.Json;
+using Simulation.Game.Renderer.Entities;
 
 namespace Simulation.Game.Base
 {
-    public class LivingEntity: HitableObject
+    public abstract class LivingEntity: HitableObject
     {
+        [JsonIgnore]
+        public LivingEntityRendererInformation rendererInformation;
+
         public LivingEntityType livingEntityType
         {
             get; private set;
@@ -16,5 +19,7 @@ namespace Simulation.Game.Base
         {
             this.livingEntityType = livingEntityType;
         }
+
+        public abstract void Update(GameTime gameTime);
     }
 }

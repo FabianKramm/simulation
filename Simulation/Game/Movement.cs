@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,17 +7,45 @@ using System.Threading.Tasks;
 
 namespace Simulation.Game
 {
-    enum WalkingDirection
+    public enum WalkingDirection
     {
         Idle = 0,
-        Left = 1,
-        Right = 2,
-        Up = 4,
-        Down = 8,
-        Mask = 15
+        Left,
+        Right,
+        Up,
+        Down
     };
 
-    class Movement
+    public class Movement
     {
+        public static WalkingDirection getWalkingDirectionFromVector(Vector2 direction)
+        {
+            if(direction == Vector2.Zero)
+            {
+                return WalkingDirection.Idle;
+            }
+
+            if(direction.X > 0)
+            {
+                return WalkingDirection.Right;
+            }
+
+            if (direction.X < 0)
+            {
+                return WalkingDirection.Left;
+            }
+
+            if (direction.Y > 0)
+            {
+                return WalkingDirection.Up;
+            }
+
+            if (direction.Y < 0)
+            {
+                return WalkingDirection.Down;
+            }
+
+            return WalkingDirection.Idle;
+        }
     }
 }

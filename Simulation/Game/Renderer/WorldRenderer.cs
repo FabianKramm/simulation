@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Base;
+using Simulation.Game.Renderer.Entities;
 using Simulation.Game.World;
 using Simulation.Util;
 
@@ -8,7 +9,7 @@ namespace Simulation.Game.Renderer
 {
     public class WorldRenderer
     {
-        public static void Draw(SpriteBatch spriteBatch)
+        public static void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             Point topLeft = GeometryUtils.getChunkPosition(SimulationGame.visibleArea.Left, SimulationGame.visibleArea.Top, World.World.BlockSize.X, World.World.BlockSize.Y);
             Point bottomRight = GeometryUtils.getChunkPosition(SimulationGame.visibleArea.Right, SimulationGame.visibleArea.Bottom, World.World.BlockSize.X, World.World.BlockSize.Y);
@@ -46,7 +47,7 @@ namespace Simulation.Game.Renderer
 
                             if (containedObject is LivingEntity)
                             {
-                                EntityRenderer.Draw(spriteBatch, (LivingEntity)containedObject);
+                                LivingEntityRenderer.Draw(spriteBatch, gameTime, (LivingEntity)containedObject);
                             }
                         }
                 }

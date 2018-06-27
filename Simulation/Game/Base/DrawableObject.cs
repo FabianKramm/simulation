@@ -22,7 +22,7 @@ namespace Simulation.Game.Base
 
         public virtual void updatePosition(Vector2 newPosition)
         {
-            position = newPosition;
+            position = new Vector2((int)newPosition.X, (int)newPosition.Y);
         }
     }
 }

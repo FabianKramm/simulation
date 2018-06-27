@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using Simulation.Game.Renderer;
+using Simulation.Game.Renderer.Entities;
 using Simulation.Game.World;
 using Simulation.Util;
 

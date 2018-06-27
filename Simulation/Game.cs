@@ -144,7 +144,6 @@ namespace Simulation
             primitiveDrawer = new Primitive(graphics.GraphicsDevice, spriteBatch);
             primitiveDrawer.Depth = 1.0f;
 
-            player.LoadContent();
             camera.LoadContent();
             hud.LoadContent();
         }
@@ -234,27 +233,7 @@ namespace Simulation
             updateVisibleArea();
             updateMousePosition();
 
-            GraphicsDevice.Clear(Color.Black);
-
-            spriteBatch.Begin(camera, SpriteSortMode.FrontToBack);
-
-            WorldRenderer.Draw(spriteBatch);
-            player.Draw(spriteBatch);
-
-            foreach (var effect in effects)
-            {
-                effect.Draw(spriteBatch);
-            }
-
-            spriteBatch.End();
-
-            // Debug
-            spriteBatch.Draw(camera.Debug);
-
-            // Hud
-            spriteBatch.Begin();
-            hud.Draw(spriteBatch);
-            spriteBatch.End();
+            GameRenderer.Draw(spriteBatch, gameTime, this);
 
             base.Draw(gameTime);
         }
