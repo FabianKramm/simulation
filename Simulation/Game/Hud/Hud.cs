@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Simulation.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,11 @@ namespace Simulation.Game.Hud
     public class Hud
     {
         private Texture2D cursor;
+        
+
         private GameConsole console;
+        private DebugHud debugHud;
+        
 
         public void LoadContent()
         {
@@ -20,16 +25,21 @@ namespace Simulation.Game.Hud
             console.LoadContent();
 
             cursor = SimulationGame.contentManager.Load<Texture2D>(@"Misc\cursorDefault");
+
+            debugHud = new DebugHud();
+            debugHud.LoadContent();
         }
 
         public void Update(GameTime gameTime)
         {
-
+            debugHud.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             var position = Mouse.GetState().Position;
+
+            debugHud.Draw(spriteBatch, gameTime);
 
             // SimulationGame.StringToDraw = position.X + "," + position.Y;
 

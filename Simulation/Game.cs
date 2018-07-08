@@ -85,9 +85,11 @@ namespace Simulation
         public static List<Simulation.Game.Effects.Effect> effects = new List<Simulation.Game.Effects.Effect>();
         public static Player player;
 
-        private GraphicsDeviceManager graphics;
+        public static GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private float zoom = 1.0f;
+
+        private bool debugKeyDown = false;
 
         public SimulationGame()
         {
@@ -183,27 +185,21 @@ namespace Simulation
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            if (Keyboard.GetState().IsKeyDown(Keys.F1))
+            {
+                if(!debugKeyDown)
+                {
+                    debugKeyDown = true;
+                    SimulationGame.isDebug = !SimulationGame.isDebug;
+                }
+            }
+            else
+            {
+                debugKeyDown = false;
+            }
 
             player.Update(gameTime);
             camera.Update(gameTime);
-
-            if (Keyboard.GetState().IsKeyDown(Keys.F1))
-            {
-                isDebug = true;
-                camera.Debug.IsVisible = true;
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.F2))
-            {
-                isDebug = false;
-                camera.Debug.IsVisible = false;
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.F3))
-            {
-                camera.Debug.Grid.AddLines(32, Color.White, 2);
-            }
 
             for(int i=0;i<effects.Count;i++)
             {

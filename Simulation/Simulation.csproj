@@ -52,6 +52,7 @@
     <Compile Include="Game\Base\TemporaryObject.cs" />
     <Compile Include="Game\Effects\Effect.cs" />
     <Compile Include="Game\Effects\Fireball.cs" />
+    <Compile Include="Game\Hud\DebugHud.cs" />
     <Compile Include="Game\Renderer\Entities\LivingEntityRendererInformationFactory.cs" />
     <Compile Include="Game\Factories\AmbientObjectFactory.cs" />
     <Compile Include="Game\Hud\GameConsole.cs" />

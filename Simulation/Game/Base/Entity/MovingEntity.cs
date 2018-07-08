@@ -19,11 +19,14 @@ namespace Simulation.Game.Base.Entity
 
         public override void updatePosition(Vector2 newPosition)
         {
-            SimulationGame.world.removeInteractiveObject(this);
+            if (canMove(newPosition))
+            {
+                SimulationGame.world.removeInteractiveObject(this);
 
-            base.updatePosition(newPosition);
+                base.updatePosition(newPosition);
 
-            SimulationGame.world.addInteractiveObject(this);
+                SimulationGame.world.addInteractiveObject(this);
+            }
         }
 
         public override void Update(GameTime gameTime)

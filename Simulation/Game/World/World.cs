@@ -123,7 +123,7 @@ namespace Simulation.Game.World
 
             if(amountChunksLoaded > 0)
             {
-                GameConsole.WriteLine("WGChunkLoading", amountChunksLoaded + " chunks preloaded");
+                GameConsole.WriteLine("ChunkLoading", amountChunksLoaded + " chunks preloaded");
             }
         }
 

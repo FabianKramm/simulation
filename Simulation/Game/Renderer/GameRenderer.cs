@@ -25,12 +25,12 @@ namespace Simulation.Game.Renderer
             spriteBatch.End();
 
             // Debug
-            spriteBatch.Draw(SimulationGame.camera.Debug);
+            // spriteBatch.Draw(SimulationGame.camera.Debug);
 
             // Hud
             spriteBatch.Begin();
 
-            SimulationGame.hud.Draw(spriteBatch);
+            SimulationGame.hud.Draw(spriteBatch, gameTime);
 
             spriteBatch.End();
         }

@@ -11,7 +11,6 @@ namespace Simulation.Game
     public class Player: DurableEntity
     {
         private FireballSkill fireballSkill;
-
         private bool leftMouseClick = false;
 
         public Player(): base(LivingEntityType.PLAYER, new Vector2(0, 0), new Rectangle(-8, -20, 16, 20), 3)
