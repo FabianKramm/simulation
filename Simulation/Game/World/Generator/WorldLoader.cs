@@ -98,7 +98,7 @@ namespace Simulation.Game.World.Generator
                 {
                     JToken jToken = JToken.ReadFrom(reader);
 
-                    worldGridChunk = WorldGridChunkSerializer.Deserialize(new JObject(jToken));
+                    worldGridChunk = WorldGridChunkSerializer.Deserialize((JObject)jToken);
                 }
 
                 return worldGridChunk;

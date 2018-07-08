@@ -38,16 +38,16 @@ namespace Simulation.Game.Serialization
             SerializationUtils.SetFromObject(jObject, worldGridChunk, worldGridChunkType, serializeableProperties);
 
             // Deserialize Ambient Objects
-            JArray ambientObjects = new JArray(jObject.GetValue("ambientObjects"));
+            JArray ambientObjects = (JArray)jObject.GetValue("ambientObjects");
 
             foreach (var ambientObject in ambientObjects)
-                worldGridChunk.ambientObjects.Add((AmbientObject)WorldObjectSerializer.Deserialize(new JObject(ambientObject)));
+                worldGridChunk.addAmbientObject((AmbientObject)WorldObjectSerializer.Deserialize((JObject)ambientObject));
 
             // Deserialize Hitable Objects
-            JArray containedObjects = new JArray(jObject.GetValue("containedObjects"));
+            JArray containedObjects = (JArray)jObject.GetValue("containedObjects");
 
             foreach (var containedObject in containedObjects)
-                worldGridChunk.containedObjects.Add((HitableObject)WorldObjectSerializer.Deserialize(new JObject(containedObject)));
+                worldGridChunk.addContainedObject((HitableObject)WorldObjectSerializer.Deserialize((JObject)containedObject));
         }
 
         protected static void Serialize(WorldGridChunk worldGridChunk, ref JObject jObject)

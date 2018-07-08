@@ -30,6 +30,8 @@ namespace Simulation.Game.World
         // These objects are not important for the world and are just displayed here
         public List<AmbientObject> ambientObjects;
 
+        private WorldGridChunk() { }
+
         public WorldGridChunk(int realX, int realY)
         {
             blockingGrid = new BlockType[World.WorldChunkBlockSize.X, World.WorldChunkBlockSize.Y];
