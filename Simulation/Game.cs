@@ -46,7 +46,7 @@ namespace Simulation
         public static float Ticks
         {
             get; private set;
-        }
+        } = TicksPerHour * 12;
 
         public static bool isDebug
         {

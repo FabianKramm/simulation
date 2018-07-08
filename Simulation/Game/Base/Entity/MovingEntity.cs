@@ -15,7 +15,7 @@ namespace Simulation.Game.Base.Entity
         private List<GridPos> walkPath;
 
         public Vector2 direction;
-        private float velocity = 0.3f;
+        private float velocity = 0.2f;
 
         // Create from JSON
         protected MovingEntity() { }
