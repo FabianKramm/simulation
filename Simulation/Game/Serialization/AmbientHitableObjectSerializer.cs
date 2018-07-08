@@ -12,7 +12,7 @@ namespace Simulation.Game.Serialization
             "ambientHitableObjectType"
         };
 
-        public new static AmbientHitableObject Deserialize(JObject jObject)
+        public static AmbientHitableObject Deserialize(JObject jObject)
         {
             AmbientHitableObject staticBlockingObject = ReflectionUtils.CallPrivateConstructor<AmbientHitableObject>();
 

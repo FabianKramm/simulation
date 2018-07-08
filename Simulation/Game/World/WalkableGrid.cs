@@ -119,7 +119,7 @@ namespace Simulation.Game.World
             if (hitableObject.blockingType == BlockingType.BLOCKING)
             {
                 Point blockTopLeft = GeometryUtils.getChunkPosition(hitableObject.blockingBounds.Left, hitableObject.blockingBounds.Top, World.BlockSize.X, World.BlockSize.Y);
-                Point blockBottomRight = GeometryUtils.getChunkPosition(hitableObject.blockingBounds.Right, hitableObject.blockingBounds.Bottom, World.BlockSize.X, World.BlockSize.Y);
+                Point blockBottomRight = GeometryUtils.getChunkPosition(hitableObject.blockingBounds.Right - 1, hitableObject.blockingBounds.Bottom - 1, World.BlockSize.X, World.BlockSize.Y);
 
                 for (int blockX = blockTopLeft.X; blockX <= blockBottomRight.X; blockX++)
                     for (int blockY = blockTopLeft.Y; blockY <= blockBottomRight.Y; blockY++)
@@ -128,15 +128,16 @@ namespace Simulation.Game.World
 
                         if (IsChunkLoaded(walkableGridChunkPos.X, walkableGridChunkPos.Y))
                         {
-                            if(blockX == 4 && blockY == -2)
-                            {
-                                setBlockNotWalkable(blockX, blockY, true);
-                                var a = IsBlockWalkable(blockX, blockY + 1);
-
-                                Console.WriteLine(a);
-                            }
-
                             setBlockNotWalkable(blockX, blockY, true);
+                        }
+                        else
+                        {
+                            
+
+                            if(blockX > -96 && blockX < 96 && blockY > -96 && blockY < 96)
+                            {
+                                Console.WriteLine(blockX + "," + blockY + " not loaded yet");
+                            }
                         }
                     }
             }
@@ -147,7 +148,7 @@ namespace Simulation.Game.World
             if (hitableObject.blockingType == BlockingType.BLOCKING)
             {
                 Point blockTopLeft = GeometryUtils.getChunkPosition(hitableObject.blockingBounds.Left, hitableObject.blockingBounds.Top, World.BlockSize.X, World.BlockSize.Y);
-                Point blockBottomRight = GeometryUtils.getChunkPosition(hitableObject.blockingBounds.Right, hitableObject.blockingBounds.Bottom, World.BlockSize.X, World.BlockSize.Y);
+                Point blockBottomRight = GeometryUtils.getChunkPosition(hitableObject.blockingBounds.Right - 1, hitableObject.blockingBounds.Bottom - 1, World.BlockSize.X, World.BlockSize.Y);
 
                 for (int blockX = blockTopLeft.X; blockX <= blockBottomRight.X; blockX++)
                     for (int blockY = blockTopLeft.Y; blockY <= blockBottomRight.Y; blockY++)
@@ -167,9 +168,9 @@ namespace Simulation.Game.World
 
                             foreach (HitableObject interactiveObject in worldGridChunk.interactiveObjects)
                             {
-                                if(interactiveObject.ID == "d63e1975-63b6-49e7-9db6-ac2f378ae28f")
+                                if(blockX == 3 && blockY == -2 && interactiveObject.ID == "ca1bb72b-ca15-4751-a58d-65c1fc74ea5f")
                                 {
-                                    var a = true;
+                                    var a = 1;
                                 }
 
                                 if (hitableObject.blockingType == BlockingType.BLOCKING && interactiveObject.blockingBounds.Intersects(new Rectangle(blockX * World.BlockSize.X, blockY * World.BlockSize.Y, World.BlockSize.X, World.BlockSize.Y)))
@@ -179,7 +180,6 @@ namespace Simulation.Game.World
                                 }
                             }
                                 
-
                             if (!found)
                             {
                                 setBlockNotWalkable(blockX, blockY, false);

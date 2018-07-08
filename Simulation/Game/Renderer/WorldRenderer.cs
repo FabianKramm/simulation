@@ -13,7 +13,7 @@ namespace Simulation.Game.Renderer
         public static void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             Point topLeft = GeometryUtils.getChunkPosition(SimulationGame.visibleArea.Left, SimulationGame.visibleArea.Top, World.World.BlockSize.X, World.World.BlockSize.Y);
-            Point bottomRight = GeometryUtils.getChunkPosition(SimulationGame.visibleArea.Right, SimulationGame.visibleArea.Bottom, World.World.BlockSize.X, World.World.BlockSize.Y);
+            Point bottomRight = GeometryUtils.getChunkPosition(SimulationGame.visibleArea.Right - 1, SimulationGame.visibleArea.Bottom - 1, World.World.BlockSize.X, World.World.BlockSize.Y);
 
             for (int blockX = topLeft.X; blockX < bottomRight.X; blockX++)
                 for (int blockY = topLeft.Y; blockY < bottomRight.Y; blockY++)
@@ -25,7 +25,7 @@ namespace Simulation.Game.Renderer
                 }
 
             Point chunkTopLeft = GeometryUtils.getChunkPosition(SimulationGame.visibleArea.Left, SimulationGame.visibleArea.Top, World.World.WorldChunkPixelSize.X, World.World.WorldChunkPixelSize.Y);
-            Point chunkBottomRight = GeometryUtils.getChunkPosition(SimulationGame.visibleArea.Right, SimulationGame.visibleArea.Bottom, World.World.WorldChunkPixelSize.X, World.World.WorldChunkPixelSize.Y);
+            Point chunkBottomRight = GeometryUtils.getChunkPosition(SimulationGame.visibleArea.Right - 1, SimulationGame.visibleArea.Bottom - 1, World.World.WorldChunkPixelSize.X, World.World.WorldChunkPixelSize.Y);
 
             for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                 for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)

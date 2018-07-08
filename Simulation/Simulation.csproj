@@ -60,6 +60,7 @@
     <Compile Include="Game\Renderer\Effects\FireballRenderer.cs" />
     <Compile Include="Game\Renderer\Entities\LivingEntityRenderer.cs" />
     <Compile Include="Game\Renderer\AmbientObjectRenderer.cs" />
+    <Compile Include="Game\Renderer\Entities\MovingEntityRenderer.cs" />
     <Compile Include="Game\Renderer\InteractiveObjectRenderer.cs" />
     <Compile Include="Game\Renderer\GameRenderer.cs" />
     <Compile Include="Game\Renderer\Entities\LivingEntityRendererInformation.cs" />

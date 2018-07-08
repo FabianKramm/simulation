@@ -37,6 +37,15 @@ namespace Simulation.Game.World
         private TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
         private static TimeSpan garbageCollectInterval = TimeSpan.FromSeconds(30);
 
+        public WorldGridChunk loadWorldGridChunk(int chunkX, int chunkY)
+        {
+            var walkableGridChunkPosition = GeometryUtils.getChunkPosition(chunkX * WorldChunkPixelSize.X, chunkY * WorldChunkPixelSize.Y, WalkableGrid.WalkableGridPixelChunkSize.X, WalkableGrid.WalkableGridPixelChunkSize.Y);
+
+            walkableGrid.loadGridChunkGuarded(walkableGridChunkPosition.X, walkableGridChunkPosition.Y);
+
+            return WorldLoader.loadWorldGridChunk(chunkX, chunkY);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool isWorldGridChunkLoaded(int chunkX, int chunkY)
         {
@@ -60,6 +69,7 @@ namespace Simulation.Game.World
 
                     try
                     {
+                        // Check if already in queue
                         foreach(WorldGridChunk worldGridChunk in worldGridChunksLoaded)
                         {
                             Point chunkPosition = GeometryUtils.getChunkPosition(worldGridChunk.realChunkBounds.X, worldGridChunk.realChunkBounds.Y, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
@@ -69,11 +79,8 @@ namespace Simulation.Game.World
                                 return;
                             }
                         }
-
-                        var walkableGridChunkPosition = GeometryUtils.getChunkPosition(chunkX * WorldChunkPixelSize.X, chunkY * WorldChunkPixelSize.Y, WalkableGrid.WalkableGridPixelChunkSize.X, WalkableGrid.WalkableGridPixelChunkSize.Y);
-
-                        walkableGrid.loadGridChunkGuarded(walkableGridChunkPosition.X, walkableGridChunkPosition.Y);
-                        worldGridChunksLoaded.Enqueue(WorldLoader.loadWorldGridChunk(chunkX, chunkY));
+                        
+                        worldGridChunksLoaded.Enqueue(loadWorldGridChunk(chunkX, chunkY));
                     }
                     finally
                     {
@@ -128,7 +135,7 @@ namespace Simulation.Game.World
 
             if(worldGrid.ContainsKey(chunkKey) == false)
             {
-                worldGrid[chunkKey] = WorldLoader.loadWorldGridChunk(chunkX, chunkY);
+                worldGrid[chunkKey] = loadWorldGridChunk(chunkX, chunkY);
 
                 onChunkLoaded(worldGrid[chunkKey], chunkX, chunkY);
             }
@@ -189,7 +196,7 @@ namespace Simulation.Game.World
 
             // Check if blocks are of type blocking
             Point topLeft = GeometryUtils.getChunkPosition(rect.Left, rect.Top, BlockSize.X, BlockSize.Y);
-            Point bottomRight = GeometryUtils.getChunkPosition(rect.Right, rect.Bottom, BlockSize.X, BlockSize.Y);
+            Point bottomRight = GeometryUtils.getChunkPosition(rect.Right - 1, rect.Bottom - 1, BlockSize.X, BlockSize.Y);
 
             for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
                 for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
@@ -205,7 +212,7 @@ namespace Simulation.Game.World
 
             // Check collision with interactive objects
             Point chunkTopLeft = GeometryUtils.getChunkPosition(rect.Left, rect.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
-            Point chunkBottomRight = GeometryUtils.getChunkPosition(rect.Right, rect.Bottom, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
+            Point chunkBottomRight = GeometryUtils.getChunkPosition(rect.Right - 1, rect.Bottom - 1, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
 
             for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                 for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
@@ -228,7 +235,7 @@ namespace Simulation.Game.World
             ThreadingUtils.assertMainThread();
 
             Point chunkTopLeft = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Left, hitableObject.unionBounds.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
-            Point chunkBottomRight = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Right, hitableObject.unionBounds.Bottom, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
+            Point chunkBottomRight = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Right - 1, hitableObject.unionBounds.Bottom - 1, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
 
             for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                 for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
@@ -247,7 +254,7 @@ namespace Simulation.Game.World
             ThreadingUtils.assertMainThread();
 
             Point chunkTopLeft = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Left, hitableObject.unionBounds.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
-            Point chunkBottomRight = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Right, hitableObject.unionBounds.Bottom, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
+            Point chunkBottomRight = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Right - 1, hitableObject.unionBounds.Bottom - 1, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
 
             for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                 for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)

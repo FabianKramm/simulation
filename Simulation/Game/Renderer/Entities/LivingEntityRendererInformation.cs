@@ -36,6 +36,7 @@ namespace Simulation.Game.Renderer.Entities
         { 
             if(newWalkingDirection == WalkingDirection.Idle)
             {
+                walkingDirection = WalkingDirection.Idle;
                 currentAnimation.Stop();
             }
             else if (newWalkingDirection != walkingDirection)

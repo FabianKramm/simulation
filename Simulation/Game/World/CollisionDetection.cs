@@ -18,9 +18,9 @@ namespace Simulation.Game
         {
             return intersect(poly2, new Vector2[] {
                 new Vector2(r1.Left, r1.Top),
-                new Vector2(r1.Right, r1.Top),
-                new Vector2(r1.Right, r1.Bottom),
-                new Vector2(r1.Left, r1.Bottom)
+                new Vector2(r1.Right - 1, r1.Top),
+                new Vector2(r1.Right - 1, r1.Bottom - 1),
+                new Vector2(r1.Left, r1.Bottom - 1)
             });
         }
 

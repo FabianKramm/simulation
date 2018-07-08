@@ -30,12 +30,7 @@ namespace Simulation.Game.Renderer.Entities
 
             if(livingEntity is MovingEntity)
             {
-                MovingEntity movingEntity = (MovingEntity)livingEntity;
-                WalkingDirection newWalkingDirection = Movement.getWalkingDirectionFromVector(movingEntity.direction);
-
-                movingEntity.rendererInformation.Update(gameTime, newWalkingDirection);
-
-                spriteBatch.Draw(movingEntity.rendererInformation.currentAnimation, movingEntity.position, layerDepth: GeometryUtils.getLayerDepthFromPosition(movingEntity.position.X, movingEntity.position.Y));
+                MovingEntityRenderer.Draw(spriteBatch, gameTime, (MovingEntity)livingEntity);
             }
             else
             {

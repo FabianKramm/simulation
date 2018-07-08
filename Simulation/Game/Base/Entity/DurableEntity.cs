@@ -37,8 +37,8 @@ namespace Simulation.Game.Base.Entity
             preloadedWorldGridChunkBounds = new Rectangle(chunkPosition.X - preloadedSurroundingWorldGridChunkRadius, chunkPosition.Y - preloadedSurroundingWorldGridChunkRadius, preloadedSurroundingWorldGridChunkRadius * 2 + 1, preloadedSurroundingWorldGridChunkRadius * 2 + 1);
             preloadedWorldGridChunkPixelBounds = new Rectangle(preloadedWorldGridChunkBounds.X * World.World.WorldChunkPixelSize.X, preloadedWorldGridChunkBounds.Y * World.World.WorldChunkPixelSize.Y, preloadedWorldGridChunkBounds.Width * World.World.WorldChunkPixelSize.X, preloadedWorldGridChunkBounds.Height * World.World.WorldChunkPixelSize.Y);
 
-            for (int i = preloadedWorldGridChunkBounds.Left; i < preloadedWorldGridChunkBounds.Right; i++)
-                for (int j = preloadedWorldGridChunkBounds.Top; j < preloadedWorldGridChunkBounds.Bottom; j++)
+            for (int i = preloadedWorldGridChunkBounds.Left; i < preloadedWorldGridChunkBounds.Right - 1; i++)
+                for (int j = preloadedWorldGridChunkBounds.Top; j < preloadedWorldGridChunkBounds.Bottom - 1; j++)
                     SimulationGame.world.loadWorldGridChunkAsync(i, j);
         }
 
