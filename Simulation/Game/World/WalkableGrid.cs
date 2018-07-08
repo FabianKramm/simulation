@@ -6,6 +6,7 @@ using Simulation.Util;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 /*
  * The WalkableGrid is only used for quick pathfinding
@@ -30,6 +31,11 @@ namespace Simulation.Game.World
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void loadGridChunk(int chunkX, int chunkY)
         {
+            if (Thread.CurrentThread.ManagedThreadId == 1)
+            {
+                GameConsole.WriteLine("ChunkLoading", chunkX + "," + chunkY + " walkable loaded in main thread");
+            }
+
             walkableGrid[chunkX + "," + chunkY] = WorldLoader.loadWalkableGridChunk(chunkX, chunkY);
         }
 
@@ -158,18 +164,11 @@ namespace Simulation.Game.World
                             var found = false;
 
                             foreach (HitableObject interactiveObject in worldGridChunk.interactiveObjects)
-                            {
-                                if(blockX == 3 && blockY == -2 && interactiveObject.ID == "ca1bb72b-ca15-4751-a58d-65c1fc74ea5f")
-                                {
-                                    var a = 1;
-                                }
-
                                 if (hitableObject.blockingType == BlockingType.BLOCKING && interactiveObject.blockingBounds.Intersects(new Rectangle(blockX * World.BlockSize.X, blockY * World.BlockSize.Y, World.BlockSize.X, World.BlockSize.Y)))
                                 {
                                     found = true;
                                     break;
                                 }
-                            }
                                 
                             if (!found)
                             {
