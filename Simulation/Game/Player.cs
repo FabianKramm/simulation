@@ -4,7 +4,10 @@ using Simulation.Game.Base.Entity;
 using Simulation.Game.Hud;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.Skills;
+using Simulation.PathFinding;
 using Simulation.Util;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Simulation.Game
 {
@@ -65,9 +68,9 @@ namespace Simulation.Game
                 {
                     if (SimulationGame.isDebug)
                     {
-                        Point currentBlock = GeometryUtils.getChunkPosition((int)SimulationGame.mousePosition.X, (int)SimulationGame.mousePosition.Y, World.World.BlockSize.X, World.World.BlockSize.Y);
+                        Point clickedBlock = GeometryUtils.getChunkPosition((int)SimulationGame.mousePosition.X, (int)SimulationGame.mousePosition.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
 
-                        GameConsole.WriteLine("Block", "Block: " + currentBlock.X + ", " + currentBlock.Y);
+                        walkTo(clickedBlock.X, clickedBlock.Y);
                     }
 
                     leftMouseClick = true;

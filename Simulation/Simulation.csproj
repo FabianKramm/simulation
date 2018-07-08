@@ -87,7 +87,7 @@
     <Compile Include="Game\World\WorldGridChunk.cs" />
     <Compile Include="Game\World\Generator\WorldGenerator.cs" />
     <Compile Include="Game\World\WalkableGrid.cs" />
-    <Compile Include="Game\World\World.cs" />
+    <Compile Include="Game\World\WorldGrid.cs" />
     <Compile Include="PathFinding\DiagonalMovement.cs" />
     <Compile Include="PathFinding\DynamicGrid.cs" />
     <Compile Include="PathFinding\GridPos.cs" />
@@ -96,7 +96,7 @@
     <Compile Include="PathFinding\JumpPointFinder.cs" />
     <Compile Include="PathFinding\Node.cs" />
     <Compile Include="PathFinding\ParamBase.cs" />
-    <Compile Include="PathFinding\PathFinding.cs" />
+    <Compile Include="PathFinding\PathFinder.cs" />
     <Compile Include="PathFinding\Util.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

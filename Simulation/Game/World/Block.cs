@@ -56,7 +56,7 @@ namespace Simulation.Game.World
             this.blockType = blockType;
             this.blockingType = blockingType;
 
-            blockBounds = new Rectangle(position.X * World.BlockSize.X, position.Y * World.BlockSize.Y, World.BlockSize.X, World.BlockSize.Y);
+            blockBounds = new Rectangle(position.X * WorldGrid.BlockSize.X, position.Y * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
         }
 
         public void addHitableObject(HitableObject hitableObject)

@@ -40,7 +40,7 @@ namespace Simulation.Game.World.Generator
             var newX = chunkPosition.X * generatedChunkBlockSize.X;
             var newY = chunkPosition.Y * generatedChunkBlockSize.Y;
 
-            Point worldGridChunkPosition = GeometryUtils.getChunkPosition(newX, newY, World.WorldChunkBlockSize.X, World.WorldChunkBlockSize.Y);
+            Point worldGridChunkPosition = GeometryUtils.getChunkPosition(newX, newY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
 
             if(WorldLoader.doesWorldGridChunkExist(worldGridChunkPosition.X, worldGridChunkPosition.Y))
             {
@@ -56,12 +56,12 @@ namespace Simulation.Game.World.Generator
             for (int i = newX; i < (newX + generatedChunkBlockSize.X); i++)
                 for (int j = newY; j < (newY + generatedChunkBlockSize.Y); j++)
                 {
-                    Point worldGridChunk = GeometryUtils.getChunkPosition(i, j, World.WorldChunkBlockSize.X, World.WorldChunkBlockSize.Y);
+                    Point worldGridChunk = GeometryUtils.getChunkPosition(i, j, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
                     Point walkableGridChunk = GeometryUtils.getChunkPosition(i, j, WalkableGrid.WalkableGridBlockChunkSize.X, WalkableGrid.WalkableGridBlockChunkSize.Y);
 
                     if(worldGrid.ContainsKey((worldGridChunk.X, worldGridChunk.Y)) == false)
                     {
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)] = new WorldGridChunk(worldGridChunk.X * World.WorldChunkPixelSize.X, worldGridChunk.Y * World.WorldChunkPixelSize.Y);
+                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)] = new WorldGridChunk(worldGridChunk.X * WorldGrid.WorldChunkPixelSize.X, worldGridChunk.Y * WorldGrid.WorldChunkPixelSize.Y);
                     }
 
                     if (walkableGrid.ContainsKey((walkableGridChunk.X, walkableGridChunk.Y)) == false)
@@ -86,11 +86,11 @@ namespace Simulation.Game.World.Generator
 
                     if (Value <= 10 && Value > 6)
                     {
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].addAmbientObject(AmbientObjectFactory.createSmallRocks(new Vector2(i * World.BlockSize.X, j * World.BlockSize.Y)));
+                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].addAmbientObject(AmbientObjectFactory.createSmallRocks(new Vector2(i * WorldGrid.BlockSize.X, j * WorldGrid.BlockSize.Y)));
                     }
                     else if (Value <= 6 && Value >= 4)
                     {
-                        AmbientHitableObject tree = AmbientObjectFactory.createTree(new Vector2(i * World.BlockSize.X, j * World.BlockSize.Y));
+                        AmbientHitableObject tree = AmbientObjectFactory.createTree(new Vector2(i * WorldGrid.BlockSize.X, j * WorldGrid.BlockSize.Y));
 
                         worldGrid[(worldGridChunk.X, worldGridChunk.Y)].addContainedObject(tree);
                     }

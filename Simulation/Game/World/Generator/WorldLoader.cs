@@ -84,7 +84,7 @@ namespace Simulation.Game.World.Generator
 
             if (!File.Exists(chunkPath))
             {
-                SimulationGame.worldGenerator.generateChunk(chunkX * World.WorldChunkBlockSize.X, chunkY * World.WorldChunkBlockSize.Y);
+                SimulationGame.worldGenerator.generateChunk(chunkX * WorldGrid.WorldChunkBlockSize.X, chunkY * WorldGrid.WorldChunkBlockSize.Y);
             }
 
             fileLocks.Enter(chunkPath);

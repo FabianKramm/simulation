@@ -30,8 +30,8 @@ namespace Simulation.Game.Effects
             direction = new Vector2(target.X - position.X, target.Y - position.Y);
             direction.Normalize();
 
-            position.X += (direction.X * World.World.BlockSize.X);
-            position.Y += (direction.Y * World.World.BlockSize.Y);
+            position.X += (direction.X * World.WorldGrid.BlockSize.X);
+            position.Y += (direction.Y * World.WorldGrid.BlockSize.Y);
 
             angle = (float)Math.Atan2(direction.Y, direction.X) + (float)Math.PI * 0.5f;
 
@@ -102,7 +102,7 @@ namespace Simulation.Game.Effects
                 {
                     if(impact.IsStarted)
                     {
-                        spriteBatch.Draw(impact, position, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.getLayerDepthFromPosition(position.X, position.Y + World.World.BlockSize.Y));
+                        spriteBatch.Draw(impact, position, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.getLayerDepthFromPosition(position.X, position.Y + World.WorldGrid.BlockSize.Y));
                     }
                 }
                 else

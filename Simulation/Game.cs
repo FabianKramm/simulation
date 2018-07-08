@@ -49,7 +49,7 @@ namespace Simulation
             get; private set;
         }
 
-        public static World world
+        public static WorldGrid world
         {
             get; private set;
         }
@@ -103,7 +103,7 @@ namespace Simulation
 
             contentManager = Content;
 
-            world = new World();
+            world = new WorldGrid();
             hud = new Hud();
 
             visibleArea = Rectangle.Empty;
@@ -161,11 +161,11 @@ namespace Simulation
 
         private void updateVisibleArea()
         {
-            visibleArea.X = (int)(SimulationGame.camera.Position.X - resolution.Width * 0.5f * (1/zoom)) - World.RenderOuterBlockRange * World.BlockSize.X;
-            visibleArea.Y = (int)(SimulationGame.camera.Position.Y - resolution.Height * 0.5f * (1/zoom)) - World.RenderOuterBlockRange * World.BlockSize.Y;
+            visibleArea.X = (int)(SimulationGame.camera.Position.X - resolution.Width * 0.5f * (1/zoom)) - WorldGrid.RenderOuterBlockRange * WorldGrid.BlockSize.X;
+            visibleArea.Y = (int)(SimulationGame.camera.Position.Y - resolution.Height * 0.5f * (1/zoom)) - WorldGrid.RenderOuterBlockRange * WorldGrid.BlockSize.Y;
 
-            visibleArea.Width = (int)(resolution.Width * (1 / zoom) + 2 * World.RenderOuterBlockRange * World.BlockSize.X);
-            visibleArea.Height = (int)(resolution.Height * (1 / zoom) + 2 * World.RenderOuterBlockRange * World.BlockSize.Y);
+            visibleArea.Width = (int)(resolution.Width * (1 / zoom) + 2 * WorldGrid.RenderOuterBlockRange * WorldGrid.BlockSize.X);
+            visibleArea.Height = (int)(resolution.Height * (1 / zoom) + 2 * WorldGrid.RenderOuterBlockRange * WorldGrid.BlockSize.Y);
         }
 
         private void updateMousePosition()

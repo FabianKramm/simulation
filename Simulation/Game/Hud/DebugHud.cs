@@ -29,7 +29,7 @@ namespace Simulation.Game.Hud
             {
                 spriteBatch.Draw(backgroundOverlay, new Rectangle(0, 0, SimulationGame.resolution.Width, SimulationGame.resolution.Height), backgroundColor);
 
-                Point currentBlock = GeometryUtils.getChunkPosition((int)SimulationGame.camera.Position.X, (int)SimulationGame.camera.Position.Y, World.World.BlockSize.X, World.World.BlockSize.Y);
+                Point currentBlock = GeometryUtils.getChunkPosition((int)SimulationGame.camera.Position.X, (int)SimulationGame.camera.Position.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
 
                 string currentPos = "Pos: " + SimulationGame.camera.Position.X + ", " + SimulationGame.camera.Position.Y;
                 string currentBlockText = "Block: " + currentBlock.X + ", " + currentBlock.Y;

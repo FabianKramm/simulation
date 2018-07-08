@@ -12,7 +12,13 @@ namespace Simulation.Util
 
     public class GeometryUtils
     {
-        public static int reservedDepthLayers = 100;
+        public static readonly int reservedDepthLayers = 100;
+        public static readonly float SmallFloat = 0.1f;
+
+        public static bool VectorsWithinDistance(int x1, int y1, int x2, int y2, int d)
+        {
+            return ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) < d * d;
+        }
 
         public static float getLayerDepthFromReservedLayer(ReservedDepthLayers layer)
         {

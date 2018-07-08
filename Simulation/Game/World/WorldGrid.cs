@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Simulation.Game.World
 {
-    public class World
+    public class WorldGrid
     {
         public static Point BlockSize = new Point(32, 32);
 

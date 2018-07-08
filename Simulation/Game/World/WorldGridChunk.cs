@@ -34,25 +34,25 @@ namespace Simulation.Game.World
 
         public WorldGridChunk(int realX, int realY)
         {
-            blockingGrid = new BlockType[World.WorldChunkBlockSize.X, World.WorldChunkBlockSize.Y];
-            realChunkBounds = new Rectangle(realX, realY, World.WorldChunkPixelSize.X, World.WorldChunkPixelSize.Y);
+            blockingGrid = new BlockType[WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y];
+            realChunkBounds = new Rectangle(realX, realY, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
         }
 
         public Point getChunkPosition()
         {
-            return GeometryUtils.getChunkPosition(realChunkBounds.X, realChunkBounds.Y, World.WorldChunkPixelSize.X, World.WorldChunkPixelSize.Y);
+            return GeometryUtils.getChunkPosition(realChunkBounds.X, realChunkBounds.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
         }
 
         public BlockType getBlockType(int blockX, int blockY)
         {
-            var projectedPosition = GeometryUtils.getPositionWithinChunk(blockX, blockY, World.WorldChunkBlockSize.X, World.WorldChunkBlockSize.Y);
+            var projectedPosition = GeometryUtils.getPositionWithinChunk(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
 
             return blockingGrid[projectedPosition.X, projectedPosition.Y];
         }
 
         public void setBlockType(int blockX, int blockY, BlockType blockType)
         {
-            var projectedPosition = GeometryUtils.getPositionWithinChunk(blockX, blockY, World.WorldChunkBlockSize.X, World.WorldChunkBlockSize.Y);
+            var projectedPosition = GeometryUtils.getPositionWithinChunk(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
 
             blockingGrid[projectedPosition.X, projectedPosition.Y] = blockType;
         }
