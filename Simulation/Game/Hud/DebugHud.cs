@@ -30,7 +30,7 @@ namespace Simulation.Game.Hud
 
         public void Update(GameTime gameTime)
         {
-            if(SimulationGame.isDebug)
+            /* if(SimulationGame.isDebug)
             {
                 KeyboardState state = Keyboard.GetState();
                 bool shiftDown = state.CapsLock || state.IsKeyDown(Keys.LeftShift) || state.IsKeyDown(Keys.RightShift);
@@ -81,7 +81,7 @@ namespace Simulation.Game.Hud
                         keysPressed.Remove(i);
                     }
                 }
-            }
+            } */
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -94,13 +94,15 @@ namespace Simulation.Game.Hud
 
                 Point currentBlock = GeometryUtils.getChunkPosition((int)SimulationGame.camera.Position.X, (int)SimulationGame.camera.Position.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
 
+                string time = "Time: " + (TimeUtils.GetCurrentDayTick() / SimulationGame.TicksPerHour) + ":" + (TimeUtils.GetCurrentDayTick() % SimulationGame.TicksPerHour);
                 string currentPos = "Pos: " + SimulationGame.camera.Position.X + ", " + SimulationGame.camera.Position.Y;
                 string currentBlockText = "Block: " + currentBlock.X + ", " + currentBlock.Y;
                 string loadedChunks = "Loaded Chunks: " + SimulationGame.world.getLoadedChunkAmount() + " - " + SimulationGame.world.walkableGrid.getLoadedChunkAmount();
 
-                spriteBatch.DrawString(font, currentPos, new Vector2(SimulationGame.resolution.Width - font.MeasureString(currentPos).X - 20, 20), Color.White);
-                spriteBatch.DrawString(font, currentBlockText, new Vector2(SimulationGame.resolution.Width - font.MeasureString(currentBlockText).X - 20, 40), Color.White);
-                spriteBatch.DrawString(font, loadedChunks, new Vector2(SimulationGame.resolution.Width - font.MeasureString(loadedChunks).X - 20, 60), Color.White);
+                spriteBatch.DrawString(font, time, new Vector2(SimulationGame.resolution.Width - font.MeasureString(time).X - 20, 20), Color.White);
+                spriteBatch.DrawString(font, currentPos, new Vector2(SimulationGame.resolution.Width - font.MeasureString(currentPos).X - 20, 40), Color.White);
+                spriteBatch.DrawString(font, currentBlockText, new Vector2(SimulationGame.resolution.Width - font.MeasureString(currentBlockText).X - 20, 60), Color.White);
+                spriteBatch.DrawString(font, loadedChunks, new Vector2(SimulationGame.resolution.Width - font.MeasureString(loadedChunks).X - 20, 80), Color.White);
 
                 spriteBatch.DrawString(font, "> " + command, new Vector2(SimulationGame.resolution.Width - 500, SimulationGame.resolution.Height - 200), Color.White);
             }

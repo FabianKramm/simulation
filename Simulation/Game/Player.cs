@@ -35,8 +35,8 @@ namespace Simulation.Game
 
             Vector2 newDirection = Vector2.Zero;
 
-            if(!SimulationGame.isDebug)
-            {
+            // if(!SimulationGame.isDebug)
+            // {
                 if (state.IsKeyDown(Keys.D))
                 {
                     newDirection.X += 1.0f;
@@ -76,7 +76,7 @@ namespace Simulation.Game
                 {
                     leftMouseClick = false;
                 }
-            }
+            // }
 
             direction = newDirection;
 

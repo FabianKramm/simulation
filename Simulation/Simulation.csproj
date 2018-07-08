@@ -114,6 +114,7 @@
     <Compile Include="Util\GeometryUtils.cs" />
     <Compile Include="Util\IPrimitive.cs" />
     <Compile Include="Util\Primitive.cs" />
+    <Compile Include="Util\TimeUtils.cs" />
     <Compile Include="Util\Util.cs" />
   </ItemGroup>
   <ItemGroup>

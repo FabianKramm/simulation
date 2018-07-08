@@ -18,7 +18,7 @@ namespace Simulation.Game.Renderer
 
         public static void Draw(SpriteBatch spriteBatch, int realX, int realY, BlockType blockType)
         {
-            Color color = Color.White;
+            Color color = GameRenderer.BlendColor;
 
             if(SimulationGame.isDebug && !SimulationGame.world.walkableGrid.IsPositionWalkable(realX, realY))
             {

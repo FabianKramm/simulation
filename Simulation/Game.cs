@@ -39,6 +39,15 @@ namespace Simulation
     /// </summary>
     public class SimulationGame : Microsoft.Xna.Framework.Game
     {
+        public static int TicksPerHour = 20;
+        public static int TicksPerDay = 24 * TicksPerHour;
+        private static int MilliSecondsPerTick = 500;
+
+        public static float Ticks
+        {
+            get; private set;
+        }
+
         public static bool isDebug
         {
             get; private set;
@@ -148,6 +157,8 @@ namespace Simulation
 
             camera.LoadContent();
             hud.LoadContent();
+
+            GameRenderer.LoadContent();
         }
 
         /// <summary>
@@ -182,6 +193,8 @@ namespace Simulation
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            Ticks += (float)gameTime.ElapsedGameTime.Milliseconds / (float)MilliSecondsPerTick;
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 

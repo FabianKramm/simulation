@@ -14,7 +14,7 @@ namespace Simulation.Game.Renderer.Entities
 
             movingEntity.rendererInformation.Update(gameTime, newWalkingDirection);
 
-            spriteBatch.Draw(movingEntity.rendererInformation.currentAnimation, movingEntity.position, layerDepth: GeometryUtils.getLayerDepthFromPosition(movingEntity.position.X, movingEntity.position.Y));
+            spriteBatch.Draw(movingEntity.rendererInformation.currentAnimation, movingEntity.position, color: GameRenderer.BlendColor, layerDepth: GeometryUtils.getLayerDepthFromPosition(movingEntity.position.X, movingEntity.position.Y));
         }
     }
 }

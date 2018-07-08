@@ -164,3 +164,9 @@
 /processorParam:TextureFormat=Color
 /build:Player.gif
 
+#begin Effects/Night.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/Night.fx
+

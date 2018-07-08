@@ -54,7 +54,7 @@ namespace Simulation.Game.Renderer
 
                 if (renderInformation != null)
                 {
-                    spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(renderInformation.texture), interactiveObject.position, renderInformation.spriteRectangle, Color.White, 0.0f, renderInformation.origin, 1.0f, SpriteEffects.None, GeometryUtils.getLayerDepthFromPosition(interactiveObject.position.X, interactiveObject.position.Y));
+                    spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(renderInformation.texture), interactiveObject.position, renderInformation.spriteRectangle, GameRenderer.BlendColor, 0.0f, renderInformation.origin, 1.0f, SpriteEffects.None, GeometryUtils.getLayerDepthFromPosition(interactiveObject.position.X, interactiveObject.position.Y));
                 }
 
                 if (SimulationGame.isDebug)
