@@ -33,13 +33,13 @@ namespace Simulation.Game.Base.Entity
             direction = Vector2.Zero;
         }
 
-        public override void updatePosition(Vector2 newPosition)
+        public override void UpdatePosition(Vector2 newPosition)
         {
             if (canMove(newPosition))
             {
                 SimulationGame.world.removeInteractiveObject(this);
 
-                base.updatePosition(newPosition);
+                base.UpdatePosition(newPosition);
 
                 SimulationGame.world.addInteractiveObject(this);
             }
@@ -89,14 +89,14 @@ namespace Simulation.Game.Base.Entity
                     newPos.X = position.X < destPos.X ? Math.Min(destPos.X, newPos.X) : Math.Max(destPos.X, newPos.X);
                     newPos.Y = position.Y < destPos.Y ? Math.Min(destPos.Y, newPos.Y) : Math.Max(destPos.Y, newPos.Y);
 
-                    updatePosition(newPos);
+                    UpdatePosition(newPos);
                 }
             }
             else
             {
                 if (direction != Vector2.Zero)
                 {
-                    updatePosition(new Vector2(position.X + direction.X * velocity * gameTime.ElapsedGameTime.Milliseconds, position.Y + direction.Y * velocity * gameTime.ElapsedGameTime.Milliseconds));
+                    UpdatePosition(new Vector2(position.X + direction.X * velocity * gameTime.ElapsedGameTime.Milliseconds, position.Y + direction.Y * velocity * gameTime.ElapsedGameTime.Milliseconds));
                 }
             }
         }

@@ -357,6 +357,16 @@ namespace Simulation.Game.World
                         }
                     }
 
+                foreach (var ambientObject in worldGrid[key].ambientObjects)
+                {
+                    ambientObject.Destroy();
+                }
+
+                foreach (var containedEntity in worldGrid[key].containedObjects)
+                {
+                    containedEntity.Destroy();
+                }
+
                 // Save async
                 saveWorldGridChunkAsync(Int32.Parse(pos[0]), Int32.Parse(pos[1]), worldGrid[key]);
 

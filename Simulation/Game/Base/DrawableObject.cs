@@ -14,6 +14,11 @@ namespace Simulation.Game.Base
             get; private set;
         }
 
+        public bool IsDestroyed
+        {
+            get; private set;
+        }
+
         // Create from JSON
         protected DrawableObject() {}
 
@@ -23,9 +28,14 @@ namespace Simulation.Game.Base
             ID = Util.Util.getUUID();
         }
 
-        public virtual void updatePosition(Vector2 newPosition)
+        public virtual void UpdatePosition(Vector2 newPosition)
         {
             position = new Vector2((int)newPosition.X, (int)newPosition.Y);
+        }
+
+        public virtual void Destroy()
+        {
+            IsDestroyed = true;
         }
     }
 }

@@ -79,9 +79,9 @@ namespace Simulation.Game.Base
             }
         }
 
-        public override void updatePosition(Vector2 newPosition)
+        public override void UpdatePosition(Vector2 newPosition)
         {
-            base.updatePosition(newPosition);
+            base.UpdatePosition(newPosition);
 
             updateHitableBounds(position);
         }

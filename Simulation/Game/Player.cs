@@ -21,9 +21,9 @@ namespace Simulation.Game
             fireballSkill = new FireballSkill(this, new Vector2(0, -20));
         }
 
-        public override void updatePosition(Vector2 newPosition)
+        public override void UpdatePosition(Vector2 newPosition)
         {
-            base.updatePosition(newPosition);
+            base.UpdatePosition(newPosition);
 
             SimulationGame.camera.Position = new Vector2(position.X, (int)position.Y);
         }
@@ -66,12 +66,8 @@ namespace Simulation.Game
             {
                 if (!leftMouseClick)
                 {
-                    if (SimulationGame.isDebug)
-                    {
-                        Point clickedBlock = GeometryUtils.getChunkPosition((int)SimulationGame.mousePosition.X, (int)SimulationGame.mousePosition.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
-
-                        walkTo(clickedBlock.X, clickedBlock.Y);
-                    }
+                    Point clickedBlock = GeometryUtils.getChunkPosition((int)SimulationGame.mousePosition.X, (int)SimulationGame.mousePosition.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
+                    walkTo(clickedBlock.X, clickedBlock.Y);
 
                     leftMouseClick = true;
                 }

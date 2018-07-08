@@ -43,9 +43,9 @@ namespace Simulation.Game.Base.Entity
                     SimulationGame.world.loadWorldGridChunkAsync(i, j);
         }
 
-        public override void updatePosition(Vector2 newPosition)
+        public override void UpdatePosition(Vector2 newPosition)
         {
-            base.updatePosition(newPosition);
+            base.UpdatePosition(newPosition);
 
             preloadGridChunks();
         }
