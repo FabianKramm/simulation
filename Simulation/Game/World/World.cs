@@ -39,6 +39,11 @@ namespace Simulation.Game.World
         private TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
         private static TimeSpan garbageCollectInterval = TimeSpan.FromSeconds(20);
 
+        public int getLoadedChunkAmount()
+        {
+            return worldGrid.Count;
+        }
+
         public WorldGridChunk loadWorldGridChunk(int chunkX, int chunkY)
         {
             if(Thread.CurrentThread.ManagedThreadId == 1)

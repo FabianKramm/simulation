@@ -35,6 +35,11 @@ namespace Simulation.Game.World
             walkableGrid[chunkX + "," + chunkY] = WorldLoader.loadWalkableGridChunk(chunkX, chunkY);
         }
 
+        public int getLoadedChunkAmount()
+        {
+            return walkableGrid.Count;
+        }
+
         public void saveGridChunkAsync(int chunkX, int chunkY, WalkableGridChunk chunk)
         {
             Task.Run(() =>
