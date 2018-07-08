@@ -106,6 +106,7 @@
     <Compile Include="Spritesheet\Extensions\SpriteBatchExtensions.cs" />
     <Compile Include="Spritesheet\Frame.cs" />
     <Compile Include="Spritesheet\Spritesheet.cs" />
+    <Compile Include="Util\KeyboardUtils.cs" />
     <Compile Include="Util\NamedLock.cs" />
     <Compile Include="Util\ReflectionUtils.cs" />
     <Compile Include="Util\ThreadingUtils.cs" />

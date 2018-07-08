@@ -39,6 +39,7 @@ namespace Simulation.Game.Base.Entity
             {
                 SimulationGame.world.removeInteractiveObject(this);
 
+                // TODO: Check if we are moving into unloaded area => if yes then we load the tile and unload us
                 base.UpdatePosition(newPosition);
 
                 SimulationGame.world.addInteractiveObject(this);

@@ -35,47 +35,50 @@ namespace Simulation.Game
 
             Vector2 newDirection = Vector2.Zero;
 
-            if (state.IsKeyDown(Keys.D))
+            if(!SimulationGame.isDebug)
             {
-                newDirection.X += 1.0f;
-            }
+                if (state.IsKeyDown(Keys.D))
+                {
+                    newDirection.X += 1.0f;
+                }
 
-            if (state.IsKeyDown(Keys.A))
-            {
-                newDirection.X -= 1.0f;
-            }
+                if (state.IsKeyDown(Keys.A))
+                {
+                    newDirection.X -= 1.0f;
+                }
 
-            if (state.IsKeyDown(Keys.W))
-            {
-                newDirection.Y -= 1.0f;
-            }
+                if (state.IsKeyDown(Keys.W))
+                {
+                    newDirection.Y -= 1.0f;
+                }
 
-            if (state.IsKeyDown(Keys.S))
-            {
-                newDirection.Y += 1.0f;
-            }
+                if (state.IsKeyDown(Keys.S))
+                {
+                    newDirection.Y += 1.0f;
+                }
 
-            if (state.IsKeyDown(Keys.D1))
-            {
-                // fireballSkill.use(SimulationGame.mousePosition);
+                if (state.IsKeyDown(Keys.D1))
+                {
+                    // fireballSkill.use(SimulationGame.mousePosition);
+                }
+
+                if (mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    if (!leftMouseClick)
+                    {
+                        Point clickedBlock = GeometryUtils.getChunkPosition((int)SimulationGame.mousePosition.X, (int)SimulationGame.mousePosition.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
+                        walkTo(clickedBlock.X, clickedBlock.Y);
+
+                        leftMouseClick = true;
+                    }
+                }
+                else
+                {
+                    leftMouseClick = false;
+                }
             }
 
             direction = newDirection;
-
-            if (mouseState.LeftButton == ButtonState.Pressed)
-            {
-                if (!leftMouseClick)
-                {
-                    Point clickedBlock = GeometryUtils.getChunkPosition((int)SimulationGame.mousePosition.X, (int)SimulationGame.mousePosition.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
-                    walkTo(clickedBlock.X, clickedBlock.Y);
-
-                    leftMouseClick = true;
-                }
-            }
-            else
-            {
-                leftMouseClick = false;
-            }
 
             base.Update(gameTime);
         }
