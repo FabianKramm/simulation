@@ -10,13 +10,13 @@ namespace Simulation.Game.Factories
         Tree01 = 0,
     }
 
-    class StaticObjectFactory
+    class AmbientObjectFactory
     {
         private static Random random = new Random();
 
-        public static StaticBlockingObject createTree(Vector2 position)
+        public static AmbientHitableObject createTree(Vector2 position)
         {
-            return new StaticBlockingObject(Renderer.InteractiveObjectType.TREE01, new Vector2(position.X, position.Y + World.World.BlockSize.Y), new Rectangle(6, -36, 67, 36));
+            return new AmbientHitableObject(AmbientHitableObjectType.TREE01, new Vector2(position.X, position.Y + World.World.BlockSize.Y), new Rectangle(6, -36, 67, 36));
         }
 
         public static AmbientObject createSmallRocks(Vector2 position)

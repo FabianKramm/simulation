@@ -17,19 +17,17 @@ namespace Simulation.Game.World
 
     public class WorldGridChunk
     {
-        [JsonProperty]
         private BlockType[,] blockingGrid;
 
         public Rectangle realChunkBounds;
 
         // These objects are just passing by or are overlapping with this chunk
-        [JsonIgnore]
         public List<HitableObject> interactiveObjects;
 
         // These objects stay on this chunk and are drawn
         public List<HitableObject> containedObjects;
 
-        // These objects are not important for the world and just displayed here
+        // These objects are not important for the world and are just displayed here
         public List<AmbientObject> ambientObjects;
 
         public WorldGridChunk(int realX, int realY)

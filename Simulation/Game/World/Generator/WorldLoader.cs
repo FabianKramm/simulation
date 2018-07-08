@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
+using Newtonsoft.Json.Linq;
 using Simulation.Game.Hud;
+using Simulation.Game.Serialization;
 using Simulation.Util;
 using System;
 using System.Collections.Generic;
@@ -94,12 +96,9 @@ namespace Simulation.Game.World.Generator
                 using (var stream = File.OpenRead(chunkPath))
                 using (var reader = new BsonReader(stream))
                 {
-                    var serializer = JsonSerializer.Create(new JsonSerializerSettings
-                    {
-                        TypeNameHandling = TypeNameHandling.All
-                    });
+                    JToken jToken = JToken.ReadFrom(reader);
 
-                    worldGridChunk = serializer.Deserialize<WorldGridChunk>(reader);
+                    worldGridChunk = WorldGridChunkSerializer.Deserialize(new JObject(jToken));
                 }
 
                 return worldGridChunk;
@@ -121,12 +120,7 @@ namespace Simulation.Game.World.Generator
                 using (var stream = File.OpenWrite(chunkPath))
                 using (var writer = new BsonWriter(stream))
                 {
-                    var serializer = JsonSerializer.Create(new JsonSerializerSettings
-                    {
-                        TypeNameHandling = TypeNameHandling.All
-                    });
-
-                    serializer.Serialize(writer, chunk);
+                    WorldGridChunkSerializer.Serialize(chunk).WriteTo(writer);
                 }
             }
             finally

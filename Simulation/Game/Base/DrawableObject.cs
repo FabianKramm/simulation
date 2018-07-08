@@ -14,7 +14,10 @@ namespace Simulation.Game.Base
             get; private set;
         }
 
-        public DrawableObject(Vector2 position)
+        // Create from JSON
+        protected DrawableObject() {}
+
+        protected DrawableObject(Vector2 position)
         {
             this.position = position;
             ID = Util.Util.getUUID();

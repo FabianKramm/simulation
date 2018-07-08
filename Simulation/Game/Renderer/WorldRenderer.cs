@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Base;
+using Simulation.Game.Base.Entity;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.World;
 using Simulation.Util;

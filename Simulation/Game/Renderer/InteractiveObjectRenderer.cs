@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Simulation.Game.Renderer
 {
-    public enum InteractiveObjectType
+    public enum AmbientHitableObjectType
     {
         NO_OBJECT = 0,
         TREE01,
@@ -41,32 +41,34 @@ namespace Simulation.Game.Renderer
             }
         }
 
-        private static Dictionary<InteractiveObjectType, InteractiveObjectRenderInformation> interactiveObjectLookup = new Dictionary<InteractiveObjectType, InteractiveObjectRenderInformation> {
-            { InteractiveObjectType.NO_OBJECT, null },
-            { InteractiveObjectType.TREE01, new InteractiveObjectRenderInformation(@"Environment\Tree01", new Rectangle(0, 0, 79, 91)) }
+        private static Dictionary<AmbientHitableObjectType, InteractiveObjectRenderInformation> ambientHitableObjectLookup = new Dictionary<AmbientHitableObjectType, InteractiveObjectRenderInformation> {
+            { AmbientHitableObjectType.NO_OBJECT, null },
+            { AmbientHitableObjectType.TREE01, new InteractiveObjectRenderInformation(@"Environment\Tree01", new Rectangle(0, 0, 79, 91)) }
         };
 
         public static void Draw(SpriteBatch spriteBatch, HitableObject interactiveObject)
         {
-            var renderInformation = interactiveObjectLookup[interactiveObject.interactiveObjectType];
-
-            if (renderInformation != null)
+            if(interactiveObject is AmbientHitableObject)
             {
-                spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(renderInformation.texture), interactiveObject.position, renderInformation.spriteRectangle, Color.White, 0.0f, renderInformation.origin, 1.0f, SpriteEffects.None, GeometryUtils.getLayerDepthFromPosition(interactiveObject.position.X, interactiveObject.position.Y));
-            }
+                var renderInformation = ambientHitableObjectLookup[((AmbientHitableObject)interactiveObject).ambientHitableObjectType];
 
-            if (SimulationGame.isDebug)
-            {
-                if (interactiveObject.blockingType == BlockingType.BLOCKING)
+                if (renderInformation != null)
                 {
-                    SimulationGame.primitiveDrawer.Rectangle(interactiveObject.unionBounds, Color.Red);
+                    spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(renderInformation.texture), interactiveObject.position, renderInformation.spriteRectangle, Color.White, 0.0f, renderInformation.origin, 1.0f, SpriteEffects.None, GeometryUtils.getLayerDepthFromPosition(interactiveObject.position.X, interactiveObject.position.Y));
                 }
-                else
+
+                if (SimulationGame.isDebug)
                 {
-                    SimulationGame.primitiveDrawer.Rectangle(interactiveObject.hitBoxBounds, Color.White);
+                    if (interactiveObject.blockingType == BlockingType.BLOCKING)
+                    {
+                        SimulationGame.primitiveDrawer.Rectangle(interactiveObject.unionBounds, Color.Red);
+                    }
+                    else
+                    {
+                        SimulationGame.primitiveDrawer.Rectangle(interactiveObject.hitBoxBounds, Color.White);
+                    }
                 }
             }
-
         }
     }
 }

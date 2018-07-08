@@ -1,18 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using Newtonsoft.Json;
-using Simulation.Game;
+using Simulation.Game.Base;
 using Simulation.Game.Factories;
-using Simulation.Game.World;
-using Simulation.Game.World.Generator;
-using Simulation.PathFinding;
-using Simulation.Util;
+using Simulation.Game.Renderer;
+using Simulation.Game.Serialization;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Simulation
 {
@@ -28,10 +19,14 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
+            
+
+            Console.WriteLine(WorldObjectSerializer.Deserialize(WorldObjectSerializer.Serialize(AmbientObjectFactory.createTree(new Vector2(0,0)))));
+
             // WorldGenerator.ResetWorld();
 
-            using (var game = new SimulationGame())
-                game.Run();
+            // using (var game = new SimulationGame())
+            //    game.Run();
 
             //Console.WriteLine(GeometryUtils.getPositionWithinChunk(-1, -1, 32, 32));
 
@@ -115,17 +110,17 @@ namespace Simulation
 
             //Console.WriteLine(stopwatch.ElapsedMilliseconds);
 
-            /*var x = -7;
-            var y = -7;
+            /*var x = 0;
+            var y = -32;
 
-            var width = 4;
-            var height = 4;
+            var width = 32;
+            var height = 32;
             
             for(var i=x;i<(x+width);i++)
             {
                 for(var j=y;j<(y+height);j++)
                 {
-                    Console.Write(GeometryUtils.getPositionWithinChunk(i, j, width, height));
+                    Console.Write(GeometryUtils.getIndexFromPoint(i, j, width, height));
                     Console.Write(" ");
                 }
 

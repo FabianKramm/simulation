@@ -128,6 +128,14 @@ namespace Simulation.Game.World
 
                         if (IsChunkLoaded(walkableGridChunkPos.X, walkableGridChunkPos.Y))
                         {
+                            if(blockX == 4 && blockY == -2)
+                            {
+                                setBlockNotWalkable(blockX, blockY, true);
+                                var a = IsBlockWalkable(blockX, blockY + 1);
+
+                                Console.WriteLine(a);
+                            }
+
                             setBlockNotWalkable(blockX, blockY, true);
                         }
                     }
@@ -158,11 +166,19 @@ namespace Simulation.Game.World
                             var found = false;
 
                             foreach (HitableObject interactiveObject in worldGridChunk.interactiveObjects)
+                            {
+                                if(interactiveObject.ID == "d63e1975-63b6-49e7-9db6-ac2f378ae28f")
+                                {
+                                    var a = true;
+                                }
+
                                 if (hitableObject.blockingType == BlockingType.BLOCKING && interactiveObject.blockingBounds.Intersects(new Rectangle(blockX * World.BlockSize.X, blockY * World.BlockSize.Y, World.BlockSize.X, World.BlockSize.Y)))
                                 {
                                     found = true;
                                     break;
                                 }
+                            }
+                                
 
                             if (!found)
                             {

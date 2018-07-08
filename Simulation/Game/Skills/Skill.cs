@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Base;
+using Simulation.Game.Base.Entity;
 using System;
 
 namespace Simulation.Game.Skills

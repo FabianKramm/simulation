@@ -37,12 +37,12 @@ namespace Simulation.Game
 
             if (direction.Y > 0)
             {
-                return WalkingDirection.Up;
+                return WalkingDirection.Down;
             }
 
             if (direction.Y < 0)
             {
-                return WalkingDirection.Down;
+                return WalkingDirection.Up;
             }
 
             return WalkingDirection.Idle;

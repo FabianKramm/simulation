@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.Base;
+using Simulation.Game.Base.Entity;
 
 namespace Simulation.Game.Effects
 {

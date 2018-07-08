@@ -1,13 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Renderer.Entities;
 
-namespace Simulation.Game.Base
+namespace Simulation.Game.Base.Entity
 {
     public class MovingEntity: LivingEntity
     {
         public Vector2 direction;
-        private float velocity = 0.3f; 
-        
+        private float velocity = 0.3f;
+
+        // Create from JSON
+        protected MovingEntity() { }
+
         public MovingEntity(LivingEntityType livingEntityType, Vector2 position, Rectangle relativeHitBoxBounds) :
             base(livingEntityType, position, relativeHitBoxBounds)
         {

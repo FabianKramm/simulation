@@ -19,6 +19,9 @@ namespace Simulation.Game.Base
             get; private set;
         }
 
+        // Create from JSON
+        protected AmbientObject() {}
+
         public AmbientObject(AmbientObjectType ambientObjectType, Vector2 position, bool hasDepth = false) :
             base(position)
         {
