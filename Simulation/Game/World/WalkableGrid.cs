@@ -103,7 +103,7 @@ namespace Simulation.Game.World
 
             try
             {
-                if (walkableGrid.ContainsKey(chunkPosition.X + "," + chunkPosition.X) == false)
+                if (walkableGrid.ContainsKey(chunkPosition.X + "," + chunkPosition.Y) == false)
                     loadGridChunk(chunkPosition.X, chunkPosition.Y);
 
                 setBit(ref walkableGrid[chunkPosition.X + "," + chunkPosition.Y].chunkData[arrayPosition / 32], arrayPosition % 32, notWalkable);
@@ -129,15 +129,6 @@ namespace Simulation.Game.World
                         if (IsChunkLoaded(walkableGridChunkPos.X, walkableGridChunkPos.Y))
                         {
                             setBlockNotWalkable(blockX, blockY, true);
-                        }
-                        else
-                        {
-                            
-
-                            if(blockX > -96 && blockX < 96 && blockY > -96 && blockY < 96)
-                            {
-                                Console.WriteLine(blockX + "," + blockY + " not loaded yet");
-                            }
                         }
                     }
             }

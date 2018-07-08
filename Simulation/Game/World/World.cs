@@ -7,7 +7,9 @@ using Simulation.Util;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Simulation.Game.World
@@ -39,6 +41,11 @@ namespace Simulation.Game.World
 
         public WorldGridChunk loadWorldGridChunk(int chunkX, int chunkY)
         {
+            if(Thread.CurrentThread.ManagedThreadId == 1)
+            {
+                GameConsole.WriteLine("ChunkLoading", chunkX + "," + chunkY + " loaded in main thread");
+            }
+
             var walkableGridChunkPosition = GeometryUtils.getChunkPosition(chunkX * WorldChunkPixelSize.X, chunkY * WorldChunkPixelSize.Y, WalkableGrid.WalkableGridPixelChunkSize.X, WalkableGrid.WalkableGridPixelChunkSize.Y);
 
             walkableGrid.loadGridChunkGuarded(walkableGridChunkPosition.X, walkableGridChunkPosition.Y);
@@ -93,6 +100,9 @@ namespace Simulation.Game.World
         public void applyLoadedChunks()
         {
             ThreadingUtils.assertMainThread();
+            var stopwatch = new Stopwatch();
+
+            stopwatch.Start();
 
             int amountChunksLoaded = 0;
 
@@ -121,9 +131,11 @@ namespace Simulation.Game.World
                 }
             }
 
-            if(amountChunksLoaded > 0)
+            stopwatch.Stop();
+
+            if (amountChunksLoaded > 0)
             {
-                GameConsole.WriteLine("ChunkLoading", amountChunksLoaded + " chunks preloaded");
+                GameConsole.WriteLine("ChunkLoading", amountChunksLoaded + " chunks preloaded took " + stopwatch.ElapsedMilliseconds + "ms");
             }
         }
 
@@ -227,8 +239,6 @@ namespace Simulation.Game.World
 
             return true;
         }
-
-
 
         public void addInteractiveObject(HitableObject hitableObject)
         {
