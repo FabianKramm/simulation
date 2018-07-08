@@ -7,6 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 /*
  * The WalkableGrid is only used for quick pathfinding
@@ -22,7 +23,7 @@ namespace Simulation.Game.World
         public static int WalkableGridArrayChunkCount = WalkableGridBlockChunkSize.X * WalkableGridBlockChunkSize.Y / 32;
 
         private TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
-        private static TimeSpan garbageCollectInterval = TimeSpan.FromSeconds(60);
+        private static TimeSpan garbageCollectInterval = TimeSpan.FromSeconds(30);
 
         private ConcurrentDictionary<string, WalkableGridChunk> walkableGrid = new ConcurrentDictionary<string, WalkableGridChunk>();
         private NamedLock chunkLocks = new NamedLock();
@@ -31,12 +32,26 @@ namespace Simulation.Game.World
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void loadGridChunk(int chunkX, int chunkY)
         {
-            if (Thread.CurrentThread.ManagedThreadId == 1)
-            {
-                GameConsole.WriteLine("ChunkLoading", chunkX + "," + chunkY + " walkable loaded in main thread");
-            }
-
             walkableGrid[chunkX + "," + chunkY] = WorldLoader.loadWalkableGridChunk(chunkX, chunkY);
+        }
+
+        public void saveGridChunkAsync(int chunkX, int chunkY, WalkableGridChunk chunk)
+        {
+            Task.Run(() =>
+            {
+                var key = chunkX + "," + chunkY;
+
+                chunkLocks.Enter(key);
+
+                try
+                {
+                    WorldLoader.saveWalkableGridChunk(chunkX, chunkY, chunk);
+                }
+                finally
+                {
+                    chunkLocks.Exit(key);
+                }
+            });
         }
 
         public void loadGridChunkGuarded(int chunkX, int chunkY)
@@ -206,9 +221,13 @@ namespace Simulation.Game.World
                     {
                         WalkableGridChunk removedItem;
 
+                        string[] pos = key.Split(',');
+
                         walkableGrid.TryRemove(key, out removedItem);
 
                         // Save async
+                        saveGridChunkAsync(Int32.Parse(pos[0]), Int32.Parse(pos[1]), removedItem);
+
                         chunksUnloaded++;
                     }
                 }

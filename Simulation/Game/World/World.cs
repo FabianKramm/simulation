@@ -37,7 +37,7 @@ namespace Simulation.Game.World
         public WalkableGrid walkableGrid { get; private set; } = new WalkableGrid();
 
         private TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
-        private static TimeSpan garbageCollectInterval = TimeSpan.FromSeconds(30);
+        private static TimeSpan garbageCollectInterval = TimeSpan.FromSeconds(20);
 
         public WorldGridChunk loadWorldGridChunk(int chunkX, int chunkY)
         {
@@ -57,6 +57,25 @@ namespace Simulation.Game.World
         public bool isWorldGridChunkLoaded(int chunkX, int chunkY)
         {
             return worldGrid.ContainsKey(chunkX + "," + chunkY);
+        }
+
+        public void saveWorldGridChunkAsync(int chunkX, int chunkY, WorldGridChunk chunk)
+        {
+            Task.Run(() =>
+            {
+                string chunkKey = chunkX + "," + chunkY;
+
+                chunkLocks.Enter(chunkKey);
+
+                try
+                {
+                    WorldLoader.saveWorldGridChunk(chunkX, chunkY, chunk);
+                }
+                finally
+                {
+                    chunkLocks.Exit(chunkKey);
+                }
+            });
         }
 
         public void loadWorldGridChunkAsync(int chunkX, int chunkY)
@@ -333,9 +352,10 @@ namespace Simulation.Game.World
                         }
                     }
 
-                worldGrid.Remove(key);
-
                 // Save async
+                saveWorldGridChunkAsync(Int32.Parse(pos[0]), Int32.Parse(pos[1]), worldGrid[key]);
+
+                worldGrid.Remove(key);
             }
 
             GameConsole.WriteLine("ChunkLoading", "Garbage Collector unloaded " + deleteList.Count + " world grid chunks");
