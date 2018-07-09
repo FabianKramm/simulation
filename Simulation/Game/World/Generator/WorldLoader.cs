@@ -36,6 +36,59 @@ namespace Simulation.Game.World.Generator
             }
         }
 
+        public static void saveInterior(Interior interior)
+        {
+            var chunkPath = Path.Combine(Util.Util.GetInteriorSavePath(), interior.ID);
+
+            fileLocks.Enter(chunkPath);
+
+            try
+            {
+                using (var stream = File.OpenWrite(chunkPath))
+                using (var writer = new BsonWriter(stream))
+                {
+                    InteriorSerializer.Serialize(interior).WriteTo(writer);
+                }
+            }
+            finally
+            {
+                fileLocks.Exit(chunkPath);
+            }
+        }
+
+        public static Interior loadInterior(string ID)
+        {
+            if (ID == Interior.Outside) throw new Exception("Cannot load outside interior!");
+
+            var chunkPath = Path.Combine(Util.Util.GetWorldSavePath(), ID);
+
+            if (!File.Exists(chunkPath))
+            {
+                throw new Exception("Cannot find interior with ID " + ID);
+            }
+
+            fileLocks.Enter(chunkPath);
+
+            try
+            {
+                Interior interior;
+
+                using (var stream = File.OpenRead(chunkPath))
+                using (var reader = new BsonReader(stream))
+                {
+                    JToken jToken = JToken.ReadFrom(reader);
+
+                    interior = InteriorSerializer.Deserialize((JObject)jToken);
+                }
+
+                return interior;
+            }
+            finally
+            {
+                fileLocks.Exit(chunkPath);
+            }
+        }
+
         public static void saveWalkableGridChunk(int chunkX, int chunkY, WalkableGridChunk chunk)
         {
             var chunkPath = Path.Combine(Util.Util.GetWalkableGridSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
@@ -61,7 +114,7 @@ namespace Simulation.Game.World.Generator
 
             if (!File.Exists(chunkPath))
             {
-                SimulationGame.worldGenerator.generateChunk(chunkX * WalkableGrid.WalkableGridBlockChunkSize.X, chunkY * WalkableGrid.WalkableGridBlockChunkSize.Y);
+                SimulationGame.WorldGenerator.generateChunk(chunkX * WalkableGrid.WalkableGridBlockChunkSize.X, chunkY * WalkableGrid.WalkableGridBlockChunkSize.Y);
             }
 
             fileLocks.Enter(chunkPath);
@@ -84,7 +137,7 @@ namespace Simulation.Game.World.Generator
 
             if (!File.Exists(chunkPath))
             {
-                SimulationGame.worldGenerator.generateChunk(chunkX * WorldGrid.WorldChunkBlockSize.X, chunkY * WorldGrid.WorldChunkBlockSize.Y);
+                SimulationGame.WorldGenerator.generateChunk(chunkX * WorldGrid.WorldChunkBlockSize.X, chunkY * WorldGrid.WorldChunkBlockSize.Y);
             }
 
             fileLocks.Enter(chunkPath);

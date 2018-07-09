@@ -175,7 +175,7 @@ namespace Simulation.Game.World
                         if (IsChunkLoaded(walkableGridChunkPos.X, walkableGridChunkPos.Y))
                         {
                             Point worldGridChunkPos = GeometryUtils.getChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
-                            WorldGridChunk worldGridChunk = SimulationGame.world.getWorldGridChunk(worldGridChunkPos.X, worldGridChunkPos.Y);
+                            WorldGridChunk worldGridChunk = SimulationGame.World.getWorldGridChunk(worldGridChunkPos.X, worldGridChunkPos.Y);
                             BlockType blockType = worldGridChunk.getBlockType(blockX, blockY);
 
                             if (CollisionUtils.getBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
@@ -183,7 +183,7 @@ namespace Simulation.Game.World
 
                             var found = false;
 
-                            foreach (HitableObject interactiveObject in worldGridChunk.interactiveObjects)
+                            foreach (HitableObject interactiveObject in worldGridChunk.OverlappingObjects)
                                 if (hitableObject.blockingType == BlockingType.BLOCKING && interactiveObject.blockingBounds.Intersects(new Rectangle(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
                                 {
                                     found = true;
@@ -213,7 +213,7 @@ namespace Simulation.Game.World
                 {
                     var found = false;
 
-                    foreach (var durableEntity in SimulationGame.world.durableEntities)
+                    foreach (var durableEntity in SimulationGame.World.durableEntities)
                     {
                         if (walkableGridChunkItem.Value.realChunkBounds.Intersects(durableEntity.Value.preloadedWorldGridChunkPixelBounds))
                         {

@@ -39,7 +39,7 @@ namespace Simulation.Game.Base.Entity
 
             for (int i = preloadedWorldGridChunkBounds.Left; i <= preloadedWorldGridChunkBounds.Right - 1; i++)
                 for (int j = preloadedWorldGridChunkBounds.Top; j <= preloadedWorldGridChunkBounds.Bottom - 1; j++)
-                    SimulationGame.world.loadWorldGridChunkAsync(i, j);
+                    SimulationGame.World.loadWorldGridChunkAsync(i, j);
         }
 
         public override void UpdatePosition(Vector2 newPosition)

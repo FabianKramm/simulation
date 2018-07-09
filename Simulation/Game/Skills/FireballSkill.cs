@@ -16,7 +16,7 @@ namespace Simulation.Game.Skills
 
         protected override void trigger(Vector2 targetPosition)
         {
-            if (SimulationGame.isDebug)
+            if (SimulationGame.IsDebug)
             {
                 GameConsole.WriteLine("USE_SKILL", "Fireball");
             }

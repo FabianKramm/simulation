@@ -7,7 +7,7 @@ namespace Simulation.Game.Serialization
     public class DrawableObjectSerializer
     {
         private static readonly Type drawableObjectType = typeof(DrawableObject);
-        private static readonly string[] serializeableProperties = new string[] { "ID", "position" };
+        private static readonly string[] serializeableProperties = new string[] { "ID", "InteriorID", "position" };
 
         protected static void Deserialize(ref JObject jObject, DrawableObject drawableObject)
         {

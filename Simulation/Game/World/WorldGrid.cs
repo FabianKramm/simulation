@@ -16,35 +16,30 @@ namespace Simulation.Game.World
 {
     public class WorldGrid
     {
-        public static Point BlockSize = new Point(32, 32);
-
-        public static Point WorldChunkBlockSize = new Point(32, 32); // 32 * 32 BlockSize
-        public static Point WorldChunkPixelSize = new Point(WorldChunkBlockSize.X * BlockSize.X, WorldChunkBlockSize.Y * BlockSize.Y);
-
-        public static int RenderOuterBlockRange = 3;
-
-        private Dictionary<string, WorldGridChunk> worldGrid = new Dictionary<string, WorldGridChunk>();
-       
-        private Dictionary<string, HitableObject> interactiveObjects;
-        private Dictionary<string, DrawableObject> effects;
-
-        public Dictionary<string, DurableEntity> durableEntities = new Dictionary<string, DurableEntity>();
-
-        private NamedLock chunkLocks = new NamedLock();
-
-        private ConcurrentQueue<WorldGridChunk> worldGridChunksLoaded = new ConcurrentQueue<WorldGridChunk>();
+        public static readonly Point BlockSize = new Point(32, 32);
+        public static readonly Point WorldChunkBlockSize = new Point(32, 32); // 32 * 32 BlockSize
+        public static readonly Point WorldChunkPixelSize = new Point(WorldChunkBlockSize.X * BlockSize.X, WorldChunkBlockSize.Y * BlockSize.Y);
+        public static readonly int RenderOuterBlockRange = 3;
 
         public WalkableGrid walkableGrid { get; private set; } = new WalkableGrid();
+        private Dictionary<string, WorldGridChunk> worldGrid = new Dictionary<string, WorldGridChunk>();
+        public InteriorManager InteriorManager = new InteriorManager();
+
+        private NamedLock chunkLocks = new NamedLock();
+        private ConcurrentQueue<WorldGridChunk> worldGridChunksLoaded = new ConcurrentQueue<WorldGridChunk>();
 
         private TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
         private static TimeSpan garbageCollectInterval = TimeSpan.FromSeconds(20);
+
+        public Dictionary<string, DrawableObject> effects;
+        public Dictionary<string, DurableEntity> durableEntities = new Dictionary<string, DurableEntity>();
 
         public int getLoadedChunkAmount()
         {
             return worldGrid.Count;
         }
 
-        public WorldGridChunk loadWorldGridChunk(int chunkX, int chunkY)
+        private WorldGridChunk loadWorldGridChunk(int chunkX, int chunkY)
         {
             if(Thread.CurrentThread.ManagedThreadId == 1)
             {
@@ -148,8 +143,7 @@ namespace Simulation.Game.World
                 if (worldGrid.ContainsKey(chunkKey) == false)
                 {
                     worldGrid[chunkKey] = worldGridChunk;
-
-                    onChunkLoaded(worldGridChunk, chunkX, chunkY);
+                    worldGrid[chunkKey].OnLoaded(chunkX, chunkY);
 
                     amountChunksLoaded++;
                 }
@@ -172,134 +166,10 @@ namespace Simulation.Game.World
             if(worldGrid.ContainsKey(chunkKey) == false)
             {
                 worldGrid[chunkKey] = loadWorldGridChunk(chunkX, chunkY);
-
-                onChunkLoaded(worldGrid[chunkKey], chunkX, chunkY);
+                worldGrid[chunkKey].OnLoaded(chunkX, chunkY);
             }
 
             return worldGrid[chunkKey];
-        }
-
-        /*
-            This function is executed when a new chunk was loaded and objects from other chunks could overlap with this chunk
-         */
-        public void onChunkLoaded(WorldGridChunk chunk, int chunkX, int chunkY)
-        {
-            ThreadingUtils.assertMainThread();
-
-            foreach (DrawableObject drawableObject in chunk.containedObjects)
-            {
-                if(drawableObject is HitableObject)
-                {
-                    chunk.addInteractiveObject((HitableObject)drawableObject);
-
-                    walkableGrid.addInteractiveObject((HitableObject)drawableObject);
-                }
-            }
-
-            for(int i=-1;i<=1;i++)
-                for(int j=-1;j<1;j++)
-                {
-                    if (i == 0 && j == 0) continue;
-
-                    string neighborKey = (chunkX + i) + "," + (chunkY + j);
-
-                    if (worldGrid.ContainsKey(neighborKey) == true)
-                    {
-                        foreach (HitableObject hitableObject in chunk.interactiveObjects)
-                        {
-                            if (hitableObject.unionBounds.Intersects(worldGrid[neighborKey].realChunkBounds))
-                            {
-                                worldGrid[neighborKey].addInteractiveObject(hitableObject);
-                            }
-                        }
-
-                        foreach (HitableObject hitableObject in worldGrid[neighborKey].interactiveObjects)
-                        {
-                            if (hitableObject.unionBounds.Intersects(chunk.realChunkBounds))
-                            {
-                                chunk.addInteractiveObject(hitableObject);
-
-                                walkableGrid.addInteractiveObject(hitableObject);
-                            }
-                        }
-                    }
-                }
-        }
-
-        public bool canMove(HitableObject origin, Rectangle rect)
-        {
-            ThreadingUtils.assertMainThread();
-
-            // Check if blocks are of type blocking
-            Point topLeft = GeometryUtils.getChunkPosition(rect.Left, rect.Top, BlockSize.X, BlockSize.Y);
-            Point bottomRight = GeometryUtils.getChunkPosition(rect.Right - 1, rect.Bottom - 1, BlockSize.X, BlockSize.Y);
-
-            for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
-                for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
-                {
-                    Point chunkPos = GeometryUtils.getChunkPosition(blockX, blockY, WorldChunkBlockSize.X, WorldChunkBlockSize.Y);
-                    WorldGridChunk worldGridChunk = getWorldGridChunk(chunkPos.X, chunkPos.Y);
-
-                    BlockType blockType = worldGridChunk.getBlockType(blockX, blockY);
-
-                    if (CollisionUtils.getBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
-                        return false;
-                }
-
-            // Check collision with interactive objects
-            Point chunkTopLeft = GeometryUtils.getChunkPosition(rect.Left, rect.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
-            Point chunkBottomRight = GeometryUtils.getChunkPosition(rect.Right - 1, rect.Bottom - 1, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
-
-            for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
-                for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
-                {
-                    WorldGridChunk worldGridChunk = getWorldGridChunk(chunkX, chunkY);
-
-                    if (worldGridChunk.interactiveObjects != null) 
-                        foreach (HitableObject hitableObject in worldGridChunk.interactiveObjects)
-                            if (hitableObject.blockingType == BlockingType.BLOCKING && hitableObject != origin && hitableObject.blockingBounds.Intersects(rect))
-                                return false;
-                }
-
-            return true;
-        }
-
-        public void addInteractiveObject(HitableObject hitableObject)
-        {
-            ThreadingUtils.assertMainThread();
-
-            Point chunkTopLeft = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Left, hitableObject.unionBounds.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
-            Point chunkBottomRight = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Right - 1, hitableObject.unionBounds.Bottom - 1, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
-
-            for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
-                for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
-                {
-                    if(isWorldGridChunkLoaded(chunkX, chunkY))
-                    {
-                        getWorldGridChunk(chunkX, chunkY).addInteractiveObject(hitableObject);
-                    }
-                }
-
-            walkableGrid.addInteractiveObject(hitableObject);
-        }
-
-        public void removeInteractiveObject(HitableObject hitableObject)
-        {
-            ThreadingUtils.assertMainThread();
-
-            Point chunkTopLeft = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Left, hitableObject.unionBounds.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
-            Point chunkBottomRight = GeometryUtils.getChunkPosition(hitableObject.unionBounds.Right - 1, hitableObject.unionBounds.Bottom - 1, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
-
-            for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
-                for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
-                {
-                    if (isWorldGridChunkLoaded(chunkX, chunkY))
-                    {
-                        getWorldGridChunk(chunkX, chunkY).removeInteractiveObject(hitableObject);
-                    }
-                }
-
-            walkableGrid.removeInteractiveObject(hitableObject);
         }
 
         public void addDurableEntity(DurableEntity durableEntity)
@@ -350,19 +220,19 @@ namespace Simulation.Game.World
 
                         if (isWorldGridChunkLoaded(neighborChunkX, neighborChunkY))
                         {
-                            foreach (var containedEntity in worldGrid[key].containedObjects)
+                            foreach (var containedEntity in worldGrid[key].ContainedObjects)
                             {
-                                worldGrid[neighborKey].interactiveObjects.Remove(containedEntity);
+                                worldGrid[neighborKey].OverlappingObjects.Remove(containedEntity);
                             }
                         }
                     }
 
-                foreach (var ambientObject in worldGrid[key].ambientObjects)
+                foreach (var ambientObject in worldGrid[key].AmbientObjects)
                 {
                     ambientObject.Destroy();
                 }
 
-                foreach (var containedEntity in worldGrid[key].containedObjects)
+                foreach (var containedEntity in worldGrid[key].ContainedObjects)
                 {
                     containedEntity.Destroy();
                 }
@@ -389,6 +259,7 @@ namespace Simulation.Game.World
             }
 
             walkableGrid.Update(gameTime);
+            InteriorManager.Update(gameTime);
         }
     }
 }

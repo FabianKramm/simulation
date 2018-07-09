@@ -52,12 +52,12 @@ namespace Simulation.Game.Hud
 
         public void LoadContent()
         {
-            font = SimulationGame.contentManager.Load<SpriteFont>("Arial");
+            font = SimulationGame.ContentManager.Load<SpriteFont>("Arial");
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if(SimulationGame.isDebug)
+            if(SimulationGame.IsDebug)
             {
                 lock(messages)
                 {

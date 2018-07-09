@@ -39,85 +39,85 @@ namespace Simulation
     /// </summary>
     public class SimulationGame : Microsoft.Xna.Framework.Game
     {
-        public static int TicksPerHour = 20;
-        public static int TicksPerDay = 24 * TicksPerHour;
-        private static int MilliSecondsPerTick = 500;
+        public static readonly int TicksPerHour = 20;
+        public static readonly int TicksPerDay = 24 * TicksPerHour;
+        public static readonly int MilliSecondsPerTick = 500;
 
         public static float Ticks
         {
             get; private set;
         } = TicksPerHour * 12;
 
-        public static bool isDebug
+        public static bool IsDebug
+        {
+            get; private set;
+        } = false;
+
+        public static Camera Camera
         {
             get; private set;
         }
 
-        public static Camera camera
+        public static WorldGrid World
         {
             get; private set;
         }
 
-        public static WorldGrid world
+        public static WorldGenerator WorldGenerator
         {
             get; private set;
         }
 
-        public static WorldGenerator worldGenerator;
-        //{
-        //    get; private set;
-        //}
-
-        public static ContentManager contentManager
+        public static ContentManager ContentManager
         {
             get; private set;
         }
 
-        public static Primitive primitiveDrawer
+        public static Primitive PrimitiveDrawer
         {
             get; private set;
         }
 
-        public static Hud hud
+        public static Hud Hud
         {
             get; private set;
         }
 
-        public static Size resolution = new Size(1280, 768);
-        public static Rectangle visibleArea;
+        public static readonly Size Resolution = new Size(1280, 768);
+        public static Rectangle VisibleArea;
 
-        public static Vector2 mousePosition
+        public static Vector2 MousePosition
         {
             get; private set;
         }
 
         public static List<Simulation.Game.Effects.Effect> effects = new List<Simulation.Game.Effects.Effect>();
-        public static Player player;
+        public static Player Player;
 
-        public static GraphicsDeviceManager graphics;
+        public static GraphicsDeviceManager Graphics;
+
         private SpriteBatch spriteBatch;
         private float zoom = 1.0f;
-
         private bool debugKeyDown = false;
 
         public SimulationGame()
         {
-            graphics = new GraphicsDeviceManager(this);
+            Graphics = new GraphicsDeviceManager(this);
 
-            graphics.PreferredBackBufferWidth = resolution.Width;  // set this value to the desired width of your window
-            graphics.PreferredBackBufferHeight = resolution.Height;   // set this value to the desired height of your window
-            graphics.ApplyChanges();
+            Graphics.PreferredBackBufferWidth = Resolution.Width;  // set this value to the desired width of your window
+            Graphics.PreferredBackBufferHeight = Resolution.Height;   // set this value to the desired height of your window
+            Graphics.ApplyChanges();
 
             Content.RootDirectory = "Content";
 
-            contentManager = Content;
+            ContentManager = Content;
 
-            world = new WorldGrid();
-            hud = new Hud();
+            World = new WorldGrid();
+            Hud = new Hud();
 
-            visibleArea = Rectangle.Empty;
+            VisibleArea = Rectangle.Empty;
             
-            isDebug = false;
+            IsDebug = false;
         }
 
         /// <summary>
@@ -130,15 +130,15 @@ namespace Simulation
         {
             Util.Util.createGameFolders();
 
-            worldGenerator = new WorldGenerator(1);
+            WorldGenerator = new WorldGenerator(1);
 
             // TODO: Add your initialization logic here
-            camera = new Camera(graphics.GraphicsDevice);
-            camera.Zoom = zoom;
+            Camera = new Camera(Graphics.GraphicsDevice);
+            Camera.Zoom = zoom;
 
-            player = new Player();
+            Player = new Player();
 
-            world.addDurableEntity(player);
+            World.addDurableEntity(Player);
 
             base.Initialize();
         }
@@ -152,11 +152,11 @@ namespace Simulation
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            primitiveDrawer = new Primitive(graphics.GraphicsDevice, spriteBatch);
-            primitiveDrawer.Depth = 1.0f;
+            PrimitiveDrawer = new Primitive(Graphics.GraphicsDevice, spriteBatch);
+            PrimitiveDrawer.Depth = 1.0f;
 
-            camera.LoadContent();
-            hud.LoadContent();
+            Camera.LoadContent();
+            Hud.LoadContent();
 
             GameRenderer.LoadContent();
         }
@@ -172,18 +172,18 @@ namespace Simulation
 
         private void updateVisibleArea()
         {
-            visibleArea.X = (int)(SimulationGame.camera.Position.X - resolution.Width * 0.5f * (1/zoom)) - WorldGrid.RenderOuterBlockRange * WorldGrid.BlockSize.X;
-            visibleArea.Y = (int)(SimulationGame.camera.Position.Y - resolution.Height * 0.5f * (1/zoom)) - WorldGrid.RenderOuterBlockRange * WorldGrid.BlockSize.Y;
+            VisibleArea.X = (int)(SimulationGame.Camera.Position.X - Resolution.Width * 0.5f * (1/zoom)) - WorldGrid.RenderOuterBlockRange * WorldGrid.BlockSize.X;
+            VisibleArea.Y = (int)(SimulationGame.Camera.Position.Y - Resolution.Height * 0.5f * (1/zoom)) - WorldGrid.RenderOuterBlockRange * WorldGrid.BlockSize.Y;
 
-            visibleArea.Width = (int)(resolution.Width * (1 / zoom) + 2 * WorldGrid.RenderOuterBlockRange * WorldGrid.BlockSize.X);
-            visibleArea.Height = (int)(resolution.Height * (1 / zoom) + 2 * WorldGrid.RenderOuterBlockRange * WorldGrid.BlockSize.Y);
+            VisibleArea.Width = (int)(Resolution.Width * (1 / zoom) + 2 * WorldGrid.RenderOuterBlockRange * WorldGrid.BlockSize.X);
+            VisibleArea.Height = (int)(Resolution.Height * (1 / zoom) + 2 * WorldGrid.RenderOuterBlockRange * WorldGrid.BlockSize.Y);
         }
 
         private void updateMousePosition()
         {
             var _mousePosition = Mouse.GetState().Position;
 
-            mousePosition = new Vector2((SimulationGame.camera.Position.X - resolution.Width * 0.5f) + _mousePosition.X, (SimulationGame.camera.Position.Y - resolution.Height * 0.5f) + _mousePosition.Y);
+            MousePosition = new Vector2((SimulationGame.Camera.Position.X - Resolution.Width * 0.5f) + _mousePosition.X, (SimulationGame.Camera.Position.Y - Resolution.Height * 0.5f) + _mousePosition.Y);
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace Simulation
                 if(!debugKeyDown)
                 {
                     debugKeyDown = true;
-                    SimulationGame.isDebug = !SimulationGame.isDebug;
+                    SimulationGame.IsDebug = !SimulationGame.IsDebug;
                 }
             }
             else
@@ -211,8 +211,8 @@ namespace Simulation
                 debugKeyDown = false;
             }
 
-            player.Update(gameTime);
-            camera.Update(gameTime);
+            Player.Update(gameTime);
+            Camera.Update(gameTime);
 
             for(int i=0;i<effects.Count;i++)
             {
@@ -227,8 +227,8 @@ namespace Simulation
                 }
             }
 
-            hud.Update(gameTime);
-            world.Update(gameTime);
+            Hud.Update(gameTime);
+            World.Update(gameTime);
 
             base.Update(gameTime);
         }

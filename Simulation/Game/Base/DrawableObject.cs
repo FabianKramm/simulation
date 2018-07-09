@@ -4,6 +4,8 @@ namespace Simulation.Game.Base
 {
     public abstract class DrawableObject
     {
+        public string InteriorID = null;
+
         public Vector2 position
         {
             get; private set;

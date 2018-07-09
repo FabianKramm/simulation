@@ -5,53 +5,103 @@ using Simulation.Game.Base.Entity;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.World;
 using Simulation.Util;
+using System;
 
 namespace Simulation.Game.Renderer
 {
     public class WorldRenderer
     {
-        public static void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        private static void drawOutside(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Point topLeft = GeometryUtils.getChunkPosition(SimulationGame.visibleArea.Left, SimulationGame.visibleArea.Top, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
-            Point bottomRight = GeometryUtils.getChunkPosition(SimulationGame.visibleArea.Right - 1, SimulationGame.visibleArea.Bottom - 1, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
+            Point topLeft = GeometryUtils.getChunkPosition(SimulationGame.VisibleArea.Left, SimulationGame.VisibleArea.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            Point bottomRight = GeometryUtils.getChunkPosition(SimulationGame.VisibleArea.Right - 1, SimulationGame.VisibleArea.Bottom - 1, WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
 
             for (int blockX = topLeft.X; blockX < bottomRight.X; blockX++)
                 for (int blockY = topLeft.Y; blockY < bottomRight.Y; blockY++)
                 {
-                    Point worldGridChunkPosition = GeometryUtils.getChunkPosition(blockX, blockY, World.WorldGrid.WorldChunkBlockSize.X, World.WorldGrid.WorldChunkBlockSize.Y);
-                    WorldGridChunk worldGridChunk = SimulationGame.world.getWorldGridChunk(worldGridChunkPosition.X, worldGridChunkPosition.Y);
+                    Point worldGridChunkPosition = GeometryUtils.getChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
+                    WorldGridChunk worldGridChunk = SimulationGame.World.getWorldGridChunk(worldGridChunkPosition.X, worldGridChunkPosition.Y);
 
-                    BlockRenderer.Draw(spriteBatch, blockX * World.WorldGrid.BlockSize.X, blockY * World.WorldGrid.BlockSize.Y, worldGridChunk.getBlockType(blockX, blockY));
+                    BlockRenderer.Draw(spriteBatch, blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, worldGridChunk.getBlockType(blockX, blockY));
                 }
 
-            Point chunkTopLeft = GeometryUtils.getChunkPosition(SimulationGame.visibleArea.Left, SimulationGame.visibleArea.Top, World.WorldGrid.WorldChunkPixelSize.X, World.WorldGrid.WorldChunkPixelSize.Y);
-            Point chunkBottomRight = GeometryUtils.getChunkPosition(SimulationGame.visibleArea.Right - 1, SimulationGame.visibleArea.Bottom - 1, World.WorldGrid.WorldChunkPixelSize.X, World.WorldGrid.WorldChunkPixelSize.Y);
+            Point chunkTopLeft = GeometryUtils.getChunkPosition(SimulationGame.VisibleArea.Left, SimulationGame.VisibleArea.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+            Point chunkBottomRight = GeometryUtils.getChunkPosition(SimulationGame.VisibleArea.Right - 1, SimulationGame.VisibleArea.Bottom - 1, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 
             for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                 for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
                 {
-                    if(SimulationGame.isDebug)
+                    if (SimulationGame.IsDebug)
                     {
-                        SimulationGame.primitiveDrawer.Rectangle(new Rectangle(chunkX * World.WorldGrid.WorldChunkPixelSize.X, chunkY * World.WorldGrid.WorldChunkPixelSize.X, World.WorldGrid.WorldChunkPixelSize.X, World.WorldGrid.WorldChunkPixelSize.Y), Color.Red);
+                        SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle(chunkX * WorldGrid.WorldChunkPixelSize.X, chunkY * WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y), Color.Red);
                     }
 
-                    WorldGridChunk worldGridChunk = SimulationGame.world.getWorldGridChunk(chunkX, chunkY);
+                    WorldGridChunk worldGridChunk = SimulationGame.World.getWorldGridChunk(chunkX, chunkY);
 
-                    if (worldGridChunk.ambientObjects != null)
-                        foreach (AmbientObject ambientObject in worldGridChunk.ambientObjects)
+                    if (worldGridChunk.AmbientObjects != null)
+                        foreach (AmbientObject ambientObject in worldGridChunk.AmbientObjects)
                             AmbientObjectRenderer.Draw(spriteBatch, ambientObject);
 
-                    if (worldGridChunk.containedObjects != null)
-                        foreach (HitableObject containedObject in worldGridChunk.containedObjects)
+                    if (worldGridChunk.ContainedObjects != null)
+                        foreach (HitableObject containedObject in worldGridChunk.ContainedObjects)
                         {
-                            InteractiveObjectRenderer.Draw(spriteBatch, containedObject);
-
                             if (containedObject is LivingEntity)
                             {
                                 LivingEntityRenderer.Draw(spriteBatch, gameTime, (LivingEntity)containedObject);
                             }
+                            else
+                            {
+                                InteractiveObjectRenderer.Draw(spriteBatch, containedObject);
+                            }
                         }
                 }
+        }
+
+        private static void drawInterior(SpriteBatch spriteBatch, GameTime gameTime, Interior interior)
+        {
+            Point topLeft = GeometryUtils.getChunkPosition(SimulationGame.VisibleArea.Left, SimulationGame.VisibleArea.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            Point bottomRight = GeometryUtils.getChunkPosition(SimulationGame.VisibleArea.Right - 1, SimulationGame.VisibleArea.Bottom - 1, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+
+            topLeft.X = Math.Max(0, topLeft.X);
+            topLeft.Y = Math.Max(0, topLeft.Y);
+
+            bottomRight.X = Math.Min(interior.Dimensions.X, bottomRight.X);
+            bottomRight.Y = Math.Min(interior.Dimensions.Y, bottomRight.Y);
+
+            for (int blockX = topLeft.X; blockX < bottomRight.X; blockX++)
+                for (int blockY = topLeft.Y; blockY < bottomRight.Y; blockY++)
+                {
+                    BlockRenderer.Draw(spriteBatch, blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, interior.GetBlockType(blockX, blockY));
+                }
+
+            if (interior.AmbientObjects != null)
+                foreach (AmbientObject ambientObject in interior.AmbientObjects)
+                    AmbientObjectRenderer.Draw(spriteBatch, ambientObject);
+
+            if (interior.ContainedObjects != null)
+                foreach (HitableObject containedObject in interior.ContainedObjects)
+                {
+                    if (containedObject is LivingEntity)
+                    {
+                        LivingEntityRenderer.Draw(spriteBatch, gameTime, (LivingEntity)containedObject);
+                    }
+                    else
+                    {
+                        InteractiveObjectRenderer.Draw(spriteBatch, containedObject);
+                    }
+                }
+        }
+
+        public static void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            if(SimulationGame.Player.InteriorID == Interior.Outside)
+            {
+                drawOutside(spriteBatch, gameTime);
+            }
+            else
+            {
+                drawInterior(spriteBatch, gameTime, SimulationGame.World.InteriorManager.GetInterior(SimulationGame.Player.InteriorID));
+            }
         }
     }
 }

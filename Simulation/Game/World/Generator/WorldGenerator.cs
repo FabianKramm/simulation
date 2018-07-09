@@ -86,13 +86,13 @@ namespace Simulation.Game.World.Generator
 
                     if (Value <= 10 && Value > 6)
                     {
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].addAmbientObject(AmbientObjectFactory.createSmallRocks(new Vector2(i * WorldGrid.BlockSize.X, j * WorldGrid.BlockSize.Y)));
+                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].AddAmbientObject(AmbientObjectFactory.createSmallRocks(new Vector2(i * WorldGrid.BlockSize.X, j * WorldGrid.BlockSize.Y)));
                     }
                     else if (Value <= 6 && Value >= 4)
                     {
                         AmbientHitableObject tree = AmbientObjectFactory.createTree(new Vector2(i * WorldGrid.BlockSize.X, j * WorldGrid.BlockSize.Y));
 
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].addContainedObject(tree);
+                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].AddContainedObject(tree);
                     }
                 }
 

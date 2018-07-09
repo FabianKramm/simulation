@@ -48,24 +48,27 @@ namespace Simulation.Game.Renderer
 
         public static void Draw(SpriteBatch spriteBatch, HitableObject interactiveObject)
         {
-            if(interactiveObject is AmbientHitableObject)
+            if (SimulationGame.VisibleArea.Contains(interactiveObject.position) && interactiveObject.InteriorID == SimulationGame.Player.InteriorID)
             {
-                var renderInformation = ambientHitableObjectLookup[((AmbientHitableObject)interactiveObject).ambientHitableObjectType];
-
-                if (renderInformation != null)
+                if (interactiveObject is AmbientHitableObject)
                 {
-                    spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(renderInformation.texture), interactiveObject.position, renderInformation.spriteRectangle, GameRenderer.BlendColor, 0.0f, renderInformation.origin, 1.0f, SpriteEffects.None, GeometryUtils.getLayerDepthFromPosition(interactiveObject.position.X, interactiveObject.position.Y));
-                }
+                    var renderInformation = ambientHitableObjectLookup[((AmbientHitableObject)interactiveObject).ambientHitableObjectType];
 
-                if (SimulationGame.isDebug)
-                {
-                    if (interactiveObject.blockingType == BlockingType.BLOCKING)
+                    if (renderInformation != null)
                     {
-                        SimulationGame.primitiveDrawer.Rectangle(interactiveObject.unionBounds, Color.Red);
+                        spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(renderInformation.texture), interactiveObject.position, renderInformation.spriteRectangle, GameRenderer.BlendColor, 0.0f, renderInformation.origin, 1.0f, SpriteEffects.None, GeometryUtils.getLayerDepthFromPosition(interactiveObject.position.X, interactiveObject.position.Y));
                     }
-                    else
+
+                    if (SimulationGame.IsDebug)
                     {
-                        SimulationGame.primitiveDrawer.Rectangle(interactiveObject.hitBoxBounds, Color.White);
+                        if (interactiveObject.blockingType == BlockingType.BLOCKING)
+                        {
+                            SimulationGame.PrimitiveDrawer.Rectangle(interactiveObject.unionBounds, Color.Red);
+                        }
+                        else
+                        {
+                            SimulationGame.PrimitiveDrawer.Rectangle(interactiveObject.hitBoxBounds, Color.White);
+                        }
                     }
                 }
             }

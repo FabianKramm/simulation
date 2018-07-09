@@ -25,7 +25,7 @@ namespace Simulation.Game
         {
             base.UpdatePosition(newPosition);
 
-            SimulationGame.camera.Position = new Vector2(position.X, (int)position.Y);
+            SimulationGame.Camera.Position = new Vector2(position.X, (int)position.Y);
         }
 
         public override void Update(GameTime gameTime)
@@ -64,8 +64,8 @@ namespace Simulation.Game
             {
                 if (!leftMouseClick)
                 {
-                    Point clickedBlock = GeometryUtils.getChunkPosition((int)SimulationGame.mousePosition.X, (int)SimulationGame.mousePosition.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
-                    walkTo(clickedBlock.X, clickedBlock.Y);
+                    Point clickedBlock = GeometryUtils.getChunkPosition((int)SimulationGame.MousePosition.X, (int)SimulationGame.MousePosition.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
+                    WalkTo(clickedBlock.X, clickedBlock.Y);
 
                     leftMouseClick = true;
                 }

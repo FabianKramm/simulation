@@ -24,23 +24,23 @@ namespace Simulation.Util
         {
             return Normalize((int)layer,
                             0,
-                            SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Height + reservedDepthLayers);
+                            SimulationGame.VisibleArea.Width * SimulationGame.VisibleArea.Height + reservedDepthLayers);
         }
 
         public static float getLayerDepthFromReservedLayer(int zIndex)
         {
             return Normalize(zIndex,
                             0,
-                            SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Height + reservedDepthLayers);
+                            SimulationGame.VisibleArea.Width * SimulationGame.VisibleArea.Height + reservedDepthLayers);
         }
 
         public static float getLayerDepthFromPosition(float X, float Y)
         {
-            float value = (Y - SimulationGame.visibleArea.Top) * SimulationGame.visibleArea.Width + (X - SimulationGame.visibleArea.Left) + reservedDepthLayers;
+            float value = (Y - SimulationGame.VisibleArea.Top) * SimulationGame.VisibleArea.Width + (X - SimulationGame.VisibleArea.Left) + reservedDepthLayers;
 
             return Normalize(value,
                             0,
-                            SimulationGame.visibleArea.Width * SimulationGame.visibleArea.Height + reservedDepthLayers);
+                            SimulationGame.VisibleArea.Width * SimulationGame.VisibleArea.Height + reservedDepthLayers);
         }
 
         public static float Normalize(float value, float min, float max)

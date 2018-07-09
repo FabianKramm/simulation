@@ -24,7 +24,7 @@ namespace Simulation.Game.Hud
             console = new GameConsole();
             console.LoadContent();
 
-            cursor = SimulationGame.contentManager.Load<Texture2D>(@"Misc\cursorDefault");
+            cursor = SimulationGame.ContentManager.Load<Texture2D>(@"Misc\cursorDefault");
 
             debugHud = new DebugHud();
             debugHud.LoadContent();

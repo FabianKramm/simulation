@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Renderer.Entities;
+using Simulation.Game.World;
 using Simulation.Util;
 using System.Collections.Generic;
 
@@ -35,11 +36,18 @@ namespace Simulation.Game.Renderer
 
         public static void LoadContent()
         {
-            nightEffect = SimulationGame.contentManager.Load<Effect>("Effects/Night");
+            nightEffect = SimulationGame.ContentManager.Load<Effect>("Effects/Night");
         }
 
         private static void setBlendColor()
         {
+            if(SimulationGame.Player.InteriorID != Interior.Outside)
+            {
+                BlendColor = Color.White;
+
+                return;
+            }
+
             int currentDayTick = TimeUtils.GetCurrentDayTick();
 
             int lowerBound = 0;
@@ -87,11 +95,9 @@ namespace Simulation.Game.Renderer
             simulationGame.GraphicsDevice.Clear(Color.Black);
             setBlendColor();
 
-            spriteBatch.Begin(SimulationGame.camera, SpriteSortMode.FrontToBack);
+            spriteBatch.Begin(SimulationGame.Camera, SpriteSortMode.FrontToBack);
 
             WorldRenderer.Draw(spriteBatch, gameTime);
-
-            LivingEntityRenderer.Draw(spriteBatch, gameTime, SimulationGame.player);
 
             foreach (var effect in SimulationGame.effects)
             {
@@ -106,7 +112,7 @@ namespace Simulation.Game.Renderer
             // Hud
             spriteBatch.Begin();
 
-            SimulationGame.hud.Draw(spriteBatch, gameTime);
+            SimulationGame.Hud.Draw(spriteBatch, gameTime);
 
             spriteBatch.End();
         }

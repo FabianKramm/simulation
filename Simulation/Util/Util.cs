@@ -5,8 +5,14 @@ namespace Simulation.Util
 {
     public class Util
     {
+        private static string InteriorSavePath = @"World\Interior\";
         private static string WorldSavePath = @"World\Data\";
         private static string WalkableGridSavePath = @"World\WalkableGrid\";
+
+        public static string GetInteriorSavePath()
+        {
+            return Path.Combine(getGameFolder(), InteriorSavePath);
+        }
 
         public static string GetWorldSavePath()
         {

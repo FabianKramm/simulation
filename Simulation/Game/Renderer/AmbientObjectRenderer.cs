@@ -61,11 +61,14 @@ namespace Simulation.Game.Renderer
 
         public static void Draw(SpriteBatch spriteBatch, AmbientObject ambientObject)
         {
-            var renderInformation = ambientObjectLookup[ambientObject.ambientObjectType];
-
-            if (renderInformation != null)
+            if(SimulationGame.VisibleArea.Contains(ambientObject.position) && ambientObject.InteriorID == SimulationGame.Player.InteriorID)
             {
-                spriteBatch.Draw(SimulationGame.contentManager.Load<Texture2D>(renderInformation.texture), ambientObject.position, renderInformation.spriteRectangle, GameRenderer.BlendColor, 0.0f, renderInformation.origin, 1.0f, SpriteEffects.None, renderInformation.hasDepth ? GeometryUtils.getLayerDepthFromPosition(ambientObject.position.X, ambientObject.position.Y) : GeometryUtils.getLayerDepthFromReservedLayer(ReservedDepthLayers.BlockDecoration));
+                var renderInformation = ambientObjectLookup[ambientObject.ambientObjectType];
+
+                if (renderInformation != null)
+                {
+                    spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(renderInformation.texture), ambientObject.position, renderInformation.spriteRectangle, GameRenderer.BlendColor, 0.0f, renderInformation.origin, 1.0f, SpriteEffects.None, renderInformation.hasDepth ? GeometryUtils.getLayerDepthFromPosition(ambientObject.position.X, ambientObject.position.Y) : GeometryUtils.getLayerDepthFromReservedLayer(ReservedDepthLayers.BlockDecoration));
+                }
             }
         }
     }

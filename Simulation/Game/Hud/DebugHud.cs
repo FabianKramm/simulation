@@ -22,10 +22,10 @@ namespace Simulation.Game.Hud
 
         public void LoadContent()
         {
-            backgroundOverlay = new Texture2D(SimulationGame.graphics.GraphicsDevice, 1, 1);
+            backgroundOverlay = new Texture2D(SimulationGame.Graphics.GraphicsDevice, 1, 1);
             backgroundOverlay.SetData(new Color[] { Color.White });
 
-            font = SimulationGame.contentManager.Load<SpriteFont>("Arial");
+            font = SimulationGame.ContentManager.Load<SpriteFont>("Arial");
         }
 
         public void Update(GameTime gameTime)
@@ -86,25 +86,25 @@ namespace Simulation.Game.Hud
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (SimulationGame.isDebug)
+            if (SimulationGame.IsDebug)
             {
-                spriteBatch.Draw(backgroundOverlay, new Rectangle(0, 0, SimulationGame.resolution.Width, SimulationGame.resolution.Height), backgroundColor);
-                spriteBatch.Draw(backgroundOverlay, new Rectangle(SimulationGame.resolution.Width - 510, SimulationGame.resolution.Height - 210, 490, 190), consoleColor);
+                spriteBatch.Draw(backgroundOverlay, new Rectangle(0, 0, SimulationGame.Resolution.Width, SimulationGame.Resolution.Height), backgroundColor);
+                spriteBatch.Draw(backgroundOverlay, new Rectangle(SimulationGame.Resolution.Width - 510, SimulationGame.Resolution.Height - 210, 490, 190), consoleColor);
 
 
-                Point currentBlock = GeometryUtils.getChunkPosition((int)SimulationGame.camera.Position.X, (int)SimulationGame.camera.Position.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
+                Point currentBlock = GeometryUtils.getChunkPosition((int)SimulationGame.Camera.Position.X, (int)SimulationGame.Camera.Position.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
 
                 string time = "Time: " + (TimeUtils.GetCurrentDayTick() / SimulationGame.TicksPerHour) + ":" + (TimeUtils.GetCurrentDayTick() % SimulationGame.TicksPerHour);
-                string currentPos = "Pos: " + SimulationGame.camera.Position.X + ", " + SimulationGame.camera.Position.Y;
+                string currentPos = "Pos: " + SimulationGame.Camera.Position.X + ", " + SimulationGame.Camera.Position.Y;
                 string currentBlockText = "Block: " + currentBlock.X + ", " + currentBlock.Y;
-                string loadedChunks = "Loaded Chunks: " + SimulationGame.world.getLoadedChunkAmount() + " - " + SimulationGame.world.walkableGrid.getLoadedChunkAmount();
+                string loadedChunks = "Loaded Chunks: " + SimulationGame.World.getLoadedChunkAmount() + " - " + SimulationGame.World.walkableGrid.getLoadedChunkAmount();
 
-                spriteBatch.DrawString(font, time, new Vector2(SimulationGame.resolution.Width - font.MeasureString(time).X - 20, 20), Color.White);
-                spriteBatch.DrawString(font, currentPos, new Vector2(SimulationGame.resolution.Width - font.MeasureString(currentPos).X - 20, 40), Color.White);
-                spriteBatch.DrawString(font, currentBlockText, new Vector2(SimulationGame.resolution.Width - font.MeasureString(currentBlockText).X - 20, 60), Color.White);
-                spriteBatch.DrawString(font, loadedChunks, new Vector2(SimulationGame.resolution.Width - font.MeasureString(loadedChunks).X - 20, 80), Color.White);
+                spriteBatch.DrawString(font, time, new Vector2(SimulationGame.Resolution.Width - font.MeasureString(time).X - 20, 20), Color.White);
+                spriteBatch.DrawString(font, currentPos, new Vector2(SimulationGame.Resolution.Width - font.MeasureString(currentPos).X - 20, 40), Color.White);
+                spriteBatch.DrawString(font, currentBlockText, new Vector2(SimulationGame.Resolution.Width - font.MeasureString(currentBlockText).X - 20, 60), Color.White);
+                spriteBatch.DrawString(font, loadedChunks, new Vector2(SimulationGame.Resolution.Width - font.MeasureString(loadedChunks).X - 20, 80), Color.White);
 
-                spriteBatch.DrawString(font, "> " + command, new Vector2(SimulationGame.resolution.Width - 500, SimulationGame.resolution.Height - 200), Color.White);
+                spriteBatch.DrawString(font, "> " + command, new Vector2(SimulationGame.Resolution.Width - 500, SimulationGame.Resolution.Height - 200), Color.White);
             }
         }
     }

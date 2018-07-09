@@ -6,6 +6,7 @@ using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Game.World.Generator;
 using System;
+using System.Collections.Generic;
 
 namespace Simulation
 {
@@ -21,12 +22,13 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
+
             //Console.WriteLine(WorldObjectSerializer.Deserialize(WorldObjectSerializer.Serialize(AmbientObjectFactory.createTree(new Vector2(0,0)))));
 
             // WorldGenerator.ResetWorld();
 
-            using (var game = new SimulationGame())
-                game.Run();
+            // using (var game = new SimulationGame())
+            //    game.Run();
 
             //Console.WriteLine(GeometryUtils.getPositionWithinChunk(-1, -1, 32, 32));
 

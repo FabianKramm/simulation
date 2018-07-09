@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.World;
+using Simulation.Util;
 using System;
 using System.Collections.Generic;
 
 namespace Simulation.PathFinding
 {
-    public class DynamicGrid: BaseGrid
+    public class DynamicWalkableGrid: BaseGrid
     {
         private static int outsideSearchDistanceAllowed = 32;
 
@@ -14,7 +15,7 @@ namespace Simulation.PathFinding
 
         private Rectangle dynamicGridBounds;
 
-        public DynamicGrid(WalkableGrid walkableGrid, int startBlockX, int startBlockY, int endBlockX, int endBlockY)
+        public DynamicWalkableGrid(WalkableGrid walkableGrid, int startBlockX, int startBlockY, int endBlockX, int endBlockY)
         {
             this.walkableGrid = walkableGrid;
 

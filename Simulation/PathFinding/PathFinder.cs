@@ -12,13 +12,30 @@ namespace Simulation.PathFinding
             return Task.Run(() => findPath(startBlockX, startBlockY, endBlockX, endBlockY));
         }
 
-        private static List<GridPos> findPath(int startBlockX, int startBlockY, int endBlockX, int endBlockY)
+        public static Task<List<GridPos>> FindPath(int startBlockX, int startBlockY, int endBlockX, int endBlockY, Interior interior)
         {
-            if (SimulationGame.world.walkableGrid.IsBlockWalkable(endBlockX, endBlockY))
-            {
-                JumpPointParam jpp = new JumpPointParam(new DynamicGrid(SimulationGame.world.walkableGrid, startBlockX, startBlockY, endBlockX, endBlockY), new GridPos(startBlockX, startBlockY), new GridPos(endBlockX, endBlockY), DiagonalMovement.OnlyWhenNoObstacles);
+            return Task.Run(() => findPath(startBlockX, startBlockY, endBlockX, endBlockY, interior));
+        }
 
-                return JumpPointFinder.GetFullPath(JumpPointFinder.FindPath(jpp));
+        private static List<GridPos> findPath(int startBlockX, int startBlockY, int endBlockX, int endBlockY, Interior interior = null)
+        {
+            if(interior == null)
+            {
+                if (SimulationGame.World.walkableGrid.IsBlockWalkable(endBlockX, endBlockY))
+                {
+                    JumpPointParam jpp = new JumpPointParam(new DynamicWalkableGrid(SimulationGame.World.walkableGrid, startBlockX, startBlockY, endBlockX, endBlockY), new GridPos(startBlockX, startBlockY), new GridPos(endBlockX, endBlockY), DiagonalMovement.OnlyWhenNoObstacles);
+
+                    return JumpPointFinder.GetFullPath(JumpPointFinder.FindPath(jpp));
+                }
+            }
+            else
+            {
+                if (CollisionUtils.getBlockingTypeFromBlock(interior.GetBlockType(endBlockX, endBlockY)) != BlockingType.BLOCKING)
+                {
+                    JumpPointParam jpp = new JumpPointParam(new InteriorGrid(interior), new GridPos(startBlockX, startBlockY), new GridPos(endBlockX, endBlockY), DiagonalMovement.OnlyWhenNoObstacles);
+
+                    return JumpPointFinder.GetFullPath(JumpPointFinder.FindPath(jpp));
+                }
             }
 
             return null;

@@ -11,7 +11,8 @@ namespace Simulation.Game.Serialization
         private static readonly Type worldGridChunkType = typeof(WorldGridChunk);
         private static readonly string[] serializeableProperties = new string[] {
             "blockingGrid",
-            "realChunkBounds"
+            "realChunkBounds",
+            "worldLinks"
         };
 
         public static WorldGridChunk Deserialize(JObject jObject)
@@ -41,13 +42,13 @@ namespace Simulation.Game.Serialization
             JArray ambientObjects = (JArray)jObject.GetValue("ambientObjects");
 
             foreach (var ambientObject in ambientObjects)
-                worldGridChunk.addAmbientObject((AmbientObject)WorldObjectSerializer.Deserialize((JObject)ambientObject));
+                worldGridChunk.AddAmbientObject((AmbientObject)WorldObjectSerializer.Deserialize((JObject)ambientObject));
 
             // Deserialize Hitable Objects
             JArray containedObjects = (JArray)jObject.GetValue("containedObjects");
 
             foreach (var containedObject in containedObjects)
-                worldGridChunk.addContainedObject((HitableObject)WorldObjectSerializer.Deserialize((JObject)containedObject));
+                worldGridChunk.AddContainedObject((HitableObject)WorldObjectSerializer.Deserialize((JObject)containedObject));
         }
 
         protected static void Serialize(WorldGridChunk worldGridChunk, ref JObject jObject)
@@ -57,7 +58,7 @@ namespace Simulation.Game.Serialization
             // Serialize Ambient Objects
             JArray ambientObjects = new JArray();
 
-            foreach(var ambientObject in worldGridChunk.ambientObjects)
+            foreach(var ambientObject in worldGridChunk.AmbientObjects)
                 ambientObjects.Add(WorldObjectSerializer.Serialize(ambientObject));
 
             jObject.Add("ambientObjects", ambientObjects);
@@ -65,7 +66,7 @@ namespace Simulation.Game.Serialization
             // Serialize Hitable Objects
             JArray containedObjects = new JArray();
 
-            foreach (var containedObject in worldGridChunk.containedObjects)
+            foreach (var containedObject in worldGridChunk.ContainedObjects)
                 containedObjects.Add(WorldObjectSerializer.Serialize(containedObject));
 
             jObject.Add("containedObjects", containedObjects);
