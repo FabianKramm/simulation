@@ -18,7 +18,7 @@ namespace Simulation.Game
         public Player(): base(LivingEntityType.PLAYER, new Vector2(0, 0), new Rectangle(-8, -20, 16, 20), 3)
         {
             fireballSkill = new FireballSkill(this, new Vector2(0, -20));
-            slashSkill = new SlashSkill(this, new Vector2(0, -20));
+            slashSkill = new SlashSkill(this, new Vector2(0, -24));
         }
 
         public override void UpdatePosition(Vector2 newPosition)

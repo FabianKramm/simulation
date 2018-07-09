@@ -25,8 +25,8 @@ namespace Simulation.Game.Effects
             Vector2 direction = new Vector2(target.X - Position.X, target.Y - Position.Y);
             direction.Normalize();
 
-            Position.X += (direction.X * 12);
-            Position.Y += (direction.Y * 12);
+            Position.X += (direction.X * WorldGrid.BlockSize.X);
+            Position.Y += (direction.Y * WorldGrid.BlockSize.Y);
 
             Angle = GeometryUtils.GetAngleFromDirection(direction) + (float)Math.PI * 0.5f;
 
