@@ -12,6 +12,7 @@ using Simulation.Game.Hud;
 using Simulation.Game.Renderer;
 using System.IO;
 using Simulation.Game.Generator;
+using Simulation.Game.Factories;
 
 /*
     Open Points:
@@ -159,6 +160,11 @@ namespace Simulation
             Hud.LoadContent();
 
             GameRenderer.LoadContent();
+
+            var Geralt = DurableEntityFactory.CreateGeralt();
+
+            SimulationGame.World.addDurableEntity(Geralt);
+            WorldGridChunk.GetWorldGridChunk(WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y).AddContainedObject(Geralt);
         }
 
         /// <summary>
@@ -220,7 +226,7 @@ namespace Simulation
 
                 effect.Update(gameTime);
 
-                if(effect.isFinished)
+                if(effect.IsFinished)
                 {
                     effects.Remove(effect);
                     i--;

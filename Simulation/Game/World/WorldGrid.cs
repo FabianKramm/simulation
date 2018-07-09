@@ -177,7 +177,9 @@ namespace Simulation.Game.World
             ThreadingUtils.assertMainThread();
 
             if (durableEntities.ContainsKey(durableEntity.ID) == false)
+            {
                 durableEntities[durableEntity.ID] = durableEntity;
+            }
         }
 
         private void garbageCollectWorldGridChunks()

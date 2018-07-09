@@ -1,11 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Base.Entity;
+using Simulation.Game.Renderer.Effects;
 
 namespace Simulation.Game.Effects
 {
     abstract public class Effect
     {
+        public EffectRendererInformation effectRendererInformation;
+
         public string ID
         {
             get; private set;
@@ -16,7 +19,7 @@ namespace Simulation.Game.Effects
             get; private set;
         }
 
-        public bool isFinished
+        public bool IsFinished
         {
             get; protected set;
         }
@@ -24,12 +27,11 @@ namespace Simulation.Game.Effects
         public Effect(LivingEntity origin)
         {
             this.origin = origin;
-            isFinished = false;
+            IsFinished = false;
 
             ID = Util.Util.getUUID();
         }
 
         public abstract void Update(GameTime gameTime);
-        public abstract void Draw(SpriteBatch spriteBatch);
     }
 }

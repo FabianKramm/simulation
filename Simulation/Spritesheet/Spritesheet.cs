@@ -38,7 +38,7 @@
 
         public Spritesheet WithGrid((int w, int h) cell, (int x, int y) offset, (int x, int y) cellOrigin)
         {
-            return new Spritesheet(this.Texture, new Point(cell.w, cell.h), new Point(offset.x, offset.y), new Point(cellOrigin.x, cellOrigin.y));
+            return new Spritesheet(this.Texture, new Point(cell.w, cell.h), new Point(offset.x, offset.y), new Point(cellOrigin.x, cellOrigin.y), this.FrameDefaultDuration, this.FrameDefaultEffects);
         }
 
         public Spritesheet WithGrid((int w, int h) cell, (int x, int y) offset)

@@ -52,8 +52,13 @@
     <Compile Include="Game\Base\TemporaryObject.cs" />
     <Compile Include="Game\Effects\Effect.cs" />
     <Compile Include="Game\Effects\Fireball.cs" />
+    <Compile Include="Game\Effects\Slash.cs" />
+    <Compile Include="Game\Factories\DurableEntityFactory.cs" />
     <Compile Include="Game\Generator\InteriorGeneration\InteriorGenerator.cs" />
     <Compile Include="Game\Hud\DebugHud.cs" />
+    <Compile Include="Game\Renderer\Effects\EffectRenderer.cs" />
+    <Compile Include="Game\Renderer\Effects\EffectRendererInformation.cs" />
+    <Compile Include="Game\Renderer\Effects\SlashRenderer.cs" />
     <Compile Include="Game\Renderer\Entities\LivingEntityRendererInformationFactory.cs" />
     <Compile Include="Game\Factories\AmbientObjectFactory.cs" />
     <Compile Include="Game\Hud\GameConsole.cs" />
@@ -79,6 +84,7 @@
     <Compile Include="Game\Serialization\WorldGridChunkSerializer.cs" />
     <Compile Include="Game\Serialization\WorldObjectSerializer.cs" />
     <Compile Include="Game\Skills\Skill.cs" />
+    <Compile Include="Game\Skills\SlashSkill.cs" />
     <Compile Include="Game\World\CollisionDetection.cs" />
     <Compile Include="Game\Movement.cs" />
     <Compile Include="Game\Player.cs" />

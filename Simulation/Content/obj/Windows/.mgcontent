@@ -16,7 +16,9 @@
     <File>D:/Programmieren/simulation/Simulation/Content/Environment/Rock04.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Environment/Rock05.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Spells/Fireball/Explode.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Player.gif</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Effects/Night.fx</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Characters/Geralt.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Characters/Player.gif</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Spells/Slash/Slash.png</File>
   </SourceFiles>
 </SourceFileCollection>

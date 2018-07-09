@@ -67,6 +67,12 @@ namespace Simulation.Util
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetAngleFromDirection(Vector2 direction)
+        {
+            return (float)Math.Atan2(direction.Y, direction.X);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Point GetBlockFromReal(int realX, int realY)
         {
             return new Point(realX < 0 ? (realX / WorldGrid.BlockSize.X) - (realX % WorldGrid.BlockSize.X != 0 ? 1 : 0) : realX / WorldGrid.BlockSize.X, realY < 0 ? (realY / WorldGrid.BlockSize.Y) - (realY % WorldGrid.BlockSize.Y != 0 ? 1 : 0) : realY / WorldGrid.BlockSize.Y);

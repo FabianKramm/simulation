@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using Simulation.Game.Base;
+using Simulation.Game.Base.Entity;
 using Simulation.Game.World;
 using Simulation.Util;
 using System;
@@ -70,7 +71,7 @@ namespace Simulation.Game.Serialization
             if (worldGridChunk.ContainedObjects != null)
                 foreach (var containedObject in worldGridChunk.ContainedObjects)
                 {
-                    if (containedObject is Player) continue;
+                    if (containedObject is DurableEntity) continue;
 
                     containedObjects.Add(WorldObjectSerializer.Serialize(containedObject));
                 }

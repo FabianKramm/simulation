@@ -12,13 +12,15 @@ namespace Simulation.Game.Renderer.Entities
     {
         NO_ENTITY = 0,
         PLAYER,
+        GERALT
     }
 
     public class LivingEntityRenderer
     {
         private static Dictionary<LivingEntityType, Func<LivingEntityRendererInformation>> informationGeneratorLookup = new Dictionary<LivingEntityType, Func<LivingEntityRendererInformation>> {
             { LivingEntityType.NO_ENTITY, null },
-            { LivingEntityType.PLAYER, () => LivingEntityRendererInformationFactory.createPlayerRenderInformation() }
+            { LivingEntityType.PLAYER, () => LivingEntityRendererInformationFactory.createPlayerRenderInformation() },
+            { LivingEntityType.GERALT, () => LivingEntityRendererInformationFactory.CreateGeraltRenderInformation() }
         };
 
         public static void Draw(SpriteBatch spriteBatch, GameTime gameTime, LivingEntity livingEntity)

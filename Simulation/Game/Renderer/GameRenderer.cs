@@ -1,6 +1,7 @@
 ﻿using Comora;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Simulation.Game.Renderer.Effects;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.World;
 using Simulation.Util;
@@ -101,7 +102,7 @@ namespace Simulation.Game.Renderer
 
             foreach (var effect in SimulationGame.effects)
             {
-                effect.Draw(spriteBatch);
+                EffectRenderer.Draw(spriteBatch, gameTime, effect);
             }
 
             spriteBatch.End();

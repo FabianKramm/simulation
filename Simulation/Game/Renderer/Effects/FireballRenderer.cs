@@ -1,6 +1,6 @@
 ﻿namespace Simulation.Game.Renderer.Effects
 {
-    class FireballRenderer
+    public class FireballRenderer
     {
     }
 }

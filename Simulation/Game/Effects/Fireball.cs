@@ -80,7 +80,7 @@ namespace Simulation.Game.Effects
                 }
                 else
                 {
-                    isFinished = true;
+                    IsFinished = true;
                 }
             }
             else
@@ -89,12 +89,12 @@ namespace Simulation.Game.Effects
 
                 if(!impact.IsStarted)
                 {
-                    isFinished = true;
+                    IsFinished = true;
                 }
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        /* public override void Draw(SpriteBatch spriteBatch)
         {
             if(SimulationGame.VisibleArea.Contains(position))
             {
@@ -118,6 +118,6 @@ namespace Simulation.Game.Effects
 
                 SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle((int)(rotatedPoint.X - 7.5f), (int)(rotatedPoint.Y - 7.5f), 15, 15), Color.Red);
             }
-        }
+        } */
     }
 }
