@@ -10,8 +10,8 @@ namespace Simulation.Game.Serialization
         private static readonly Type durableEntityType = typeof(DurableEntity);
         private static readonly string[] serializeableProperties = new string[] {
             "preloadedSurroundingWorldGridChunkRadius",
-            "preloadedWorldGridChunkBounds",
-            "preloadedWorldGridChunkPixelBounds"
+            "PreloadedWorldGridChunkBounds",
+            "PreloadedWorldGridChunkPixelBounds"
         };
 
         public new static DurableEntity Deserialize(JObject jObject)

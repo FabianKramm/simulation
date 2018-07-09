@@ -22,13 +22,12 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
-
             //Console.WriteLine(WorldObjectSerializer.Deserialize(WorldObjectSerializer.Serialize(AmbientObjectFactory.createTree(new Vector2(0,0)))));
 
-            // WorldGenerator.ResetWorld();
+            WorldGenerator.ResetWorld();
 
-            // using (var game = new SimulationGame())
-            //    game.Run();
+            using (var game = new SimulationGame())
+                game.Run();
 
             //Console.WriteLine(GeometryUtils.getPositionWithinChunk(-1, -1, 32, 32));
 

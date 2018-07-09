@@ -11,11 +11,11 @@ namespace Simulation.Game.Serialization
         private static readonly string[] serializeableProperties = new string[] {
             "relativeHitBoxBounds",
             "relativeBlockingBounds",
-            "useSameBounds",
-            "blockingType",
-            "hitBoxBounds",
-            "blockingBounds",
-            "unionBounds"
+            "UseSameBounds",
+            "BlockingType",
+            "HitBoxBounds",
+            "BlockingBounds",
+            "UnionBounds"
         };
 
         protected static void Deserialize(ref JObject jObject, HitableObject hitableObject)

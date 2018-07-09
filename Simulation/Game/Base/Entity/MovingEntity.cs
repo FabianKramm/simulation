@@ -14,8 +14,8 @@ namespace Simulation.Game.Base.Entity
         private Task<List<GridPos>> findPathTask;
         private List<GridPos> walkPath;
 
-        public Vector2 direction;
-        private float velocity = 0.2f;
+        public Vector2 Direction;
+        public float Velocity = 0.2f;
 
         // Create from JSON
         protected MovingEntity() {}
@@ -25,26 +25,64 @@ namespace Simulation.Game.Base.Entity
 
         public void WalkTo(int destBlockX, int destBlockY)
         {
-            Point currentBlock = GeometryUtils.getChunkPosition((int)position.X, (int)position.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
+            Point currentBlock = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
 
             findPathTask = PathFinder.FindPath(currentBlock.X, currentBlock.Y, destBlockX, destBlockY);
 
             walkPath = null;
-            direction = Vector2.Zero;
+            Direction = Vector2.Zero;
         }
 
         public override void UpdatePosition(Vector2 newPosition)
         {
             ThreadingUtils.assertMainThread();
 
-            if (canMove(newPosition))
+            WorldLink worldLink = null;
+
+            if(InteriorID == Interior.Outside)
+            {
+                // Check if we move to a world link
+                WorldGridChunk worldGridChunk = WorldGridChunk.GetWorldGridChunk((int)newPosition.X, (int)newPosition.Y);
+                Point newBlockPosition = GeometryUtils.GetBlockFromReal((int)newPosition.X, (int)newPosition.Y);
+
+                if (worldGridChunk.WorldLinks != null && worldGridChunk.WorldLinks.ContainsKey(newBlockPosition))
+                {
+                    worldLink = worldGridChunk.WorldLinks[newBlockPosition];
+                }
+            }
+            else
+            {
+                Interior interior = SimulationGame.World.InteriorManager.GetInterior(InteriorID);
+                Point newBlockPosition = GeometryUtils.GetBlockFromReal((int)newPosition.X, (int)newPosition.Y);
+
+                if (interior.WorldLinks != null && interior.WorldLinks.ContainsKey(newBlockPosition))
+                {
+                    worldLink = interior.WorldLinks[newBlockPosition];
+                }
+            }
+
+            if(worldLink != null)
             {
                 disconnectFromWorld();
 
-                // TODO: Check if we are moving into unloaded area => if yes then we load the tile and unload us
+                newPosition = new Vector2(worldLink.ToBlock.X * WorldGrid.BlockSize.X + WorldGrid.BlockSize.X / 2, worldLink.ToBlock.Y * WorldGrid.BlockSize.Y + WorldGrid.BlockSize.Y - 1);
+
+                InteriorID = worldLink.ToInteriorID;
                 base.UpdatePosition(newPosition);
 
                 connectToWorld();
+            }
+            else
+            {
+                if (canMove(newPosition))
+                {
+                    disconnectFromWorld();
+
+                    // TODO: Check if we are moving into unloaded area => if yes then we load the tile and unload us
+                    base.UpdatePosition(newPosition);
+
+                    connectToWorld();
+                }
             }
         }
 
@@ -53,14 +91,14 @@ namespace Simulation.Game.Base.Entity
             if (InteriorID == Interior.Outside)
             {
                 // Add as contained object to main chunk
-                Point positionChunk = GeometryUtils.getChunkPosition((int)position.X, (int)position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                Point positionChunk = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 
                 if (SimulationGame.World.isWorldGridChunkLoaded(positionChunk.X, positionChunk.Y))
-                    SimulationGame.World.getWorldGridChunk(positionChunk.X, positionChunk.Y).AddContainedObject(this);
+                    SimulationGame.World.GetWorldGridChunk(positionChunk.X, positionChunk.Y).AddContainedObject(this);
 
                 // Add as interactive object for adjoined chunks
-                Point chunkTopLeft = GeometryUtils.getChunkPosition(unionBounds.Left, unionBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-                Point chunkBottomRight = GeometryUtils.getChunkPosition(unionBounds.Right - 1, unionBounds.Bottom - 1, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                Point chunkTopLeft = GeometryUtils.GetChunkPosition(UnionBounds.Left, UnionBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                Point chunkBottomRight = GeometryUtils.GetChunkPosition(UnionBounds.Right - 1, UnionBounds.Bottom - 1, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 
                 for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                     for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
@@ -69,7 +107,7 @@ namespace Simulation.Game.Base.Entity
 
                         if (SimulationGame.World.isWorldGridChunkLoaded(chunkX, chunkY))
                         {
-                            SimulationGame.World.getWorldGridChunk(chunkX, chunkY).AddOverlappingObject(this);
+                            SimulationGame.World.GetWorldGridChunk(chunkX, chunkY).AddOverlappingObject(this);
                         }
                     }
 
@@ -86,13 +124,13 @@ namespace Simulation.Game.Base.Entity
             if (InteriorID == Interior.Outside)
             {
                 // Add as contained object to main chunk
-                Point positionChunk = GeometryUtils.getChunkPosition((int)position.X, (int)position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                Point positionChunk = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 
                 if (SimulationGame.World.isWorldGridChunkLoaded(positionChunk.X, positionChunk.Y))
-                    SimulationGame.World.getWorldGridChunk(positionChunk.X, positionChunk.Y).RemoveContainedObject(this);
+                    SimulationGame.World.GetWorldGridChunk(positionChunk.X, positionChunk.Y).RemoveContainedObject(this);
 
-                Point chunkTopLeft = GeometryUtils.getChunkPosition(unionBounds.Left, unionBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-                Point chunkBottomRight = GeometryUtils.getChunkPosition(unionBounds.Right - 1, unionBounds.Bottom - 1, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                Point chunkTopLeft = GeometryUtils.GetChunkPosition(UnionBounds.Left, UnionBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                Point chunkBottomRight = GeometryUtils.GetChunkPosition(UnionBounds.Right - 1, UnionBounds.Bottom - 1, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 
                 for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                     for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
@@ -101,7 +139,7 @@ namespace Simulation.Game.Base.Entity
 
                         if (SimulationGame.World.isWorldGridChunkLoaded(chunkX, chunkY))
                         {
-                            SimulationGame.World.getWorldGridChunk(chunkX, chunkY).RemoveOverlappingObject(this);
+                            SimulationGame.World.GetWorldGridChunk(chunkX, chunkY).RemoveOverlappingObject(this);
                         }
                     }
 
@@ -131,7 +169,7 @@ namespace Simulation.Game.Base.Entity
             {
                 var destPos = new Vector2(walkPath[0].x * WorldGrid.BlockSize.X + 16, walkPath[0].y * WorldGrid.BlockSize.Y + 31);
 
-                if(Math.Abs(destPos.X - position.X) < GeometryUtils.SmallFloat && Math.Abs(destPos.Y - position.Y) < GeometryUtils.SmallFloat)
+                if(Math.Abs(destPos.X - Position.X) < GeometryUtils.SmallFloat && Math.Abs(destPos.Y - Position.Y) < GeometryUtils.SmallFloat)
                 {
                     if(walkPath.Count > 1)
                     {
@@ -141,7 +179,7 @@ namespace Simulation.Game.Base.Entity
                     else
                     {
                         walkPath = null;
-                        direction = Vector2.Zero;
+                        Direction = Vector2.Zero;
 
                         destPos = Vector2.Zero;
                     }
@@ -149,22 +187,22 @@ namespace Simulation.Game.Base.Entity
 
                 if(destPos != Vector2.Zero)
                 {
-                    direction = new Vector2(destPos.X - position.X, destPos.Y - position.Y);
-                    direction.Normalize();
+                    Direction = new Vector2(destPos.X - Position.X, destPos.Y - Position.Y);
+                    Direction.Normalize();
 
-                    Vector2 newPos = new Vector2(position.X + direction.X * velocity * gameTime.ElapsedGameTime.Milliseconds, position.Y + direction.Y * velocity * gameTime.ElapsedGameTime.Milliseconds);
+                    Vector2 newPos = new Vector2(Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds);
 
-                    newPos.X = position.X < destPos.X ? Math.Min(destPos.X, newPos.X) : Math.Max(destPos.X, newPos.X);
-                    newPos.Y = position.Y < destPos.Y ? Math.Min(destPos.Y, newPos.Y) : Math.Max(destPos.Y, newPos.Y);
+                    newPos.X = Position.X < destPos.X ? Math.Min(destPos.X, newPos.X) : Math.Max(destPos.X, newPos.X);
+                    newPos.Y = Position.Y < destPos.Y ? Math.Min(destPos.Y, newPos.Y) : Math.Max(destPos.Y, newPos.Y);
 
                     UpdatePosition(newPos);
                 }
             }
             else
             {
-                if (direction != Vector2.Zero)
+                if (Direction != Vector2.Zero)
                 {
-                    UpdatePosition(new Vector2(position.X + direction.X * velocity * gameTime.ElapsedGameTime.Milliseconds, position.Y + direction.Y * velocity * gameTime.ElapsedGameTime.Milliseconds));
+                    UpdatePosition(new Vector2(Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds));
                 }
             }
         }

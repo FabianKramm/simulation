@@ -46,7 +46,7 @@ namespace Simulation.Game.World
                 GameConsole.WriteLine("ChunkLoading", chunkX + "," + chunkY + " loaded in main thread");
             }
 
-            var walkableGridChunkPosition = GeometryUtils.getChunkPosition(chunkX * WorldChunkPixelSize.X, chunkY * WorldChunkPixelSize.Y, WalkableGrid.WalkableGridPixelChunkSize.X, WalkableGrid.WalkableGridPixelChunkSize.Y);
+            var walkableGridChunkPosition = GeometryUtils.GetChunkPosition(chunkX * WorldChunkPixelSize.X, chunkY * WorldChunkPixelSize.Y, WalkableGrid.WalkableGridPixelChunkSize.X, WalkableGrid.WalkableGridPixelChunkSize.Y);
 
             walkableGrid.loadGridChunkGuarded(walkableGridChunkPosition.X, walkableGridChunkPosition.Y);
 
@@ -98,7 +98,7 @@ namespace Simulation.Game.World
                         // Check if already in queue
                         foreach(WorldGridChunk worldGridChunk in worldGridChunksLoaded)
                         {
-                            Point chunkPosition = GeometryUtils.getChunkPosition(worldGridChunk.realChunkBounds.X, worldGridChunk.realChunkBounds.Y, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
+                            Point chunkPosition = GeometryUtils.GetChunkPosition(worldGridChunk.RealChunkBounds.X, worldGridChunk.RealChunkBounds.Y, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
 
                             if (chunkPosition.X == chunkX && chunkPosition.Y == chunkY)
                             {
@@ -136,8 +136,8 @@ namespace Simulation.Game.World
                     break;
                 }
 
-                int chunkX = (worldGridChunk.realChunkBounds.X / WorldChunkPixelSize.X);
-                int chunkY = (worldGridChunk.realChunkBounds.Y / WorldChunkPixelSize.Y);
+                int chunkX = (worldGridChunk.RealChunkBounds.X / WorldChunkPixelSize.X);
+                int chunkY = (worldGridChunk.RealChunkBounds.Y / WorldChunkPixelSize.Y);
                 string chunkKey = chunkX + "," + chunkY;
 
                 if (worldGrid.ContainsKey(chunkKey) == false)
@@ -157,7 +157,7 @@ namespace Simulation.Game.World
             }
         }
 
-        public WorldGridChunk getWorldGridChunk(int chunkX, int chunkY)
+        public WorldGridChunk GetWorldGridChunk(int chunkX, int chunkY)
         {
             ThreadingUtils.assertMainThread();
 
@@ -191,7 +191,7 @@ namespace Simulation.Game.World
 
                 foreach (var durableEntity in durableEntities)
                 {
-                    if (chunk.Value.realChunkBounds.Intersects(durableEntity.Value.preloadedWorldGridChunkPixelBounds))
+                    if (chunk.Value.RealChunkBounds.Intersects(durableEntity.Value.PreloadedWorldGridChunkPixelBounds))
                     {
                         found = true;
                         break;

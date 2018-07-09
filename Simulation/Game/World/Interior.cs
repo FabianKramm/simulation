@@ -20,7 +20,7 @@ namespace Simulation.Game.World
         public List<AmbientObject> AmbientObjects;
 
         // These objects are used to connect this interior to the world
-        public List<WorldLink> WorldLinks;
+        public Dictionary<Point, WorldLink> WorldLinks;
 
         // Used for json
         private Interior() { }
@@ -45,17 +45,17 @@ namespace Simulation.Game.World
         public void AddWorldLink(WorldLink worldLink)
         {
             if (WorldLinks == null)
-                WorldLinks = new List<WorldLink>();
+                WorldLinks = new Dictionary<Point, WorldLink>();
 
-            if (WorldLinks.Contains(worldLink) == false)
-                WorldLinks.Add(worldLink);
+            if (WorldLinks.ContainsKey(worldLink.FromBlock) == false)
+                WorldLinks[worldLink.FromBlock] = worldLink;
         }
 
         public void RemoveWorldLink(WorldLink worldLink)
         {
             if (WorldLinks != null)
             {
-                WorldLinks.Remove(worldLink);
+                WorldLinks.Remove(worldLink.FromBlock);
 
                 if (WorldLinks.Count == 0)
                 {

@@ -14,7 +14,7 @@ namespace Simulation.Game.Base
 {
     public class AmbientObject: DrawableObject
     {
-        public AmbientObjectType ambientObjectType
+        public AmbientObjectType AmbientObjectType
         {
             get; private set;
         }
@@ -25,7 +25,7 @@ namespace Simulation.Game.Base
         public AmbientObject(AmbientObjectType ambientObjectType, Vector2 position, bool hasDepth = false) :
             base(position)
         {
-            this.ambientObjectType = ambientObjectType;
+            this.AmbientObjectType = ambientObjectType;
         }
     }
 }

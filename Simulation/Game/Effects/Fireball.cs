@@ -25,7 +25,7 @@ namespace Simulation.Game.Effects
         {
             Vector2 _relativeOriginPosition = relativeOriginPosition ?? Vector2.Zero;
 
-            position = Vector2.Add(origin.position, _relativeOriginPosition);
+            position = Vector2.Add(origin.Position, _relativeOriginPosition);
 
             direction = new Vector2(target.X - position.X, target.Y - position.Y);
             direction.Normalize();

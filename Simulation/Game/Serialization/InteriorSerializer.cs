@@ -13,7 +13,7 @@ namespace Simulation.Game.Serialization
             "ID",
             "blockingGrid",
             "Dimensions",
-            "worldLinks"
+            "WorldLinks"
         };
 
         public static Interior Deserialize(JObject jObject)
@@ -40,13 +40,13 @@ namespace Simulation.Game.Serialization
             SerializationUtils.SetFromObject(jObject, interior, interiorType, serializeableProperties);
 
             // Deserialize Ambient Objects
-            JArray ambientObjects = (JArray)jObject.GetValue("ambientObjects");
+            JArray ambientObjects = (JArray)jObject.GetValue("AmbientObjects");
 
             foreach (var ambientObject in ambientObjects)
                 interior.AddAmbientObject((AmbientObject)WorldObjectSerializer.Deserialize((JObject)ambientObject));
 
             // Deserialize Hitable Objects
-            JArray containedObjects = (JArray)jObject.GetValue("containedObjects");
+            JArray containedObjects = (JArray)jObject.GetValue("ContainedObjects");
 
             foreach (var containedObject in containedObjects)
                 interior.AddContainedObject((HitableObject)WorldObjectSerializer.Deserialize((JObject)containedObject));
@@ -62,15 +62,19 @@ namespace Simulation.Game.Serialization
             foreach (var ambientObject in interior.AmbientObjects)
                 ambientObjects.Add(WorldObjectSerializer.Serialize(ambientObject));
 
-            jObject.Add("ambientObjects", ambientObjects);
+            jObject.Add("AmbientObjects", ambientObjects);
 
             // Serialize Hitable Objects
             JArray containedObjects = new JArray();
 
             foreach (var containedObject in interior.ContainedObjects)
-                containedObjects.Add(WorldObjectSerializer.Serialize(containedObject));
+            {
+                if (containedObject is Player) continue;
 
-            jObject.Add("containedObjects", containedObjects);
+                containedObjects.Add(WorldObjectSerializer.Serialize(containedObject));
+            }
+
+            jObject.Add("ContainedObjects", containedObjects);
         }
     }
 }

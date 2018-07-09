@@ -23,11 +23,11 @@ namespace Simulation.Game.Renderer.Entities
 
         public static void Draw(SpriteBatch spriteBatch, GameTime gameTime, LivingEntity livingEntity)
         {
-            if(SimulationGame.VisibleArea.Contains(livingEntity.position) && livingEntity.InteriorID == SimulationGame.Player.InteriorID)
+            if(SimulationGame.VisibleArea.Contains(livingEntity.Position) && livingEntity.InteriorID == SimulationGame.Player.InteriorID)
             {
-                if (livingEntity.rendererInformation == null)
+                if (livingEntity.RendererInformation == null)
                 {
-                    livingEntity.rendererInformation = informationGeneratorLookup[livingEntity.livingEntityType]();
+                    livingEntity.RendererInformation = informationGeneratorLookup[livingEntity.LivingEntityType]();
                 }
 
                 if (livingEntity is MovingEntity)

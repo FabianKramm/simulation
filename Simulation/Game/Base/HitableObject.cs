@@ -10,20 +10,20 @@ namespace Simulation.Game.Base
         protected Rectangle relativeHitBoxBounds;
         protected Rectangle relativeBlockingBounds;
 
-        public bool useSameBounds
+        public bool UseSameBounds
         {
             get; private set;
         }
 
-        public BlockingType blockingType
+        public BlockingType BlockingType
         {
             get; private set;
         }
 
-        public Rectangle hitBoxBounds;
-        public Rectangle blockingBounds;
+        public Rectangle HitBoxBounds;
+        public Rectangle BlockingBounds;
 
-        public Rectangle unionBounds;
+        public Rectangle UnionBounds;
 
         // Create from JSON
         protected HitableObject() { }
@@ -33,13 +33,13 @@ namespace Simulation.Game.Base
         {
             this.relativeHitBoxBounds = relativeHitBoxBounds;
 
-            setBlockingType(blockingType);
+            SetBlockingType(blockingType);
             updateHitableBounds(position);
         }
 
-        public void setBlockingType(BlockingType blockingType, Rectangle? relativeBlockingBounds = null)
+        public void SetBlockingType(BlockingType blockingType, Rectangle? relativeBlockingBounds = null)
         {
-            this.blockingType = blockingType;
+            this.BlockingType = blockingType;
 
             if (blockingType == BlockingType.BLOCKING)
             {
@@ -49,32 +49,32 @@ namespace Simulation.Game.Base
                 }
                 else
                 {
-                    useSameBounds = true;
+                    UseSameBounds = true;
                 }
             }
             else
             {
-                useSameBounds = false;
+                UseSameBounds = false;
             }
         }
 
         private void updateHitableBounds(Vector2 newPosition)
         {
-            hitBoxBounds = new Rectangle((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height);
-            blockingBounds = useSameBounds ? hitBoxBounds : new Rectangle((int)(relativeBlockingBounds.X + newPosition.X), (int)(relativeBlockingBounds.Y + newPosition.Y), relativeBlockingBounds.Width, relativeBlockingBounds.Height);
+            HitBoxBounds = new Rectangle((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height);
+            BlockingBounds = UseSameBounds ? HitBoxBounds : new Rectangle((int)(relativeBlockingBounds.X + newPosition.X), (int)(relativeBlockingBounds.Y + newPosition.Y), relativeBlockingBounds.Width, relativeBlockingBounds.Height);
 
-            unionBounds = useSameBounds ? hitBoxBounds : Rectangle.Union(hitBoxBounds, blockingBounds);
+            UnionBounds = UseSameBounds ? HitBoxBounds : Rectangle.Union(HitBoxBounds, BlockingBounds);
         }
 
         protected bool canMove(Vector2 newPosition)
         {
-            if (blockingType == BlockingType.NOT_BLOCKING)
+            if (BlockingType == BlockingType.NOT_BLOCKING)
             {
                 return CollisionUtils.canMove(this, new Rectangle((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height));
             }
             else
             {
-                return CollisionUtils.canMove(this, useSameBounds ?
+                return CollisionUtils.canMove(this, UseSameBounds ?
                     new Rectangle((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height) :
                     new Rectangle((int)(relativeBlockingBounds.X + newPosition.X), (int)(relativeBlockingBounds.Y + newPosition.Y), relativeBlockingBounds.Width, relativeBlockingBounds.Height));
             }
@@ -84,7 +84,7 @@ namespace Simulation.Game.Base
         {
             base.UpdatePosition(newPosition);
 
-            updateHitableBounds(position);
+            updateHitableBounds(Position);
         }
     }
 }

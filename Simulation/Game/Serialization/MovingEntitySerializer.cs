@@ -9,8 +9,8 @@ namespace Simulation.Game.Serialization
     {
         private static readonly Type movingEntityType = typeof(MovingEntity);
         private static readonly string[] serializeableProperties = new string[] {
-            "velocity",
-            "direction"
+            "Velocity",
+            "Direction"
         };
 
         public static MovingEntity Deserialize(JObject jObject)

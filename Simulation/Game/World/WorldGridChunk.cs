@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Simulation.Game.Base;
 using Simulation.Util;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Simulation.Game.World
 {
@@ -18,9 +19,17 @@ namespace Simulation.Game.World
 
     public class WorldGridChunk
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static WorldGridChunk GetWorldGridChunk(int realX, int realY)
+        {
+            Point positionChunk = GeometryUtils.GetChunkPosition(realX, realY, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+
+            return SimulationGame.World.GetWorldGridChunk(positionChunk.X, positionChunk.Y);
+        }
+
         private BlockType[,] blockingGrid;
 
-        public Rectangle realChunkBounds;
+        public Rectangle RealChunkBounds;
 
         // These objects are just passing by or are overlapping with this chunk
         public List<HitableObject> OverlappingObjects;
@@ -32,53 +41,53 @@ namespace Simulation.Game.World
         public List<AmbientObject> AmbientObjects;
 
         // These objects link to the interiors
-        public List<WorldLink> worldLinks;
+        public Dictionary<Point, WorldLink> WorldLinks;
 
         private WorldGridChunk() { }
 
         public WorldGridChunk(int realX, int realY)
         {
             blockingGrid = new BlockType[WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y];
-            realChunkBounds = new Rectangle(realX, realY, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+            RealChunkBounds = new Rectangle(realX, realY, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
         }
 
         public Point getChunkPosition()
         {
-            return GeometryUtils.getChunkPosition(realChunkBounds.X, realChunkBounds.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+            return GeometryUtils.GetChunkPosition(RealChunkBounds.X, RealChunkBounds.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
         }
 
         public BlockType getBlockType(int blockX, int blockY)
         {
-            var projectedPosition = GeometryUtils.getPositionWithinChunk(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
+            var projectedPosition = GeometryUtils.GetPositionWithinChunk(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
 
             return blockingGrid[projectedPosition.X, projectedPosition.Y];
         }
 
         public void setBlockType(int blockX, int blockY, BlockType blockType)
         {
-            var projectedPosition = GeometryUtils.getPositionWithinChunk(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
+            var projectedPosition = GeometryUtils.GetPositionWithinChunk(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
 
             blockingGrid[projectedPosition.X, projectedPosition.Y] = blockType;
         }
 
         public void AddWorldLink(WorldLink worldLink)
         {
-            if (worldLinks == null)
-                worldLinks = new List<WorldLink>();
+            if (WorldLinks == null)
+                WorldLinks = new Dictionary<Point, WorldLink>();
 
-            if (worldLinks.Contains(worldLink) == false)
-                worldLinks.Add(worldLink);
+            if (WorldLinks.ContainsKey(worldLink.FromBlock) == false)
+                WorldLinks[worldLink.FromBlock] = worldLink;
         }
 
         public void RemoveWorldLink(WorldLink worldLink)
         {
-            if (worldLinks != null)
+            if (WorldLinks != null)
             {
-                worldLinks.Remove(worldLink);
+                WorldLinks.Remove(worldLink.FromBlock);
 
-                if (worldLinks.Count == 0)
+                if (WorldLinks.Count == 0)
                 {
-                    worldLinks = null;
+                    WorldLinks = null;
                 }
             }
         }
@@ -169,20 +178,21 @@ namespace Simulation.Game.World
 
                     int neighborX = chunkX + i;
                     int neighborY = chunkY + j;
-                    WorldGridChunk worldGridChunk = SimulationGame.World.getWorldGridChunk(neighborX, neighborY);
-
+                    
                     if (SimulationGame.World.isWorldGridChunkLoaded(neighborX, neighborY) == true)
                     {
+                        WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(neighborX, neighborY);
+
                         // Add own contained objects to neighbor
-                        if(ContainedObjects != null)
+                        if (ContainedObjects != null)
                             foreach (HitableObject containedObject in ContainedObjects)
-                                if (containedObject.unionBounds.Intersects(worldGridChunk.realChunkBounds))
+                                if (containedObject.UnionBounds.Intersects(worldGridChunk.RealChunkBounds))
                                     worldGridChunk.AddOverlappingObject(containedObject);
 
                         // Add neighbor contained objects to self
                         if(worldGridChunk.ContainedObjects != null)
                             foreach (HitableObject overlappingObject in worldGridChunk.ContainedObjects)
-                                if (overlappingObject.unionBounds.Intersects(realChunkBounds))
+                                if (overlappingObject.UnionBounds.Intersects(RealChunkBounds))
                                 {
                                     AddOverlappingObject(overlappingObject);
 

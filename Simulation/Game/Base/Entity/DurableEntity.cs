@@ -10,12 +10,12 @@ namespace Simulation.Game.Base.Entity
     {
         private int preloadedSurroundingWorldGridChunkRadius;
 
-        public Rectangle preloadedWorldGridChunkBounds
+        public Rectangle PreloadedWorldGridChunkBounds
         {
             get; private set;
         }
 
-        public Rectangle preloadedWorldGridChunkPixelBounds
+        public Rectangle PreloadedWorldGridChunkPixelBounds
         {
             get; private set;
         }
@@ -33,12 +33,12 @@ namespace Simulation.Game.Base.Entity
 
         private void preloadGridChunks()
         {
-            Point chunkPosition = GeometryUtils.getChunkPosition((int)position.X, (int)position.Y, World.WorldGrid.WorldChunkPixelSize.X, World.WorldGrid.WorldChunkPixelSize.Y);
-            preloadedWorldGridChunkBounds = new Rectangle(chunkPosition.X - preloadedSurroundingWorldGridChunkRadius, chunkPosition.Y - preloadedSurroundingWorldGridChunkRadius, preloadedSurroundingWorldGridChunkRadius * 2 + 1, preloadedSurroundingWorldGridChunkRadius * 2 + 1);
-            preloadedWorldGridChunkPixelBounds = new Rectangle(preloadedWorldGridChunkBounds.X * World.WorldGrid.WorldChunkPixelSize.X, preloadedWorldGridChunkBounds.Y * World.WorldGrid.WorldChunkPixelSize.Y, preloadedWorldGridChunkBounds.Width * World.WorldGrid.WorldChunkPixelSize.X, preloadedWorldGridChunkBounds.Height * World.WorldGrid.WorldChunkPixelSize.Y);
+            Point chunkPosition = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, World.WorldGrid.WorldChunkPixelSize.X, World.WorldGrid.WorldChunkPixelSize.Y);
+            PreloadedWorldGridChunkBounds = new Rectangle(chunkPosition.X - preloadedSurroundingWorldGridChunkRadius, chunkPosition.Y - preloadedSurroundingWorldGridChunkRadius, preloadedSurroundingWorldGridChunkRadius * 2 + 1, preloadedSurroundingWorldGridChunkRadius * 2 + 1);
+            PreloadedWorldGridChunkPixelBounds = new Rectangle(PreloadedWorldGridChunkBounds.X * World.WorldGrid.WorldChunkPixelSize.X, PreloadedWorldGridChunkBounds.Y * World.WorldGrid.WorldChunkPixelSize.Y, PreloadedWorldGridChunkBounds.Width * World.WorldGrid.WorldChunkPixelSize.X, PreloadedWorldGridChunkBounds.Height * World.WorldGrid.WorldChunkPixelSize.Y);
 
-            for (int i = preloadedWorldGridChunkBounds.Left; i <= preloadedWorldGridChunkBounds.Right - 1; i++)
-                for (int j = preloadedWorldGridChunkBounds.Top; j <= preloadedWorldGridChunkBounds.Bottom - 1; j++)
+            for (int i = PreloadedWorldGridChunkBounds.Left; i <= PreloadedWorldGridChunkBounds.Right - 1; i++)
+                for (int j = PreloadedWorldGridChunkBounds.Top; j <= PreloadedWorldGridChunkBounds.Bottom - 1; j++)
                     SimulationGame.World.loadWorldGridChunkAsync(i, j);
         }
 

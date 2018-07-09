@@ -11,8 +11,8 @@ namespace Simulation.Game.Serialization
         private static readonly Type worldGridChunkType = typeof(WorldGridChunk);
         private static readonly string[] serializeableProperties = new string[] {
             "blockingGrid",
-            "realChunkBounds",
-            "worldLinks"
+            "RealChunkBounds",
+            "WorldLinks"
         };
 
         public static WorldGridChunk Deserialize(JObject jObject)
@@ -39,13 +39,13 @@ namespace Simulation.Game.Serialization
             SerializationUtils.SetFromObject(jObject, worldGridChunk, worldGridChunkType, serializeableProperties);
 
             // Deserialize Ambient Objects
-            JArray ambientObjects = (JArray)jObject.GetValue("ambientObjects");
+            JArray ambientObjects = (JArray)jObject.GetValue("AmbientObjects");
 
             foreach (var ambientObject in ambientObjects)
                 worldGridChunk.AddAmbientObject((AmbientObject)WorldObjectSerializer.Deserialize((JObject)ambientObject));
 
             // Deserialize Hitable Objects
-            JArray containedObjects = (JArray)jObject.GetValue("containedObjects");
+            JArray containedObjects = (JArray)jObject.GetValue("ContainedObjects");
 
             foreach (var containedObject in containedObjects)
                 worldGridChunk.AddContainedObject((HitableObject)WorldObjectSerializer.Deserialize((JObject)containedObject));
@@ -61,15 +61,19 @@ namespace Simulation.Game.Serialization
             foreach(var ambientObject in worldGridChunk.AmbientObjects)
                 ambientObjects.Add(WorldObjectSerializer.Serialize(ambientObject));
 
-            jObject.Add("ambientObjects", ambientObjects);
+            jObject.Add("AmbientObjects", ambientObjects);
 
             // Serialize Hitable Objects
             JArray containedObjects = new JArray();
 
             foreach (var containedObject in worldGridChunk.ContainedObjects)
-                containedObjects.Add(WorldObjectSerializer.Serialize(containedObject));
+            {
+                if (containedObject is Player) continue;
 
-            jObject.Add("containedObjects", containedObjects);
+                containedObjects.Add(WorldObjectSerializer.Serialize(containedObject));
+            }
+
+            jObject.Add("ContainedObjects", containedObjects);
         }
     }
 }

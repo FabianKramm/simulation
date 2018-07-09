@@ -21,24 +21,25 @@ namespace Simulation.Game.Serialization
 
         public static void AddToObject(JObject jObject, object obj, Type type, string[] names)
         {
-            foreach(var propertyName in names) 
-                jObject.Add(propertyName, JToken.FromObject(ReflectionUtils.GetMemberValue(type, obj, propertyName), serializer));
-        }
+            foreach(var propertyName in names)
+            {
+                object value = ReflectionUtils.GetMemberValue(type, obj, propertyName);
 
-        public static void AddToObject(JObject jObject, object obj, Type type, string propertyName)
-        {
-            jObject.Add(propertyName, JToken.FromObject(ReflectionUtils.GetMemberValue(type, obj, propertyName), serializer));
+                if(value != null)
+                {
+                    jObject.Add(propertyName, JToken.FromObject(value, serializer));
+                }
+                else
+                {
+                    jObject.Add(propertyName, null);
+                }
+            }
         }
 
         public static void SetFromObject(JObject jObject, object obj, Type type, string[] names)
         {
             foreach (var propertyName in names)
                 ReflectionUtils.SetMemberValue(type, obj, propertyName, serializer.Deserialize(new JTokenReader(jObject.GetValue(propertyName)), ReflectionUtils.GetMemberType(type, propertyName)));
-        }
-
-        public static void SetFromObject(JObject jObject, object obj, Type type, string propertyName)
-        {
-            ReflectionUtils.SetMemberValue(type, obj, propertyName, serializer.Deserialize(new JTokenReader(jObject.GetValue(propertyName)), ReflectionUtils.GetMemberType(type, propertyName)));
         }
     }
 }

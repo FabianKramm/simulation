@@ -35,12 +35,12 @@ namespace Simulation.Game.World.Generator
 
         private void generateWorld(int blockX, int blockY)
         {
-            Point chunkPosition = GeometryUtils.getChunkPosition(blockX, blockY, generatedChunkBlockSize.X, generatedChunkBlockSize.Y);
+            Point chunkPosition = GeometryUtils.GetChunkPosition(blockX, blockY, generatedChunkBlockSize.X, generatedChunkBlockSize.Y);
             
             var newX = chunkPosition.X * generatedChunkBlockSize.X;
             var newY = chunkPosition.Y * generatedChunkBlockSize.Y;
 
-            Point worldGridChunkPosition = GeometryUtils.getChunkPosition(newX, newY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
+            Point worldGridChunkPosition = GeometryUtils.GetChunkPosition(newX, newY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
 
             if(WorldLoader.doesWorldGridChunkExist(worldGridChunkPosition.X, worldGridChunkPosition.Y))
             {
@@ -56,8 +56,8 @@ namespace Simulation.Game.World.Generator
             for (int i = newX; i < (newX + generatedChunkBlockSize.X); i++)
                 for (int j = newY; j < (newY + generatedChunkBlockSize.Y); j++)
                 {
-                    Point worldGridChunk = GeometryUtils.getChunkPosition(i, j, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
-                    Point walkableGridChunk = GeometryUtils.getChunkPosition(i, j, WalkableGrid.WalkableGridBlockChunkSize.X, WalkableGrid.WalkableGridBlockChunkSize.Y);
+                    Point worldGridChunk = GeometryUtils.GetChunkPosition(i, j, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
+                    Point walkableGridChunk = GeometryUtils.GetChunkPosition(i, j, WalkableGrid.WalkableGridBlockChunkSize.X, WalkableGrid.WalkableGridBlockChunkSize.Y);
 
                     if(worldGrid.ContainsKey((worldGridChunk.X, worldGridChunk.Y)) == false)
                     {

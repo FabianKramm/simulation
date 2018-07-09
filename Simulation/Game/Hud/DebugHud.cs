@@ -92,7 +92,7 @@ namespace Simulation.Game.Hud
                 spriteBatch.Draw(backgroundOverlay, new Rectangle(SimulationGame.Resolution.Width - 510, SimulationGame.Resolution.Height - 210, 490, 190), consoleColor);
 
 
-                Point currentBlock = GeometryUtils.getChunkPosition((int)SimulationGame.Camera.Position.X, (int)SimulationGame.Camera.Position.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
+                Point currentBlock = GeometryUtils.GetChunkPosition((int)SimulationGame.Camera.Position.X, (int)SimulationGame.Camera.Position.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
 
                 string time = "Time: " + (TimeUtils.GetCurrentDayTick() / SimulationGame.TicksPerHour) + ":" + (TimeUtils.GetCurrentDayTick() % SimulationGame.TicksPerHour);
                 string currentPos = "Pos: " + SimulationGame.Camera.Position.X + ", " + SimulationGame.Camera.Position.Y;

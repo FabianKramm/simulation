@@ -6,9 +6,9 @@ namespace Simulation.Game.Base.Entity
 {
     public abstract class LivingEntity: HitableObject
     {
-        public LivingEntityRendererInformation rendererInformation;
+        public LivingEntityRendererInformation RendererInformation;
 
-        public LivingEntityType livingEntityType
+        public LivingEntityType LivingEntityType
         {
             get; private set;
         }
@@ -19,7 +19,7 @@ namespace Simulation.Game.Base.Entity
         public LivingEntity(LivingEntityType livingEntityType, Vector2 position, Rectangle relativeHitBoxBounds) : 
             base(position, relativeHitBoxBounds)
         {
-            this.livingEntityType = livingEntityType;
+            this.LivingEntityType = livingEntityType;
         }
 
         public abstract void Update(GameTime gameTime);

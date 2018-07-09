@@ -10,11 +10,11 @@ namespace Simulation.Game.Renderer.Entities
     {
         public static void Draw(SpriteBatch spriteBatch, GameTime gameTime, MovingEntity movingEntity)
         {
-            WalkingDirection newWalkingDirection = Movement.getWalkingDirectionFromVector(movingEntity.direction);
+            WalkingDirection newWalkingDirection = Movement.getWalkingDirectionFromVector(movingEntity.Direction);
 
-            movingEntity.rendererInformation.Update(gameTime, newWalkingDirection);
+            movingEntity.RendererInformation.Update(gameTime, newWalkingDirection);
 
-            spriteBatch.Draw(movingEntity.rendererInformation.currentAnimation, movingEntity.position, color: GameRenderer.BlendColor, layerDepth: GeometryUtils.getLayerDepthFromPosition(movingEntity.position.X, movingEntity.position.Y));
+            spriteBatch.Draw(movingEntity.RendererInformation.currentAnimation, movingEntity.Position, color: GameRenderer.BlendColor, layerDepth: GeometryUtils.getLayerDepthFromPosition(movingEntity.Position.X, movingEntity.Position.Y));
         }
     }
 }

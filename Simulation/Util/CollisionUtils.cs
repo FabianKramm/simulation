@@ -13,14 +13,14 @@ namespace Simulation.Util
             if(origin.InteriorID == Interior.Outside)
             {
                 // Check if blocks are of type blocking
-                Point topLeft = GeometryUtils.getChunkPosition(rect.Left, rect.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-                Point bottomRight = GeometryUtils.getChunkPosition(rect.Right - 1, rect.Bottom - 1, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+                Point topLeft = GeometryUtils.GetChunkPosition(rect.Left, rect.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+                Point bottomRight = GeometryUtils.GetChunkPosition(rect.Right - 1, rect.Bottom - 1, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
                 for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
                     for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
                     {
-                        Point chunkPos = GeometryUtils.getChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
-                        WorldGridChunk worldGridChunk = SimulationGame.World.getWorldGridChunk(chunkPos.X, chunkPos.Y);
+                        Point chunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
+                        WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(chunkPos.X, chunkPos.Y);
 
                         BlockType blockType = worldGridChunk.getBlockType(blockX, blockY);
 
@@ -29,22 +29,22 @@ namespace Simulation.Util
                     }
 
                 // Check collision with interactive && contained objects
-                Point chunkTopLeft = GeometryUtils.getChunkPosition(rect.Left, rect.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-                Point chunkBottomRight = GeometryUtils.getChunkPosition(rect.Right - 1, rect.Bottom - 1, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                Point chunkTopLeft = GeometryUtils.GetChunkPosition(rect.Left, rect.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                Point chunkBottomRight = GeometryUtils.GetChunkPosition(rect.Right - 1, rect.Bottom - 1, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 
                 for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                     for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
                     {
-                        WorldGridChunk worldGridChunk = SimulationGame.World.getWorldGridChunk(chunkX, chunkY);
+                        WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(chunkX, chunkY);
 
                         if (worldGridChunk.OverlappingObjects != null)
                             foreach (HitableObject hitableObject in worldGridChunk.OverlappingObjects)
-                                if (hitableObject.blockingType == BlockingType.BLOCKING && hitableObject != origin && hitableObject.blockingBounds.Intersects(rect))
+                                if (hitableObject.BlockingType == BlockingType.BLOCKING && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
                                     return false;
 
                         if (worldGridChunk.ContainedObjects != null)
                             foreach (HitableObject hitableObject in worldGridChunk.ContainedObjects)
-                                if (hitableObject.blockingType == BlockingType.BLOCKING && hitableObject != origin && hitableObject.blockingBounds.Intersects(rect))
+                                if (hitableObject.BlockingType == BlockingType.BLOCKING && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
                                     return false;
                     }
 
@@ -55,8 +55,8 @@ namespace Simulation.Util
                 Interior interior = SimulationGame.World.InteriorManager.GetInterior(origin.InteriorID);
 
                 // Check if blocks are of type blocking
-                Point topLeft = GeometryUtils.getChunkPosition(rect.Left, rect.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-                Point bottomRight = GeometryUtils.getChunkPosition(rect.Right - 1, rect.Bottom - 1, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+                Point topLeft = GeometryUtils.GetChunkPosition(rect.Left, rect.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+                Point bottomRight = GeometryUtils.GetChunkPosition(rect.Right - 1, rect.Bottom - 1, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
                 for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
                     for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
@@ -68,7 +68,7 @@ namespace Simulation.Util
                     }
 
                 foreach (HitableObject hitableObject in interior.ContainedObjects)
-                    if (hitableObject.blockingType == BlockingType.BLOCKING && hitableObject != origin && hitableObject.blockingBounds.Intersects(rect))
+                    if (hitableObject.BlockingType == BlockingType.BLOCKING && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
                         return false;
 
                 return true;

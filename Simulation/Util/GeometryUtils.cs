@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.World;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -66,19 +67,25 @@ namespace Simulation.Util
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int getIndexFromPoint(int realX, int realY, int chunkWidth, int chunkHeight)
+        public static Point GetBlockFromReal(int realX, int realY)
+        {
+            return new Point(realX < 0 ? (realX / WorldGrid.BlockSize.X) - (realX % WorldGrid.BlockSize.X != 0 ? 1 : 0) : realX / WorldGrid.BlockSize.X, realY < 0 ? (realY / WorldGrid.BlockSize.Y) - (realY % WorldGrid.BlockSize.Y != 0 ? 1 : 0) : realY / WorldGrid.BlockSize.Y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int GetIndexFromPoint(int realX, int realY, int chunkWidth, int chunkHeight)
         {
             return (realX < 0 ? -realX - 1 : realX) % chunkWidth + chunkWidth * ((realY < 0 ? -realY - 1 : realY) % chunkHeight);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Point getChunkPosition(int realX, int realY, int chunkWidth, int chunkHeight)
+        public static Point GetChunkPosition(int realX, int realY, int chunkWidth, int chunkHeight)
         {
             return new Point(realX < 0 ? (realX / chunkWidth) - (realX % chunkWidth != 0 ? 1 : 0) : realX / chunkWidth, realY < 0 ? (realY / chunkHeight) - (realY % chunkHeight != 0 ? 1 : 0) : realY / chunkHeight);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Point getPositionWithinChunk(int realX, int realY, int chunkWidth, int chunkHeight)
+        public static Point GetPositionWithinChunk(int realX, int realY, int chunkWidth, int chunkHeight)
         {
             return new Point(realX - (realX < 0 ? (realX / chunkWidth) - (realX % chunkWidth != 0 ? 1 : 0) : realX / chunkWidth) * chunkWidth, realY - (realY < 0 ? (realY / chunkHeight) - (realY % chunkHeight != 0 ? 1 : 0) : realY / chunkHeight) * chunkHeight);
         }
