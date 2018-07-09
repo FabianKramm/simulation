@@ -21,7 +21,7 @@ namespace Simulation.Game.Renderer
 
             Color color = GameRenderer.BlendColor;
 
-            if(SimulationGame.IsDebug && !SimulationGame.World.walkableGrid.IsPositionWalkable(realX, realY))
+            if(SimulationGame.IsDebug && SimulationGame.Player.InteriorID == Interior.Outside && !SimulationGame.World.walkableGrid.IsPositionWalkable(realX, realY))
             {
                 color = Color.Red;
             }

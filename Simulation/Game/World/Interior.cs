@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Base;
+using Simulation.Util;
 using System.Collections.Generic;
 
 namespace Simulation.Game.World
@@ -20,16 +21,24 @@ namespace Simulation.Game.World
         public List<AmbientObject> AmbientObjects;
 
         // These objects are used to connect this interior to the world
-        public Dictionary<Point, WorldLink> WorldLinks;
+        public Dictionary<string, WorldLink> WorldLinks;
 
         // Used for json
         private Interior() { }
 
         public Interior(Point dimensions)
         {
+            ID = Util.Util.getUUID();
             Dimensions = dimensions;
 
             blockingGrid = new BlockType[dimensions.X, dimensions.Y];
+        }
+
+        public void SetBlockType(int blockX, int blockY, BlockType blockType)
+        {
+            var projectedPosition = GeometryUtils.GetPositionWithinChunk(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
+
+            blockingGrid[projectedPosition.X, projectedPosition.Y] = blockType;
         }
 
         public BlockType GetBlockType(int blockX, int blockY)
@@ -44,18 +53,22 @@ namespace Simulation.Game.World
 
         public void AddWorldLink(WorldLink worldLink)
         {
-            if (WorldLinks == null)
-                WorldLinks = new Dictionary<Point, WorldLink>();
+            string key = worldLink.FromBlock.X + "," + worldLink.FromBlock.Y;
 
-            if (WorldLinks.ContainsKey(worldLink.FromBlock) == false)
-                WorldLinks[worldLink.FromBlock] = worldLink;
+            if (WorldLinks == null)
+                WorldLinks = new Dictionary<string, WorldLink>();
+
+            if (WorldLinks.ContainsKey(key) == false)
+                WorldLinks[key] = worldLink;
         }
 
         public void RemoveWorldLink(WorldLink worldLink)
         {
+            string key = worldLink.FromBlock.X + "," + worldLink.FromBlock.Y;
+
             if (WorldLinks != null)
             {
-                WorldLinks.Remove(worldLink.FromBlock);
+                WorldLinks.Remove(key);
 
                 if (WorldLinks.Count == 0)
                 {

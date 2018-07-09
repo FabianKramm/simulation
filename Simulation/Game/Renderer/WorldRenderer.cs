@@ -22,7 +22,7 @@ namespace Simulation.Game.Renderer
                     Point worldGridChunkPosition = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
                     WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(worldGridChunkPosition.X, worldGridChunkPosition.Y);
 
-                    BlockRenderer.Draw(spriteBatch, blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, worldGridChunk.getBlockType(blockX, blockY));
+                    BlockRenderer.Draw(spriteBatch, blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, worldGridChunk.GetBlockType(blockX, blockY));
                 }
 
             Point chunkTopLeft = GeometryUtils.GetChunkPosition(SimulationGame.VisibleArea.Left, SimulationGame.VisibleArea.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
@@ -54,6 +54,11 @@ namespace Simulation.Game.Renderer
                                 InteractiveObjectRenderer.Draw(spriteBatch, containedObject);
                             }
                         }
+
+                    if (SimulationGame.IsDebug && worldGridChunk.WorldLinks != null)
+                        foreach (var worldLinkItem in worldGridChunk.WorldLinks)
+                            if (SimulationGame.VisibleArea.Contains(new Point(worldLinkItem.Value.FromBlock.X * WorldGrid.BlockSize.X, worldLinkItem.Value.FromBlock.Y * WorldGrid.BlockSize.Y)))
+                                SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle(worldLinkItem.Value.FromBlock.X * WorldGrid.BlockSize.X, worldLinkItem.Value.FromBlock.Y * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y), Color.DarkBlue);
                 }
         }
 
@@ -90,6 +95,11 @@ namespace Simulation.Game.Renderer
                         InteractiveObjectRenderer.Draw(spriteBatch, containedObject);
                     }
                 }
+
+            if(SimulationGame.IsDebug && interior.WorldLinks != null)
+                foreach(var worldLinkItem in interior.WorldLinks)
+                    if(SimulationGame.VisibleArea.Contains(new Point(worldLinkItem.Value.FromBlock.X * WorldGrid.BlockSize.X, worldLinkItem.Value.FromBlock.Y * WorldGrid.BlockSize.Y)))
+                        SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle(worldLinkItem.Value.FromBlock.X * WorldGrid.BlockSize.X, worldLinkItem.Value.FromBlock.Y * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y), Color.DarkBlue);
         }
 
         public static void Draw(SpriteBatch spriteBatch, GameTime gameTime)

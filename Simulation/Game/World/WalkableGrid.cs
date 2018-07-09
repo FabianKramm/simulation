@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Base;
 using Simulation.Game.Hud;
-using Simulation.Game.World.Generator;
+using Simulation.Game.Generator;
 using Simulation.Util;
 using System;
 using System.Collections.Concurrent;
@@ -32,7 +32,7 @@ namespace Simulation.Game.World
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void loadGridChunk(int chunkX, int chunkY)
         {
-            walkableGrid[chunkX + "," + chunkY] = WorldLoader.loadWalkableGridChunk(chunkX, chunkY);
+            walkableGrid[chunkX + "," + chunkY] = WorldLoader.LoadWalkableGridChunk(chunkX, chunkY);
         }
 
         public int getLoadedChunkAmount()
@@ -50,7 +50,7 @@ namespace Simulation.Game.World
 
                 try
                 {
-                    WorldLoader.saveWalkableGridChunk(chunkX, chunkY, chunk);
+                    WorldLoader.SaveWalkableGridChunk(chunkX, chunkY, chunk);
                 }
                 finally
                 {
@@ -176,7 +176,7 @@ namespace Simulation.Game.World
                         {
                             Point worldGridChunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
                             WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(worldGridChunkPos.X, worldGridChunkPos.Y);
-                            BlockType blockType = worldGridChunk.getBlockType(blockX, blockY);
+                            BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
                             if (CollisionUtils.getBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
                                 continue;
@@ -215,7 +215,7 @@ namespace Simulation.Game.World
 
                     foreach (var durableEntity in SimulationGame.World.durableEntities)
                     {
-                        if (walkableGridChunkItem.Value.realChunkBounds.Intersects(durableEntity.Value.PreloadedWorldGridChunkPixelBounds))
+                        if (durableEntity.Value.InteriorID == Interior.Outside && walkableGridChunkItem.Value.realChunkBounds.Intersects(durableEntity.Value.PreloadedWorldGridChunkPixelBounds))
                         {
                             found = true;
                             break;

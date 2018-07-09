@@ -1,18 +1,20 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Base;
 using Simulation.Game.Factories;
+using Simulation.Game.Generator.InteriorGeneration;
 using Simulation.Game.Hud;
+using Simulation.Game.World;
 using Simulation.Util;
 using System;
 using System.Collections.Generic;
 
-namespace Simulation.Game.World.Generator
+namespace Simulation.Game.Generator
 {
     public class WorldGenerator
     {
         private static Point generatedChunkBlockSize = new Point(128, 128);
 
-        private Random random;
+        public Random random;
         private object generatorLock = new object();
 
         public WorldGenerator(int seed)
@@ -42,7 +44,7 @@ namespace Simulation.Game.World.Generator
 
             Point worldGridChunkPosition = GeometryUtils.GetChunkPosition(newX, newY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
 
-            if(WorldLoader.doesWorldGridChunkExist(worldGridChunkPosition.X, worldGridChunkPosition.Y))
+            if(WorldLoader.DoesWorldGridChunkExist(worldGridChunkPosition.X, worldGridChunkPosition.Y))
             {
                 return;
             }
@@ -69,11 +71,11 @@ namespace Simulation.Game.World.Generator
                         walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)] = WalkableGridChunk.createEmpty(walkableGridChunk.X, walkableGridChunk.Y);
                     }
                     
-                    int Value = random.Next(0, 100);
+                    int Value = random.Next(0, 300);
 
                     if (Value <= 2)
                     {
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].setBlockType(i, j, BlockType.GRASS_WATERHOLE);
+                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].SetBlockType(i, j, BlockType.GRASS_WATERHOLE);
 
                         WalkableGrid.setBlockNotWalkableInChunk(walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)], i, j, true);
                     }
@@ -81,7 +83,16 @@ namespace Simulation.Game.World.Generator
                     {
                         int randomTexture = random.Next((int)BlockType.GRASS_01, (int)BlockType.GRASS_04 + 1);
 
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].setBlockType(i, j, (BlockType)randomTexture);
+                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].SetBlockType(i, j, (BlockType)randomTexture);
+
+                        if(Value == 95)
+                        {
+                            WorldLink worldLink;
+
+                            WorldLoader.SaveInterior(InteriorGenerator.CreateInterior(out worldLink, new Point(newX, newY)));
+
+                            worldGrid[(worldGridChunk.X, worldGridChunk.Y)].AddWorldLink(worldLink);
+                        }
                     }
 
                     if (Value <= 10 && Value > 6)
@@ -98,12 +109,12 @@ namespace Simulation.Game.World.Generator
 
             foreach(KeyValuePair<(int,int), WalkableGridChunk> walkableGridChunk in walkableGrid)
             {
-                WorldLoader.saveWalkableGridChunk(walkableGridChunk.Key.Item1, walkableGridChunk.Key.Item2, walkableGridChunk.Value);
+                WorldLoader.SaveWalkableGridChunk(walkableGridChunk.Key.Item1, walkableGridChunk.Key.Item2, walkableGridChunk.Value);
             }
 
             foreach (KeyValuePair<(int, int), WorldGridChunk> worldGridChunk in worldGrid)
             {
-                WorldLoader.saveWorldGridChunk(worldGridChunk.Key.Item1, worldGridChunk.Key.Item2, worldGridChunk.Value);
+                WorldLoader.SaveWorldGridChunk(worldGridChunk.Key.Item1, worldGridChunk.Key.Item2, worldGridChunk.Value);
             }
         }
     }

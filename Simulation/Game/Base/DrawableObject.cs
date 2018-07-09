@@ -33,7 +33,9 @@ namespace Simulation.Game.Base
 
         protected DrawableObject(Vector2 position)
         {
-            this.Position = position;
+            Position = position;
+            BlockPosition = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+
             ID = Util.Util.getUUID();
         }
 

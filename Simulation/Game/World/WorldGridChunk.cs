@@ -41,7 +41,7 @@ namespace Simulation.Game.World
         public List<AmbientObject> AmbientObjects;
 
         // These objects link to the interiors
-        public Dictionary<Point, WorldLink> WorldLinks;
+        public Dictionary<string, WorldLink> WorldLinks;
 
         private WorldGridChunk() { }
 
@@ -56,14 +56,14 @@ namespace Simulation.Game.World
             return GeometryUtils.GetChunkPosition(RealChunkBounds.X, RealChunkBounds.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
         }
 
-        public BlockType getBlockType(int blockX, int blockY)
+        public BlockType GetBlockType(int blockX, int blockY)
         {
             var projectedPosition = GeometryUtils.GetPositionWithinChunk(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
 
             return blockingGrid[projectedPosition.X, projectedPosition.Y];
         }
 
-        public void setBlockType(int blockX, int blockY, BlockType blockType)
+        public void SetBlockType(int blockX, int blockY, BlockType blockType)
         {
             var projectedPosition = GeometryUtils.GetPositionWithinChunk(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
 
@@ -72,18 +72,20 @@ namespace Simulation.Game.World
 
         public void AddWorldLink(WorldLink worldLink)
         {
-            if (WorldLinks == null)
-                WorldLinks = new Dictionary<Point, WorldLink>();
+            string key = worldLink.FromBlock.X + "," + worldLink.FromBlock.Y;
 
-            if (WorldLinks.ContainsKey(worldLink.FromBlock) == false)
-                WorldLinks[worldLink.FromBlock] = worldLink;
+            if (WorldLinks == null)
+                WorldLinks = new Dictionary<string, WorldLink>();
+
+            if (WorldLinks.ContainsKey(key) == false)
+                WorldLinks[key] = worldLink;
         }
 
         public void RemoveWorldLink(WorldLink worldLink)
         {
             if (WorldLinks != null)
             {
-                WorldLinks.Remove(worldLink.FromBlock);
+                WorldLinks.Remove(worldLink.FromBlock.X + "," + worldLink.FromBlock.Y);
 
                 if (WorldLinks.Count == 0)
                 {

@@ -41,23 +41,38 @@ namespace Simulation.Game.Base.Entity
 
             if(InteriorID == Interior.Outside)
             {
-                // Check if we move to a world link
-                WorldGridChunk worldGridChunk = WorldGridChunk.GetWorldGridChunk((int)newPosition.X, (int)newPosition.Y);
-                Point newBlockPosition = GeometryUtils.GetBlockFromReal((int)newPosition.X, (int)newPosition.Y);
+                // Check if we were on a worldLink
+                WorldGridChunk oldWorldGridChunk = WorldGridChunk.GetWorldGridChunk((int)Position.X, (int)Position.Y);
+                string oldKey = BlockPosition.X + "," + BlockPosition.Y;
 
-                if (worldGridChunk.WorldLinks != null && worldGridChunk.WorldLinks.ContainsKey(newBlockPosition))
+                if (oldWorldGridChunk.WorldLinks == null || oldWorldGridChunk.WorldLinks.ContainsKey(oldKey) == false)
                 {
-                    worldLink = worldGridChunk.WorldLinks[newBlockPosition];
+                    // Check if we move to a world link
+                    WorldGridChunk worldGridChunk = WorldGridChunk.GetWorldGridChunk((int)newPosition.X, (int)newPosition.Y);
+                    Point newBlockPosition = GeometryUtils.GetBlockFromReal((int)newPosition.X, (int)newPosition.Y);
+                    string key = newBlockPosition.X + "," + newBlockPosition.Y;
+
+                    if (worldGridChunk.WorldLinks != null && worldGridChunk.WorldLinks.ContainsKey(key))
+                    {
+                        worldLink = worldGridChunk.WorldLinks[key];
+                    }
                 }
             }
             else
             {
+                // Check if we were on a worldLink
                 Interior interior = SimulationGame.World.InteriorManager.GetInterior(InteriorID);
-                Point newBlockPosition = GeometryUtils.GetBlockFromReal((int)newPosition.X, (int)newPosition.Y);
+                string oldKey = BlockPosition.X + "," + BlockPosition.Y;
 
-                if (interior.WorldLinks != null && interior.WorldLinks.ContainsKey(newBlockPosition))
+                if (interior.WorldLinks == null || interior.WorldLinks.ContainsKey(oldKey) == false)
                 {
-                    worldLink = interior.WorldLinks[newBlockPosition];
+                    Point newBlockPosition = GeometryUtils.GetBlockFromReal((int)newPosition.X, (int)newPosition.Y);
+                    string key = newBlockPosition.X + "," + newBlockPosition.Y;
+
+                    if (interior.WorldLinks != null && interior.WorldLinks.ContainsKey(key))
+                    {
+                        worldLink = interior.WorldLinks[key];
+                    }
                 }
             }
 

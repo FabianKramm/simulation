@@ -38,6 +38,11 @@ namespace Simulation.Util
                 Directory.Delete(Path.Combine(gameFolder, WalkableGridSavePath), true);
             }
 
+            if (Directory.Exists(Path.Combine(gameFolder, InteriorSavePath)))
+            {
+                Directory.Delete(Path.Combine(gameFolder, InteriorSavePath), true);
+            }
+
             createGameFolders();
         }
 
@@ -48,6 +53,7 @@ namespace Simulation.Util
             Directory.CreateDirectory(gameFolder);
             Directory.CreateDirectory(Path.Combine(gameFolder, WorldSavePath));
             Directory.CreateDirectory(Path.Combine(gameFolder, WalkableGridSavePath));
+            Directory.CreateDirectory(Path.Combine(gameFolder, InteriorSavePath));
         }
 
         public static string getGameFolder()

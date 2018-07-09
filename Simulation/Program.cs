@@ -4,7 +4,7 @@ using Simulation.Game.Factories;
 using Simulation.Game.Renderer;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
-using Simulation.Game.World.Generator;
+using Simulation.Game.Generator;
 using System;
 using System.Collections.Generic;
 

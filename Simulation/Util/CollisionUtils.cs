@@ -22,7 +22,7 @@ namespace Simulation.Util
                         Point chunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
                         WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(chunkPos.X, chunkPos.Y);
 
-                        BlockType blockType = worldGridChunk.getBlockType(blockX, blockY);
+                        BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
                         if (CollisionUtils.getBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
                             return false;

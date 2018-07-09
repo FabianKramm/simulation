@@ -52,6 +52,7 @@
     <Compile Include="Game\Base\TemporaryObject.cs" />
     <Compile Include="Game\Effects\Effect.cs" />
     <Compile Include="Game\Effects\Fireball.cs" />
+    <Compile Include="Game\Generator\InteriorGeneration\InteriorGenerator.cs" />
     <Compile Include="Game\Hud\DebugHud.cs" />
     <Compile Include="Game\Renderer\Entities\LivingEntityRendererInformationFactory.cs" />
     <Compile Include="Game\Factories\AmbientObjectFactory.cs" />
@@ -83,12 +84,12 @@
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\Skills\FireballSkill.cs" />
     <Compile Include="Game\World\Block.cs" />
-    <Compile Include="Game\World\Generator\WorldLoader.cs" />
+    <Compile Include="Game\Generator\WorldLoader.cs" />
     <Compile Include="Game\World\Interior.cs" />
     <Compile Include="Game\World\InteriorManager.cs" />
     <Compile Include="Game\World\WalkableGridChunk.cs" />
     <Compile Include="Game\World\WorldGridChunk.cs" />
-    <Compile Include="Game\World\Generator\WorldGenerator.cs" />
+    <Compile Include="Game\Generator\WorldGenerator.cs" />
     <Compile Include="Game\World\WalkableGrid.cs" />
     <Compile Include="Game\World\WorldGrid.cs" />
     <Compile Include="Game\World\WorldLink.cs" />

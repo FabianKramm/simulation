@@ -10,8 +10,8 @@ using System.Collections.Generic;
 using Simulation.Util;
 using Simulation.Game.Hud;
 using Simulation.Game.Renderer;
-using Simulation.Game.World.Generator;
 using System.IO;
+using Simulation.Game.Generator;
 
 /*
     Open Points:

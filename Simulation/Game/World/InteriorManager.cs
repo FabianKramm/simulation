@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Hud;
-using Simulation.Game.World.Generator;
+using Simulation.Game.Generator;
 using Simulation.Util;
 using System;
 using System.Collections.Concurrent;
@@ -23,7 +23,7 @@ namespace Simulation.Game.World
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void loadInterior(string interiorID)
         {
-            loadedInteriors[interiorID] = WorldLoader.loadInterior(interiorID);
+            loadedInteriors[interiorID] = WorldLoader.LoadInterior(interiorID);
         }
 
         public int GetLoadedInteriorAmount()
@@ -39,7 +39,7 @@ namespace Simulation.Game.World
 
                 try
                 {
-                    WorldLoader.saveInterior(interior);
+                    WorldLoader.SaveInterior(interior);
                 }
                 finally
                 {

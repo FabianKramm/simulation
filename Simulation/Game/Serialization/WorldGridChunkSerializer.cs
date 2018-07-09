@@ -58,20 +58,22 @@ namespace Simulation.Game.Serialization
             // Serialize Ambient Objects
             JArray ambientObjects = new JArray();
 
-            foreach(var ambientObject in worldGridChunk.AmbientObjects)
-                ambientObjects.Add(WorldObjectSerializer.Serialize(ambientObject));
+            if (worldGridChunk.AmbientObjects != null)
+                foreach (var ambientObject in worldGridChunk.AmbientObjects)
+                    ambientObjects.Add(WorldObjectSerializer.Serialize(ambientObject));
 
             jObject.Add("AmbientObjects", ambientObjects);
 
             // Serialize Hitable Objects
             JArray containedObjects = new JArray();
 
-            foreach (var containedObject in worldGridChunk.ContainedObjects)
-            {
-                if (containedObject is Player) continue;
+            if (worldGridChunk.ContainedObjects != null)
+                foreach (var containedObject in worldGridChunk.ContainedObjects)
+                {
+                    if (containedObject is Player) continue;
 
-                containedObjects.Add(WorldObjectSerializer.Serialize(containedObject));
-            }
+                    containedObjects.Add(WorldObjectSerializer.Serialize(containedObject));
+                }
 
             jObject.Add("ContainedObjects", containedObjects);
         }

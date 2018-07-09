@@ -1,21 +1,18 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Bson;
+﻿using Newtonsoft.Json.Bson;
 using Newtonsoft.Json.Linq;
-using Simulation.Game.Hud;
 using Simulation.Game.Serialization;
+using Simulation.Game.World;
 using Simulation.Util;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 
-namespace Simulation.Game.World.Generator
+namespace Simulation.Game.Generator
 {
     public class WorldLoader
     {
         private static NamedLock fileLocks = new NamedLock();
 
-        public static bool doesWorldGridChunkExist(int chunkX, int chunkY)
+        public static bool DoesWorldGridChunkExist(int chunkX, int chunkY)
         {
             var chunkPath = Path.Combine(Util.Util.GetWorldSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 
@@ -36,7 +33,7 @@ namespace Simulation.Game.World.Generator
             }
         }
 
-        public static void saveInterior(Interior interior)
+        public static void SaveInterior(Interior interior)
         {
             var chunkPath = Path.Combine(Util.Util.GetInteriorSavePath(), interior.ID);
 
@@ -56,11 +53,11 @@ namespace Simulation.Game.World.Generator
             }
         }
 
-        public static Interior loadInterior(string ID)
+        public static Interior LoadInterior(string ID)
         {
             if (ID == Interior.Outside) throw new Exception("Cannot load outside interior!");
 
-            var chunkPath = Path.Combine(Util.Util.GetWorldSavePath(), ID);
+            var chunkPath = Path.Combine(Util.Util.GetInteriorSavePath(), ID);
 
             if (!File.Exists(chunkPath))
             {
@@ -89,7 +86,7 @@ namespace Simulation.Game.World.Generator
             }
         }
 
-        public static void saveWalkableGridChunk(int chunkX, int chunkY, WalkableGridChunk chunk)
+        public static void SaveWalkableGridChunk(int chunkX, int chunkY, WalkableGridChunk chunk)
         {
             var chunkPath = Path.Combine(Util.Util.GetWalkableGridSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 
@@ -108,7 +105,7 @@ namespace Simulation.Game.World.Generator
             }
         }
 
-        public static WalkableGridChunk loadWalkableGridChunk(int chunkX, int chunkY)
+        public static WalkableGridChunk LoadWalkableGridChunk(int chunkX, int chunkY)
         {
             var chunkPath = Path.Combine(Util.Util.GetWalkableGridSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 
@@ -131,7 +128,7 @@ namespace Simulation.Game.World.Generator
             }
         }
 
-        public static WorldGridChunk loadWorldGridChunk(int chunkX, int chunkY)
+        public static WorldGridChunk LoadWorldGridChunk(int chunkX, int chunkY)
         {
             var chunkPath = Path.Combine(Util.Util.GetWorldSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 
@@ -162,7 +159,7 @@ namespace Simulation.Game.World.Generator
             }
         }
 
-        public static void saveWorldGridChunk(int chunkX, int chunkY, WorldGridChunk chunk)
+        public static void SaveWorldGridChunk(int chunkX, int chunkY, WorldGridChunk chunk)
         {
             var chunkPath = Path.Combine(Util.Util.GetWorldSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 

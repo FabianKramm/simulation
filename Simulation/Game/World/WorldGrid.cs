@@ -2,7 +2,7 @@
 using Simulation.Game.Base;
 using Simulation.Game.Base.Entity;
 using Simulation.Game.Hud;
-using Simulation.Game.World.Generator;
+using Simulation.Game.Generator;
 using Simulation.Util;
 using System;
 using System.Collections.Concurrent;
@@ -50,7 +50,7 @@ namespace Simulation.Game.World
 
             walkableGrid.loadGridChunkGuarded(walkableGridChunkPosition.X, walkableGridChunkPosition.Y);
 
-            return WorldLoader.loadWorldGridChunk(chunkX, chunkY);
+            return WorldLoader.LoadWorldGridChunk(chunkX, chunkY);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -69,7 +69,7 @@ namespace Simulation.Game.World
 
                 try
                 {
-                    WorldLoader.saveWorldGridChunk(chunkX, chunkY, chunk);
+                    WorldLoader.SaveWorldGridChunk(chunkX, chunkY, chunk);
                 }
                 finally
                 {
@@ -191,7 +191,7 @@ namespace Simulation.Game.World
 
                 foreach (var durableEntity in durableEntities)
                 {
-                    if (chunk.Value.RealChunkBounds.Intersects(durableEntity.Value.PreloadedWorldGridChunkPixelBounds))
+                    if (durableEntity.Value.InteriorID == Interior.Outside && chunk.Value.RealChunkBounds.Intersects(durableEntity.Value.PreloadedWorldGridChunkPixelBounds))
                     {
                         found = true;
                         break;
@@ -220,22 +220,25 @@ namespace Simulation.Game.World
 
                         if (isWorldGridChunkLoaded(neighborChunkX, neighborChunkY))
                         {
-                            foreach (var containedEntity in worldGrid[key].ContainedObjects)
-                            {
-                                worldGrid[neighborKey].OverlappingObjects.Remove(containedEntity);
-                            }
+                            if(worldGrid[key].ContainedObjects != null)
+                                foreach (var containedEntity in worldGrid[key].ContainedObjects)
+                                {
+                                    worldGrid[neighborKey].RemoveOverlappingObject(containedEntity);
+                                }
                         }
                     }
 
-                foreach (var ambientObject in worldGrid[key].AmbientObjects)
-                {
-                    ambientObject.Destroy();
-                }
+                if (worldGrid[key].AmbientObjects != null)
+                    foreach (var ambientObject in worldGrid[key].AmbientObjects)
+                    {
+                        ambientObject.Destroy();
+                    }
 
-                foreach (var containedEntity in worldGrid[key].ContainedObjects)
-                {
-                    containedEntity.Destroy();
-                }
+                if (worldGrid[key].ContainedObjects != null)
+                    foreach (var containedEntity in worldGrid[key].ContainedObjects)
+                    {
+                        containedEntity.Destroy();
+                    }
 
                 // Save async
                 saveWorldGridChunkAsync(Int32.Parse(pos[0]), Int32.Parse(pos[1]), worldGrid[key]);
