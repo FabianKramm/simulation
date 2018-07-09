@@ -4,10 +4,7 @@ using Simulation.Game.Base.Entity;
 using Simulation.Game.Hud;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.Skills;
-using Simulation.PathFinding;
 using Simulation.Util;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Simulation.Game
 {

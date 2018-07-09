@@ -89,7 +89,7 @@ namespace Simulation.Game.Generator
                         {
                             WorldLink worldLink;
 
-                            WorldLoader.SaveInterior(InteriorGenerator.CreateInterior(out worldLink, new Point(newX, newY)));
+                            WorldLoader.SaveInterior(InteriorGenerator.CreateInterior(out worldLink, new Point(i, j)));
 
                             worldGrid[(worldGridChunk.X, worldGridChunk.Y)].AddWorldLink(worldLink);
                         }

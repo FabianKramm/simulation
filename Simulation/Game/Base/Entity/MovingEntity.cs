@@ -85,6 +85,7 @@ namespace Simulation.Game.Base.Entity
                 InteriorID = worldLink.ToInteriorID;
                 base.UpdatePosition(newPosition);
 
+                // Here we should load the interior asynchronously
                 connectToWorld();
             }
             else

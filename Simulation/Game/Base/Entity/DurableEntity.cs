@@ -33,9 +33,9 @@ namespace Simulation.Game.Base.Entity
 
         private void preloadGridChunks()
         {
-            Point chunkPosition = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, World.WorldGrid.WorldChunkPixelSize.X, World.WorldGrid.WorldChunkPixelSize.Y);
+            Point chunkPosition = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
             PreloadedWorldGridChunkBounds = new Rectangle(chunkPosition.X - preloadedSurroundingWorldGridChunkRadius, chunkPosition.Y - preloadedSurroundingWorldGridChunkRadius, preloadedSurroundingWorldGridChunkRadius * 2 + 1, preloadedSurroundingWorldGridChunkRadius * 2 + 1);
-            PreloadedWorldGridChunkPixelBounds = new Rectangle(PreloadedWorldGridChunkBounds.X * World.WorldGrid.WorldChunkPixelSize.X, PreloadedWorldGridChunkBounds.Y * World.WorldGrid.WorldChunkPixelSize.Y, PreloadedWorldGridChunkBounds.Width * World.WorldGrid.WorldChunkPixelSize.X, PreloadedWorldGridChunkBounds.Height * World.WorldGrid.WorldChunkPixelSize.Y);
+            PreloadedWorldGridChunkPixelBounds = new Rectangle(PreloadedWorldGridChunkBounds.X * WorldGrid.WorldChunkPixelSize.X, PreloadedWorldGridChunkBounds.Y * WorldGrid.WorldChunkPixelSize.Y, PreloadedWorldGridChunkBounds.Width * WorldGrid.WorldChunkPixelSize.X, PreloadedWorldGridChunkBounds.Height * WorldGrid.WorldChunkPixelSize.Y);
 
             for (int i = PreloadedWorldGridChunkBounds.Left; i <= PreloadedWorldGridChunkBounds.Right - 1; i++)
                 for (int j = PreloadedWorldGridChunkBounds.Top; j <= PreloadedWorldGridChunkBounds.Bottom - 1; j++)
@@ -46,7 +46,8 @@ namespace Simulation.Game.Base.Entity
         {
             base.UpdatePosition(newPosition);
 
-            preloadGridChunks();
+            if(InteriorID == Interior.Outside)
+                preloadGridChunks();
         }
     }
 }

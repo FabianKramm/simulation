@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Simulation.Game.World
 {
@@ -23,6 +24,11 @@ namespace Simulation.Game.World
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void loadInterior(string interiorID)
         {
+            if (Thread.CurrentThread.ManagedThreadId == 1)
+            {
+                GameConsole.WriteLine("ChunkLoading", "Interior " + interiorID + " loaded in main thread");
+            }
+
             loadedInteriors[interiorID] = WorldLoader.LoadInterior(interiorID);
         }
 

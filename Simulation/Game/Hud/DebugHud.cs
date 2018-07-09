@@ -91,13 +91,12 @@ namespace Simulation.Game.Hud
                 spriteBatch.Draw(backgroundOverlay, new Rectangle(0, 0, SimulationGame.Resolution.Width, SimulationGame.Resolution.Height), backgroundColor);
                 spriteBatch.Draw(backgroundOverlay, new Rectangle(SimulationGame.Resolution.Width - 510, SimulationGame.Resolution.Height - 210, 490, 190), consoleColor);
 
-
                 Point currentBlock = GeometryUtils.GetChunkPosition((int)SimulationGame.Camera.Position.X, (int)SimulationGame.Camera.Position.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
 
                 string time = "Time: " + (TimeUtils.GetCurrentDayTick() / SimulationGame.TicksPerHour) + ":" + (TimeUtils.GetCurrentDayTick() % SimulationGame.TicksPerHour);
                 string currentPos = "Pos: " + SimulationGame.Camera.Position.X + ", " + SimulationGame.Camera.Position.Y;
                 string currentBlockText = "Block: " + currentBlock.X + ", " + currentBlock.Y;
-                string loadedChunks = "Loaded Chunks: " + SimulationGame.World.getLoadedChunkAmount() + " - " + SimulationGame.World.walkableGrid.getLoadedChunkAmount();
+                string loadedChunks = "Chunks: " + SimulationGame.World.getLoadedChunkAmount() + " World, " + SimulationGame.World.walkableGrid.getLoadedChunkAmount() + " Walk, " + SimulationGame.World.InteriorManager.GetLoadedInteriorAmount() + " Ints";
 
                 spriteBatch.DrawString(font, time, new Vector2(SimulationGame.Resolution.Width - font.MeasureString(time).X - 20, 20), Color.White);
                 spriteBatch.DrawString(font, currentPos, new Vector2(SimulationGame.Resolution.Width - font.MeasureString(currentPos).X - 20, 40), Color.White);
