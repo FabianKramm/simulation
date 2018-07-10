@@ -179,7 +179,7 @@ namespace Simulation.Game.World
                             WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(worldGridChunkPos.X, worldGridChunkPos.Y);
                             BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
-                            if (CollisionUtils.getBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
+                            if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
                                 continue;
 
                             var found = false;
@@ -214,7 +214,7 @@ namespace Simulation.Game.World
                 {
                     var found = false;
 
-                    foreach (var durableEntity in SimulationGame.World.durableEntities)
+                    foreach (var durableEntity in SimulationGame.World.DurableEntities)
                     {
                         if (durableEntity.Value.InteriorID == Interior.Outside && walkableGridChunkItem.Value.realChunkBounds.Intersects(durableEntity.Value.PreloadedWorldGridChunkPixelBounds))
                         {

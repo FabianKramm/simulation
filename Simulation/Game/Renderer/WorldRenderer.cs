@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
+using Simulation.Game.Renderer.Effects;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.World;
 using Simulation.Util;
@@ -44,7 +45,7 @@ namespace Simulation.Game.Renderer
                             AmbientObjectRenderer.Draw(spriteBatch, ambientObject);
 
                     if (worldGridChunk.ContainedObjects != null)
-                        foreach (HitableObject containedObject in worldGridChunk.ContainedObjects)
+                        foreach (var containedObject in worldGridChunk.ContainedObjects)
                         {
                             if (containedObject is LivingEntity)
                             {
@@ -55,6 +56,10 @@ namespace Simulation.Game.Renderer
                                 InteractiveObjectRenderer.Draw(spriteBatch, containedObject);
                             }
                         }
+
+                    if (worldGridChunk.ContainedEffects != null)
+                        foreach (var effectItem in worldGridChunk.ContainedEffects)
+                            EffectRenderer.Draw(spriteBatch, gameTime, effectItem.Value);
 
                     if (SimulationGame.IsDebug && worldGridChunk.WorldLinks != null)
                         foreach (var worldLinkItem in worldGridChunk.WorldLinks)
@@ -85,7 +90,7 @@ namespace Simulation.Game.Renderer
                     AmbientObjectRenderer.Draw(spriteBatch, ambientObject);
 
             if (interior.ContainedObjects != null)
-                foreach (HitableObject containedObject in interior.ContainedObjects)
+                foreach (var containedObject in interior.ContainedObjects)
                 {
                     if (containedObject is LivingEntity)
                     {
@@ -97,7 +102,11 @@ namespace Simulation.Game.Renderer
                     }
                 }
 
-            if(SimulationGame.IsDebug && interior.WorldLinks != null)
+            if (interior.ContainedEffects != null)
+                foreach (var effectItem in interior.ContainedEffects)
+                    EffectRenderer.Draw(spriteBatch, gameTime, effectItem.Value);
+
+            if (SimulationGame.IsDebug && interior.WorldLinks != null)
                 foreach(var worldLinkItem in interior.WorldLinks)
                     if(SimulationGame.VisibleArea.Contains(new Point(worldLinkItem.Value.FromBlock.X * WorldGrid.BlockSize.X, worldLinkItem.Value.FromBlock.Y * WorldGrid.BlockSize.Y)))
                         SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle(worldLinkItem.Value.FromBlock.X * WorldGrid.BlockSize.X, worldLinkItem.Value.FromBlock.Y * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y), Color.DarkBlue);

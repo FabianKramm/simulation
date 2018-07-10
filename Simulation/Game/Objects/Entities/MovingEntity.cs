@@ -90,7 +90,7 @@ namespace Simulation.Game.Objects.Entities
                 InteriorID = worldLink.ToInteriorID;
                 base.UpdatePosition(newPosition);
 
-                // Here we should load the interior asynchronously
+                // TODO: Here we should load the interior asynchronously for all entities (also player)
                 ConnectToWorld();
             }
             else
@@ -99,7 +99,7 @@ namespace Simulation.Game.Objects.Entities
                 {
                     DisconnectFromWorld();
 
-                    // TODO: Check if we are moving into unloaded area => if yes then we load the tile and unload us
+                    // TODO: Check if we are moving into unloaded area and we aren't a durable entity => if yes then we load the tile and unload us
                     base.UpdatePosition(newPosition);
 
                     ConnectToWorld();

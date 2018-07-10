@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Simulation.Util.Geometry;
+using Simulation.Game.Effects;
 
 namespace Simulation.Game.World
 {
@@ -32,8 +33,7 @@ namespace Simulation.Game.World
         private TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
         private static TimeSpan garbageCollectInterval = TimeSpan.FromSeconds(20);
 
-        public Dictionary<string, GameObject> effects;
-        public Dictionary<string, DurableEntity> durableEntities = new Dictionary<string, DurableEntity>();
+        public Dictionary<string, DurableEntity> DurableEntities = new Dictionary<string, DurableEntity>();
 
         public int getLoadedChunkAmount()
         {
@@ -191,13 +191,26 @@ namespace Simulation.Game.World
             }
         }
 
+        public void AddEffectToWorld(Effect effect)
+        {
+            // Add Effect to chunk
+            if (effect.InteriorID == Interior.Outside)
+            {
+                SimulationGame.World.GetWorldGridChunkFromReal((int)effect.Position.X, (int)effect.Position.Y).AddEffect(effect);
+            }
+            else
+            {
+                SimulationGame.World.InteriorManager.GetInterior(effect.InteriorID).AddEffect(effect);
+            }
+        }
+
         private void addDurableEntity(DurableEntity durableEntity)
         {
             ThreadingUtils.assertMainThread();
 
-            if (durableEntities.ContainsKey(durableEntity.ID) == false)
+            if (DurableEntities.ContainsKey(durableEntity.ID) == false)
             {
-                durableEntities[durableEntity.ID] = durableEntity;
+                DurableEntities[durableEntity.ID] = durableEntity;
             }
         }
 
@@ -210,7 +223,7 @@ namespace Simulation.Game.World
             {
                 var found = false;
 
-                foreach (var durableEntity in durableEntities)
+                foreach (var durableEntity in DurableEntities)
                 {
                     if (durableEntity.Value.InteriorID == Interior.Outside && chunk.Value.RealChunkBounds.Intersects(durableEntity.Value.PreloadedWorldGridChunkPixelBounds))
                     {
@@ -251,15 +264,11 @@ namespace Simulation.Game.World
 
                 if (worldGrid[key].AmbientObjects != null)
                     foreach (var ambientObject in worldGrid[key].AmbientObjects)
-                    {
                         ambientObject.Destroy();
-                    }
 
                 if (worldGrid[key].ContainedObjects != null)
                     foreach (var containedEntity in worldGrid[key].ContainedObjects)
-                    {
                         containedEntity.Destroy();
-                    }
 
                 // Save async
                 saveWorldGridChunkAsync(Int32.Parse(pos[0]), Int32.Parse(pos[1]), worldGrid[key]);
@@ -280,6 +289,11 @@ namespace Simulation.Game.World
             {
                 timeSinceLastGarbageCollect = TimeSpan.Zero;
                 garbageCollectWorldGridChunks();
+            }
+
+            foreach (var worldGridChunkItem in worldGrid)
+            {
+                worldGridChunkItem.Value.Update(gameTime);
             }
 
             walkableGrid.Update(gameTime);

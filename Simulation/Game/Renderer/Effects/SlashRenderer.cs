@@ -27,7 +27,7 @@ namespace Simulation.Game.Renderer.Effects
     {
         public static void Draw(SpriteBatch spriteBatch, GameTime gameTime, Slash slash)
         {
-            if (slash.origin.InteriorID == SimulationGame.Player.InteriorID && SimulationGame.VisibleArea.Contains(slash.Position))
+            if (slash.InteriorID == SimulationGame.Player.InteriorID && SimulationGame.VisibleArea.Contains(slash.Position))
             {
                 if (slash.effectRendererInformation == null)
                     slash.effectRendererInformation = new SlashRendererInformation(slash);

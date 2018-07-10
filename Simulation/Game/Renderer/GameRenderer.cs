@@ -100,15 +100,7 @@ namespace Simulation.Game.Renderer
 
             WorldRenderer.Draw(spriteBatch, gameTime);
 
-            foreach (var effect in SimulationGame.effects)
-            {
-                EffectRenderer.Draw(spriteBatch, gameTime, effect);
-            }
-
             spriteBatch.End();
-
-            // Debug
-            // spriteBatch.Draw(SimulationGame.camera.Debug);
 
             // Hud
             spriteBatch.Begin();

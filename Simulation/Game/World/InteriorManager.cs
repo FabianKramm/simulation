@@ -110,7 +110,7 @@ namespace Simulation.Game.World
                 {
                     var found = false;
 
-                    foreach (var durableEntity in SimulationGame.World.durableEntities)
+                    foreach (var durableEntity in SimulationGame.World.DurableEntities)
                     {
                         if (key == durableEntity.Value.InteriorID)
                         {
@@ -121,12 +121,20 @@ namespace Simulation.Game.World
 
                     if (!found)
                     {
-                        Interior removedItem;
+                        Interior removedInterior;
 
-                        loadedInteriors.TryRemove(key, out removedItem);
+                        loadedInteriors.TryRemove(key, out removedInterior);
+
+                        if (removedInterior.AmbientObjects != null)
+                            foreach (var ambientObject in removedInterior.AmbientObjects)
+                                ambientObject.Destroy();
+
+                        if (removedInterior.ContainedObjects != null)
+                            foreach (var containedEntity in removedInterior.ContainedObjects)
+                                containedEntity.Destroy();
 
                         // Save async
-                        SaveInteriorAsync(removedItem);
+                        SaveInteriorAsync(removedInterior);
 
                         interiorsUnloaded++;
                     }
@@ -151,6 +159,11 @@ namespace Simulation.Game.World
             {
                 timeSinceLastGarbageCollect = TimeSpan.Zero;
                 garbageCollectInteriors();
+            }
+
+            foreach(var interiorItem in loadedInteriors)
+            {
+                interiorItem.Value.Update(gameTime);
             }
         }
     }

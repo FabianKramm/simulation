@@ -47,5 +47,12 @@ namespace Simulation.Game.Objects.Entities
             if(InteriorID == Interior.Outside)
                 preloadGridChunks();
         }
+
+        public override void Update(GameTime gameTime)
+        {
+            preloadGridChunks();
+
+            base.Update(gameTime);
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace Simulation.PathFinding
             }
             else
             {
-                if (CollisionUtils.getBlockingTypeFromBlock(interior.GetBlockType(endBlockX, endBlockY)) != BlockingType.BLOCKING)
+                if (CollisionUtils.GetBlockingTypeFromBlock(interior.GetBlockType(endBlockX, endBlockY)) != BlockingType.BLOCKING)
                 {
                     JumpPointParam jpp = new JumpPointParam(new InteriorGrid(interior), new GridPos(startBlockX, startBlockY), new GridPos(endBlockX, endBlockY), DiagonalMovement.OnlyWhenNoObstacles);
 

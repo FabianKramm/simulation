@@ -94,7 +94,6 @@ namespace Simulation
             get; private set;
         }
 
-        public static List<Simulation.Game.Effects.Effect> effects = new List<Simulation.Game.Effects.Effect>();
         public static Player Player;
 
         public static GraphicsDeviceManager Graphics;
@@ -217,21 +216,7 @@ namespace Simulation
                 debugKeyDown = false;
             }
 
-            Player.Update(gameTime);
             Camera.Update(gameTime);
-
-            for(int i=0;i<effects.Count;i++)
-            {
-                var effect = effects[i];
-
-                effect.Update(gameTime);
-
-                if(effect.IsFinished)
-                {
-                    effects.Remove(effect);
-                    i--;
-                }
-            }
 
             Hud.Update(gameTime);
             World.Update(gameTime);

@@ -1,11 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Objects;
-using Simulation.Game.Renderer;
 using Simulation.Util.Geometry;
-using System;
 using System.Collections.Generic;
-using static Simulation.Game.Renderer.BlockRenderer;
 
 namespace Simulation.Game.World
 {
@@ -18,6 +14,7 @@ namespace Simulation.Game.World
     public enum HitBoxType
     {
         NO_HITBOX = 0,
+        HITABLE_BLOCK,
         STATIC_OBJECT,
         MOVING_OBJECT,
         LIVING_ENTITY

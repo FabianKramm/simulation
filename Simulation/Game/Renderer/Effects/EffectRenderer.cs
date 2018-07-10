@@ -17,6 +17,10 @@ namespace Simulation.Game.Renderer.Effects
             {
                 SlashRenderer.Draw(spriteBatch, gameTime, (Slash)effect);
             }
+            else if(effect is Fireball)
+            {
+                FireballRenderer.Draw(spriteBatch, gameTime, (Fireball)effect);
+            }
         }
     }
 }

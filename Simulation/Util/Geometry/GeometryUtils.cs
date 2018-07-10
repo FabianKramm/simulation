@@ -16,6 +16,16 @@ namespace Simulation.Util.Geometry
         public static readonly int reservedDepthLayers = 100;
         public static readonly float SmallFloat = 0.1f;
 
+        public static float GetVectorDistance(float x1, float y1, float x2, float y2)
+        {
+            return (float)Math.Sqrt(Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2));
+        }
+
+        public static bool VectorsWithinDistance(float x1, float y1, float x2, float y2, float d)
+        {
+            return ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) < d * d;
+        }
+
         public static bool VectorsWithinDistance(int x1, int y1, int x2, int y2, int d)
         {
             return ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) < d * d;
@@ -49,7 +59,7 @@ namespace Simulation.Util.Geometry
             return Math.Max(0.0f, Math.Min(1.0f, (value - min) / (max - min)));
         }
 
-        public static Vector2 Rotate(float angle, ref Vector2 pivot, ref Vector2 point)
+        public static Vector2 Rotate(float angle, Vector2 pivot, ref Vector2 point)
         {
             Vector2 rotatedPoint = point;
 

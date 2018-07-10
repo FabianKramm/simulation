@@ -6,78 +6,65 @@ using Simulation.Spritesheet;
 using Simulation.Util;
 using System;
 using Simulation.Util.Geometry;
+using Simulation.Game.World;
 
 namespace Simulation.Game.Effects
 {
     public class Fireball: Effect
     {
-        private Animation flying;
-        private Animation impact;
+        private static float maxDistance = 64;
 
-        private float velocity = 0.4f; // 10 per second
-        private float angle;
+        public float Angle;
+        public bool HasHitTarget = false;
 
-        public Vector2 position;
+        private Vector2 startPosition;
+        private float velocity = 0.4f;
         private Vector2 direction;
 
-        private bool hasHitTarget = false;
-
-        public Fireball(LivingEntity origin, Vector2 target, Vector2? relativeOriginPosition = null) : base(origin)
+        public Fireball(LivingEntity origin, Vector2 target, Vector2? relativeOriginPosition = null) : base(origin.Position, origin, origin.InteriorID)
         {
             Vector2 _relativeOriginPosition = relativeOriginPosition ?? Vector2.Zero;
+            Vector2 newPosition = Vector2.Add(origin.Position, _relativeOriginPosition);
 
-            position = Vector2.Add(origin.Position, _relativeOriginPosition);
-
-            direction = new Vector2(target.X - position.X, target.Y - position.Y);
+            direction = new Vector2(target.X - Position.X, target.Y - Position.Y);
             direction.Normalize();
 
-            position.X += (direction.X * World.WorldGrid.BlockSize.X);
-            position.Y += (direction.Y * World.WorldGrid.BlockSize.Y);
+            newPosition.X += (direction.X * WorldGrid.BlockSize.X);
+            newPosition.Y += (direction.Y * WorldGrid.BlockSize.Y);
 
-            angle = (float)Math.Atan2(direction.Y, direction.X) + (float)Math.PI * 0.5f;
+            startPosition = newPosition;
 
-            GameConsole.WriteLine("", angle + "");
+            Angle = (float)Math.Atan2(direction.Y, direction.X) + (float)Math.PI * 0.5f;
 
-            Texture2D texture = SimulationGame.ContentManager.Load<Texture2D>(@"Spells\Fireball\Lv1UFireballp");
-            var sheet = new Simulation.Spritesheet.Spritesheet(texture).WithGrid((15, 29)).WithFrameDuration(120).WithCellOrigin(new Point(7, 0));
-
-            flying = sheet.CreateAnimation((0, 0), (1, 0), (2, 0));
-            flying.Start(Repeat.Mode.Loop);
-
-            Texture2D explode = SimulationGame.ContentManager.Load<Texture2D>(@"Spells\Fireball\Explode");
-            sheet = new Simulation.Spritesheet.Spritesheet(explode).WithGrid((61, 60)).WithFrameDuration(100).WithCellOrigin(new Point(30, 30));
-
-            impact = sheet.CreateAnimation((0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0), (9, 0));
+            updatePosition(newPosition);
         }
 
         public override void Update(GameTime gameTime)
         {
-            if(!hasHitTarget)
+            if(!HasHitTarget)
             {
-                position.X += (direction.X * velocity * gameTime.ElapsedGameTime.Milliseconds);
-                position.Y += (direction.Y * velocity * gameTime.ElapsedGameTime.Milliseconds);
+                updatePosition(new Vector2(Position.X + (direction.X * velocity * gameTime.ElapsedGameTime.Milliseconds), Position.Y + (direction.Y * velocity * gameTime.ElapsedGameTime.Milliseconds)));
 
-                if (SimulationGame.VisibleArea.Contains(position))
+                if (GeometryUtils.VectorsWithinDistance(Position.X, Position.Y, startPosition.X, startPosition.Y, maxDistance))
                 {
-                    var rotateVector = new Vector2(position.X, position.Y + 7.5f);
-                    var rotatedPoint = GeometryUtils.Rotate(angle, ref position, ref rotateVector);
-                    var collisionRect = new Rectangle((int)(rotatedPoint.X - 7.5f), (int)(rotatedPoint.Y - 7.5f), 15, 15);
-                    /*var touchedBlocks = SimulationGame.world.getTouchedWorldBlocks(ref collisionRect);
+                    var rotateVector = new Vector2(Position.X, Position.Y + 7.5f);
+                    var rotatedPoint = GeometryUtils.Rotate(Angle, Position, ref rotateVector);
+                    var collisionRect = new Rect((int)(rotatedPoint.X - 7.5f), (int)(rotatedPoint.Y - 7.5f), 15, 15);
+                    var hittedObjects = CollisionUtils.GetHittedObjects(collisionRect, Origin, InteriorID);
 
-                    foreach (var block in touchedBlocks)
-                        if(block.hitableObjects != null)
-                            foreach (var entity in block.hitableObjects)
-                            {
-                                if (entity == origin) continue;
+                    if(hittedObjects.Count == 0)
+                    {
+                        if (CollisionUtils.IsHitableBlockHitted(collisionRect, InteriorID))
+                        {
+                            HasHitTarget = true;
+                        }
+                    }
+                    else
+                    {
+                        HasHitTarget = true;
 
-                                if (collisionRect.Intersects(entity.hitBoxBounds))
-                                {
-                                    hasHitTarget = true;
-                                    impact.Start(Repeat.Mode.Once);
-                                }
-                            }
-
-                    flying.Update(gameTime);*/
+                        // TODO: Apply effect on targets
+                    }
                 }
                 else
                 {
@@ -86,39 +73,11 @@ namespace Simulation.Game.Effects
             }
             else
             {
-                impact.Update(gameTime);
-
-                if(!impact.IsStarted)
+                if(InteriorID != SimulationGame.Player.InteriorID || effectRendererInformation == null || effectRendererInformation.IsFinished)
                 {
                     IsFinished = true;
                 }
             }
         }
-
-        /* public override void Draw(SpriteBatch spriteBatch)
-        {
-            if(SimulationGame.VisibleArea.Contains(position))
-            {
-                if(hasHitTarget)
-                {
-                    if(impact.IsStarted)
-                    {
-                        spriteBatch.Draw(impact, position, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.getLayerDepthFromPosition(position.X, position.Y + World.WorldGrid.BlockSize.Y));
-                    }
-                }
-                else
-                {
-                    spriteBatch.Draw(flying, position, rotation: angle, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.getLayerDepthFromPosition(position.X, position.Y));
-                }
-            }
-
-            if(SimulationGame.IsDebug)
-            {
-                var rotateVector = new Vector2(position.X, position.Y + 7.5f);
-                var rotatedPoint = GeometryUtils.Rotate(angle, ref position, ref rotateVector);
-
-                SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle((int)(rotatedPoint.X - 7.5f), (int)(rotatedPoint.Y - 7.5f), 15, 15), Color.Red);
-            }
-        } */
     }
 }

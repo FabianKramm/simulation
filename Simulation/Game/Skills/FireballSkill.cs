@@ -21,7 +21,7 @@ namespace Simulation.Game.Skills
                 GameConsole.WriteLine("USE_SKILL", "Fireball");
             }
 
-            SimulationGame.effects.Add(new Fireball(owner, targetPosition, relativeOriginPosition));
+            SimulationGame.World.AddEffectToWorld(new Fireball(owner, targetPosition, relativeOriginPosition));
         }
     }
 }

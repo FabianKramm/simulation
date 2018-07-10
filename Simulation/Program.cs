@@ -28,7 +28,7 @@ namespace Simulation
             // WorldGenerator.ResetWorld();
 
             using (var game = new SimulationGame())
-                game.Run();
+               game.Run();
 
             //Console.WriteLine(GeometryUtils.getPositionWithinChunk(-1, -1, 32, 32));
 
