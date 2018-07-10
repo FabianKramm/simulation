@@ -5,10 +5,10 @@ namespace Simulation.Util.Geometry
 {
     public struct Circle
     {
-        int CenterX;
-        int CenterY;
+        public int CenterX;
+        public int CenterY;
 
-        int Radius;
+        public int Radius;
 
         public Circle(int centerX, int centerY, int radius)
         {

@@ -46,6 +46,7 @@
     <Compile Include="Game\AI\FightingAI.cs" />
     <Compile Include="Game\AI\FollowAI.cs" />
     <Compile Include="Game\AI\WanderAI.cs" />
+    <Compile Include="Game\Generator\GeneratorUtils.cs" />
     <Compile Include="Game\Objects\Entities\DurableEntity.cs" />
     <Compile Include="Game\Objects\Entities\LivingEntity.cs" />
     <Compile Include="Game\Objects\GameObject.cs" />
@@ -76,6 +77,9 @@
     <Compile Include="Game\Renderer\GameRenderer.cs" />
     <Compile Include="Game\Renderer\Entities\LivingEntityRendererInformation.cs" />
     <Compile Include="Game\Renderer\WorldRenderer.cs" />
+    <Compile Include="Game\Serialization\AI\AISerializer.cs" />
+    <Compile Include="Game\Serialization\AI\BaseAISerializer.cs" />
+    <Compile Include="Game\Serialization\AI\WanderAISerializer.cs" />
     <Compile Include="Game\Serialization\Objects\AmbientObjectSerializer.cs" />
     <Compile Include="Game\Serialization\Objects\DrawableObjectSerializer.cs" />
     <Compile Include="Game\Serialization\Objects\DurableEntitySerializer.cs" />

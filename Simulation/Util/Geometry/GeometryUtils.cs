@@ -13,12 +13,12 @@ namespace Simulation.Util.Geometry
 
     public class GeometryUtils
     {
-        public static readonly int reservedDepthLayers = 100;
+        private static readonly int ReservedDepthLayers = 100;
         public static readonly float SmallFloat = 0.1f;
 
         public static float GetVectorDistance(float x1, float y1, float x2, float y2)
         {
-            return (float)Math.Sqrt(Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2));
+            return (float)Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
         }
 
         public static bool VectorsWithinDistance(float x1, float y1, float x2, float y2, float d)
@@ -31,33 +31,31 @@ namespace Simulation.Util.Geometry
             return ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) < d * d;
         }
 
-        public static float getLayerDepthFromReservedLayer(ReservedDepthLayers layer)
+        public static float GetLayerDepthFromReservedLayer(ReservedDepthLayers layer)
         {
             return Normalize((int)layer,
                             0,
-                            SimulationGame.VisibleArea.Width * SimulationGame.VisibleArea.Height + reservedDepthLayers);
+                            SimulationGame.VisibleArea.Width * SimulationGame.VisibleArea.Height + ReservedDepthLayers);
         }
 
-        public static float getLayerDepthFromReservedLayer(int zIndex)
+        public static float GetLayerDepthFromReservedLayer(int zIndex)
         {
             return Normalize(zIndex,
                             0,
-                            SimulationGame.VisibleArea.Width * SimulationGame.VisibleArea.Height + reservedDepthLayers);
+                            SimulationGame.VisibleArea.Width * SimulationGame.VisibleArea.Height + ReservedDepthLayers);
         }
 
-        public static float getLayerDepthFromPosition(float X, float Y)
+        public static float GetLayerDepthFromPosition(float X, float Y)
         {
-            float value = (Y - SimulationGame.VisibleArea.Top) * SimulationGame.VisibleArea.Width + (X - SimulationGame.VisibleArea.Left) + reservedDepthLayers;
+            float value = (Y - SimulationGame.VisibleArea.Top) * SimulationGame.VisibleArea.Width + (X - SimulationGame.VisibleArea.Left) + ReservedDepthLayers;
 
             return Normalize(value,
                             0,
-                            SimulationGame.VisibleArea.Width * SimulationGame.VisibleArea.Height + reservedDepthLayers);
+                            SimulationGame.VisibleArea.Width * SimulationGame.VisibleArea.Height + ReservedDepthLayers);
         }
 
-        public static float Normalize(float value, float min, float max)
-        {
-            return Math.Max(0.0f, Math.Min(1.0f, (value - min) / (max - min)));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Normalize(float value, float min, float max) => Math.Max(0.0f, Math.Min(1.0f, (value - min) / (max - min)));
 
         public static Vector2 Rotate(float angle, Vector2 pivot, ref Vector2 point)
         {

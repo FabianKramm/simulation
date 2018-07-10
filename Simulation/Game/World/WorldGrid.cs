@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Simulation.Util.Geometry;
 using Simulation.Game.Effects;
+using System.Linq;
 
 namespace Simulation.Game.World
 {
@@ -291,8 +292,10 @@ namespace Simulation.Game.World
                 garbageCollectWorldGridChunks();
             }
 
-            foreach (var worldGridChunkItem in worldGrid)
+            for (int i=0;i<worldGrid.Count;i++)
             {
+                var worldGridChunkItem = worldGrid.ElementAt(i);
+
                 worldGridChunkItem.Value.Update(gameTime);
             }
 

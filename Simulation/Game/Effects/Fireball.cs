@@ -1,8 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Objects.Entities;
-using Simulation.Game.Hud;
-using Simulation.Spritesheet;
 using Simulation.Util;
 using System;
 using Simulation.Util.Geometry;

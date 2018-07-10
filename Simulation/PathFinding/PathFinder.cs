@@ -21,24 +21,16 @@ namespace Simulation.PathFinding
         {
             if(interior == null)
             {
-                if (SimulationGame.World.walkableGrid.IsBlockWalkable(endBlockX, endBlockY))
-                {
-                    JumpPointParam jpp = new JumpPointParam(new DynamicWalkableGrid(SimulationGame.World.walkableGrid, startBlockX, startBlockY, endBlockX, endBlockY), new GridPos(startBlockX, startBlockY), new GridPos(endBlockX, endBlockY), DiagonalMovement.OnlyWhenNoObstacles);
+                JumpPointParam jpp = new JumpPointParam(new DynamicWalkableGrid(SimulationGame.World.walkableGrid, startBlockX, startBlockY, endBlockX, endBlockY), new GridPos(startBlockX, startBlockY), new GridPos(endBlockX, endBlockY), DiagonalMovement.OnlyWhenNoObstacles);
 
-                    return JumpPointFinder.GetFullPath(JumpPointFinder.FindPath(jpp));
-                }
+                return JumpPointFinder.GetFullPath(JumpPointFinder.FindPath(jpp));
             }
             else
             {
-                if (CollisionUtils.GetBlockingTypeFromBlock(interior.GetBlockType(endBlockX, endBlockY)) != BlockingType.BLOCKING)
-                {
-                    JumpPointParam jpp = new JumpPointParam(new InteriorGrid(interior), new GridPos(startBlockX, startBlockY), new GridPos(endBlockX, endBlockY), DiagonalMovement.OnlyWhenNoObstacles);
+                JumpPointParam jpp = new JumpPointParam(new InteriorGrid(interior, endBlockX, endBlockY), new GridPos(startBlockX, startBlockY), new GridPos(endBlockX, endBlockY), DiagonalMovement.OnlyWhenNoObstacles);
 
-                    return JumpPointFinder.GetFullPath(JumpPointFinder.FindPath(jpp));
-                }
+                return JumpPointFinder.GetFullPath(JumpPointFinder.FindPath(jpp));
             }
-
-            return null;
         }
     }
 }

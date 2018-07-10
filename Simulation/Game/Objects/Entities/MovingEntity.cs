@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Renderer.Entities;
+using Simulation.Game.AI;
 using Simulation.Game.World;
 using Simulation.PathFinding;
 using Simulation.Util;
@@ -15,8 +15,16 @@ namespace Simulation.Game.Objects.Entities
         private Task<List<GridPos>> findPathTask;
         private List<GridPos> walkPath;
 
+        public bool IsWalking
+        {
+            get
+            {
+                return findPathTask != null || walkPath != null;
+            }
+        }
+
         public Vector2 Direction;
-        public float Velocity = 0.2f;
+        public float Velocity = 0.1f;
 
         public bool CanWalk = true;
 
@@ -25,6 +33,12 @@ namespace Simulation.Game.Objects.Entities
 
         public MovingEntity(LivingEntityType livingEntityType, Vector2 position, Rect relativeHitBoxBounds):
             base(livingEntityType, position, relativeHitBoxBounds) {}
+
+        public MovingEntity(LivingEntityType livingEntityType, Vector2 position, Rect relativeHitBoxBounds, BaseAI baseAI) :
+            base(livingEntityType, position, relativeHitBoxBounds)
+        {
+            SetAI(baseAI);
+        }
 
         public void WalkTo(int destBlockX, int destBlockY)
         {
@@ -91,7 +105,7 @@ namespace Simulation.Game.Objects.Entities
                 base.UpdatePosition(newPosition);
 
                 // TODO: Here we should load the interior asynchronously for all entities (also player)
-                ConnectToWorld();
+                ConnectToWorld(true);
             }
             else
             {
@@ -102,19 +116,22 @@ namespace Simulation.Game.Objects.Entities
                     // TODO: Check if we are moving into unloaded area and we aren't a durable entity => if yes then we load the tile and unload us
                     base.UpdatePosition(newPosition);
 
-                    ConnectToWorld();
+                    ConnectToWorld(true);
+                }
+                else
+                {
+                    walkPath = null;
                 }
             }
         }
 
-        public override void Update(GameTime gameTime)
+        private bool walkIfWalkpath(GameTime gameTime)
         {
             if (findPathTask != null && findPathTask.IsCompleted)
             {
-                walkPath = findPathTask.Result;
-
-                if(walkPath != null && walkPath.Count > 1)
+                if (findPathTask.Result != null && findPathTask.Result.Count > 1)
                 {
+                    walkPath = findPathTask.Result;
                     walkPath.RemoveAt(0);
                 }
 
@@ -125,23 +142,22 @@ namespace Simulation.Game.Objects.Entities
             {
                 var destPos = new Vector2(walkPath[0].x * WorldGrid.BlockSize.X + 16, walkPath[0].y * WorldGrid.BlockSize.Y + 31);
 
-                if(Math.Abs(destPos.X - Position.X) < GeometryUtils.SmallFloat && Math.Abs(destPos.Y - Position.Y) < GeometryUtils.SmallFloat)
+                if (Math.Abs(destPos.X - Position.X) < GeometryUtils.SmallFloat && Math.Abs(destPos.Y - Position.Y) < GeometryUtils.SmallFloat)
                 {
-                    if(walkPath.Count > 1)
+                    if (walkPath.Count > 1)
                     {
                         walkPath.RemoveAt(0);
                         destPos = new Vector2(walkPath[0].x * WorldGrid.BlockSize.X + 16, walkPath[0].y * WorldGrid.BlockSize.Y + 31);
                     }
                     else
                     {
-                        walkPath = null;
-                        Direction = Vector2.Zero;
+                        StopWalking();
 
-                        destPos = Vector2.Zero;
+                        return true;
                     }
                 }
 
-                if(destPos != Vector2.Zero)
+                if (destPos != Vector2.Zero)
                 {
                     Direction = new Vector2(destPos.X - Position.X, destPos.Y - Position.Y);
                     Direction.Normalize();
@@ -153,14 +169,32 @@ namespace Simulation.Game.Objects.Entities
 
                     UpdatePosition(newPos);
                 }
+
+                return true;
             }
-            else
+
+            return false;
+        }
+
+        public void StopWalking()
+        {
+            findPathTask = null;
+            walkPath = null;
+
+            Direction = Vector2.Zero;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if(walkIfWalkpath(gameTime) == false)
             {
                 if (Direction != Vector2.Zero)
                 {
                     UpdatePosition(new Vector2(Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds));
                 }
             }
+
+            base.Update(gameTime);
         }
     }
 }

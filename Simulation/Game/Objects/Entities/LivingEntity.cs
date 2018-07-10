@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
+using Simulation.Game.AI;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Util.Geometry;
 
@@ -14,6 +15,8 @@ namespace Simulation.Game.Objects.Entities
 
     public abstract class LivingEntity: HitableObject
     {
+        public BaseAI BaseAI;
+
         public LivingEntityRendererInformation RendererInformation;
 
         public LivingEntityType LivingEntityType
@@ -30,6 +33,17 @@ namespace Simulation.Game.Objects.Entities
             this.LivingEntityType = livingEntityType;
         }
 
-        public abstract void Update(GameTime gameTime);
+        public void SetAI(BaseAI baseAI)
+        {
+            this.BaseAI = baseAI;
+        }
+
+        public virtual void Update(GameTime gameTime)
+        {
+            if(BaseAI != null)
+            {
+                BaseAI.Update(gameTime);
+            }
+        }
     }
 }

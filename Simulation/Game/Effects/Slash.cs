@@ -17,11 +17,11 @@ namespace Simulation.Game.Effects
             Vector2 _relativeOriginPosition = relativeOriginPosition ?? Vector2.Zero;
             Vector2 newPosition = Vector2.Add(origin.Position, _relativeOriginPosition);
 
-            Vector2 direction = new Vector2(target.X - Position.X, target.Y - Position.Y);
+            Vector2 direction = new Vector2(target.X - newPosition.X, target.Y - newPosition.Y);
             direction.Normalize();
 
-            newPosition.X += (direction.X * WorldGrid.BlockSize.X);
-            newPosition.Y += (direction.Y * WorldGrid.BlockSize.Y);
+            newPosition.X += (direction.X * WorldGrid.BlockSize.X * 1.5f);
+            newPosition.Y += (direction.Y * WorldGrid.BlockSize.Y * 1.5f);
 
             Angle = GeometryUtils.GetAngleFromDirection(direction) + (float)Math.PI * 0.5f;
 

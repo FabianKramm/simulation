@@ -93,6 +93,8 @@ namespace Simulation.Game.Generator
                             WorldLoader.SaveInterior(InteriorGenerator.CreateInterior(out worldLink, new Point(i, j)));
 
                             worldGrid[(worldGridChunk.X, worldGridChunk.Y)].AddWorldLink(worldLink);
+
+                            WalkableGrid.setBlockNotWalkableInChunk(walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)], i, j, true);
                         }
                     }
 
@@ -105,6 +107,8 @@ namespace Simulation.Game.Generator
                         AmbientHitableObject tree = AmbientObjectFactory.createTree(new Vector2(i * WorldGrid.BlockSize.X, j * WorldGrid.BlockSize.Y));
 
                         worldGrid[(worldGridChunk.X, worldGridChunk.Y)].AddContainedObject(tree);
+
+                        // TODO: add to walkable grid
                     }
                 }
 

@@ -60,7 +60,7 @@ namespace Simulation.Game.World
             }
         }
 
-        public void AddWorldLink(WorldLink worldLink)
+        public virtual void AddWorldLink(WorldLink worldLink)
         {
             string key = worldLink.FromBlock.X + "," + worldLink.FromBlock.Y;
 
@@ -70,7 +70,7 @@ namespace Simulation.Game.World
             WorldLinks[key] = worldLink;
         }
 
-        public void RemoveWorldLink(WorldLink worldLink)
+        public virtual void RemoveWorldLink(WorldLink worldLink)
         {
             if (WorldLinks != null)
             {

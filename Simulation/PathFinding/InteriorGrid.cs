@@ -12,16 +12,21 @@ namespace Simulation.PathFinding
         private Interior interior;
 
         private Rect interiorGridBounds;
+        private Point destination;
 
-        public InteriorGrid(Interior interior)
+        public InteriorGrid(Interior interior, int endX, int endY)
         {
             this.interior = interior;
+
+            destination = new Point(endX, endY);
 
             interiorGridBounds = new Rect(0, 0, interior.Dimensions.X, interior.Dimensions.Y);
         }
 
         private Node getNodeFromWalkableGrid(int blockX, int blockY)
         {
+            if (blockX == destination.X && blockY == destination.Y) return new Node(blockX, blockY, true); // End Block Is always walkable
+
             return new Node(blockX, blockY, interior.IsBlockWalkable(blockX, blockY));
         }
 
@@ -39,6 +44,8 @@ namespace Simulation.PathFinding
 
         public override bool IsWalkableAt(int blockX, int blockY)
         {
+            if (blockX == destination.X && blockY == destination.Y) return true; // End Block Is always walkable
+
             return interiorGridBounds.Contains(blockX, blockY) && interior.IsBlockWalkable(blockX, blockY);
         }
 
@@ -49,6 +56,8 @@ namespace Simulation.PathFinding
 
         public override bool IsWalkableAt(GridPos blockPos)
         {
+            if (blockPos.x == destination.X && blockPos.y == destination.Y) return true; // End Block Is always walkable
+
             return interiorGridBounds.Contains(blockPos.x, blockPos.y) && interior.IsBlockWalkable(blockPos.x, blockPos.y);
         }
 

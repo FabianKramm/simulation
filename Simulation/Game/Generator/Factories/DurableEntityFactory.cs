@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.AI;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.World;
@@ -13,9 +14,13 @@ namespace Simulation.Game.Generator.Factories
 {
     public class DurableEntityFactory
     {
-        public static DurableEntity CreateGeralt()
+        public static MovingEntity CreateGeralt()
         {
-            return new DurableEntity(LivingEntityType.GERALT, new Vector2(WorldGrid.BlockSize.X * 3, WorldGrid.BlockSize.Y * 3), new Rect(-8, -20, 16, 20), 1);
+            var geralt = new MovingEntity(LivingEntityType.GERALT, new Vector2(WorldGrid.BlockSize.X * 3, WorldGrid.BlockSize.Y * 3), new Rect(-8, -20, 16, 20));
+
+            geralt.BaseAI = new WanderAI(geralt, 5);
+
+            return geralt;
         }
     }
 }

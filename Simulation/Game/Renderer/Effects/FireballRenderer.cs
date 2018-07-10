@@ -50,7 +50,7 @@ namespace Simulation.Game.Renderer.Effects
 
                     if (fireballRendererInformation.Impact.IsStarted)
                     {
-                        spriteBatch.Draw(fireballRendererInformation.Impact, fireball.Position, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.getLayerDepthFromPosition(fireball.Position.X, fireball.Position.Y + World.WorldGrid.BlockSize.Y));
+                        spriteBatch.Draw(fireballRendererInformation.Impact, fireball.Position, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.GetLayerDepthFromPosition(fireball.Position.X, fireball.Position.Y + World.WorldGrid.BlockSize.Y));
                     }
                     else
                     {
@@ -61,7 +61,7 @@ namespace Simulation.Game.Renderer.Effects
                 {
                     fireballRendererInformation.Flying.Update(gameTime);
 
-                    spriteBatch.Draw(fireballRendererInformation.Flying, fireball.Position, rotation: fireball.Angle, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.getLayerDepthFromPosition(fireball.Position.X, fireball.Position.Y));
+                    spriteBatch.Draw(fireballRendererInformation.Flying, fireball.Position, rotation: fireball.Angle, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.GetLayerDepthFromPosition(fireball.Position.X, fireball.Position.Y));
                 }
 
                 if (SimulationGame.IsDebug)

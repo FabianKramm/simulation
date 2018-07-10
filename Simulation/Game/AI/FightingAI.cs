@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Simulation.Game.Objects.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +8,13 @@ using System.Threading.Tasks;
 
 namespace Simulation.Game.AI
 {
-    class FightingAI: BaseAI
+    public class FightingAI: BaseAI
     {
+        public FightingAI(MovingEntity movingEntity): base(movingEntity) { }
 
+        public override void Update(GameTime gameTime)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -28,6 +28,8 @@ namespace Simulation.Game.World
 
         public bool IsBlockWalkable(int blockX, int blockY)
         {
+            ThreadingUtils.assertChildThread();
+
             if(CollisionUtils.GetBlockingTypeFromBlock(GetBlockType(blockX, blockY)) == BlockingType.BLOCKING)
             {
                 return false;
@@ -42,9 +44,30 @@ namespace Simulation.Game.World
                     foreach (var containedObject in ContainedObjects)
                         if (containedObject.BlockingType == BlockingType.BLOCKING && containedObject.BlockingBounds.Intersects(blockBounds))
                             return false;
+
+                if(WorldLinks != null)
+                    foreach (var worldLink in WorldLinks)
+                        if (worldLink.Value.FromBlock.X == blockX && worldLink.Value.FromBlock.Y == blockY)
+                            return false;
             }
 
             return true;
+        }
+
+        public override void AddWorldLink(WorldLink worldLink)
+        {
+            lock (ContainedObjectsLock)
+            {
+                base.AddWorldLink(worldLink);
+            }
+        }
+
+        public override void RemoveWorldLink(WorldLink worldLink)
+        {
+            lock (ContainedObjectsLock)
+            {
+                base.RemoveWorldLink(worldLink);
+            }
         }
 
         public override void AddContainedObject(HitableObject containedObject)

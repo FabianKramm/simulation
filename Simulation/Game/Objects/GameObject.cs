@@ -2,6 +2,7 @@
 using Simulation.Game.World;
 using Simulation.Util;
 using Simulation.Util.Geometry;
+using System;
 
 namespace Simulation.Game.Objects
 {
@@ -42,7 +43,7 @@ namespace Simulation.Game.Objects
 
         public virtual void UpdatePosition(Vector2 newPosition)
         {
-            Position = new Vector2((int)newPosition.X, (int)newPosition.Y);
+            Position = new Vector2(newPosition.X, newPosition.Y);
             BlockPosition = GeometryUtils.GetChunkPosition((int)newPosition.X, (int)newPosition.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
         }
 

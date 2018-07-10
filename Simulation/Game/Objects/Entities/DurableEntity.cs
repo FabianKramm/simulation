@@ -50,7 +50,8 @@ namespace Simulation.Game.Objects.Entities
 
         public override void Update(GameTime gameTime)
         {
-            preloadGridChunks();
+            if (InteriorID == Interior.Outside)
+                preloadGridChunks();
 
             base.Update(gameTime);
         }

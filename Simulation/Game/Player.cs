@@ -1,10 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Simulation.Game.Objects.Entities;
-using Simulation.Game.Hud;
-using Simulation.Game.Renderer.Entities;
 using Simulation.Game.Skills;
-using Simulation.Util;
 using Simulation.Util.Geometry;
 
 namespace Simulation.Game
@@ -18,13 +15,15 @@ namespace Simulation.Game
         {
             fireballSkill = new FireballSkill(this, new Vector2(0, -20));
             slashSkill = new SlashSkill(this, new Vector2(0, -24));
+
+            Velocity = 0.2f;
         }
 
         public override void UpdatePosition(Vector2 newPosition)
         {
             base.UpdatePosition(newPosition);
 
-            SimulationGame.Camera.Position = new Vector2(Position.X, (int)Position.Y);
+            SimulationGame.Camera.Position = new Vector2((int)Position.X, (int)Position.Y);
         }
 
         public override void Update(GameTime gameTime)

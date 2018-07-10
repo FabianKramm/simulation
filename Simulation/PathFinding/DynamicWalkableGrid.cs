@@ -15,10 +15,13 @@ namespace Simulation.PathFinding
         private WalkableGrid walkableGrid;
 
         private Rect dynamicGridBounds;
+        private Point destination;
 
         public DynamicWalkableGrid(WalkableGrid walkableGrid, int startBlockX, int startBlockY, int endBlockX, int endBlockY)
         {
             this.walkableGrid = walkableGrid;
+
+            destination = new Point(endBlockX, endBlockY);
 
             startBlockX -= outsideSearchDistanceAllowed;
             startBlockY -= outsideSearchDistanceAllowed;
@@ -30,6 +33,8 @@ namespace Simulation.PathFinding
 
         private Node getNodeFromWalkableGrid(int blockX, int blockY)
         {
+            if (blockX == destination.X && blockY == destination.Y) return new Node(blockX, blockY, true); // End Block Is always walkable
+
             return new Node(blockX, blockY, walkableGrid.IsBlockWalkable(blockX, blockY));
         }
 
@@ -47,6 +52,8 @@ namespace Simulation.PathFinding
 
         public override bool IsWalkableAt(int blockX, int blockY)
         {
+            if (blockX == destination.X && blockY == destination.Y) return true; // End Block Is always walkable
+
             return dynamicGridBounds.Contains(blockX, blockY) && walkableGrid.IsBlockWalkable(blockX, blockY);
         }
 
@@ -57,6 +64,8 @@ namespace Simulation.PathFinding
 
         public override bool IsWalkableAt(GridPos blockPos)
         {
+            if (blockPos.x == destination.X && blockPos.y == destination.Y) return true; // End Block Is always walkable
+
             return dynamicGridBounds.Contains(blockPos.x, blockPos.y) && walkableGrid.IsBlockWalkable(blockPos.x, blockPos.y);
         }
 

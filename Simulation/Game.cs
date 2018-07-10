@@ -163,7 +163,7 @@ namespace Simulation
             GameRenderer.LoadContent();
 
             World.AddHitableObjectToWorld(Player);
-            World.AddHitableObjectToWorld(DurableEntityFactory.CreateGeralt());
+            // World.AddHitableObjectToWorld(DurableEntityFactory.CreateGeralt());
         }
 
         /// <summary>
