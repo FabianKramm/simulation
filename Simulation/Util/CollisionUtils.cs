@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Base;
+using Simulation.Game.Objects;
 using Simulation.Game.World;
+using Simulation.Util.Geometry;
 
 namespace Simulation.Util
 {
     public class CollisionUtils
     {
-        public static bool canMove(HitableObject origin, Rectangle rect)
+        public static bool canMove(HitableObject origin, Rect rect)
         {
             ThreadingUtils.assertMainThread();
 
@@ -14,7 +15,7 @@ namespace Simulation.Util
             {
                 // Check if blocks are of type blocking
                 Point topLeft = GeometryUtils.GetChunkPosition(rect.Left, rect.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-                Point bottomRight = GeometryUtils.GetChunkPosition(rect.Right - 1, rect.Bottom - 1, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+                Point bottomRight = GeometryUtils.GetChunkPosition(rect.Right, rect.Bottom, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
                 for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
                     for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
@@ -30,7 +31,7 @@ namespace Simulation.Util
 
                 // Check collision with interactive && contained objects
                 Point chunkTopLeft = GeometryUtils.GetChunkPosition(rect.Left, rect.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-                Point chunkBottomRight = GeometryUtils.GetChunkPosition(rect.Right - 1, rect.Bottom - 1, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                Point chunkBottomRight = GeometryUtils.GetChunkPosition(rect.Right, rect.Bottom, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 
                 for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                     for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
@@ -56,7 +57,7 @@ namespace Simulation.Util
 
                 // Check if blocks are of type blocking
                 Point topLeft = GeometryUtils.GetChunkPosition(rect.Left, rect.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-                Point bottomRight = GeometryUtils.GetChunkPosition(rect.Right - 1, rect.Bottom - 1, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+                Point bottomRight = GeometryUtils.GetChunkPosition(rect.Right, rect.Bottom, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
                 for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
                     for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)

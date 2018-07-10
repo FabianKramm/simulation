@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Base;
-using Simulation.Game.Base.Entity;
+using Simulation.Game.Objects;
+using Simulation.Game.Objects.Entities;
 using Simulation.Game.Hud;
 using Simulation.Game.Generator;
 using Simulation.Util;
@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Simulation.Util.Geometry;
 
 namespace Simulation.Game.World
 {
@@ -31,7 +32,7 @@ namespace Simulation.Game.World
         private TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
         private static TimeSpan garbageCollectInterval = TimeSpan.FromSeconds(20);
 
-        public Dictionary<string, DrawableObject> effects;
+        public Dictionary<string, GameObject> effects;
         public Dictionary<string, DurableEntity> durableEntities = new Dictionary<string, DurableEntity>();
 
         public int getLoadedChunkAmount()

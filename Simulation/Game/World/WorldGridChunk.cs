@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
-using Simulation.Game.Base;
+using Simulation.Game.Objects;
 using Simulation.Util;
+using Simulation.Util.Geometry;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -29,7 +30,7 @@ namespace Simulation.Game.World
 
         private BlockType[,] blockingGrid;
 
-        public Rectangle RealChunkBounds;
+        public Rect RealChunkBounds;
 
         // These objects are just passing by or are overlapping with this chunk
         public List<HitableObject> OverlappingObjects;
@@ -48,7 +49,7 @@ namespace Simulation.Game.World
         public WorldGridChunk(int realX, int realY)
         {
             blockingGrid = new BlockType[WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y];
-            RealChunkBounds = new Rectangle(realX, realY, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+            RealChunkBounds = new Rect(realX, realY, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
         }
 
         public Point getChunkPosition()
@@ -169,7 +170,7 @@ namespace Simulation.Game.World
 
             // Set walkable grid blocking for contained objects
             if (ContainedObjects != null)
-                foreach (DrawableObject drawableObject in ContainedObjects)
+                foreach (GameObject drawableObject in ContainedObjects)
                     if (drawableObject is HitableObject)
                         SimulationGame.World.walkableGrid.addInteractiveObject((HitableObject)drawableObject);
 

@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Base;
-using Simulation.Game.Factories;
+using Simulation.Game.Objects;
+using Simulation.Game.Generator.Factories;
 using Simulation.Game.Generator.InteriorGeneration;
 using Simulation.Game.Hud;
 using Simulation.Game.World;
 using Simulation.Util;
 using System;
 using System.Collections.Generic;
+using Simulation.Util.Geometry;
 
 namespace Simulation.Game.Generator
 {

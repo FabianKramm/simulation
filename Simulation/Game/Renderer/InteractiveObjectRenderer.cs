@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.Base;
+using Simulation.Game.Objects;
 using Simulation.Game.World;
 using Simulation.Util;
+using Simulation.Util.Geometry;
 using System.Collections.Generic;
 
 namespace Simulation.Game.Renderer
@@ -63,11 +64,11 @@ namespace Simulation.Game.Renderer
                     {
                         if (interactiveObject.BlockingType == BlockingType.BLOCKING)
                         {
-                            SimulationGame.PrimitiveDrawer.Rectangle(interactiveObject.UnionBounds, Color.Red);
+                            SimulationGame.PrimitiveDrawer.Rectangle(interactiveObject.UnionBounds.ToRectangle(), Color.Red);
                         }
                         else
                         {
-                            SimulationGame.PrimitiveDrawer.Rectangle(interactiveObject.HitBoxBounds, Color.White);
+                            SimulationGame.PrimitiveDrawer.Rectangle(interactiveObject.HitBoxBounds.ToRectangle(), Color.White);
                         }
                     }
                 }

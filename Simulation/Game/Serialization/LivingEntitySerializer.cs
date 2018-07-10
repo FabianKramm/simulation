@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using Simulation.Game.Base.Entity;
+using Simulation.Game.Objects.Entities;
 using System;
 
 namespace Simulation.Game.Serialization

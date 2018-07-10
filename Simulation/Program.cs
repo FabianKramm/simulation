@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Base;
-using Simulation.Game.Factories;
+using Simulation.Game.Objects;
+using Simulation.Game.Generator.Factories;
 using Simulation.Game.Renderer;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Game.Generator;
 using System;
 using System.Collections.Generic;
+using Simulation.Util.Geometry;
 
 namespace Simulation
 {
@@ -24,7 +25,7 @@ namespace Simulation
         {
             //Console.WriteLine(WorldObjectSerializer.Deserialize(WorldObjectSerializer.Serialize(AmbientObjectFactory.createTree(new Vector2(0,0)))));
 
-            // WorldGenerator.ResetWorld();
+            WorldGenerator.ResetWorld();
 
             using (var game = new SimulationGame())
                 game.Run();

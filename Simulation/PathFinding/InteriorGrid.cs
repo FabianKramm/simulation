@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.World;
 using Simulation.Util;
+using Simulation.Util.Geometry;
 using System.Collections.Generic;
 
 namespace Simulation.PathFinding
@@ -10,13 +11,13 @@ namespace Simulation.PathFinding
         private Dictionary<string, Node> nodeDir = new Dictionary<string, Node>();
         private Interior interior;
 
-        private Rectangle interiorGridBounds;
+        private Rect interiorGridBounds;
 
         public InteriorGrid(Interior interior)
         {
             this.interior = interior;
 
-            interiorGridBounds = new Rectangle(0, 0, interior.Dimensions.X, interior.Dimensions.Y);
+            interiorGridBounds = new Rect(0, 0, interior.Dimensions.X, interior.Dimensions.Y);
         }
 
         private Node getNodeFromWalkableGrid(int blockX, int blockY)

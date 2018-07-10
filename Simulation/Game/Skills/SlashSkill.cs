@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Simulation.Game.Base.Entity;
+using Simulation.Game.Objects.Entities;
 using Simulation.Game.Effects;
 using Simulation.Game.Hud;
 

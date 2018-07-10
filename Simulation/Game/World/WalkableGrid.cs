@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Base;
+using Simulation.Game.Objects;
 using Simulation.Game.Hud;
 using Simulation.Game.Generator;
 using Simulation.Util;
@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Simulation.Util.Geometry;
 
 /*
  * The WalkableGrid is only used for quick pathfinding
@@ -145,7 +146,7 @@ namespace Simulation.Game.World
             if (hitableObject.BlockingType == BlockingType.BLOCKING)
             {
                 Point blockTopLeft = GeometryUtils.GetChunkPosition(hitableObject.BlockingBounds.Left, hitableObject.BlockingBounds.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-                Point blockBottomRight = GeometryUtils.GetChunkPosition(hitableObject.BlockingBounds.Right - 1, hitableObject.BlockingBounds.Bottom - 1, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+                Point blockBottomRight = GeometryUtils.GetChunkPosition(hitableObject.BlockingBounds.Right, hitableObject.BlockingBounds.Bottom, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
                 for (int blockX = blockTopLeft.X; blockX <= blockBottomRight.X; blockX++)
                     for (int blockY = blockTopLeft.Y; blockY <= blockBottomRight.Y; blockY++)
@@ -165,7 +166,7 @@ namespace Simulation.Game.World
             if (hitableObject.BlockingType == BlockingType.BLOCKING)
             {
                 Point blockTopLeft = GeometryUtils.GetChunkPosition(hitableObject.BlockingBounds.Left, hitableObject.BlockingBounds.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-                Point blockBottomRight = GeometryUtils.GetChunkPosition(hitableObject.BlockingBounds.Right - 1, hitableObject.BlockingBounds.Bottom - 1, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+                Point blockBottomRight = GeometryUtils.GetChunkPosition(hitableObject.BlockingBounds.Right, hitableObject.BlockingBounds.Bottom, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
                 for (int blockX = blockTopLeft.X; blockX <= blockBottomRight.X; blockX++)
                     for (int blockY = blockTopLeft.Y; blockY <= blockBottomRight.Y; blockY++)
@@ -184,7 +185,7 @@ namespace Simulation.Game.World
                             var found = false;
 
                             foreach (HitableObject interactiveObject in worldGridChunk.OverlappingObjects)
-                                if (hitableObject.BlockingType == BlockingType.BLOCKING && interactiveObject.BlockingBounds.Intersects(new Rectangle(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
+                                if (hitableObject.BlockingType == BlockingType.BLOCKING && interactiveObject.BlockingBounds.Intersects(new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
                                 {
                                     found = true;
                                     break;

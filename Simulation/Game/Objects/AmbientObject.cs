@@ -10,9 +10,9 @@ Requirements:
     - Enable background actions for some npcs
  
  */
-namespace Simulation.Game.Base
+namespace Simulation.Game.Objects
 {
-    public class AmbientObject: DrawableObject
+    public class AmbientObject: GameObject
     {
         public AmbientObjectType AmbientObjectType
         {

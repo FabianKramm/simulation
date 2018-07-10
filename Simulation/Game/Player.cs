@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Simulation.Game.Base.Entity;
+using Simulation.Game.Objects.Entities;
 using Simulation.Game.Hud;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.Skills;
 using Simulation.Util;
+using Simulation.Util.Geometry;
 
 namespace Simulation.Game
 {
@@ -15,7 +16,7 @@ namespace Simulation.Game
 
         private bool leftMouseClick = false;
 
-        public Player(): base(LivingEntityType.PLAYER, new Vector2(0, 0), new Rectangle(-8, -20, 16, 20), 3)
+        public Player(): base(LivingEntityType.PLAYER, new Vector2(0, 0), new Rect(-8, -20, 16, 20), 3)
         {
             fireballSkill = new FireballSkill(this, new Vector2(0, -20));
             slashSkill = new SlashSkill(this, new Vector2(0, -24));

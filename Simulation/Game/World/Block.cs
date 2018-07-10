@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.Base;
+using Simulation.Game.Objects;
 using Simulation.Game.Renderer;
+using Simulation.Util.Geometry;
 using System;
 using System.Collections.Generic;
 using static Simulation.Game.Renderer.BlockRenderer;
@@ -26,7 +27,7 @@ namespace Simulation.Game.World
     {
         public BlockType blockType;
 
-        public Rectangle blockBounds
+        public Rect blockBounds
         {
             get; private set;
         }
@@ -46,7 +47,7 @@ namespace Simulation.Game.World
         // public List<HitBoxRectangle> interactiveObjects;
 
         // Objects that should be drawn on this tile
-        public List<DrawableObject> ambientObjects
+        public List<GameObject> ambientObjects
         {
             get; private set;
         }
@@ -56,7 +57,7 @@ namespace Simulation.Game.World
             this.blockType = blockType;
             this.blockingType = blockingType;
 
-            blockBounds = new Rectangle(position.X * WorldGrid.BlockSize.X, position.Y * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            blockBounds = new Rect(position.X * WorldGrid.BlockSize.X, position.Y * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
         }
 
         public void addHitableObject(HitableObject hitableObject)
@@ -80,10 +81,10 @@ namespace Simulation.Game.World
             }
         }
 
-        public void addAmbientObject(DrawableObject ambientObject)
+        public void addAmbientObject(GameObject ambientObject)
         {
             if (ambientObjects == null)
-                ambientObjects = new List<DrawableObject>();
+                ambientObjects = new List<GameObject>();
 
             ambientObjects.Add(ambientObject);
         }

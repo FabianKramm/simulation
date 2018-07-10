@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.Base;
+using Simulation.Game.Objects;
 using Simulation.Util;
+using Simulation.Util.Geometry;
 using System.Collections.Generic;
 
 namespace Simulation.Game.Renderer

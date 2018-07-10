@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.Base.Entity;
+using Simulation.Game.Objects.Entities;
 using Simulation.Util;
 using Simulation.Spritesheet;
+using Simulation.Util.Geometry;
 
 namespace Simulation.Game.Renderer.Entities
 {

@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using Simulation.Game.Renderer.Entities;
+using Simulation.Util.Geometry;
 
-namespace Simulation.Game.Base.Entity
+namespace Simulation.Game.Objects.Entities
 {
     public enum LivingEntityType
     {
@@ -23,7 +24,7 @@ namespace Simulation.Game.Base.Entity
         // Create from JSON
         protected LivingEntity() { }
 
-        public LivingEntity(LivingEntityType livingEntityType, Vector2 position, Rectangle relativeHitBoxBounds) : 
+        public LivingEntity(LivingEntityType livingEntityType, Vector2 position, Rect relativeHitBoxBounds) : 
             base(position, relativeHitBoxBounds)
         {
             this.LivingEntityType = livingEntityType;

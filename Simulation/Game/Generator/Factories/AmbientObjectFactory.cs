@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Base;
+using Simulation.Game.Objects;
 using Simulation.Game.Renderer;
 using System;
 
-namespace Simulation.Game.Factories
+namespace Simulation.Game.Generator.Factories
 {
     enum StaticObjects
     {
@@ -16,7 +16,7 @@ namespace Simulation.Game.Factories
 
         public static AmbientHitableObject createTree(Vector2 position)
         {
-            return new AmbientHitableObject(AmbientHitableObjectType.TREE01, new Vector2(position.X, position.Y + World.WorldGrid.BlockSize.Y), new Rectangle(6, -36, 67, 36));
+            return new AmbientHitableObject(AmbientHitableObjectType.TREE01, new Vector2(position.X, position.Y + World.WorldGrid.BlockSize.Y), new Util.Geometry.Rect(6, -36, 67, 36));
         }
 
         public static AmbientObject createSmallRocks(Vector2 position)

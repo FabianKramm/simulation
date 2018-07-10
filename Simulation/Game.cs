@@ -12,8 +12,9 @@ using Simulation.Game.Hud;
 using Simulation.Game.Renderer;
 using System.IO;
 using Simulation.Game.Generator;
-using Simulation.Game.Factories;
+using Simulation.Game.Generator.Factories;
 using System.Threading;
+using Simulation.Util.Geometry;
 
 /*
     Open Points:
@@ -86,7 +87,7 @@ namespace Simulation
         }
 
         public static readonly Size Resolution = new Size(1280, 768);
-        public static Rectangle VisibleArea;
+        public static Rect VisibleArea;
 
         public static Vector2 MousePosition
         {
@@ -117,7 +118,7 @@ namespace Simulation
             World = new WorldGrid();
             Hud = new Hud();
 
-            VisibleArea = Rectangle.Empty;
+            VisibleArea = Rect.Empty;
             
             IsDebug = false;
 

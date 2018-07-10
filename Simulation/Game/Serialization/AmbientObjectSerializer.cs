@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using Simulation.Game.Base;
+using Simulation.Game.Objects;
 using Simulation.Util;
 using System;
 

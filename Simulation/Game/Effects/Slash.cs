@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.Base.Entity;
+using Simulation.Game.Objects.Entities;
 using Simulation.Game.Renderer.Effects;
 using Simulation.Game.World;
 using Simulation.Util;
+using Simulation.Util.Geometry;
 
 namespace Simulation.Game.Effects
 {

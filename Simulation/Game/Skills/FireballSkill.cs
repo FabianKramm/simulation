@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Base.Entity;
+using Simulation.Game.Objects.Entities;
 using Simulation.Game.Effects;
 using Simulation.Game.Hud;
 

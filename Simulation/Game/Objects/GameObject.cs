@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.World;
 using Simulation.Util;
+using Simulation.Util.Geometry;
 
-namespace Simulation.Game.Base
+namespace Simulation.Game.Objects
 {
-    public abstract class DrawableObject
+    public abstract class GameObject
     {
         public string InteriorID = null;
 
@@ -29,9 +30,9 @@ namespace Simulation.Game.Base
         }
 
         // Create from JSON
-        protected DrawableObject() {}
+        protected GameObject() {}
 
-        protected DrawableObject(Vector2 position)
+        protected GameObject(Vector2 position)
         {
             Position = position;
             BlockPosition = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);

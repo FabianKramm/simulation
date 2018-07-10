@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Simulation.Util;
+using Simulation.Util.Geometry;
 using System;
 using System.Collections.Generic;
 

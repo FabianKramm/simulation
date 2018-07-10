@@ -1,10 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.Base;
-using Simulation.Game.Base.Entity;
+using Simulation.Game.Objects;
+using Simulation.Game.Objects.Entities;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.World;
 using Simulation.Util;
+using Simulation.Util.Geometry;
 using System;
 
 namespace Simulation.Game.Renderer
@@ -14,7 +15,7 @@ namespace Simulation.Game.Renderer
         private static void drawOutside(SpriteBatch spriteBatch, GameTime gameTime)
         {
             Point topLeft = GeometryUtils.GetChunkPosition(SimulationGame.VisibleArea.Left, SimulationGame.VisibleArea.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-            Point bottomRight = GeometryUtils.GetChunkPosition(SimulationGame.VisibleArea.Right - 1, SimulationGame.VisibleArea.Bottom - 1, WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
+            Point bottomRight = GeometryUtils.GetChunkPosition(SimulationGame.VisibleArea.Right, SimulationGame.VisibleArea.Bottom, WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
 
             for (int blockX = topLeft.X; blockX < bottomRight.X; blockX++)
                 for (int blockY = topLeft.Y; blockY < bottomRight.Y; blockY++)
@@ -26,7 +27,7 @@ namespace Simulation.Game.Renderer
                 }
 
             Point chunkTopLeft = GeometryUtils.GetChunkPosition(SimulationGame.VisibleArea.Left, SimulationGame.VisibleArea.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-            Point chunkBottomRight = GeometryUtils.GetChunkPosition(SimulationGame.VisibleArea.Right - 1, SimulationGame.VisibleArea.Bottom - 1, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+            Point chunkBottomRight = GeometryUtils.GetChunkPosition(SimulationGame.VisibleArea.Right, SimulationGame.VisibleArea.Bottom, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 
             for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                 for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
@@ -65,7 +66,7 @@ namespace Simulation.Game.Renderer
         private static void drawInterior(SpriteBatch spriteBatch, GameTime gameTime, Interior interior)
         {
             Point topLeft = GeometryUtils.GetChunkPosition(SimulationGame.VisibleArea.Left, SimulationGame.VisibleArea.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-            Point bottomRight = GeometryUtils.GetChunkPosition(SimulationGame.VisibleArea.Right - 1, SimulationGame.VisibleArea.Bottom - 1, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            Point bottomRight = GeometryUtils.GetChunkPosition(SimulationGame.VisibleArea.Right, SimulationGame.VisibleArea.Bottom, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
             topLeft.X = Math.Max(0, topLeft.X);
             topLeft.Y = Math.Max(0, topLeft.Y);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.World;
 using Simulation.Util;
+using Simulation.Util.Geometry;
 using System;
 using System.Collections.Generic;
 
@@ -13,7 +14,7 @@ namespace Simulation.PathFinding
         private Dictionary<string, Node> nodeDir = new Dictionary<string, Node>();
         private WalkableGrid walkableGrid;
 
-        private Rectangle dynamicGridBounds;
+        private Rect dynamicGridBounds;
 
         public DynamicWalkableGrid(WalkableGrid walkableGrid, int startBlockX, int startBlockY, int endBlockX, int endBlockY)
         {
@@ -24,7 +25,7 @@ namespace Simulation.PathFinding
             endBlockX += outsideSearchDistanceAllowed;
             endBlockY += outsideSearchDistanceAllowed;
 
-            dynamicGridBounds = new Rectangle(startBlockX, startBlockY, Math.Abs(endBlockX - startBlockX), Math.Abs(endBlockY - startBlockY));
+            dynamicGridBounds = new Rect(startBlockX, startBlockY, Math.Abs(endBlockX - startBlockX), Math.Abs(endBlockY - startBlockY));
         }
 
         private Node getNodeFromWalkableGrid(int blockX, int blockY)

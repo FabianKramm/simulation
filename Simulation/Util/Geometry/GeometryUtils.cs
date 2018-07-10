@@ -3,7 +3,7 @@ using Simulation.Game.World;
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Simulation.Util
+namespace Simulation.Util.Geometry
 {
     public enum ReservedDepthLayers
     {

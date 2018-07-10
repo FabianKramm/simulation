@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Util.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,18 +10,18 @@ namespace Simulation.Game
 {
     class CollisionDetection
     {
-        public static bool intersect(ref Rectangle r1, ref Rectangle r2)
+        public static bool intersect(ref Rect r1, ref Rect r2)
         {
             return r1.Intersects(r2);
         }
 
-        public static bool intersect(ref Rectangle r1, Vector2[] poly2)
+        public static bool intersect(ref Rect r1, Vector2[] poly2)
         {
             return intersect(poly2, new Vector2[] {
                 new Vector2(r1.Left, r1.Top),
-                new Vector2(r1.Right - 1, r1.Top),
-                new Vector2(r1.Right - 1, r1.Bottom - 1),
-                new Vector2(r1.Left, r1.Bottom - 1)
+                new Vector2(r1.Right, r1.Top),
+                new Vector2(r1.Right, r1.Bottom),
+                new Vector2(r1.Left, r1.Bottom)
             });
         }
 

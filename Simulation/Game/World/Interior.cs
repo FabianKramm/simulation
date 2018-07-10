@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Base;
+using Simulation.Game.Objects;
 using Simulation.Util;
+using Simulation.Util.Geometry;
 using System.Collections.Generic;
 
 namespace Simulation.Game.World
@@ -85,7 +86,7 @@ namespace Simulation.Game.World
                 return false;
             }
 
-            Rectangle blockBounds = new Rectangle(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            Rect blockBounds = new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
             // Check Contained Objects
             lock(ContainedObjectsLock)

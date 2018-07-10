@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
-using Simulation.Game.Base;
-using Simulation.Game.Base.Entity;
+using Simulation.Game.Objects;
+using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
 using Simulation.Util;
 using System;

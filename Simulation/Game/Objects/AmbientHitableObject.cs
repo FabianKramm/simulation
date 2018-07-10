@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Renderer;
+using Simulation.Util.Geometry;
 
-namespace Simulation.Game.Base
+namespace Simulation.Game.Objects
 {
     public class AmbientHitableObject: HitableObject
     {
@@ -10,7 +11,7 @@ namespace Simulation.Game.Base
         // Create from JSON
         protected AmbientHitableObject() { }
 
-        public AmbientHitableObject(AmbientHitableObjectType ambientHitableObjectType, Vector2 position, Rectangle relativeBlockingRectangle):
+        public AmbientHitableObject(AmbientHitableObjectType ambientHitableObjectType, Vector2 position, Rect relativeBlockingRectangle):
             base(position, relativeBlockingRectangle, World.BlockingType.BLOCKING) {
             this.AmbientHitableObjectType = ambientHitableObjectType;
         }

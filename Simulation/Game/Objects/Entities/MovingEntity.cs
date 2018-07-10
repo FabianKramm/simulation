@@ -3,11 +3,12 @@ using Simulation.Game.Renderer.Entities;
 using Simulation.Game.World;
 using Simulation.PathFinding;
 using Simulation.Util;
+using Simulation.Util.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Simulation.Game.Base.Entity
+namespace Simulation.Game.Objects.Entities
 {
     public class MovingEntity: LivingEntity
     {
@@ -22,12 +23,12 @@ namespace Simulation.Game.Base.Entity
         // Create from JSON
         protected MovingEntity() {}
 
-        public MovingEntity(LivingEntityType livingEntityType, Vector2 position, Rectangle relativeHitBoxBounds):
+        public MovingEntity(LivingEntityType livingEntityType, Vector2 position, Rect relativeHitBoxBounds):
             base(livingEntityType, position, relativeHitBoxBounds) {}
 
         public void WalkTo(int destBlockX, int destBlockY)
         {
-            Point currentBlock = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
+            Point currentBlock = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
             findPathTask = PathFinder.FindPath(currentBlock.X, currentBlock.Y, destBlockX, destBlockY);
 
@@ -118,7 +119,7 @@ namespace Simulation.Game.Base.Entity
 
                 // Add as interactive object for adjoined chunks
                 Point chunkTopLeft = GeometryUtils.GetChunkPosition(UnionBounds.Left, UnionBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-                Point chunkBottomRight = GeometryUtils.GetChunkPosition(UnionBounds.Right - 1, UnionBounds.Bottom - 1, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                Point chunkBottomRight = GeometryUtils.GetChunkPosition(UnionBounds.Right, UnionBounds.Bottom, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 
                 for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                     for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
@@ -150,7 +151,7 @@ namespace Simulation.Game.Base.Entity
                     SimulationGame.World.GetWorldGridChunk(positionChunk.X, positionChunk.Y).RemoveContainedObject(this);
 
                 Point chunkTopLeft = GeometryUtils.GetChunkPosition(UnionBounds.Left, UnionBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-                Point chunkBottomRight = GeometryUtils.GetChunkPosition(UnionBounds.Right - 1, UnionBounds.Bottom - 1, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                Point chunkBottomRight = GeometryUtils.GetChunkPosition(UnionBounds.Right, UnionBounds.Bottom, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 
                 for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                     for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
