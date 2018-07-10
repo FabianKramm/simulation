@@ -8,13 +8,6 @@ using Simulation.Spritesheet;
 
 namespace Simulation.Game.Renderer.Entities
 {
-    public enum LivingEntityType
-    {
-        NO_ENTITY = 0,
-        PLAYER,
-        GERALT
-    }
-
     public class LivingEntityRenderer
     {
         private static Dictionary<LivingEntityType, Func<LivingEntityRendererInformation>> informationGeneratorLookup = new Dictionary<LivingEntityType, Func<LivingEntityRendererInformation>> {
@@ -28,9 +21,7 @@ namespace Simulation.Game.Renderer.Entities
             if(SimulationGame.VisibleArea.Contains(livingEntity.Position) && livingEntity.InteriorID == SimulationGame.Player.InteriorID)
             {
                 if (livingEntity.RendererInformation == null)
-                {
                     livingEntity.RendererInformation = informationGeneratorLookup[livingEntity.LivingEntityType]();
-                }
 
                 if (livingEntity is MovingEntity)
                 {

@@ -13,6 +13,7 @@ using Simulation.Game.Renderer;
 using System.IO;
 using Simulation.Game.Generator;
 using Simulation.Game.Factories;
+using System.Threading;
 
 /*
     Open Points:
@@ -119,6 +120,8 @@ namespace Simulation
             VisibleArea = Rectangle.Empty;
             
             IsDebug = false;
+
+            Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
         }
 
         /// <summary>
