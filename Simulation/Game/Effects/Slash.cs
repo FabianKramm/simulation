@@ -16,6 +16,8 @@ namespace Simulation.Game.Effects
     {
         public float Angle;
         public Vector2 Position;
+        public bool Flipped;
+        public TimeSpan Duration = TimeSpan.FromMilliseconds(300);
 
         public Slash(LivingEntity origin, Vector2 target, bool flipped, Vector2? relativeOriginPosition = null) : base(origin)
         {
@@ -30,12 +32,14 @@ namespace Simulation.Game.Effects
 
             Angle = GeometryUtils.GetAngleFromDirection(direction) + (float)Math.PI * 0.5f;
 
-            effectRendererInformation = new SlashRendererInformation(Angle, flipped);
+            Flipped = flipped;
         }
 
         public override void Update(GameTime gameTime)
         {
-            if(effectRendererInformation.IsFinished)
+            Duration -= gameTime.ElapsedGameTime;
+
+            if(Duration.Milliseconds <= 0)
             {
                 IsFinished = true;
             }

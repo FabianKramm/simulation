@@ -16,6 +16,7 @@ namespace Simulation.Game.World
 
         // These objects stay on this chunk and are drawn
         public List<HitableObject> ContainedObjects;
+        private object ContainedObjectsLock = new object();
 
         // These objects are not important for the world and are just displayed here
         public List<AmbientObject> AmbientObjects;
@@ -77,26 +78,54 @@ namespace Simulation.Game.World
             }
         }
 
+        public bool IsBlockWalkable(int blockX, int blockY)
+        {
+            if(CollisionUtils.getBlockingTypeFromBlock(GetBlockType(blockX, blockY)) == BlockingType.BLOCKING)
+            {
+                return false;
+            }
+
+            Rectangle blockBounds = new Rectangle(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+
+            // Check Contained Objects
+            lock(ContainedObjectsLock)
+            {
+                if (ContainedObjects != null)
+                    foreach (HitableObject containedObject in ContainedObjects)
+                        if (containedObject.BlockingType == BlockingType.BLOCKING && containedObject.BlockingBounds.Intersects(blockBounds))
+                            return false;
+            }
+
+            return true;
+        }
+
         public void AddContainedObject(HitableObject containedObject)
         {
-            if (ContainedObjects == null)
-                ContainedObjects = new List<HitableObject>();
+            lock(ContainedObjectsLock)
+            {
+                if (ContainedObjects == null)
+                    ContainedObjects = new List<HitableObject>();
 
-            if (ContainedObjects.Contains(containedObject) == false)
-                ContainedObjects.Add(containedObject);
+                if (ContainedObjects.Contains(containedObject) == false)
+                    ContainedObjects.Add(containedObject);
+            }
         }
 
         public void RemoveContainedObject(HitableObject interactiveObject)
         {
-            if (ContainedObjects != null)
+            lock(ContainedObjectsLock)
             {
-                ContainedObjects.Remove(interactiveObject);
-
-                if (ContainedObjects.Count == 0)
+                if (ContainedObjects != null)
                 {
-                    ContainedObjects = null;
+                    ContainedObjects.Remove(interactiveObject);
+
+                    if (ContainedObjects.Count == 0)
+                    {
+                        ContainedObjects = null;
+                    }
                 }
             }
+
         }
 
         public void AddAmbientObject(AmbientObject ambientObject)

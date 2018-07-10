@@ -21,7 +21,7 @@ namespace Simulation.PathFinding
 
         private Node getNodeFromWalkableGrid(int blockX, int blockY)
         {
-            return new Node(blockX, blockY, CollisionUtils.getBlockingTypeFromBlock(interior.GetBlockType(blockX, blockY)) != BlockingType.BLOCKING);
+            return new Node(blockX, blockY, interior.IsBlockWalkable(blockX, blockY));
         }
 
         public override Node GetNodeAt(int blockX, int blockY)
@@ -38,7 +38,7 @@ namespace Simulation.PathFinding
 
         public override bool IsWalkableAt(int blockX, int blockY)
         {
-            return interiorGridBounds.Contains(blockX, blockY) && CollisionUtils.getBlockingTypeFromBlock(interior.GetBlockType(blockX, blockY)) != BlockingType.BLOCKING;
+            return interiorGridBounds.Contains(blockX, blockY) && interior.IsBlockWalkable(blockX, blockY);
         }
 
         public override Node GetNodeAt(GridPos blockPos)
@@ -48,7 +48,7 @@ namespace Simulation.PathFinding
 
         public override bool IsWalkableAt(GridPos blockPos)
         {
-            return interiorGridBounds.Contains(blockPos.x, blockPos.y) && CollisionUtils.getBlockingTypeFromBlock(interior.GetBlockType(blockPos.x, blockPos.y)) != BlockingType.BLOCKING;
+            return interiorGridBounds.Contains(blockPos.x, blockPos.y) && interior.IsBlockWalkable(blockPos.x, blockPos.y);
         }
 
         public override void Reset()

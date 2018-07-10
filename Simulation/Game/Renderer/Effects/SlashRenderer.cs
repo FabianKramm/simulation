@@ -16,15 +16,15 @@ namespace Simulation.Game.Renderer.Effects
         public Animation slashAnimation;
         public float Angle;
 
-        public SlashRendererInformation(float angle, bool flipped)
+        public SlashRendererInformation(Slash slash)
         {
             var texture = SimulationGame.ContentManager.Load<Texture2D>(@"Spells\Slash\Slash");
-            var sheet = new Spritesheet.Spritesheet(texture).WithFrameEffect(flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None).WithGrid((64, 64)).WithCellOrigin(new Point(32, 32)).WithFrameDuration(60);
+            var sheet = new Spritesheet.Spritesheet(texture).WithFrameEffect(slash.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None).WithGrid((64, 64)).WithCellOrigin(new Point(32, 32)).WithFrameDuration(slash.Duration.Milliseconds / 5);
 
             slashAnimation = sheet.CreateAnimation((0, 0), (1, 0), (2, 0), (3, 0), (4, 0));
             slashAnimation.Start(Repeat.Mode.Once);
 
-            Angle = flipped ? angle - 0.5f * (float)Math.PI : angle;
+            Angle = slash.Flipped ? slash.Angle - 0.5f * (float)Math.PI : slash.Angle;
         }
     }
 
@@ -32,18 +32,16 @@ namespace Simulation.Game.Renderer.Effects
     {
         public static void Draw(SpriteBatch spriteBatch, GameTime gameTime, Slash slash)
         {
-            SlashRendererInformation slashRendererInformation = (SlashRendererInformation)slash.effectRendererInformation;
-
-            slashRendererInformation.slashAnimation.Update(gameTime);
-
-            if(slashRendererInformation.slashAnimation.IsStarted)
+            if (SimulationGame.VisibleArea.Contains(slash.Position))
             {
-                if (SimulationGame.VisibleArea.Contains(slash.Position))
-                    spriteBatch.Draw(slashRendererInformation.slashAnimation, slash.Position, rotation: slashRendererInformation.Angle, layerDepth: 1.0f);
-            }
-            else
-            {
-                slashRendererInformation.IsFinished = true;
+                if (slash.effectRendererInformation == null)
+                    slash.effectRendererInformation = new SlashRendererInformation(slash);
+
+                SlashRendererInformation slashRendererInformation = (SlashRendererInformation)slash.effectRendererInformation;
+
+                slashRendererInformation.slashAnimation.Update(gameTime);
+
+                spriteBatch.Draw(slashRendererInformation.slashAnimation, slash.Position, rotation: slashRendererInformation.Angle, layerDepth: 1.0f);
             }
         }
     }
