@@ -19,12 +19,12 @@ namespace Simulation.Game.Objects.Entities
         {
             get
             {
-                return findPathTask != null || walkPath != null;
+                return findPathTask != null || walkPath != null || Direction != Vector2.Zero;
             }
         }
 
         public Vector2 Direction;
-        public float Velocity = 0.1f;
+        public float Velocity = 0.08f;
 
         public bool CanWalk = true;
 

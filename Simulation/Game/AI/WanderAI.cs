@@ -13,13 +13,16 @@ namespace Simulation.Game.AI
 {
     public class WanderAI: BaseAI
     {
+        private static readonly TimeSpan waitAfterWalking = TimeSpan.FromMilliseconds(1000);
+
         public int BlockRadius
         {
             get; private set;
         }
 
-        private Circle blockCircle;
         private Task<Point> findNextWalkablePoint;
+        private Circle blockCircle;
+        private TimeSpan waited = waitAfterWalking;
 
         // From JSON
         private WanderAI(MovingEntity movingEntity): base(movingEntity) { }
@@ -67,9 +70,12 @@ namespace Simulation.Game.AI
             if (!Entity.IsWalking && findNextWalkablePoint == null)
             {
                 findNextWalkablePoint = getNextPoint();
+                waited = waitAfterWalking;
             }
 
-            if (findNextWalkablePoint != null && findNextWalkablePoint.IsCompleted)
+            waited -= gameTime.ElapsedGameTime;
+
+            if (findNextWalkablePoint != null && findNextWalkablePoint.IsCompleted && waited.Milliseconds <= 0)
             {
                 Point destBlock = findNextWalkablePoint.Result;
 

@@ -62,10 +62,10 @@ namespace Simulation.Game
 
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                // slashSkill.use(SimulationGame.MousePosition);
+                slashSkill.use(SimulationGame.MousePosition);
             }
 
-            if (mouseState.LeftButton == ButtonState.Pressed)
+            /*if (mouseState.LeftButton == ButtonState.Pressed)
             {
                 // slashSkill.use(SimulationGame.MousePosition);
 
@@ -80,7 +80,7 @@ namespace Simulation.Game
             else
             {
                 leftMouseClick = false;
-            }
+            }*/
 
             Direction = newDirection;
 

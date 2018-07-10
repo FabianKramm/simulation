@@ -16,6 +16,11 @@ namespace Simulation.Game.Renderer.Entities
 
             movingEntity.RendererInformation.Update(gameTime, newWalkingDirection);
 
+            if(!movingEntity.IsWalking)
+            {
+                movingEntity.RendererInformation.currentAnimation.Reset();
+            }
+
             spriteBatch.Draw(movingEntity.RendererInformation.currentAnimation, new Vector2((int)movingEntity.Position.X, (int)movingEntity.Position.Y), color: GameRenderer.BlendColor, layerDepth: GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, movingEntity.Position.Y));
         }
     }
