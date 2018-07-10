@@ -4,6 +4,7 @@ using Simulation.Game.Objects.Entities;
 using Simulation.Util;
 using Simulation.Spritesheet;
 using Simulation.Util.Geometry;
+using System;
 
 namespace Simulation.Game.Renderer.Entities
 {

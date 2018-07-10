@@ -19,12 +19,6 @@ namespace Simulation.Util.Geometry
 
         public static readonly float SmallFloat = 0.1f;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 ApplyCameraToPosition(Vector2 position)
-        {
-            return new Vector2(position.X + SimulationGame.Camera.Position.X + HalfResolutionWidth, position.Y + SimulationGame.Camera.Position.Y + HalfResolutionHeight);
-        }
-
         public static float GetVectorDistance(float x1, float y1, float x2, float y2)
         {
             return (float)Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));

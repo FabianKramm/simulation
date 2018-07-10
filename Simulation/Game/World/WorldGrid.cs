@@ -184,7 +184,7 @@ namespace Simulation.Game.World
 
         public void AddHitableObjectToWorld(HitableObject hitableObject)
         {
-            hitableObject.ConnectToWorld(true);
+            hitableObject.ConnectToWorld();
 
             if (hitableObject is DurableEntity)
             {

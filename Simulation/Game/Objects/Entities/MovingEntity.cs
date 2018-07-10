@@ -105,18 +105,24 @@ namespace Simulation.Game.Objects.Entities
                 base.UpdatePosition(newPosition);
 
                 // TODO: Here we should load the interior asynchronously for all entities (also player)
-                ConnectToWorld(true);
+                ConnectToWorld();
             }
             else
             {
                 if (canMove(newPosition))
                 {
-                    DisconnectFromWorld();
+                    // Check if we were on a worldLink
+                    Point oldWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                    Point newWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)newPosition.X, (int)newPosition.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+
+                    disconnectFromOverlappingChunks(oldWorldGridChunkPoint);
 
                     // TODO: Check if we are moving into unloaded area and we aren't a durable entity => if yes then we load the tile and unload us
                     base.UpdatePosition(newPosition);
 
-                    ConnectToWorld(true);
+                    updateConnectionsInWorld(oldWorldGridChunkPoint, newWorldGridChunkPoint, true);
+
+                    connectToOverlappingChunks(newWorldGridChunkPoint);
                 }
                 else
                 {

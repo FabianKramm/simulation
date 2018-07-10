@@ -97,7 +97,6 @@ namespace Simulation.Game.Renderer
             setBlendColor();
 
             spriteBatch.Begin(SimulationGame.Camera, SpriteSortMode.FrontToBack);
-            // spriteBatch.Begin(SpriteSortMode.FrontToBack);
 
             WorldRenderer.Draw(spriteBatch, gameTime);
 
