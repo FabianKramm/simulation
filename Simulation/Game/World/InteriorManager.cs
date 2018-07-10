@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Diagnostics;
 
 namespace Simulation.Game.World
 {
@@ -99,6 +100,9 @@ namespace Simulation.Game.World
         {
             ThreadingUtils.assertMainThread();
             int interiorsUnloaded = 0;
+            var stopwatch = new Stopwatch();
+
+            stopwatch.Start();
 
             foreach (var interiorItem in loadedInteriors)
             {
@@ -145,9 +149,11 @@ namespace Simulation.Game.World
                 }
             }
 
+            stopwatch.Stop();
+
             if (interiorsUnloaded > 0)
             {
-                GameConsole.WriteLine("ChunkLoading", "Garbage Collector unloaded " + interiorsUnloaded + " interiors");
+                GameConsole.WriteLine("ChunkLoading", "Garbage Collector unloaded " + interiorsUnloaded + " interiors took " + stopwatch.ElapsedMilliseconds);
             }
         }
 

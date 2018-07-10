@@ -219,6 +219,9 @@ namespace Simulation.Game.World
         {
             ThreadingUtils.assertMainThread();
             List<string> deleteList = new List<string>();
+            var stopwatch = new Stopwatch();
+
+            stopwatch.Start();
 
             foreach (var chunk in worldGrid)
             {
@@ -277,7 +280,12 @@ namespace Simulation.Game.World
                 worldGrid.Remove(key);
             }
 
-            GameConsole.WriteLine("ChunkLoading", "Garbage Collector unloaded " + deleteList.Count + " world grid chunks");
+            stopwatch.Stop();
+
+            if(deleteList.Count > 0)
+            {
+                GameConsole.WriteLine("ChunkLoading", "Garbage Collector unloaded " + deleteList.Count + " world grid chunks took " + stopwatch.ElapsedMilliseconds);
+            }
         }
 
         public void Update(GameTime gameTime)

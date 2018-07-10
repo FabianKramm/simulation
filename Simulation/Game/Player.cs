@@ -11,6 +11,8 @@ namespace Simulation.Game
         private FireballSkill fireballSkill;
         private SlashSkill slashSkill;
 
+        private bool leftMouseClick;
+
         public Player(): base(LivingEntityType.PLAYER, new Vector2(0, 0), new Rect(-8, -20, 16, 20), 3)
         {
             fireballSkill = new FireballSkill(this, new Vector2(0, -20));
@@ -60,12 +62,12 @@ namespace Simulation.Game
 
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                slashSkill.use(SimulationGame.MousePosition);
+                // slashSkill.use(SimulationGame.MousePosition);
             }
 
-            /* if (mouseState.LeftButton == ButtonState.Pressed)
+            if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                slashSkill.use(SimulationGame.MousePosition);
+                // slashSkill.use(SimulationGame.MousePosition);
 
                 if (!leftMouseClick)
                 {
@@ -78,7 +80,7 @@ namespace Simulation.Game
             else
             {
                 leftMouseClick = false;
-            } */
+            }
 
             Direction = newDirection;
 
