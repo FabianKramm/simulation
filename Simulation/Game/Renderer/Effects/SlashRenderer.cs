@@ -2,12 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Effects;
 using Simulation.Spritesheet;
-using Simulation.Util;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Game.Renderer.Effects
 {
@@ -32,7 +27,7 @@ namespace Simulation.Game.Renderer.Effects
     {
         public static void Draw(SpriteBatch spriteBatch, GameTime gameTime, Slash slash)
         {
-            if (SimulationGame.VisibleArea.Contains(slash.Position))
+            if (slash.origin.InteriorID == SimulationGame.Player.InteriorID && SimulationGame.VisibleArea.Contains(slash.Position))
             {
                 if (slash.effectRendererInformation == null)
                     slash.effectRendererInformation = new SlashRendererInformation(slash);

@@ -19,7 +19,7 @@ namespace Simulation.Game.Effects
         public bool Flipped;
         public TimeSpan Duration = TimeSpan.FromMilliseconds(300);
 
-        public Slash(LivingEntity origin, Vector2 target, bool flipped, Vector2? relativeOriginPosition = null) : base(origin)
+        public Slash(MovingEntity origin, Vector2 target, bool flipped, Vector2? relativeOriginPosition = null) : base(origin)
         {
             Vector2 _relativeOriginPosition = relativeOriginPosition ?? Vector2.Zero;
             Position = Vector2.Add(origin.Position, _relativeOriginPosition);
@@ -33,6 +33,8 @@ namespace Simulation.Game.Effects
             Angle = GeometryUtils.GetAngleFromDirection(direction) + (float)Math.PI * 0.5f;
 
             Flipped = flipped;
+
+            origin.CanWalk = false;
         }
 
         public override void Update(GameTime gameTime)
@@ -41,6 +43,7 @@ namespace Simulation.Game.Effects
 
             if(Duration.Milliseconds <= 0)
             {
+                ((MovingEntity)origin).CanWalk = true;
                 IsFinished = true;
             }
         }

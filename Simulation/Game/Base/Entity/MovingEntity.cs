@@ -17,6 +17,8 @@ namespace Simulation.Game.Base.Entity
         public Vector2 Direction;
         public float Velocity = 0.2f;
 
+        public bool CanWalk = true;
+
         // Create from JSON
         protected MovingEntity() {}
 
@@ -36,6 +38,8 @@ namespace Simulation.Game.Base.Entity
         public override void UpdatePosition(Vector2 newPosition)
         {
             ThreadingUtils.assertMainThread();
+
+            if (!CanWalk) return;
 
             WorldLink worldLink = null;
 
