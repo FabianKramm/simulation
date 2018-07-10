@@ -5,7 +5,7 @@ using Simulation.Game.World;
 using Simulation.Util;
 using System;
 
-namespace Simulation.Game.Serialization
+namespace Simulation.Game.Serialization.Objects
 {
     public class InteriorSerializer
     {

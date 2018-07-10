@@ -3,7 +3,7 @@ using Simulation.Game.Objects.Entities;
 using Simulation.Util;
 using System;
 
-namespace Simulation.Game.Serialization
+namespace Simulation.Game.Serialization.Objects
 {
     public class DurableEntitySerializer: MovingEntitySerializer
     {

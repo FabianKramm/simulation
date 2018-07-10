@@ -143,8 +143,6 @@ namespace Simulation
 
             Player = new Player();
 
-            World.addDurableEntity(Player);
-
             base.Initialize();
         }
 
@@ -165,10 +163,8 @@ namespace Simulation
 
             GameRenderer.LoadContent();
 
-            var Geralt = DurableEntityFactory.CreateGeralt();
-
-            SimulationGame.World.addDurableEntity(Geralt);
-            WorldGridChunk.GetWorldGridChunk(WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y).AddContainedObject(Geralt);
+            World.AddHitableObjectToWorld(Player);
+            World.AddHitableObjectToWorld(DurableEntityFactory.CreateGeralt());
         }
 
         /// <summary>

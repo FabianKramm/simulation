@@ -20,14 +20,6 @@ namespace Simulation.Game.World
 
     public class WorldGridChunk
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static WorldGridChunk GetWorldGridChunk(int realX, int realY)
-        {
-            Point positionChunk = GeometryUtils.GetChunkPosition(realX, realY, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-
-            return SimulationGame.World.GetWorldGridChunk(positionChunk.X, positionChunk.Y);
-        }
-
         private BlockType[,] blockingGrid;
 
         public Rect RealChunkBounds;
@@ -170,9 +162,8 @@ namespace Simulation.Game.World
 
             // Set walkable grid blocking for contained objects
             if (ContainedObjects != null)
-                foreach (GameObject drawableObject in ContainedObjects)
-                    if (drawableObject is HitableObject)
-                        SimulationGame.World.walkableGrid.addInteractiveObject((HitableObject)drawableObject);
+                foreach (HitableObject hitableObject in ContainedObjects)
+                    hitableObject.ConnectToWorld();
 
             for (int i = -1; i <= 1; i++)
                 for (int j = -1; j < 1; j++)
@@ -185,12 +176,6 @@ namespace Simulation.Game.World
                     if (SimulationGame.World.isWorldGridChunkLoaded(neighborX, neighborY) == true)
                     {
                         WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(neighborX, neighborY);
-
-                        // Add own contained objects to neighbor
-                        if (ContainedObjects != null)
-                            foreach (HitableObject containedObject in ContainedObjects)
-                                if (containedObject.UnionBounds.Intersects(worldGridChunk.RealChunkBounds))
-                                    worldGridChunk.AddOverlappingObject(containedObject);
 
                         // Add neighbor contained objects to self
                         if(worldGridChunk.ContainedObjects != null)

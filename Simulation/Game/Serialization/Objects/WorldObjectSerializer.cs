@@ -3,11 +3,8 @@ using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Simulation.Game.Serialization
+namespace Simulation.Game.Serialization.Objects
 {
     class WorldObjectSerializer
     {

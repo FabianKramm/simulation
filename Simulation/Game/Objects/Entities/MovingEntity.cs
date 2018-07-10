@@ -47,13 +47,13 @@ namespace Simulation.Game.Objects.Entities
             if(InteriorID == Interior.Outside)
             {
                 // Check if we were on a worldLink
-                WorldGridChunk oldWorldGridChunk = WorldGridChunk.GetWorldGridChunk((int)Position.X, (int)Position.Y);
+                WorldGridChunk oldWorldGridChunk = SimulationGame.World.GetWorldGridChunkFromReal((int)Position.X, (int)Position.Y);
                 string oldKey = BlockPosition.X + "," + BlockPosition.Y;
 
                 if (oldWorldGridChunk.WorldLinks == null || oldWorldGridChunk.WorldLinks.ContainsKey(oldKey) == false)
                 {
                     // Check if we move to a world link
-                    WorldGridChunk worldGridChunk = WorldGridChunk.GetWorldGridChunk((int)newPosition.X, (int)newPosition.Y);
+                    WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunkFromReal((int)newPosition.X, (int)newPosition.Y);
                     Point newBlockPosition = GeometryUtils.GetBlockFromReal((int)newPosition.X, (int)newPosition.Y);
                     string key = newBlockPosition.X + "," + newBlockPosition.Y;
 
@@ -83,7 +83,7 @@ namespace Simulation.Game.Objects.Entities
 
             if(worldLink != null)
             {
-                disconnectFromWorld();
+                DisconnectFromWorld();
 
                 newPosition = new Vector2(worldLink.ToBlock.X * WorldGrid.BlockSize.X + WorldGrid.BlockSize.X / 2, worldLink.ToBlock.Y * WorldGrid.BlockSize.Y + WorldGrid.BlockSize.Y - 1);
 
@@ -91,84 +91,19 @@ namespace Simulation.Game.Objects.Entities
                 base.UpdatePosition(newPosition);
 
                 // Here we should load the interior asynchronously
-                connectToWorld();
+                ConnectToWorld();
             }
             else
             {
                 if (canMove(newPosition))
                 {
-                    disconnectFromWorld();
+                    DisconnectFromWorld();
 
                     // TODO: Check if we are moving into unloaded area => if yes then we load the tile and unload us
                     base.UpdatePosition(newPosition);
 
-                    connectToWorld();
+                    ConnectToWorld();
                 }
-            }
-        }
-
-        private void connectToWorld()
-        {
-            if (InteriorID == Interior.Outside)
-            {
-                // Add as contained object to main chunk
-                Point positionChunk = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-
-                if (SimulationGame.World.isWorldGridChunkLoaded(positionChunk.X, positionChunk.Y))
-                    SimulationGame.World.GetWorldGridChunk(positionChunk.X, positionChunk.Y).AddContainedObject(this);
-
-                // Add as interactive object for adjoined chunks
-                Point chunkTopLeft = GeometryUtils.GetChunkPosition(UnionBounds.Left, UnionBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-                Point chunkBottomRight = GeometryUtils.GetChunkPosition(UnionBounds.Right, UnionBounds.Bottom, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-
-                for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
-                    for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
-                    {
-                        if (chunkX == positionChunk.X && chunkY == positionChunk.Y) continue;
-
-                        if (SimulationGame.World.isWorldGridChunkLoaded(chunkX, chunkY))
-                        {
-                            SimulationGame.World.GetWorldGridChunk(chunkX, chunkY).AddOverlappingObject(this);
-                        }
-                    }
-
-                SimulationGame.World.walkableGrid.addInteractiveObject(this);
-            }
-            else
-            {
-                SimulationGame.World.InteriorManager.GetInterior(InteriorID).AddContainedObject(this);
-            }
-        }
-
-        private void disconnectFromWorld()
-        {
-            if (InteriorID == Interior.Outside)
-            {
-                // Add as contained object to main chunk
-                Point positionChunk = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-
-                if (SimulationGame.World.isWorldGridChunkLoaded(positionChunk.X, positionChunk.Y))
-                    SimulationGame.World.GetWorldGridChunk(positionChunk.X, positionChunk.Y).RemoveContainedObject(this);
-
-                Point chunkTopLeft = GeometryUtils.GetChunkPosition(UnionBounds.Left, UnionBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-                Point chunkBottomRight = GeometryUtils.GetChunkPosition(UnionBounds.Right, UnionBounds.Bottom, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-
-                for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
-                    for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
-                    {
-                        if (chunkX == positionChunk.X && chunkY == positionChunk.Y) continue;
-
-                        if (SimulationGame.World.isWorldGridChunkLoaded(chunkX, chunkY))
-                        {
-                            SimulationGame.World.GetWorldGridChunk(chunkX, chunkY).RemoveOverlappingObject(this);
-                        }
-                    }
-
-                SimulationGame.World.walkableGrid.removeInteractiveObject(this);
-            }
-            else
-            {
-                SimulationGame.World.InteriorManager.GetInterior(InteriorID).RemoveContainedObject(this);
             }
         }
 

@@ -11,7 +11,7 @@ namespace Simulation.Game.Renderer.Entities
     {
         public static void Draw(SpriteBatch spriteBatch, GameTime gameTime, MovingEntity movingEntity)
         {
-            WalkingDirection newWalkingDirection = Movement.getWalkingDirectionFromVector(movingEntity.Direction);
+            WalkingDirection newWalkingDirection = MovementUtils.GetWalkingDirectionFromVector(movingEntity.Direction);
 
             movingEntity.RendererInformation.Update(gameTime, newWalkingDirection);
 

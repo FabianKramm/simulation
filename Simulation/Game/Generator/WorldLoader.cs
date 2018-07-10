@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Bson;
 using Newtonsoft.Json.Linq;
 using Simulation.Game.Serialization;
+using Simulation.Game.Serialization.Objects;
 using Simulation.Game.World;
 using Simulation.Util;
 using System;

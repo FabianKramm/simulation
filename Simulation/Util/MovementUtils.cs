@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Simulation.Game
+namespace Simulation.Util
 {
     public enum WalkingDirection
     {
@@ -16,9 +16,9 @@ namespace Simulation.Game
         Down
     };
 
-    public class Movement
+    public class MovementUtils
     {
-        public static WalkingDirection getWalkingDirectionFromVector(Vector2 direction)
+        public static WalkingDirection GetWalkingDirectionFromVector(Vector2 direction)
         {
             if(direction == Vector2.Zero)
             {

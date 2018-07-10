@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
 using Simulation.Util;
 using Simulation.Util.Geometry;
@@ -74,6 +75,71 @@ namespace Simulation.Game.Objects
                 return CollisionUtils.canMove(this, UseSameBounds ?
                     new Rect((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height) :
                     new Rect((int)(relativeBlockingBounds.X + newPosition.X), (int)(relativeBlockingBounds.Y + newPosition.Y), relativeBlockingBounds.Width, relativeBlockingBounds.Height));
+            }
+        }
+
+        public void ConnectToWorld(bool forceLoadGridChunk = false)
+        {
+            if (InteriorID == Interior.Outside)
+            {
+                // Add as contained object to main chunk
+                Point positionChunk = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+
+                if (SimulationGame.World.isWorldGridChunkLoaded(positionChunk.X, positionChunk.Y) || forceLoadGridChunk)
+                    SimulationGame.World.GetWorldGridChunk(positionChunk.X, positionChunk.Y).AddContainedObject(this);
+
+                // Add as interactive object for adjoined chunks
+                Point chunkTopLeft = GeometryUtils.GetChunkPosition(UnionBounds.Left, UnionBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                Point chunkBottomRight = GeometryUtils.GetChunkPosition(UnionBounds.Right, UnionBounds.Bottom, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+
+                for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
+                    for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
+                    {
+                        if (chunkX == positionChunk.X && chunkY == positionChunk.Y) continue;
+
+                        if (SimulationGame.World.isWorldGridChunkLoaded(chunkX, chunkY))
+                        {
+                            SimulationGame.World.GetWorldGridChunk(chunkX, chunkY).AddOverlappingObject(this);
+                        }
+                    }
+
+                SimulationGame.World.walkableGrid.addInteractiveObject(this);
+            }
+            else
+            {
+                SimulationGame.World.InteriorManager.GetInterior(InteriorID).AddContainedObject(this);
+            }
+        }
+
+        public void DisconnectFromWorld()
+        {
+            if (InteriorID == Interior.Outside)
+            {
+                // Add as contained object to main chunk
+                Point positionChunk = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+
+                if (SimulationGame.World.isWorldGridChunkLoaded(positionChunk.X, positionChunk.Y))
+                    SimulationGame.World.GetWorldGridChunk(positionChunk.X, positionChunk.Y).RemoveContainedObject(this);
+
+                Point chunkTopLeft = GeometryUtils.GetChunkPosition(UnionBounds.Left, UnionBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                Point chunkBottomRight = GeometryUtils.GetChunkPosition(UnionBounds.Right, UnionBounds.Bottom, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+
+                for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
+                    for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
+                    {
+                        if (chunkX == positionChunk.X && chunkY == positionChunk.Y) continue;
+
+                        if (SimulationGame.World.isWorldGridChunkLoaded(chunkX, chunkY))
+                        {
+                            SimulationGame.World.GetWorldGridChunk(chunkX, chunkY).RemoveOverlappingObject(this);
+                        }
+                    }
+
+                SimulationGame.World.walkableGrid.removeInteractiveObject(this);
+            }
+            else
+            {
+                SimulationGame.World.InteriorManager.GetInterior(InteriorID).RemoveContainedObject(this);
             }
         }
 

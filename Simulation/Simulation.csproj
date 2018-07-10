@@ -42,6 +42,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
+    <Compile Include="Game\AI\BaseAI.cs" />
+    <Compile Include="Game\AI\FightingAI.cs" />
+    <Compile Include="Game\AI\FollowAI.cs" />
+    <Compile Include="Game\AI\WanderAI.cs" />
     <Compile Include="Game\Objects\Entities\DurableEntity.cs" />
     <Compile Include="Game\Objects\Entities\LivingEntity.cs" />
     <Compile Include="Game\Objects\GameObject.cs" />
@@ -72,21 +76,21 @@
     <Compile Include="Game\Renderer\GameRenderer.cs" />
     <Compile Include="Game\Renderer\Entities\LivingEntityRendererInformation.cs" />
     <Compile Include="Game\Renderer\WorldRenderer.cs" />
-    <Compile Include="Game\Serialization\AmbientObjectSerializer.cs" />
-    <Compile Include="Game\Serialization\DrawableObjectSerializer.cs" />
-    <Compile Include="Game\Serialization\DurableEntitySerializer.cs" />
-    <Compile Include="Game\Serialization\HitableObjectSerializer.cs" />
-    <Compile Include="Game\Serialization\InteriorSerializer.cs" />
-    <Compile Include="Game\Serialization\LivingEntitySerializer.cs" />
-    <Compile Include="Game\Serialization\MovingEntitySerializer.cs" />
+    <Compile Include="Game\Serialization\Objects\AmbientObjectSerializer.cs" />
+    <Compile Include="Game\Serialization\Objects\DrawableObjectSerializer.cs" />
+    <Compile Include="Game\Serialization\Objects\DurableEntitySerializer.cs" />
+    <Compile Include="Game\Serialization\Objects\HitableObjectSerializer.cs" />
+    <Compile Include="Game\Serialization\Objects\InteriorSerializer.cs" />
+    <Compile Include="Game\Serialization\Objects\LivingEntitySerializer.cs" />
+    <Compile Include="Game\Serialization\Objects\MovingEntitySerializer.cs" />
     <Compile Include="Game\Serialization\SerializationUtils.cs" />
-    <Compile Include="Game\Serialization\AmbientHitableObjectSerializer.cs" />
+    <Compile Include="Game\Serialization\Objects\AmbientHitableObjectSerializer.cs" />
     <Compile Include="Game\Serialization\WorldGridChunkSerializer.cs" />
-    <Compile Include="Game\Serialization\WorldObjectSerializer.cs" />
+    <Compile Include="Game\Serialization\Objects\WorldObjectSerializer.cs" />
     <Compile Include="Game\Skills\Skill.cs" />
     <Compile Include="Game\Skills\SlashSkill.cs" />
     <Compile Include="Game\World\CollisionDetection.cs" />
-    <Compile Include="Game\Movement.cs" />
+    <Compile Include="Util\MovementUtils.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\Skills\FireballSkill.cs" />
     <Compile Include="Game\World\Block.cs" />

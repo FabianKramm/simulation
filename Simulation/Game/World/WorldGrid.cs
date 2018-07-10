@@ -173,7 +173,25 @@ namespace Simulation.Game.World
             return worldGrid[chunkKey];
         }
 
-        public void addDurableEntity(DurableEntity durableEntity)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public WorldGridChunk GetWorldGridChunkFromReal(int realX, int realY)
+        {
+            Point positionChunk = GeometryUtils.GetChunkPosition(realX, realY, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
+
+            return GetWorldGridChunk(positionChunk.X, positionChunk.Y);
+        }
+
+        public void AddHitableObjectToWorld(HitableObject hitableObject)
+        {
+            hitableObject.ConnectToWorld(true);
+
+            if (hitableObject is DurableEntity)
+            {
+                addDurableEntity((DurableEntity)hitableObject);
+            }
+        }
+
+        private void addDurableEntity(DurableEntity durableEntity)
         {
             ThreadingUtils.assertMainThread();
 
