@@ -13,16 +13,20 @@ namespace Simulation.Game.Renderer.Effects
 
         public FireballRendererInformation(Fireball fireball)
         {
-            Texture2D texture = SimulationGame.ContentManager.Load<Texture2D>(@"Spells\Fireball\Lv1UFireballp");
+            var texture = SimulationGame.ContentManager.Load<Texture2D>(@"Spells\Fireball\Lv1UFireballp");
             var sheet = new Spritesheet.Spritesheet(texture).WithGrid((15, 29)).WithFrameDuration(120).WithCellOrigin(new Point(7, 0));
 
             Flying = sheet.CreateAnimation((0, 0), (1, 0), (2, 0));
             Flying.Start(Repeat.Mode.Loop);
+        }
 
-            Texture2D explode = SimulationGame.ContentManager.Load<Texture2D>(@"Spells\Fireball\Explode");
-            sheet = new Spritesheet.Spritesheet(explode).WithGrid((61, 60)).WithFrameDuration(100).WithCellOrigin(new Point(30, 30));
+        public void StartImpactAnimation()
+        {
+            var explode = SimulationGame.ContentManager.Load<Texture2D>(@"Spells\Fireball\Explode");
+            var sheet = new Spritesheet.Spritesheet(explode).WithGrid((61, 60)).WithFrameDuration(100).WithCellOrigin(new Point(30, 30));
 
             Impact = sheet.CreateAnimation((0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0), (9, 0));
+            Impact.Start(Repeat.Mode.Once);
         }
     }
 
@@ -39,6 +43,9 @@ namespace Simulation.Game.Renderer.Effects
 
                 if (fireball.HasHitTarget)
                 {
+                    if (fireballRendererInformation.Impact == null)
+                        fireballRendererInformation.StartImpactAnimation();
+
                     fireballRendererInformation.Impact.Update(gameTime);
 
                     if (fireballRendererInformation.Impact.IsStarted)

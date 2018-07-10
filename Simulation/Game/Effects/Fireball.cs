@@ -12,7 +12,7 @@ namespace Simulation.Game.Effects
 {
     public class Fireball: Effect
     {
-        private static float maxDistance = 64;
+        private static float maxDistance = 16 * WorldGrid.BlockSize.X;
 
         public float Angle;
         public bool HasHitTarget = false;
@@ -26,7 +26,7 @@ namespace Simulation.Game.Effects
             Vector2 _relativeOriginPosition = relativeOriginPosition ?? Vector2.Zero;
             Vector2 newPosition = Vector2.Add(origin.Position, _relativeOriginPosition);
 
-            direction = new Vector2(target.X - Position.X, target.Y - Position.Y);
+            direction = new Vector2(target.X - newPosition.X, target.Y - newPosition.Y);
             direction.Normalize();
 
             newPosition.X += (direction.X * WorldGrid.BlockSize.X);
@@ -34,7 +34,7 @@ namespace Simulation.Game.Effects
 
             startPosition = newPosition;
 
-            Angle = (float)Math.Atan2(direction.Y, direction.X) + (float)Math.PI * 0.5f;
+            Angle = GeometryUtils.GetAngleFromDirection(direction) + (float)Math.PI * 0.5f;
 
             updatePosition(newPosition);
         }

@@ -129,27 +129,27 @@ namespace Simulation.Game.World
 
         public void Update(GameTime gameTime)
         {
-            if(ContainedEffects != null)
-                for (int index = 0; index < ContainedEffects.Count; index++) // Avoid collection changed problem 
-                {
-                    var effect = ContainedEffects.ElementAt(index).Value;
-                    effect.Update(gameTime);
+            // Update Effects
+            for (int index = 0; ContainedEffects != null && index < ContainedEffects.Count; index++) // Avoid collection changed problem 
+            {
+                var effect = ContainedEffects.ElementAt(index).Value;
+                effect.Update(gameTime);
 
-                    if (effect.IsFinished)
-                    {
-                        ContainedEffects.Remove(effect.ID);
-                        index--;
-                    }
+                if (effect.IsFinished)
+                {
+                    ContainedEffects.Remove(effect.ID);
+                    index--;
                 }
+            }
 
-            if(ContainedObjects != null)
-                for(int i=0;i<ContainedObjects.Count;i++) // Avoid collection changed problem with updatePosition and disconnectWorld
-                {
-                    var containedObject = ContainedObjects[i];
+            // Update Contained Objects
+            for (int i = 0; ContainedObjects != null && i < ContainedObjects.Count; i++) // Avoid collection changed problem with updatePosition and disconnectWorld
+            {
+                var containedObject = ContainedObjects[i];
 
-                    if (containedObject is MovingEntity)
-                        ((MovingEntity)containedObject).Update(gameTime);
-                }  
+                if (containedObject is MovingEntity)
+                    ((MovingEntity)containedObject).Update(gameTime);
+            }
         }
     }
 }
