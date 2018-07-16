@@ -93,18 +93,16 @@ namespace Simulation.Game.Generator
                             WorldLoader.SaveInterior(InteriorGenerator.CreateInterior(out worldLink, new Point(i, j)));
 
                             worldGrid[(worldGridChunk.X, worldGridChunk.Y)].AddWorldLink(worldLink);
-
-                            WalkableGrid.setBlockNotWalkableInChunk(walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)], i, j, true);
                         }
                     }
 
                     if (Value <= 10 && Value > 6)
                     {
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].AddAmbientObject(AmbientObjectFactory.createSmallRocks(new Vector2(i * WorldGrid.BlockSize.X, j * WorldGrid.BlockSize.Y)));
+                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].AddAmbientObject(AmbientObjectFactory.createSmallRocks(new WorldPosition(i * WorldGrid.BlockSize.X, j * WorldGrid.BlockSize.Y)));
                     }
                     else if (Value <= 6 && Value >= 4)
                     {
-                        AmbientHitableObject tree = AmbientObjectFactory.createTree(new Vector2(i * WorldGrid.BlockSize.X, j * WorldGrid.BlockSize.Y));
+                        AmbientHitableObject tree = AmbientObjectFactory.createTree(new WorldPosition(i * WorldGrid.BlockSize.X, j * WorldGrid.BlockSize.Y));
 
                         worldGrid[(worldGridChunk.X, worldGridChunk.Y)].AddContainedObject(tree);
 

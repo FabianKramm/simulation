@@ -65,11 +65,6 @@ namespace Simulation.Game.World
                 foreach (var hitableObject in ContainedObjects)
                     hitableObject.ConnectToWorld();
 
-            // Set walkable grid blocking for contained objects
-            if (WorldLinks != null)
-                foreach (var worldLink in WorldLinks)
-                    SimulationGame.World.walkableGrid.setBlockNotWalkable(worldLink.Value.FromBlock.X, worldLink.Value.FromBlock.Y, true);
-
             for (int i = -1; i <= 1; i++)
                 for (int j = -1; j < 1; j++)
                 {
@@ -90,7 +85,10 @@ namespace Simulation.Game.World
                                     AddOverlappingObject(overlappingObject);
 
                                     // Update walkable grid
-                                    SimulationGame.World.walkableGrid.addInteractiveObject(overlappingObject);
+                                    if(overlappingObject.BlockingType == BlockingType.BLOCKING)
+                                    {
+                                        SimulationGame.World.walkableGrid.BlockRect(overlappingObject.BlockingBounds);
+                                    }
                                 }
                     }
                 }

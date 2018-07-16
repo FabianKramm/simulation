@@ -18,10 +18,10 @@ namespace Simulation.Game.Effects
         private float velocity = 0.4f;
         private Vector2 direction;
 
-        public Fireball(LivingEntity origin, Vector2 target, Vector2? relativeOriginPosition = null) : base(origin.Position, origin, origin.InteriorID)
+        public Fireball(LivingEntity origin, Vector2 target, Vector2? relativeOriginPosition = null) : base(origin.Position, origin)
         {
             Vector2 _relativeOriginPosition = relativeOriginPosition ?? Vector2.Zero;
-            Vector2 newPosition = Vector2.Add(origin.Position, _relativeOriginPosition);
+            Vector2 newPosition = Vector2.Add(origin.Position.ToVector(), _relativeOriginPosition);
 
             direction = new Vector2(target.X - newPosition.X, target.Y - newPosition.Y);
             direction.Normalize();
@@ -33,19 +33,19 @@ namespace Simulation.Game.Effects
 
             Angle = GeometryUtils.GetAngleFromDirection(direction) + (float)Math.PI * 0.5f;
 
-            updatePosition(newPosition);
+            updatePosition(new WorldPosition(newPosition));
         }
 
         public override void Update(GameTime gameTime)
         {
             if(!HasHitTarget)
             {
-                updatePosition(new Vector2(Position.X + (direction.X * velocity * gameTime.ElapsedGameTime.Milliseconds), Position.Y + (direction.Y * velocity * gameTime.ElapsedGameTime.Milliseconds)));
+                updatePosition(new WorldPosition(Position.X + (direction.X * velocity * gameTime.ElapsedGameTime.Milliseconds), Position.Y + (direction.Y * velocity * gameTime.ElapsedGameTime.Milliseconds)));
 
                 if (GeometryUtils.VectorsWithinDistance(Position.X, Position.Y, startPosition.X, startPosition.Y, maxDistance))
                 {
                     var rotateVector = new Vector2(Position.X, Position.Y + 7.5f);
-                    var rotatedPoint = GeometryUtils.Rotate(Angle, Position, ref rotateVector);
+                    var rotatedPoint = GeometryUtils.Rotate(Angle, Position.ToVector(), ref rotateVector);
                     var collisionRect = new Rect((int)(rotatedPoint.X - 7.5f), (int)(rotatedPoint.Y - 7.5f), 15, 15);
                     var hittedObjects = CollisionUtils.GetHittedObjects(collisionRect, Origin, InteriorID);
 

@@ -81,7 +81,7 @@
     <Compile Include="Game\Serialization\AI\BaseAISerializer.cs" />
     <Compile Include="Game\Serialization\AI\WanderAISerializer.cs" />
     <Compile Include="Game\Serialization\Objects\AmbientObjectSerializer.cs" />
-    <Compile Include="Game\Serialization\Objects\DrawableObjectSerializer.cs" />
+    <Compile Include="Game\Serialization\Objects\GameObjectSerializer.cs" />
     <Compile Include="Game\Serialization\Objects\DurableEntitySerializer.cs" />
     <Compile Include="Game\Serialization\Objects\HitableObjectSerializer.cs" />
     <Compile Include="Game\Serialization\InteriorSerializer.cs" />
@@ -96,6 +96,7 @@
     <Compile Include="Game\Skills\SlashSkill.cs" />
     <Compile Include="Game\World\CollisionDetection.cs" />
     <Compile Include="Game\World\WorldPart.cs" />
+    <Compile Include="Game\World\WorldPosition.cs" />
     <Compile Include="Util\MovementUtils.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\Skills\FireballSkill.cs" />

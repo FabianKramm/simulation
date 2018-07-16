@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Renderer.Effects;
 using Simulation.Game.World;
@@ -16,12 +15,15 @@ namespace Simulation.Game.Effects
             get; private set;
         }
 
-        public Vector2 Position
+        public WorldPosition Position
         {
             get; private set;
         }
 
-        public string InteriorID;
+        public string InteriorID
+        {
+            get => Position.InteriorID;
+        }
 
         public LivingEntity Origin
         {
@@ -33,22 +35,20 @@ namespace Simulation.Game.Effects
             get; protected set;
         }
 
-        public Effect(Vector2 position, LivingEntity origin, string interiorID = null)
+        public Effect(WorldPosition position, LivingEntity origin)
         {
             Origin = origin;
             Position = position;
-            InteriorID = interiorID;
 
             IsFinished = false;
 
             ID = Util.Util.getUUID();
         }
 
-        protected void updatePosition(Vector2 newPosition)
+        protected void updatePosition(WorldPosition newPosition)
         {
             if (InteriorID == Interior.Outside)
             {
-                // Check if we were on a worldLink
                 Point oldWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
                 Point newWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)newPosition.X, (int)newPosition.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 

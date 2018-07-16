@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Skills;
+using Simulation.Game.World;
 using Simulation.Util.Geometry;
 
 namespace Simulation.Game
@@ -13,7 +14,7 @@ namespace Simulation.Game
 
         private bool leftMouseClick;
 
-        public Player(): base(LivingEntityType.PLAYER, new Vector2(0, 0), new Rect(-8, -20, 16, 20), 3)
+        public Player(): base(LivingEntityType.PLAYER, new WorldPosition(0, 0), new Rect(-8, -20, 16, 20), 3)
         {
             fireballSkill = new FireballSkill(this, new Vector2(0, -20));
             slashSkill = new SlashSkill(this, new Vector2(0, -24));
@@ -21,7 +22,7 @@ namespace Simulation.Game
             Velocity = 0.2f;
         }
 
-        public override void UpdatePosition(Vector2 newPosition)
+        public override void UpdatePosition(WorldPosition newPosition)
         {
             base.UpdatePosition(newPosition);
 
@@ -62,10 +63,10 @@ namespace Simulation.Game
 
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                slashSkill.use(SimulationGame.MousePosition);
+                // slashSkill.use(SimulationGame.MousePosition);
             }
 
-            /*if (mouseState.LeftButton == ButtonState.Pressed)
+            if (mouseState.LeftButton == ButtonState.Pressed)
             {
                 // slashSkill.use(SimulationGame.MousePosition);
 
@@ -80,7 +81,7 @@ namespace Simulation.Game
             else
             {
                 leftMouseClick = false;
-            }*/
+            }
 
             Direction = newDirection;
 

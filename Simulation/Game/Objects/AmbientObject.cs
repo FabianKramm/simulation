@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using Simulation.Game.Renderer;
+using Simulation.Game.World;
 using Simulation.Util;
 
 /*
@@ -22,10 +23,9 @@ namespace Simulation.Game.Objects
         // Create from JSON
         protected AmbientObject() {}
 
-        public AmbientObject(AmbientObjectType ambientObjectType, Vector2 position, bool hasDepth = false) :
-            base(position)
+        public AmbientObject(AmbientObjectType ambientObjectType, WorldPosition position, bool hasDepth = false) :base(position)
         {
-            this.AmbientObjectType = ambientObjectType;
+            AmbientObjectType = ambientObjectType;
         }
     }
 }

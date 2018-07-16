@@ -44,11 +44,6 @@ namespace Simulation.Game.World
                     foreach (var containedObject in ContainedObjects)
                         if (containedObject.BlockingType == BlockingType.BLOCKING && containedObject.BlockingBounds.Intersects(blockBounds))
                             return false;
-
-                if(WorldLinks != null)
-                    foreach (var worldLink in WorldLinks)
-                        if (worldLink.Value.FromBlock.X == blockX && worldLink.Value.FromBlock.Y == blockY)
-                            return false;
             }
 
             return true;

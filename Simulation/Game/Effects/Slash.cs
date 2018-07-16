@@ -12,10 +12,10 @@ namespace Simulation.Game.Effects
         public bool Flipped;
         public TimeSpan Duration = TimeSpan.FromMilliseconds(300);
 
-        public Slash(MovingEntity origin, Vector2 target, bool flipped, Vector2? relativeOriginPosition = null) : base(origin.Position, origin, origin.InteriorID)
+        public Slash(MovingEntity origin, Vector2 target, bool flipped, Vector2? relativeOriginPosition = null) : base(origin.Position, origin)
         {
             Vector2 _relativeOriginPosition = relativeOriginPosition ?? Vector2.Zero;
-            Vector2 newPosition = Vector2.Add(origin.Position, _relativeOriginPosition);
+            Vector2 newPosition = Vector2.Add(origin.Position.ToVector(), _relativeOriginPosition);
 
             Vector2 direction = new Vector2(target.X - newPosition.X, target.Y - newPosition.Y);
             direction.Normalize();
@@ -29,7 +29,7 @@ namespace Simulation.Game.Effects
 
             origin.CanWalk = false;
 
-            updatePosition(newPosition);
+            updatePosition(new WorldPosition(newPosition));
         }
 
         public override void Update(GameTime gameTime)

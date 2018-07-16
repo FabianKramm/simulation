@@ -5,7 +5,7 @@ using System;
 
 namespace Simulation.Game.Serialization.Objects
 {
-    public class AmbientObjectSerializer: DrawableObjectSerializer
+    public class AmbientObjectSerializer: GameObjectSerializer
     {
         private static readonly Type ambientObjectType = typeof(AmbientObject);
         private static readonly string[] serializeableProperties = new string[] { "AmbientObjectType" };
@@ -31,14 +31,14 @@ namespace Simulation.Game.Serialization.Objects
 
         protected static void Deserialize(ref JObject jObject, AmbientObject ambientObject)
         {
-            DrawableObjectSerializer.Deserialize(ref jObject, ambientObject);
+            GameObjectSerializer.Deserialize(ref jObject, ambientObject);
 
             SerializationUtils.SetFromObject(jObject, ambientObject, ambientObjectType, serializeableProperties);
         }
 
         protected static void Serialize(AmbientObject ambientObject, ref JObject jObject)
         {
-            DrawableObjectSerializer.Serialize(ambientObject, ref jObject);
+            GameObjectSerializer.Serialize(ambientObject, ref jObject);
 
             SerializationUtils.AddToObject(jObject, ambientObject, ambientObjectType, serializeableProperties);
         }

@@ -50,7 +50,7 @@ namespace Simulation.Game.Renderer.Effects
 
                     if (fireballRendererInformation.Impact.IsStarted)
                     {
-                        spriteBatch.Draw(fireballRendererInformation.Impact, fireball.Position, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.GetLayerDepthFromPosition(fireball.Position.X, fireball.Position.Y + World.WorldGrid.BlockSize.Y));
+                        spriteBatch.Draw(fireballRendererInformation.Impact, fireball.Position.ToVector(), scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.GetLayerDepthFromPosition(fireball.Position.X, fireball.Position.Y + World.WorldGrid.BlockSize.Y));
                     }
                     else
                     {
@@ -61,13 +61,13 @@ namespace Simulation.Game.Renderer.Effects
                 {
                     fireballRendererInformation.Flying.Update(gameTime);
 
-                    spriteBatch.Draw(fireballRendererInformation.Flying, fireball.Position, rotation: fireball.Angle, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.GetLayerDepthFromPosition(fireball.Position.X, fireball.Position.Y));
+                    spriteBatch.Draw(fireballRendererInformation.Flying, fireball.Position.ToVector(), rotation: fireball.Angle, scale: new Vector2(1.5f, 1.5f), layerDepth: GeometryUtils.GetLayerDepthFromPosition(fireball.Position.X, fireball.Position.Y));
                 }
 
                 if (SimulationGame.IsDebug)
                 {
                     var rotateVector = new Vector2(fireball.Position.X, fireball.Position.Y + 7.5f);
-                    var rotatedPoint = GeometryUtils.Rotate(fireball.Angle, fireball.Position, ref rotateVector);
+                    var rotatedPoint = GeometryUtils.Rotate(fireball.Angle, fireball.Position.ToVector(), ref rotateVector);
 
                     SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle((int)(rotatedPoint.X - 7.5f), (int)(rotatedPoint.Y - 7.5f), 15, 15), Color.Red);
                 }

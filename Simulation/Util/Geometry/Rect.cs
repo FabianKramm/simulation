@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.World;
 
 namespace Simulation.Util.Geometry
 {
@@ -74,6 +75,11 @@ namespace Simulation.Util.Geometry
         }
 
         public bool Contains(Vector2 point)
+        {
+            return (point.X >= X) && (point.X <= Right) && (point.Y >= Y) && (point.Y <= Bottom);
+        }
+
+        public bool Contains(WorldPosition point)
         {
             return (point.X >= X) && (point.X <= Right) && (point.Y >= Y) && (point.Y <= Bottom);
         }

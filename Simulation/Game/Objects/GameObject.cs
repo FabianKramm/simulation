@@ -1,16 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.World;
-using Simulation.Util;
 using Simulation.Util.Geometry;
-using System;
 
 namespace Simulation.Game.Objects
 {
     public abstract class GameObject
     {
-        public string InteriorID = null;
+        public string ID
+        {
+            get; private set;
+        }
 
-        public Vector2 Position
+        public WorldPosition Position
         {
             get; private set;
         }
@@ -20,31 +21,31 @@ namespace Simulation.Game.Objects
             get; private set;
         }
 
-        public string ID
-        {
-            get; private set;
-        }
-
         public bool IsDestroyed
         {
             get; private set;
         }
 
+        public string InteriorID
+        {
+            get => Position.InteriorID;
+        }
+
         // Create from JSON
         protected GameObject() {}
 
-        protected GameObject(Vector2 position)
+        protected GameObject(WorldPosition position)
         {
-            Position = position;
+            Position = position.Clone();
             BlockPosition = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
             ID = Util.Util.getUUID();
         }
 
-        public virtual void UpdatePosition(Vector2 newPosition)
+        public virtual void UpdatePosition(WorldPosition newPosition)
         {
-            Position = new Vector2(newPosition.X, newPosition.Y);
-            BlockPosition = GeometryUtils.GetChunkPosition((int)newPosition.X, (int)newPosition.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            Position = newPosition.Clone();
+            BlockPosition = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
         }
 
         public virtual void Destroy()

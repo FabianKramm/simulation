@@ -141,63 +141,57 @@ namespace Simulation.Game.World
             }
         }
 
-        public void addInteractiveObject(HitableObject hitableObject)
+        public void BlockRect(Rect blockingBounds)
         {
-            if (hitableObject.BlockingType == BlockingType.BLOCKING)
-            {
-                Point blockTopLeft = GeometryUtils.GetChunkPosition(hitableObject.BlockingBounds.Left, hitableObject.BlockingBounds.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-                Point blockBottomRight = GeometryUtils.GetChunkPosition(hitableObject.BlockingBounds.Right, hitableObject.BlockingBounds.Bottom, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            Point blockTopLeft = GeometryUtils.GetChunkPosition(blockingBounds.Left, blockingBounds.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            Point blockBottomRight = GeometryUtils.GetChunkPosition(blockingBounds.Right, blockingBounds.Bottom, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
-                for (int blockX = blockTopLeft.X; blockX <= blockBottomRight.X; blockX++)
-                    for (int blockY = blockTopLeft.Y; blockY <= blockBottomRight.Y; blockY++)
+            for (int blockX = blockTopLeft.X; blockX <= blockBottomRight.X; blockX++)
+                for (int blockY = blockTopLeft.Y; blockY <= blockBottomRight.Y; blockY++)
+                {
+                    Point walkableGridChunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
+
+                    if (IsChunkLoaded(walkableGridChunkPos.X, walkableGridChunkPos.Y))
                     {
-                        Point walkableGridChunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
-
-                        if (IsChunkLoaded(walkableGridChunkPos.X, walkableGridChunkPos.Y))
-                        {
-                            setBlockNotWalkable(blockX, blockY, true);
-                        }
+                        setBlockNotWalkable(blockX, blockY, true);
                     }
-            }
+                }
         }
 
-        public void removeInteractiveObject(HitableObject hitableObject)
+        public void UnblockRect(Rect blockingBounds)
         {
-            if (hitableObject.BlockingType == BlockingType.BLOCKING)
-            {
-                Point blockTopLeft = GeometryUtils.GetChunkPosition(hitableObject.BlockingBounds.Left, hitableObject.BlockingBounds.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-                Point blockBottomRight = GeometryUtils.GetChunkPosition(hitableObject.BlockingBounds.Right, hitableObject.BlockingBounds.Bottom, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            Point blockTopLeft = GeometryUtils.GetChunkPosition(blockingBounds.Left, blockingBounds.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            Point blockBottomRight = GeometryUtils.GetChunkPosition(blockingBounds.Right, blockingBounds.Bottom, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
-                for (int blockX = blockTopLeft.X; blockX <= blockBottomRight.X; blockX++)
-                    for (int blockY = blockTopLeft.Y; blockY <= blockBottomRight.Y; blockY++)
+            for (int blockX = blockTopLeft.X; blockX <= blockBottomRight.X; blockX++)
+                for (int blockY = blockTopLeft.Y; blockY <= blockBottomRight.Y; blockY++)
+                {
+                    Point walkableGridChunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
+
+                    if (IsChunkLoaded(walkableGridChunkPos.X, walkableGridChunkPos.Y))
                     {
-                        Point walkableGridChunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WalkableGrid.WalkableGridBlockChunkSize.X, WalkableGrid.WalkableGridBlockChunkSize.Y);
+                        Point worldGridChunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
+                        WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(worldGridChunkPos.X, worldGridChunkPos.Y);
+                        BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
-                        if (IsChunkLoaded(walkableGridChunkPos.X, walkableGridChunkPos.Y))
-                        {
-                            Point worldGridChunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
-                            WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(worldGridChunkPos.X, worldGridChunkPos.Y);
-                            BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
+                        if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
+                            continue;
 
-                            if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
-                                continue;
+                        var found = false;
 
-                            var found = false;
-
-                            foreach (HitableObject interactiveObject in worldGridChunk.OverlappingObjects)
-                                if (hitableObject.BlockingType == BlockingType.BLOCKING && interactiveObject.BlockingBounds.Intersects(new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
-                                {
-                                    found = true;
-                                    break;
-                                }
-                                
-                            if (!found)
+                        foreach (HitableObject interactiveObject in worldGridChunk.OverlappingObjects)
+                            if (interactiveObject.BlockingType == BlockingType.BLOCKING && interactiveObject.BlockingBounds.Intersects(new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
                             {
-                                setBlockNotWalkable(blockX, blockY, false);
+                                found = true;
+                                break;
                             }
+                                
+                        if (!found)
+                        {
+                            setBlockNotWalkable(blockX, blockY, false);
                         }
                     }
-            }
+                }
         }
 
         private void garbageCollectWalkableGrid()

@@ -36,7 +36,7 @@ namespace Simulation.Game.Renderer.Effects
 
                 slashRendererInformation.slashAnimation.Update(gameTime);
 
-                spriteBatch.Draw(slashRendererInformation.slashAnimation, slash.Position, rotation: slashRendererInformation.Angle, layerDepth: 1.0f);
+                spriteBatch.Draw(slashRendererInformation.slashAnimation, slash.Position.ToVector(), rotation: slashRendererInformation.Angle, layerDepth: 1.0f);
             }
         }
     }

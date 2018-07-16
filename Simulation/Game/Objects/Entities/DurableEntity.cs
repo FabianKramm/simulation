@@ -21,7 +21,7 @@ namespace Simulation.Game.Objects.Entities
         // Create from JSON
         protected DurableEntity() { }
 
-        public DurableEntity(LivingEntityType livingEntityType, Vector2 position, Rect relativeHitBoxBounds, int preloadedSurroundingWorldGridChunkRadius = 1) :
+        public DurableEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds, int preloadedSurroundingWorldGridChunkRadius = 1) :
             base(livingEntityType, position, relativeHitBoxBounds)
         {
             this.preloadedSurroundingWorldGridChunkRadius = preloadedSurroundingWorldGridChunkRadius;
@@ -40,7 +40,7 @@ namespace Simulation.Game.Objects.Entities
                     SimulationGame.World.loadWorldGridChunkAsync(i, j);
         }
 
-        public override void UpdatePosition(Vector2 newPosition)
+        public override void UpdatePosition(WorldPosition newPosition)
         {
             base.UpdatePosition(newPosition);
 

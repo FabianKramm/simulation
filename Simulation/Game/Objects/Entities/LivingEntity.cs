@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Simulation.Game.AI;
 using Simulation.Game.Renderer.Entities;
+using Simulation.Game.World;
 using Simulation.Util.Geometry;
 
 namespace Simulation.Game.Objects.Entities
@@ -27,7 +28,7 @@ namespace Simulation.Game.Objects.Entities
         // Create from JSON
         protected LivingEntity() { }
 
-        public LivingEntity(LivingEntityType livingEntityType, Vector2 position, Rect relativeHitBoxBounds) : 
+        public LivingEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds) : 
             base(position, relativeHitBoxBounds)
         {
             this.LivingEntityType = livingEntityType;

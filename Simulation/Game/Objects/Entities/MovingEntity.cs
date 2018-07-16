@@ -31,13 +31,48 @@ namespace Simulation.Game.Objects.Entities
         // Create from JSON
         protected MovingEntity() {}
 
-        public MovingEntity(LivingEntityType livingEntityType, Vector2 position, Rect relativeHitBoxBounds):
+        public MovingEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds):
             base(livingEntityType, position, relativeHitBoxBounds) {}
 
-        public MovingEntity(LivingEntityType livingEntityType, Vector2 position, Rect relativeHitBoxBounds, BaseAI baseAI) :
+        public MovingEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds, BaseAI baseAI) :
             base(livingEntityType, position, relativeHitBoxBounds)
         {
             SetAI(baseAI);
+        }
+
+        private void executeWorldLink()
+        {
+            WorldLink worldLink = null;
+
+            if (InteriorID == Interior.Outside)
+            {
+                // Check if we are on a worldLink
+                WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunkFromReal((int)Position.X, (int)Position.Y);
+                string key = BlockPosition.X + "," + BlockPosition.Y;
+
+                if (worldGridChunk.WorldLinks != null && worldGridChunk.WorldLinks.ContainsKey(key) == true)
+                {
+                    worldLink = worldGridChunk.WorldLinks[key];
+                }
+            }
+            else
+            {
+                // Check if we were on a worldLink
+                Interior interior = SimulationGame.World.InteriorManager.GetInterior(InteriorID);
+                string key = BlockPosition.X + "," + BlockPosition.Y;
+
+                if (interior.WorldLinks != null && interior.WorldLinks.ContainsKey(key) == true)
+                {
+                    worldLink = interior.WorldLinks[key];
+                }
+            }
+
+            if (worldLink != null)
+            {
+                Vector2 newPosition = new Vector2(worldLink.ToBlock.X * WorldGrid.BlockSize.X + WorldGrid.BlockSize.X / 2, worldLink.ToBlock.Y * WorldGrid.BlockSize.Y + WorldGrid.BlockSize.Y - 1);
+
+                base.UpdatePosition(new WorldPosition(newPosition, InteriorID));
+            }
         }
 
         public void WalkTo(int destBlockX, int destBlockY)
@@ -50,84 +85,20 @@ namespace Simulation.Game.Objects.Entities
             Direction = Vector2.Zero;
         }
 
-        public override void UpdatePosition(Vector2 newPosition)
+        public override void UpdatePosition(WorldPosition newPosition)
         {
             ThreadingUtils.assertMainThread();
 
             if (!CanWalk) return;
 
-            WorldLink worldLink = null;
-
-            if(InteriorID == Interior.Outside)
+            if (canMove(newPosition))
             {
-                // Check if we were on a worldLink
-                WorldGridChunk oldWorldGridChunk = SimulationGame.World.GetWorldGridChunkFromReal((int)Position.X, (int)Position.Y);
-                string oldKey = BlockPosition.X + "," + BlockPosition.Y;
-
-                if (oldWorldGridChunk.WorldLinks == null || oldWorldGridChunk.WorldLinks.ContainsKey(oldKey) == false)
-                {
-                    // Check if we move to a world link
-                    WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunkFromReal((int)newPosition.X, (int)newPosition.Y);
-                    Point newBlockPosition = GeometryUtils.GetBlockFromReal((int)newPosition.X, (int)newPosition.Y);
-                    string key = newBlockPosition.X + "," + newBlockPosition.Y;
-
-                    if (worldGridChunk.WorldLinks != null && worldGridChunk.WorldLinks.ContainsKey(key))
-                    {
-                        worldLink = worldGridChunk.WorldLinks[key];
-                    }
-                }
-            }
-            else
-            {
-                // Check if we were on a worldLink
-                Interior interior = SimulationGame.World.InteriorManager.GetInterior(InteriorID);
-                string oldKey = BlockPosition.X + "," + BlockPosition.Y;
-
-                if (interior.WorldLinks == null || interior.WorldLinks.ContainsKey(oldKey) == false)
-                {
-                    Point newBlockPosition = GeometryUtils.GetBlockFromReal((int)newPosition.X, (int)newPosition.Y);
-                    string key = newBlockPosition.X + "," + newBlockPosition.Y;
-
-                    if (interior.WorldLinks != null && interior.WorldLinks.ContainsKey(key))
-                    {
-                        worldLink = interior.WorldLinks[key];
-                    }
-                }
-            }
-
-            if(worldLink != null)
-            {
-                DisconnectFromWorld();
-
-                newPosition = new Vector2(worldLink.ToBlock.X * WorldGrid.BlockSize.X + WorldGrid.BlockSize.X / 2, worldLink.ToBlock.Y * WorldGrid.BlockSize.Y + WorldGrid.BlockSize.Y - 1);
-
-                InteriorID = worldLink.ToInteriorID;
+                // TODO: Check if we are moving into unloaded area and we aren't a durable entity => if yes then we load the tile and unload us
                 base.UpdatePosition(newPosition);
-
-                // TODO: Here we should load the interior asynchronously for all entities (also player)
-                ConnectToWorld();
             }
             else
             {
-                if (canMove(newPosition))
-                {
-                    // Check if we were on a worldLink
-                    Point oldWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-                    Point newWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)newPosition.X, (int)newPosition.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-
-                    disconnectFromOverlappingChunks(oldWorldGridChunkPoint);
-
-                    // TODO: Check if we are moving into unloaded area and we aren't a durable entity => if yes then we load the tile and unload us
-                    base.UpdatePosition(newPosition);
-
-                    updateConnectionsInWorld(oldWorldGridChunkPoint, newWorldGridChunkPoint, true);
-
-                    connectToOverlappingChunks(newWorldGridChunkPoint);
-                }
-                else
-                {
-                    walkPath = null;
-                }
+                StopWalking();
             }
         }
 
@@ -159,6 +130,8 @@ namespace Simulation.Game.Objects.Entities
                     {
                         StopWalking();
 
+                        // We call this because we now want to check if we are on a world link
+                        executeWorldLink();
                         return true;
                     }
                 }
@@ -168,7 +141,7 @@ namespace Simulation.Game.Objects.Entities
                     Direction = new Vector2(destPos.X - Position.X, destPos.Y - Position.Y);
                     Direction.Normalize();
 
-                    Vector2 newPos = new Vector2(Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds);
+                    WorldPosition newPos = new WorldPosition(Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds);
 
                     newPos.X = Position.X < destPos.X ? Math.Min(destPos.X, newPos.X) : Math.Max(destPos.X, newPos.X);
                     newPos.Y = Position.Y < destPos.Y ? Math.Min(destPos.Y, newPos.Y) : Math.Max(destPos.Y, newPos.Y);
@@ -196,7 +169,9 @@ namespace Simulation.Game.Objects.Entities
             {
                 if (Direction != Vector2.Zero)
                 {
-                    UpdatePosition(new Vector2(Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds));
+                    UpdatePosition(new WorldPosition(Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds));
+
+                    executeWorldLink();
                 }
             }
 
