@@ -22,7 +22,7 @@ namespace Simulation.Game.Renderer
                 for (int blockY = topLeft.Y; blockY < bottomRight.Y; blockY++)
                 {
                     Point worldGridChunkPosition = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
-                    WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(worldGridChunkPosition.X, worldGridChunkPosition.Y);
+                    WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(worldGridChunkPosition.X, worldGridChunkPosition.Y);
 
                     BlockRenderer.Draw(spriteBatch, blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, worldGridChunk.GetBlockType(blockX, blockY));
                 }
@@ -38,7 +38,7 @@ namespace Simulation.Game.Renderer
                         SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle(chunkX * WorldGrid.WorldChunkPixelSize.X, chunkY * WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y), Color.Red);
                     }
 
-                    WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(chunkX, chunkY);
+                    WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkX, chunkY);
 
                     if (worldGridChunk.AmbientObjects != null)
                         foreach (AmbientObject ambientObject in worldGridChunk.AmbientObjects)
@@ -120,7 +120,7 @@ namespace Simulation.Game.Renderer
             }
             else
             {
-                drawInterior(spriteBatch, gameTime, SimulationGame.World.InteriorManager.GetInterior(SimulationGame.Player.InteriorID));
+                drawInterior(spriteBatch, gameTime, SimulationGame.World.InteriorManager.Get(SimulationGame.Player.InteriorID));
             }
         }
     }

@@ -54,13 +54,16 @@ namespace Simulation.Game.Effects
 
                 if(oldWorldGridChunkPoint.X != newWorldGridChunkPoint.X || oldWorldGridChunkPoint.Y != newWorldGridChunkPoint.Y)
                 {
+                    var oldChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(oldWorldGridChunkPoint.X, oldWorldGridChunkPoint.Y), false);
+                    var newChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y), false);
+
                     // Remove from old chunk
-                    if (SimulationGame.World.isWorldGridChunkLoaded(oldWorldGridChunkPoint.X, oldWorldGridChunkPoint.Y))
-                        SimulationGame.World.GetWorldGridChunk(oldWorldGridChunkPoint.X, oldWorldGridChunkPoint.Y).RemoveEffect(this);
+                    if (oldChunk != null)
+                        oldChunk.RemoveEffect(this);
                     
                     // Add to new chunk
-                    if(SimulationGame.World.isWorldGridChunkLoaded(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y))
-                        SimulationGame.World.GetWorldGridChunk(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y).AddEffect(this);
+                    if(oldChunk != null)
+                        oldChunk.AddEffect(this);
                 }
             }
 

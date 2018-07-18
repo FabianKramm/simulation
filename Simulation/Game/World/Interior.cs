@@ -49,22 +49,6 @@ namespace Simulation.Game.World
             return true;
         }
 
-        public override void AddWorldLink(WorldLink worldLink)
-        {
-            lock (ContainedObjectsLock)
-            {
-                base.AddWorldLink(worldLink);
-            }
-        }
-
-        public override void RemoveWorldLink(WorldLink worldLink)
-        {
-            lock (ContainedObjectsLock)
-            {
-                base.RemoveWorldLink(worldLink);
-            }
-        }
-
         public override void AddContainedObject(HitableObject containedObject)
         {
             lock(ContainedObjectsLock)

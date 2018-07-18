@@ -11,7 +11,7 @@ namespace Simulation.Game.Generator
 {
     public class WorldLoader
     {
-        private static NamedLock fileLocks = new NamedLock();
+        private static NamedLock<string> fileLocks = new NamedLock<string>();
 
         public static bool DoesWorldGridChunkExist(int chunkX, int chunkY)
         {

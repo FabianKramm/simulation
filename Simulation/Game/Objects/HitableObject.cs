@@ -67,11 +67,11 @@ namespace Simulation.Game.Objects
         {
             if (BlockingType == BlockingType.NOT_BLOCKING)
             {
-                return CollisionUtils.IsRectBlocked(this, new Rect((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height));
+                return !CollisionUtils.IsRectBlocked(this, new Rect((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height));
             }
             else
             {
-                return CollisionUtils.IsRectBlocked(this, UseSameBounds ?
+                return !CollisionUtils.IsRectBlocked(this, UseSameBounds ?
                     new Rect((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height) :
                     new Rect((int)(relativeBlockingBounds.X + newPosition.X), (int)(relativeBlockingBounds.Y + newPosition.Y), relativeBlockingBounds.Width, relativeBlockingBounds.Height));
             }
@@ -88,14 +88,17 @@ namespace Simulation.Game.Objects
                 {
                     if (chunkX == positionChunk.X && chunkY == positionChunk.Y) continue;
 
-                    if (SimulationGame.World.isWorldGridChunkLoaded(chunkX, chunkY))
+                    var chunkPos = GeometryUtils.ConvertPointToLong(chunkX, chunkY);
+                    var chunk = SimulationGame.World.Get(chunkPos, false);
+
+                    if (chunk != null)
                     {
-                        SimulationGame.World.GetWorldGridChunk(chunkX, chunkY).AddOverlappingObject(this);
+                        chunk.AddOverlappingObject(this);
                     }
                 }
 
             if (BlockingType == BlockingType.BLOCKING)
-                SimulationGame.World.walkableGrid.BlockRect(BlockingBounds);
+                SimulationGame.World.WalkableGrid.BlockRect(BlockingBounds);
         }
 
         private void disconnectFromOverlappingChunks()
@@ -109,14 +112,17 @@ namespace Simulation.Game.Objects
                 {
                     if (chunkX == positionChunk.X && chunkY == positionChunk.Y) continue;
 
-                    if (SimulationGame.World.isWorldGridChunkLoaded(chunkX, chunkY))
+                    var chunkPos = GeometryUtils.ConvertPointToLong(chunkX, chunkY);
+                    var chunk = SimulationGame.World.Get(chunkPos, false);
+
+                    if (chunk != null)
                     {
-                        SimulationGame.World.GetWorldGridChunk(chunkX, chunkY).RemoveOverlappingObject(this);
+                        chunk.RemoveOverlappingObject(this);
                     }
                 }
 
             if (BlockingType == BlockingType.BLOCKING)
-                SimulationGame.World.walkableGrid.UnblockRect(BlockingBounds);
+                SimulationGame.World.WalkableGrid.UnblockRect(BlockingBounds);
         }
 
         public void ConnectToWorld()
@@ -128,13 +134,13 @@ namespace Simulation.Game.Objects
 
                 // if (SimulationGame.World.isWorldGridChunkLoaded(positionChunk.X, positionChunk.Y) || forceLoadGridChunk)
                 // We load it here 
-                SimulationGame.World.GetWorldGridChunk(positionChunk.X, positionChunk.Y).AddContainedObject(this);
+                SimulationGame.World.GetFromChunkPoint(positionChunk.X, positionChunk.Y).AddContainedObject(this);
 
                 connectToOverlappingChunks();
             }
             else
             {
-                SimulationGame.World.InteriorManager.GetInterior(InteriorID).AddContainedObject(this);
+                SimulationGame.World.InteriorManager.Get(InteriorID).AddContainedObject(this);
             }
         }
 
@@ -144,15 +150,17 @@ namespace Simulation.Game.Objects
             {
                 // Add as contained object to main chunk
                 Point positionChunk = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                var chunkPos = GeometryUtils.ConvertPointToLong(positionChunk.X, positionChunk.Y);
+                var chunk = SimulationGame.World.Get(chunkPos, false);
 
-                if (SimulationGame.World.isWorldGridChunkLoaded(positionChunk.X, positionChunk.Y))
-                    SimulationGame.World.GetWorldGridChunk(positionChunk.X, positionChunk.Y).RemoveContainedObject(this);
+                if (chunk != null)
+                    chunk.RemoveContainedObject(this);
 
                 disconnectFromOverlappingChunks();
             }
             else
             {
-                SimulationGame.World.InteriorManager.GetInterior(InteriorID).RemoveContainedObject(this);
+                SimulationGame.World.InteriorManager.Get(InteriorID).RemoveContainedObject(this);
             }
         }
 
@@ -165,14 +173,17 @@ namespace Simulation.Game.Objects
 
                 if (oldWorldGridChunkPoint.X != newWorldGridChunkPoint.X || oldWorldGridChunkPoint.Y != newWorldGridChunkPoint.Y)
                 {
+                    var oldChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(oldWorldGridChunkPoint.X, oldWorldGridChunkPoint.Y), false);
+                    var newChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y), false);
+
                     // Remove from old chunk
-                    if (InteriorID == Interior.Outside && SimulationGame.World.isWorldGridChunkLoaded(oldWorldGridChunkPoint.X, oldWorldGridChunkPoint.Y))
-                        SimulationGame.World.GetWorldGridChunk(oldWorldGridChunkPoint.X, oldWorldGridChunkPoint.Y).RemoveContainedObject(this);
+                    if (InteriorID == Interior.Outside && oldChunk != null)
+                        oldChunk.RemoveContainedObject(this);
 
                     // TODO: What happens if not loaded??
                     // Add to new chunk
-                    if (newPosition.InteriorID == Interior.Outside && SimulationGame.World.isWorldGridChunkLoaded(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y))
-                        SimulationGame.World.GetWorldGridChunk(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y).AddContainedObject(this);
+                    if (newPosition.InteriorID == Interior.Outside && newChunk != null)
+                        newChunk.AddContainedObject(this);
                 }
             } 
             else if(InteriorID != newPosition.InteriorID)
@@ -180,29 +191,30 @@ namespace Simulation.Game.Objects
                 if(InteriorID == Interior.Outside)
                 {
                     Point oldWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                    var oldChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(oldWorldGridChunkPoint.X, oldWorldGridChunkPoint.Y), false);
 
                     // Remove from old chunk
-                    if (InteriorID == Interior.Outside && SimulationGame.World.isWorldGridChunkLoaded(oldWorldGridChunkPoint.X, oldWorldGridChunkPoint.Y))
-                        SimulationGame.World.GetWorldGridChunk(oldWorldGridChunkPoint.X, oldWorldGridChunkPoint.Y).RemoveContainedObject(this);
+                    if (InteriorID == Interior.Outside && oldChunk != null)
+                        oldChunk.RemoveContainedObject(this);
                 }
                 else
                 {
-                    SimulationGame.World.InteriorManager.GetInterior(InteriorID).RemoveContainedObject(this);
+                    SimulationGame.World.InteriorManager.Get(InteriorID).RemoveContainedObject(this);
                 }
-
 
                 if (newPosition.InteriorID == Interior.Outside)
                 {
                     Point newWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)newPosition.X, (int)newPosition.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                    var newChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y), false);
 
                     // TODO: What happens if not loaded??
                     // Add to new chunk
-                    if (newPosition.InteriorID == Interior.Outside && SimulationGame.World.isWorldGridChunkLoaded(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y))
-                        SimulationGame.World.GetWorldGridChunk(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y).AddContainedObject(this);
+                    if (newPosition.InteriorID == Interior.Outside && newChunk != null)
+                        newChunk.AddContainedObject(this);
                 }
                 else
                 {
-                    SimulationGame.World.InteriorManager.GetInterior(InteriorID).AddContainedObject(this);
+                    SimulationGame.World.InteriorManager.Get(newPosition.InteriorID).AddContainedObject(this);
                 }
             }
 

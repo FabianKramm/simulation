@@ -40,8 +40,15 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
+    <Compile Include="Game\AI\AITasks\AITask.cs" />
+    <Compile Include="Game\AI\AITasks\GoToObjectTask.cs" />
+    <Compile Include="Game\AI\AITasks\WaitTask.cs" />
+    <Compile Include="Game\AI\AITasks\WanderTask.cs" />
     <Compile Include="Game\AI\BaseAI.cs" />
     <Compile Include="Game\AI\FightingAI.cs" />
     <Compile Include="Game\AI\FollowAI.cs" />
@@ -96,6 +103,7 @@
     <Compile Include="Game\Skills\SlashSkill.cs" />
     <Compile Include="Game\World\CollisionDetection.cs" />
     <Compile Include="Game\World\WorldPart.cs" />
+    <Compile Include="Game\World\WorldPartManager.cs" />
     <Compile Include="Game\World\WorldPosition.cs" />
     <Compile Include="Util\MovementUtils.cs" />
     <Compile Include="Game\Player.cs" />

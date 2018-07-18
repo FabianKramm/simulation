@@ -22,7 +22,7 @@ namespace Simulation.Util
                 for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                     for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
                     {
-                        WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(chunkX, chunkY);
+                        WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkX, chunkY);
 
                         if (worldGridChunk.OverlappingObjects != null)
                             foreach (HitableObject hitableObject in worldGridChunk.OverlappingObjects)
@@ -37,7 +37,7 @@ namespace Simulation.Util
             }
             else
             {
-                Interior interior = SimulationGame.World.InteriorManager.GetInterior(interiorID);
+                Interior interior = SimulationGame.World.InteriorManager.Get(interiorID);
 
                 foreach (var hitableObject in interior.ContainedObjects)
                     if (hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
@@ -61,7 +61,7 @@ namespace Simulation.Util
                     for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
                     {
                         Point chunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
-                        WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(chunkPos.X, chunkPos.Y);
+                        WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkPos.X, chunkPos.Y);
 
                         BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
@@ -71,7 +71,7 @@ namespace Simulation.Util
             }
             else
             {
-                Interior interior = SimulationGame.World.InteriorManager.GetInterior(interiorID);
+                Interior interior = SimulationGame.World.InteriorManager.Get(interiorID);
 
                 // Check if blocks are of type blocking
                 Point topLeft = GeometryUtils.GetChunkPosition(hitboxBounds.Left, hitboxBounds.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
@@ -104,12 +104,12 @@ namespace Simulation.Util
                     for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
                     {
                         Point chunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
-                        WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(chunkPos.X, chunkPos.Y);
+                        WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkPos.X, chunkPos.Y);
 
                         BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
                         if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
-                            return false;
+                            return true;
                     }
 
                 // Check collision with interactive && contained objects
@@ -119,24 +119,24 @@ namespace Simulation.Util
                 for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                     for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
                     {
-                        WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(chunkX, chunkY);
+                        WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkX, chunkY);
 
                         if (worldGridChunk.OverlappingObjects != null)
                             foreach (HitableObject hitableObject in worldGridChunk.OverlappingObjects)
                                 if (hitableObject.BlockingType == BlockingType.BLOCKING && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
-                                    return false;
+                                    return true;
 
                         if (worldGridChunk.ContainedObjects != null)
                             foreach (var hitableObject in worldGridChunk.ContainedObjects)
                                 if (hitableObject.BlockingType == BlockingType.BLOCKING && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
-                                    return false;
+                                    return true;
                     }
 
-                return true;
+                return false;
             }
             else
             {
-                Interior interior = SimulationGame.World.InteriorManager.GetInterior(origin.InteriorID);
+                Interior interior = SimulationGame.World.InteriorManager.Get(origin.InteriorID);
 
                 // Check if blocks are of type blocking
                 Point topLeft = GeometryUtils.GetChunkPosition(rect.Left, rect.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
@@ -145,17 +145,22 @@ namespace Simulation.Util
                 for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
                     for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
                     {
+                        if (blockX < 0 || blockX >= interior.Dimensions.X)
+                            return true;
+                        if (blockY < 0 || blockY >= interior.Dimensions.Y)
+                            return true;
+
                         BlockType blockType = interior.GetBlockType(blockX, blockY);
 
                         if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
-                            return false;
+                            return true;
                     }
 
                 foreach (var hitableObject in interior.ContainedObjects)
                     if (hitableObject.BlockingType == BlockingType.BLOCKING && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
-                        return false;
+                        return true;
 
-                return true;
+                return false;
             }
         }
 

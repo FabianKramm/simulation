@@ -2,10 +2,6 @@
 using Newtonsoft.Json.Linq;
 using Simulation.Util;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Game.Serialization
 {

@@ -37,7 +37,7 @@ namespace Simulation.Game.Objects
         protected GameObject(WorldPosition position)
         {
             Position = position.Clone();
-            BlockPosition = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            BlockPosition = Position.BlockPosition;
 
             ID = Util.Util.getUUID();
         }

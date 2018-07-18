@@ -3,6 +3,7 @@ using Simulation.Game.Effects;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
 using Simulation.Util.Geometry;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,10 +11,16 @@ namespace Simulation.Game.World
 {
     public abstract class WorldPart
     {
+        public volatile bool Connected = false;
+
         protected BlockType[,] blockingGrid;
 
         // These objects stay on this chunk and are drawn
-        public List<HitableObject> ContainedObjects;
+        private List<HitableObject> containedObjects;
+        public IList<HitableObject> ContainedObjects
+        {
+            get { return containedObjects == null ? null : containedObjects.AsReadOnly(); }
+        }
 
         // These objects are not important for the world and are just displayed here
         public List<AmbientObject> AmbientObjects;
@@ -21,7 +28,7 @@ namespace Simulation.Game.World
         public Dictionary<string, Effect> ContainedEffects;
 
         // These objects link to the interiors
-        public Dictionary<string, WorldLink> WorldLinks;
+        public volatile Dictionary<ulong, WorldLink> WorldLinks;
 
         protected WorldPart() { }
 
@@ -62,19 +69,27 @@ namespace Simulation.Game.World
 
         public virtual void AddWorldLink(WorldLink worldLink)
         {
-            string key = worldLink.FromBlock.X + "," + worldLink.FromBlock.Y;
+            if(Connected)
+            {
+                throw new Exception("Cannot add world link, when already connected to world");
+            }
 
             if (WorldLinks == null)
-                WorldLinks = new Dictionary<string, WorldLink>();
+                WorldLinks = new Dictionary<ulong, WorldLink>();
 
-            WorldLinks[key] = worldLink;
+            WorldLinks[GeometryUtils.ConvertPointToLong(worldLink.FromBlock.X, worldLink.FromBlock.Y)] = worldLink;
         }
 
         public virtual void RemoveWorldLink(WorldLink worldLink)
         {
+            if (Connected)
+            {
+                throw new Exception("Cannot remove world link, when already connected to world");
+            }
+
             if (WorldLinks != null)
             {
-                WorldLinks.Remove(worldLink.FromBlock.X + "," + worldLink.FromBlock.Y);
+                WorldLinks.Remove(GeometryUtils.ConvertPointToLong(worldLink.FromBlock.X, worldLink.FromBlock.Y));
 
                 if (WorldLinks.Count == 0)
                 {
@@ -85,22 +100,22 @@ namespace Simulation.Game.World
 
         public virtual void AddContainedObject(HitableObject containedObject)
         {
-            if (ContainedObjects == null)
-                ContainedObjects = new List<HitableObject>();
+            if (containedObjects == null)
+                containedObjects = new List<HitableObject>();
 
-            if(ContainedObjects.Contains(containedObject) == false)
-                ContainedObjects.Add(containedObject);
+            if(containedObjects.Contains(containedObject) == false)
+                containedObjects.Add(containedObject);
         }
 
         public virtual void RemoveContainedObject(HitableObject containedObject)
         {
-            if (ContainedObjects != null)
+            if (containedObjects != null)
             {
-                ContainedObjects.Remove(containedObject);
+                containedObjects.Remove(containedObject);
 
-                if (ContainedObjects.Count == 0)
+                if (containedObjects.Count == 0)
                 {
-                    ContainedObjects = null;
+                    containedObjects = null;
                 }
             }
         }

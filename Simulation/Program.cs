@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using Simulation.Util.Geometry;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace Simulation
 {
@@ -24,44 +25,44 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
+            // Console.WriteLine("Hello World!");
+
             //Console.WriteLine(WorldObjectSerializer.Deserialize(WorldObjectSerializer.Serialize(AmbientObjectFactory.createTree(new Vector2(0,0)))));
 
-            WorldGenerator.ResetWorld();
+            //WorldGenerator.ResetWorld();
 
-            using (var game = new SimulationGame())
-               game.Run();
+            //using (var game = new SimulationGame())
+            //  game.Run();           
 
-            //Console.WriteLine(GeometryUtils.getPositionWithinChunk(-1, -1, 32, 32));
+            //ulong point = GeometryUtils.ConvertPointToLong(0, 0);
 
-            /*var stopwatch = Stopwatch.StartNew();
+            //Console.WriteLine(GeometryUtils.GetPointFromLong(point));
+
+            /* var stopwatch = Stopwatch.StartNew();
 
             stopwatch.Start();
 
-            for (int i = 0; i < 1000000; i++)
+            for (int i = -10000000; i < 0; i++)
             {
-                GeometryUtils.getChunkPositionOld(-32, -32, 32, 32);
+                GeometryUtils.GetChunkPosition(i, i, 32, 32);
             }
 
-            Console.WriteLine(stopwatch.ElapsedMilliseconds);
             stopwatch.Stop();
+            Console.WriteLine("Elapsed: " + stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();
 
             stopwatch.Start();
 
-            for (int i = 0; i < 1000000; i++)
+            for (int i = -10000000; i < 0; i++)
             {
-                GeometryUtils.getChunkPosition(-32, -32, 32, 32);
+                GeometryUtils.GetChunkPositionNew(i, i, 32, 32);
             }
             
             stopwatch.Stop();
-            Console.WriteLine(stopwatch.ElapsedMilliseconds);*/
-
-
+            Console.WriteLine("Elapsed: " + stopwatch.ElapsedMilliseconds); */
 
             // WorldGenerator.ResetWorld();
-
-
 
             //UInt32[] loadedChunk = new UInt32[WalkableGrid.WalkableGridChunkCount];
 

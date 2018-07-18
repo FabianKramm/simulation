@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Objects.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Game.AI
 {
@@ -15,11 +11,36 @@ namespace Simulation.Game.AI
             get; private set;
         }
 
+        protected List<AITasks.AITask> tasksToProcess;
+
         public BaseAI(MovingEntity movingEntity)
         {
             Entity = movingEntity;
         }
 
-        public abstract void Update(GameTime gameTime);
+        protected abstract void addAITasks();
+
+        public virtual void Update(GameTime gameTime)
+        {
+            if (tasksToProcess == null || tasksToProcess.Count == 0)
+            {
+                addAITasks();
+            }
+
+            if (tasksToProcess != null && tasksToProcess.Count > 0)
+            {
+                if(!tasksToProcess[0].IsStarted)
+                {
+                    tasksToProcess[0].Start();
+                }
+
+                tasksToProcess[0].Update(gameTime);
+
+                if(tasksToProcess[0].IsFinished)
+                {
+                    tasksToProcess.RemoveAt(0);
+                }
+            }
+        }
     }
 }

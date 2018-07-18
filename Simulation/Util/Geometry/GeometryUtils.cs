@@ -19,21 +19,25 @@ namespace Simulation.Util.Geometry
 
         public static readonly float SmallFloat = 0.1f;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float GetVectorDistance(float x1, float y1, float x2, float y2)
         {
             return (float)Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool VectorsWithinDistance(float x1, float y1, float x2, float y2, float d)
         {
             return ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) < d * d;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool VectorsWithinDistance(int x1, int y1, int x2, int y2, int d)
         {
             return ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) < d * d;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float GetLayerDepthFromReservedLayer(ReservedDepthLayers layer)
         {
             return Normalize((int)layer,
@@ -41,6 +45,7 @@ namespace Simulation.Util.Geometry
                             SimulationGame.VisibleArea.Width * SimulationGame.VisibleArea.Height + ReservedDepthLayers);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float GetLayerDepthFromReservedLayer(int zIndex)
         {
             return Normalize(zIndex,
@@ -48,6 +53,7 @@ namespace Simulation.Util.Geometry
                             SimulationGame.VisibleArea.Width * SimulationGame.VisibleArea.Height + ReservedDepthLayers);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float GetLayerDepthFromPosition(float X, float Y)
         {
             float value = (Y - SimulationGame.VisibleArea.Top) * SimulationGame.VisibleArea.Width + (X - SimulationGame.VisibleArea.Left) + ReservedDepthLayers;
@@ -100,6 +106,23 @@ namespace Simulation.Util.Geometry
         {
             return new Point(realX < 0 ? (realX / chunkWidth) - (realX % chunkWidth != 0 ? 1 : 0) : realX / chunkWidth, realY < 0 ? (realY / chunkHeight) - (realY % chunkHeight != 0 ? 1 : 0) : realY / chunkHeight);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong ConvertPointToLong(int x, int y) => ((ulong)x << 32) | ((ulong)y & 0xFFFFFFFF);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Point GetPointFromLong(ulong point) => new Point((int)(point >> 32), (int)point);
+
+        /* 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static Point GetChunkPositionNew(int realX, int realY, int chunkWidth, int chunkHeight)
+            {
+                float x = (float)realX / (float)chunkWidth;
+                float y = (float)realY / (float)chunkHeight;
+
+                return new Point((int)x - ((x < (int)x) ? 1 : 0), (int)y - ((y < (int)y) ? 1 : 0));
+            }
+        */
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Point GetPositionWithinChunk(int realX, int realY, int chunkWidth, int chunkHeight)

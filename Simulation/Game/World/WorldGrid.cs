@@ -5,182 +5,170 @@ using Simulation.Game.Hud;
 using Simulation.Game.Generator;
 using Simulation.Util;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 using Simulation.Util.Geometry;
 using Simulation.Game.Effects;
 using System.Linq;
 
 namespace Simulation.Game.World
 {
-    public class WorldGrid
+    public class WorldGrid: WorldPartManager<ulong, WorldGridChunk>
     {
         public static readonly Point BlockSize = new Point(32, 32);
         public static readonly Point WorldChunkBlockSize = new Point(32, 32); // 32 * 32 BlockSize
         public static readonly Point WorldChunkPixelSize = new Point(WorldChunkBlockSize.X * BlockSize.X, WorldChunkBlockSize.Y * BlockSize.Y);
         public static readonly int RenderOuterBlockRange = 3;
 
-        public WalkableGrid walkableGrid { get; private set; } = new WalkableGrid();
-        private Dictionary<string, WorldGridChunk> worldGrid = new Dictionary<string, WorldGridChunk>();
+        public WalkableGrid WalkableGrid { get; private set; } = new WalkableGrid();
         public InteriorManager InteriorManager = new InteriorManager();
-
-        private NamedLock chunkLocks = new NamedLock();
-        private ConcurrentQueue<WorldGridChunk> worldGridChunksLoaded = new ConcurrentQueue<WorldGridChunk>();
-
-        private TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
-        private static TimeSpan garbageCollectInterval = TimeSpan.FromSeconds(20);
 
         public Dictionary<string, DurableEntity> DurableEntities = new Dictionary<string, DurableEntity>();
 
-        public int getLoadedChunkAmount()
-        {
-            return worldGrid.Count;
-        }
+        public WorldGrid(): base(TimeSpan.FromSeconds(20)) { }
 
-        private WorldGridChunk loadWorldGridChunk(int chunkX, int chunkY)
+        protected override WorldGridChunk loadUnguarded(ulong key)
         {
-            if(Thread.CurrentThread.ManagedThreadId == 1)
+            Point chunkPos = GeometryUtils.GetPointFromLong(key);
+
+            if (Thread.CurrentThread.ManagedThreadId == 1)
             {
-                GameConsole.WriteLine("ChunkLoading", chunkX + "," + chunkY + " loaded in main thread");
+                GameConsole.WriteLine("ChunkLoading", chunkPos.X + "," + chunkPos.Y + " loaded in main thread");
             }
 
-            var walkableGridChunkPosition = GeometryUtils.GetChunkPosition(chunkX * WorldChunkPixelSize.X, chunkY * WorldChunkPixelSize.Y, WalkableGrid.WalkableGridPixelChunkSize.X, WalkableGrid.WalkableGridPixelChunkSize.Y);
+            var walkableGridChunkPosition = GeometryUtils.GetChunkPosition(chunkPos.X * WorldChunkPixelSize.X, chunkPos.Y * WorldChunkPixelSize.Y, WalkableGrid.WalkableGridPixelChunkSize.X, WalkableGrid.WalkableGridPixelChunkSize.Y);
 
-            walkableGrid.loadGridChunkGuarded(walkableGridChunkPosition.X, walkableGridChunkPosition.Y);
+            WalkableGrid.LoadGuarded(GeometryUtils.ConvertPointToLong(walkableGridChunkPosition.X, walkableGridChunkPosition.Y));
 
-            return WorldLoader.LoadWorldGridChunk(chunkX, chunkY);
+            return WorldLoader.LoadWorldGridChunk(chunkPos.X, chunkPos.Y);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool isWorldGridChunkLoaded(int chunkX, int chunkY)
+        private void connectWorldGridChunk(ulong key, WorldGridChunk part)
         {
-            return worldGrid.ContainsKey(chunkX + "," + chunkY);
-        }
+            ThreadingUtils.assertMainThread();
+            Point chunkPos = GeometryUtils.GetPointFromLong(key);
 
-        public void saveWorldGridChunkAsync(int chunkX, int chunkY, WorldGridChunk chunk)
-        {
-            Task.Run(() =>
-            {
-                string chunkKey = chunkX + "," + chunkY;
-
-                chunkLocks.Enter(chunkKey);
-
-                try
+            // Set walkable grid blocking for contained objects
+            if (part.ContainedObjects != null)
+                foreach (var hitableObject in part.ContainedObjects)
                 {
-                    WorldLoader.SaveWorldGridChunk(chunkX, chunkY, chunk);
-                }
-                finally
-                {
-                    chunkLocks.Exit(chunkKey);
-                }
-            });
-        }
+                    Point chunkTopLeft = GeometryUtils.GetChunkPosition(hitableObject.UnionBounds.Left, hitableObject.UnionBounds.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
+                    Point chunkBottomRight = GeometryUtils.GetChunkPosition(hitableObject.UnionBounds.Right, hitableObject.UnionBounds.Bottom, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
 
-        public void loadWorldGridChunkAsync(int chunkX, int chunkY)
-        {
-            if(isWorldGridChunkLoaded(chunkX, chunkY) == false)
-            {
-                Task.Run(() =>
-                {
-                    string chunkKey = chunkX + "," + chunkY;
-
-                    bool couldLock = chunkLocks.TryEnter(chunkKey);
-
-                    if (!couldLock)
-                    {
-                        return;
-                    }
-
-                    try
-                    {
-                        // Check if already in queue
-                        foreach(WorldGridChunk worldGridChunk in worldGridChunksLoaded)
+                    for (int sChunkX = chunkTopLeft.X; sChunkX <= chunkBottomRight.X; sChunkX++)
+                        for (int sChunkY = chunkTopLeft.Y; sChunkY <= chunkBottomRight.Y; sChunkY++)
                         {
-                            Point chunkPosition = GeometryUtils.GetChunkPosition(worldGridChunk.RealChunkBounds.X, worldGridChunk.RealChunkBounds.Y, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
+                            if (sChunkX == chunkPos.X && sChunkY == chunkPos.Y) continue;
 
-                            if (chunkPosition.X == chunkX && chunkPosition.Y == chunkY)
+                            var neighborChunk = Get(GeometryUtils.ConvertPointToLong(sChunkX, sChunkY), false);
+
+                            if (neighborChunk != null)
                             {
-                                return;
+                                neighborChunk.AddOverlappingObject(hitableObject);
                             }
                         }
-                        
-                        worldGridChunksLoaded.Enqueue(loadWorldGridChunk(chunkX, chunkY));
-                    }
-                    finally
+
+                    if (hitableObject.BlockingType == BlockingType.BLOCKING)
+                        SimulationGame.World.WalkableGrid.BlockRect(hitableObject.BlockingBounds);
+                }
+
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j < 1; j++)
+                {
+                    if (i == 0 && j == 0) continue;
+
+                    var neighborX = chunkPos.X + i;
+                    var neighborY = chunkPos.Y + j;
+                    var neighborChunk = Get(GeometryUtils.ConvertPointToLong(neighborX, neighborY), false);
+
+                    if (neighborChunk != null)
                     {
-                        chunkLocks.Exit(chunkKey);
+                        // Add neighbor contained objects to self
+                        if (neighborChunk.ContainedObjects != null)
+                            foreach (var overlappingObject in neighborChunk.ContainedObjects)
+                                if (overlappingObject.UnionBounds.Intersects(part.RealChunkBounds))
+                                {
+                                    part.AddOverlappingObject(overlappingObject);
+
+                                    // Update walkable grid
+                                    if (overlappingObject.BlockingType == BlockingType.BLOCKING)
+                                    {
+                                        SimulationGame.World.WalkableGrid.BlockRect(overlappingObject.BlockingBounds);
+                                    }
+                                }
                     }
-                });
-            }
+                }
         }
 
-        public void applyLoadedChunks()
+        protected override void saveUnguarded(ulong key, WorldGridChunk part)
         {
-            ThreadingUtils.assertMainThread();
-            var stopwatch = new Stopwatch();
+            Point chunkPos = GeometryUtils.GetPointFromLong(key);
 
-            stopwatch.Start();
+            WorldLoader.SaveWorldGridChunk(chunkPos.X, chunkPos.Y, part);
+        }
 
-            int amountChunksLoaded = 0;
-
-            while (worldGridChunksLoaded.IsEmpty == false)
+        protected override bool shouldRemoveDuringGarbageCollection(ulong key, WorldGridChunk part)
+        {
+            foreach (var durableEntity in DurableEntities)
             {
-                WorldGridChunk worldGridChunk;
-
-                bool dequeued = worldGridChunksLoaded.TryDequeue(out worldGridChunk);
-
-                if(!dequeued)
+                if (durableEntity.Value.InteriorID == Interior.Outside && part.RealChunkBounds.Intersects(durableEntity.Value.PreloadedWorldGridChunkPixelBounds))
                 {
-                    break;
-                }
-
-                int chunkX = (worldGridChunk.RealChunkBounds.X / WorldChunkPixelSize.X);
-                int chunkY = (worldGridChunk.RealChunkBounds.Y / WorldChunkPixelSize.Y);
-                string chunkKey = chunkX + "," + chunkY;
-
-                if (worldGrid.ContainsKey(chunkKey) == false)
-                {
-                    worldGrid[chunkKey] = worldGridChunk;
-                    worldGrid[chunkKey].OnLoaded(chunkX, chunkY);
-
-                    amountChunksLoaded++;
+                    return false;
                 }
             }
 
-            stopwatch.Stop();
-
-            if (amountChunksLoaded > 0)
-            {
-                GameConsole.WriteLine("ChunkLoading", amountChunksLoaded + " chunks preloaded took " + stopwatch.ElapsedMilliseconds + "ms");
-            }
+            return true;
         }
 
-        public WorldGridChunk GetWorldGridChunk(int chunkX, int chunkY)
+        protected override void unloadPart(ulong key, WorldGridChunk part)
         {
-            ThreadingUtils.assertMainThread();
+            Point pos = GeometryUtils.GetPointFromLong(key);
 
-            var chunkKey = chunkX + "," + chunkY;
+            // Remove containedEntities from interactiveObjects in other neighbor tiles
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j < 1; j++)
+                {
+                    if (i == 0 && j == 0) continue;
 
-            if(worldGrid.ContainsKey(chunkKey) == false)
-            {
-                worldGrid[chunkKey] = loadWorldGridChunk(chunkX, chunkY);
-                worldGrid[chunkKey].OnLoaded(chunkX, chunkY);
-            }
+                    var neighborChunkX = i + pos.X;
+                    var neighborChunkY = j + pos.Y;
+                    var neighborKey = GeometryUtils.ConvertPointToLong(neighborChunkX, neighborChunkY);
+                    var neighborPart = Get(neighborKey, false);
 
-            return worldGrid[chunkKey];
+                    if (neighborPart != null)
+                    {
+                        if (part.ContainedObjects != null)
+                            foreach (var containedEntity in part.ContainedObjects)
+                            {
+                                neighborPart.RemoveOverlappingObject(containedEntity);
+                            }
+                    }
+                }
+
+            if (part.AmbientObjects != null)
+                foreach (var ambientObject in part.AmbientObjects)
+                    ambientObject.Destroy();
+
+            if (part.ContainedObjects != null)
+                foreach (var containedEntity in part.ContainedObjects)
+                    containedEntity.Destroy();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public WorldGridChunk GetWorldGridChunkFromReal(int realX, int realY)
+        public WorldGridChunk GetFromChunkPoint(int chunkX, int chunkY)
+        {
+            return Get(GeometryUtils.ConvertPointToLong(chunkX, chunkY));
+        } 
+
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public WorldGridChunk GetFromRealPoint(int realX, int realY)
         {
             Point positionChunk = GeometryUtils.GetChunkPosition(realX, realY, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
 
-            return GetWorldGridChunk(positionChunk.X, positionChunk.Y);
-        }
+            return Get(GeometryUtils.ConvertPointToLong(positionChunk.X, positionChunk.Y));
+        } 
 
         public void AddHitableObjectToWorld(HitableObject hitableObject)
         {
@@ -197,11 +185,11 @@ namespace Simulation.Game.World
             // Add Effect to chunk
             if (effect.InteriorID == Interior.Outside)
             {
-                SimulationGame.World.GetWorldGridChunkFromReal((int)effect.Position.X, (int)effect.Position.Y).AddEffect(effect);
+                SimulationGame.World.GetFromRealPoint((int)effect.Position.X, (int)effect.Position.Y).AddEffect(effect);
             }
             else
             {
-                SimulationGame.World.InteriorManager.GetInterior(effect.InteriorID).AddEffect(effect);
+                SimulationGame.World.InteriorManager.Get(effect.InteriorID).AddEffect(effect);
             }
         }
 
@@ -215,99 +203,60 @@ namespace Simulation.Game.World
             }
         }
 
-        private void garbageCollectWorldGridChunks()
+        public WorldLink GetWorldLinkFromPosition(WorldPosition worldPosition)
         {
-            ThreadingUtils.assertMainThread();
-            List<string> deleteList = new List<string>();
-            var stopwatch = new Stopwatch();
+            var worldBlockPosition = worldPosition.BlockPosition;
+            WorldLink worldLink = null;
 
-            stopwatch.Start();
-
-            foreach (var chunk in worldGrid)
+            if (worldPosition.InteriorID == Interior.Outside)
             {
-                var found = false;
+                // Check if we are on a worldLink
+                WorldGridChunk worldGridChunk = GetFromRealPoint((int)worldPosition.X, (int)worldPosition.Y);
+                ulong key = GeometryUtils.ConvertPointToLong(worldBlockPosition.X, worldBlockPosition.Y);
 
-                foreach (var durableEntity in DurableEntities)
+                if (worldGridChunk.WorldLinks != null && worldGridChunk.WorldLinks.ContainsKey(key) == true)
                 {
-                    if (durableEntity.Value.InteriorID == Interior.Outside && chunk.Value.RealChunkBounds.Intersects(durableEntity.Value.PreloadedWorldGridChunkPixelBounds))
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if(!found)
-                {
-                    deleteList.Add(chunk.Key);
+                    worldLink = worldGridChunk.WorldLinks[key];
                 }
             }
-
-            foreach(var key in deleteList)
+            else
             {
-                string[] pos = key.Split(',');
+                // Check if we were on a worldLink
+                Interior interior = InteriorManager.Get(worldPosition.InteriorID);
+                ulong key = GeometryUtils.ConvertPointToLong(worldBlockPosition.X, worldBlockPosition.Y);
 
-                // Remove containedEntities from interactiveObjects in other neighbor tiles
-                for (int i = -1; i <= 1; i++)
-                    for (int j = -1; j < 1; j++)
-                    {
-                        if (i == 0 && j == 0) continue;
-
-                        var neighborChunkX = i + Int32.Parse(pos[0]);
-                        var neighborChunkY = j + Int32.Parse(pos[1]);
-                        var neighborKey = neighborChunkX + "," + neighborChunkY;
-
-                        if (isWorldGridChunkLoaded(neighborChunkX, neighborChunkY))
-                        {
-                            if(worldGrid[key].ContainedObjects != null)
-                                foreach (var containedEntity in worldGrid[key].ContainedObjects)
-                                {
-                                    worldGrid[neighborKey].RemoveOverlappingObject(containedEntity);
-                                }
-                        }
-                    }
-
-                if (worldGrid[key].AmbientObjects != null)
-                    foreach (var ambientObject in worldGrid[key].AmbientObjects)
-                        ambientObject.Destroy();
-
-                if (worldGrid[key].ContainedObjects != null)
-                    foreach (var containedEntity in worldGrid[key].ContainedObjects)
-                        containedEntity.Destroy();
-
-                // Save async
-                saveWorldGridChunkAsync(Int32.Parse(pos[0]), Int32.Parse(pos[1]), worldGrid[key]);
-
-                worldGrid.Remove(key);
+                if (interior.WorldLinks != null && interior.WorldLinks.ContainsKey(key) == true)
+                {
+                    worldLink = interior.WorldLinks[key];
+                }
             }
 
-            stopwatch.Stop();
-
-            if(deleteList.Count > 0)
-            {
-                GameConsole.WriteLine("ChunkLoading", "Garbage Collector unloaded " + deleteList.Count + " world grid chunks took " + stopwatch.ElapsedMilliseconds);
-            }
+            return worldLink;
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
-            applyLoadedChunks();
+            base.Update(gameTime);
 
-            timeSinceLastGarbageCollect += gameTime.ElapsedGameTime;
+            ICollection<ulong> keys = GetKeys();
 
-            if(timeSinceLastGarbageCollect > garbageCollectInterval)
+            for (int i = 0; i < keys.Count; i++)
             {
-                timeSinceLastGarbageCollect = TimeSpan.Zero;
-                garbageCollectWorldGridChunks();
+                var worldGridChunkItem = Get(keys.ElementAt(i), false);
+
+                if (worldGridChunkItem != null)
+                {
+                    if (!worldGridChunkItem.Connected)
+                    {
+                        connectWorldGridChunk(keys.ElementAt(i), worldGridChunkItem);
+                        worldGridChunkItem.Connected = false;
+                    }
+
+                    worldGridChunkItem.Update(gameTime);
+                }
             }
 
-            for (int i=0;i<worldGrid.Count;i++)
-            {
-                var worldGridChunkItem = worldGrid.ElementAt(i);
-
-                worldGridChunkItem.Value.Update(gameTime);
-            }
-
-            walkableGrid.Update(gameTime);
+            WalkableGrid.Update(gameTime);
             InteriorManager.Update(gameTime);
         }
     }

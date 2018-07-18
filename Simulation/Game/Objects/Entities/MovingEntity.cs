@@ -40,39 +40,21 @@ namespace Simulation.Game.Objects.Entities
             SetAI(baseAI);
         }
 
-        private void executeWorldLink()
+        private bool executeWorldLink(WorldPosition newPosition = null)
         {
-            WorldLink worldLink = null;
+            WorldLink oldWorldLink = SimulationGame.World.GetWorldLinkFromPosition(Position);
+            WorldLink newWorldLink = newPosition != null ? SimulationGame.World.GetWorldLinkFromPosition(newPosition) : null;
 
-            if (InteriorID == Interior.Outside)
+            if (oldWorldLink == null && newWorldLink != null)
             {
-                // Check if we are on a worldLink
-                WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunkFromReal((int)Position.X, (int)Position.Y);
-                string key = BlockPosition.X + "," + BlockPosition.Y;
+                Vector2 newWorldPosition = new Vector2(newWorldLink.ToBlock.X * WorldGrid.BlockSize.X + WorldGrid.BlockSize.X / 2, newWorldLink.ToBlock.Y * WorldGrid.BlockSize.Y + WorldGrid.BlockSize.Y - 1);
 
-                if (worldGridChunk.WorldLinks != null && worldGridChunk.WorldLinks.ContainsKey(key) == true)
-                {
-                    worldLink = worldGridChunk.WorldLinks[key];
-                }
-            }
-            else
-            {
-                // Check if we were on a worldLink
-                Interior interior = SimulationGame.World.InteriorManager.GetInterior(InteriorID);
-                string key = BlockPosition.X + "," + BlockPosition.Y;
+                base.UpdatePosition(new WorldPosition(newWorldPosition, newWorldLink.ToInteriorID));
 
-                if (interior.WorldLinks != null && interior.WorldLinks.ContainsKey(key) == true)
-                {
-                    worldLink = interior.WorldLinks[key];
-                }
+                return true;
             }
 
-            if (worldLink != null)
-            {
-                Vector2 newPosition = new Vector2(worldLink.ToBlock.X * WorldGrid.BlockSize.X + WorldGrid.BlockSize.X / 2, worldLink.ToBlock.Y * WorldGrid.BlockSize.Y + WorldGrid.BlockSize.Y - 1);
-
-                base.UpdatePosition(new WorldPosition(newPosition, InteriorID));
-            }
+            return false;
         }
 
         public void WalkTo(int destBlockX, int destBlockY)
@@ -169,9 +151,11 @@ namespace Simulation.Game.Objects.Entities
             {
                 if (Direction != Vector2.Zero)
                 {
-                    UpdatePosition(new WorldPosition(Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds));
+                    var newWorldPosition = new WorldPosition(Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds, InteriorID);
+                    var executedWorldLink = executeWorldLink(newWorldPosition);
 
-                    executeWorldLink();
+                    if(executedWorldLink == false) 
+                        UpdatePosition(newWorldPosition);
                 }
             }
 

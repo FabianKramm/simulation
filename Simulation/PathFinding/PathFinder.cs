@@ -9,19 +9,21 @@ namespace Simulation.PathFinding
     {
         public static Task<List<GridPos>> FindPath(int startBlockX, int startBlockY, int endBlockX, int endBlockY)
         {
-            return Task.Run(() => findPath(startBlockX, startBlockY, endBlockX, endBlockY));
+            return Task.Run(() => FindPathSync(startBlockX, startBlockY, endBlockX, endBlockY));
         }
 
         public static Task<List<GridPos>> FindPath(int startBlockX, int startBlockY, int endBlockX, int endBlockY, Interior interior)
         {
-            return Task.Run(() => findPath(startBlockX, startBlockY, endBlockX, endBlockY, interior));
+            return Task.Run(() => FindPathSync(startBlockX, startBlockY, endBlockX, endBlockY, interior));
         }
 
-        private static List<GridPos> findPath(int startBlockX, int startBlockY, int endBlockX, int endBlockY, Interior interior = null)
+        public static List<GridPos> FindPathSync(int startBlockX, int startBlockY, int endBlockX, int endBlockY, Interior interior = null)
         {
+            ThreadingUtils.assertChildThread();
+
             if(interior == null)
             {
-                JumpPointParam jpp = new JumpPointParam(new DynamicWalkableGrid(SimulationGame.World.walkableGrid, startBlockX, startBlockY, endBlockX, endBlockY), new GridPos(startBlockX, startBlockY), new GridPos(endBlockX, endBlockY), DiagonalMovement.OnlyWhenNoObstacles);
+                JumpPointParam jpp = new JumpPointParam(new DynamicWalkableGrid(SimulationGame.World.WalkableGrid, startBlockX, startBlockY, endBlockX, endBlockY), new GridPos(startBlockX, startBlockY), new GridPos(endBlockX, endBlockY), DiagonalMovement.OnlyWhenNoObstacles);
 
                 return JumpPointFinder.GetFullPath(JumpPointFinder.FindPath(jpp));
             }

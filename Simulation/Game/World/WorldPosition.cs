@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Util.Geometry;
 
 namespace Simulation.Game.World
 {
@@ -8,6 +9,11 @@ namespace Simulation.Game.World
         public float Y;
 
         public string InteriorID;
+
+        public Point BlockPosition
+        {
+            get => GeometryUtils.GetChunkPosition((int)X, (int)Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+        }
 
         public bool IsOutside
         {

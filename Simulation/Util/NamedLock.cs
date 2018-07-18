@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Simulation.Util
 {
-    public class NamedLock
+    public class NamedLock<T>
     {
         private class Lock
         {
@@ -13,14 +13,14 @@ namespace Simulation.Util
             public object lockObj = new object();
         }
 
-        private Dictionary<string, Lock> lockDir;
+        private Dictionary<T, Lock> lockDir;
 
         public NamedLock()
         {
-            lockDir = new Dictionary<string, Lock>();
+            lockDir = new Dictionary<T, Lock>();
         }
 
-        public bool TryEnter(string key)
+        public bool TryEnter(T key)
         {
             Lock lockObject;
 
@@ -44,7 +44,7 @@ namespace Simulation.Util
             }
         }
 
-        public void Enter(string key)
+        public void Enter(T key)
         {
             Lock lockObject;
             bool isBlocked = false;
@@ -75,7 +75,7 @@ namespace Simulation.Util
             }
         }
 
-        public void Exit(string key)
+        public void Exit(T key)
         {
             lock (lockDir)
             {
@@ -92,25 +92,6 @@ namespace Simulation.Util
 
                     Monitor.Exit(lockObject.lockObj);
                 }
-            }
-        }
-
-        public Task executeGuardedAsync(string key, Action action)
-        {
-            return Task.Run(action);
-        }
-
-        public void executeGuardedSync(string key, Action action)
-        {
-            Enter(key);
-
-            try
-            {
-                action();
-            }
-            finally
-            {
-                Exit(key);
             }
         }
     }

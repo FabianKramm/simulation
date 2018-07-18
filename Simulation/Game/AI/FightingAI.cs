@@ -12,7 +12,7 @@ namespace Simulation.Game.AI
     {
         public FightingAI(MovingEntity movingEntity): base(movingEntity) { }
 
-        public override void Update(GameTime gameTime)
+        protected override void addAITasks()
         {
             throw new NotImplementedException();
         }

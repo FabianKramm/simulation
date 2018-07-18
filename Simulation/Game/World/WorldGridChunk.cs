@@ -1,8 +1,6 @@
 ﻿using Simulation.Game.Objects;
-using Simulation.Util;
 using Simulation.Util.Geometry;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Simulation.Game.World
 {
@@ -51,47 +49,6 @@ namespace Simulation.Game.World
                     OverlappingObjects = null;
                 }
             }
-        }
-
-        /*
-            This function is executed when a new chunk was loaded and objects from other chunks could overlap with this chunk
-         */
-        public void OnLoaded(int chunkX, int chunkY)
-        {
-            ThreadingUtils.assertMainThread();
-
-            // Set walkable grid blocking for contained objects
-            if (ContainedObjects != null)
-                foreach (var hitableObject in ContainedObjects)
-                    hitableObject.ConnectToWorld();
-
-            for (int i = -1; i <= 1; i++)
-                for (int j = -1; j < 1; j++)
-                {
-                    if (i == 0 && j == 0) continue;
-
-                    int neighborX = chunkX + i;
-                    int neighborY = chunkY + j;
-                    
-                    if (SimulationGame.World.isWorldGridChunkLoaded(neighborX, neighborY) == true)
-                    {
-                        WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(neighborX, neighborY);
-
-                        // Add neighbor contained objects to self
-                        if(worldGridChunk.ContainedObjects != null)
-                            foreach (var overlappingObject in worldGridChunk.ContainedObjects)
-                                if (overlappingObject.UnionBounds.Intersects(RealChunkBounds))
-                                {
-                                    AddOverlappingObject(overlappingObject);
-
-                                    // Update walkable grid
-                                    if(overlappingObject.BlockingType == BlockingType.BLOCKING)
-                                    {
-                                        SimulationGame.World.walkableGrid.BlockRect(overlappingObject.BlockingBounds);
-                                    }
-                                }
-                    }
-                }
         }
     }
 }

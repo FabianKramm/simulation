@@ -1,175 +1,74 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Hud;
 using Simulation.Game.Generator;
-using Simulation.Util;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
-using System.Diagnostics;
 
 namespace Simulation.Game.World
 {
-    public class InteriorManager
+    public class InteriorManager: WorldPartManager<string, Interior>
     {
-        private ConcurrentDictionary<string, Interior> loadedInteriors = new ConcurrentDictionary<string, Interior>();
-        private NamedLock interiorLocks = new NamedLock();
+        public InteriorManager(): base(TimeSpan.FromSeconds(30)) { }
 
-        private TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
-        private static TimeSpan garbageCollectInterval = TimeSpan.FromSeconds(30);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void loadInterior(string interiorID)
+        protected override Interior loadUnguarded(string key)
         {
             if (Thread.CurrentThread.ManagedThreadId == 1)
             {
-                GameConsole.WriteLine("ChunkLoading", "Interior " + interiorID + " loaded in main thread");
+                GameConsole.WriteLine("ChunkLoading", "Interior " + key + " loaded in main thread");
             }
 
-            loadedInteriors[interiorID] = WorldLoader.LoadInterior(interiorID);
+            var interior = WorldLoader.LoadInterior(key);
+
+            interior.Connected = true;
+
+            return interior;
         }
 
-        public int GetLoadedInteriorAmount()
+        protected override void saveUnguarded(string key, Interior part)
         {
-            return loadedInteriors.Count;
+            WorldLoader.SaveInterior(part);
         }
 
-        public void SaveInteriorAsync(Interior interior)
+        protected override bool shouldRemoveDuringGarbageCollection(string key, Interior part)
         {
-            Task.Run(() =>
+            foreach (var durableEntity in SimulationGame.World.DurableEntities)
             {
-                interiorLocks.Enter(interior.ID);
-
-                try
+                if (key == durableEntity.Value.InteriorID)
                 {
-                    WorldLoader.SaveInterior(interior);
-                }
-                finally
-                {
-                    interiorLocks.Exit(interior.ID);
-                }
-            });
-        }
-
-        public void LoadInteriorGuarded(string interiorID)
-        {
-            if (interiorID == Interior.Outside) return;
-
-            interiorLocks.Enter(interiorID);
-
-            try
-            {
-                if (loadedInteriors.ContainsKey(interiorID) == false)
-                    loadInterior(interiorID);
-            }
-            finally
-            {
-                interiorLocks.Exit(interiorID);
-            }
-        }
-
-        public Interior GetInterior(string interiorID)
-        {
-            if (interiorID == Interior.Outside) return null;
-
-            interiorLocks.Enter(interiorID);
-
-            try
-            {
-                if (loadedInteriors.ContainsKey(interiorID) == false)
-                    loadInterior(interiorID);
-
-                return loadedInteriors[interiorID];
-            }
-            finally
-            {
-                interiorLocks.Exit(interiorID);
-            }
-        }
-
-        public bool IsInteriorLoaded(string interiorID)
-        {
-            return loadedInteriors.ContainsKey(interiorID);
-        }
-
-        private void garbageCollectInteriors()
-        {
-            ThreadingUtils.assertMainThread();
-            int interiorsUnloaded = 0;
-            var stopwatch = new Stopwatch();
-
-            stopwatch.Start();
-
-            foreach (var interiorItem in loadedInteriors)
-            {
-                var key = interiorItem.Key;
-
-                interiorLocks.Enter(key);
-
-                try
-                {
-                    var found = false;
-
-                    foreach (var durableEntity in SimulationGame.World.DurableEntities)
-                    {
-                        if (key == durableEntity.Value.InteriorID)
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (!found)
-                    {
-                        Interior removedInterior;
-
-                        loadedInteriors.TryRemove(key, out removedInterior);
-
-                        if (removedInterior.AmbientObjects != null)
-                            foreach (var ambientObject in removedInterior.AmbientObjects)
-                                ambientObject.Destroy();
-
-                        if (removedInterior.ContainedObjects != null)
-                            foreach (var containedEntity in removedInterior.ContainedObjects)
-                                containedEntity.Destroy();
-
-                        // Save async
-                        SaveInteriorAsync(removedInterior);
-
-                        interiorsUnloaded++;
-                    }
-                }
-                finally
-                {
-                    interiorLocks.Exit(key);
+                    return false;
                 }
             }
 
-            stopwatch.Stop();
-
-            if (interiorsUnloaded > 0)
-            {
-                GameConsole.WriteLine("ChunkLoading", "Garbage Collector unloaded " + interiorsUnloaded + " interiors took " + stopwatch.ElapsedMilliseconds);
-            }
+            return true;
         }
 
-        public void Update(GameTime gameTime)
+        protected override void unloadPart(string key, Interior part)
         {
-            timeSinceLastGarbageCollect += gameTime.ElapsedGameTime;
+            if (part.AmbientObjects != null)
+                foreach (var ambientObject in part.AmbientObjects)
+                    ambientObject.Destroy();
 
-            if (timeSinceLastGarbageCollect > garbageCollectInterval)
-            {
-                timeSinceLastGarbageCollect = TimeSpan.Zero;
-                garbageCollectInteriors();
-            }
+            if (part.ContainedObjects != null)
+                foreach (var containedEntity in part.ContainedObjects)
+                    containedEntity.Destroy();
+        }
 
-            foreach(var interiorItem in loadedInteriors)
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            ICollection<string> keys = GetKeys();
+
+            for (int i = 0; i < keys.Count; i++)
             {
-                interiorItem.Value.Update(gameTime);
+                var interiorItem = Get(keys.ElementAt(i), false);
+
+                if (interiorItem != null)
+                {
+                    interiorItem.Update(gameTime);
+                }
             }
         }
     }

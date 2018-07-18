@@ -1,13 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Objects;
-using Simulation.Game.Hud;
 using Simulation.Game.Generator;
 using Simulation.Util;
 using System;
-using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 using Simulation.Util.Geometry;
 
 /*
@@ -16,72 +11,27 @@ using Simulation.Util.Geometry;
 namespace Simulation.Game.World
 {
     // TODO: Cleanup and save unused chunks
-    public class WalkableGrid
+    public class WalkableGrid: WorldPartManager<ulong, WalkableGridChunk>
     {
         public static Point WalkableGridBlockChunkSize = new Point(32, 32);
         public static Point WalkableGridPixelChunkSize = new Point(WalkableGridBlockChunkSize.X * WorldGrid.BlockSize.X, WalkableGridBlockChunkSize.Y * WorldGrid.BlockSize.Y);
 
         public static int WalkableGridArrayChunkCount = WalkableGridBlockChunkSize.X * WalkableGridBlockChunkSize.Y / 32;
 
-        private TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
-        private static TimeSpan garbageCollectInterval = TimeSpan.FromSeconds(30);
+        public WalkableGrid(): base(TimeSpan.FromSeconds(30)) { }
 
-        private ConcurrentDictionary<string, WalkableGridChunk> walkableGrid = new ConcurrentDictionary<string, WalkableGridChunk>();
-        private NamedLock chunkLocks = new NamedLock();
-        private object writeLock = new object();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void loadGridChunk(int chunkX, int chunkY)
+        protected override WalkableGridChunk loadUnguarded(ulong key)
         {
-            walkableGrid[chunkX + "," + chunkY] = WorldLoader.LoadWalkableGridChunk(chunkX, chunkY);
+            Point point = GeometryUtils.GetPointFromLong(key);
+
+            return WorldLoader.LoadWalkableGridChunk(point.X, point.Y);
         }
 
-        public int getLoadedChunkAmount()
+        protected override void saveUnguarded(ulong key, WalkableGridChunk part)
         {
-            return walkableGrid.Count;
-        }
+            Point point = GeometryUtils.GetPointFromLong(key);
 
-        public void saveGridChunkAsync(int chunkX, int chunkY, WalkableGridChunk chunk)
-        {
-            Task.Run(() =>
-            {
-                var key = chunkX + "," + chunkY;
-
-                chunkLocks.Enter(key);
-
-                try
-                {
-                    WorldLoader.SaveWalkableGridChunk(chunkX, chunkY, chunk);
-                }
-                finally
-                {
-                    chunkLocks.Exit(key);
-                }
-            });
-        }
-
-        public void loadGridChunkGuarded(int chunkX, int chunkY)
-        {
-            var key = chunkX + "," + chunkY;
-
-            chunkLocks.Enter(key);
-
-            try
-            {
-                if (walkableGrid.ContainsKey(key) == false)
-                    loadGridChunk(chunkX, chunkY);
-            }
-            finally
-            {
-                chunkLocks.Exit(key);
-            }
-        }
-
-        public bool IsChunkLoaded(int chunkX, int chunkY)
-        {
-            var key = chunkX + "," + chunkY;
-
-            return walkableGrid.ContainsKey(key);
+            WorldLoader.SaveWalkableGridChunk(point.X, point.Y, part);
         }
 
         public bool IsPositionWalkable(int realX, int realY)
@@ -95,50 +45,21 @@ namespace Simulation.Game.World
         {
             var chunkPosition = GeometryUtils.GetChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
             var arrayPosition = GeometryUtils.GetIndexFromPoint(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
-            var key = chunkPosition.X + "," + chunkPosition.Y;
-            WalkableGridChunk walkableGridChunk;
+            var key = GeometryUtils.ConvertPointToLong(chunkPosition.X, chunkPosition.Y);
 
-            walkableGrid.TryGetValue(key, out walkableGridChunk);
-
-            if(walkableGridChunk == null)
-            {
-                chunkLocks.Enter(key);
-
-                try
-                {
-                    if (walkableGrid.ContainsKey(key) == false)
-                        loadGridChunk(chunkPosition.X, chunkPosition.Y);
-
-                    walkableGridChunk = walkableGrid[key];
-                }
-                finally
-                {
-                    chunkLocks.Exit(key);
-                }
-            }
-
-            return !getBit(walkableGridChunk.chunkData[arrayPosition / 32], arrayPosition % 32);
+            return !getBit(Get(key).chunkData[arrayPosition / 32], arrayPosition % 32);
         }
 
         public void setBlockNotWalkable(int blockX, int blockY, bool notWalkable)
         {
             var chunkPosition = GeometryUtils.GetChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
             var arrayPosition = GeometryUtils.GetIndexFromPoint(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
-            var key = chunkPosition.X + "," + chunkPosition.Y;
+            var key = GeometryUtils.ConvertPointToLong(chunkPosition.X, chunkPosition.Y);
 
-            chunkLocks.Enter(key);
-
-            try
+            Set(key, (WalkableGridChunk chunk) =>
             {
-                if (walkableGrid.ContainsKey(chunkPosition.X + "," + chunkPosition.Y) == false)
-                    loadGridChunk(chunkPosition.X, chunkPosition.Y);
-
-                setBit(ref walkableGrid[chunkPosition.X + "," + chunkPosition.Y].chunkData[arrayPosition / 32], arrayPosition % 32, notWalkable);
-            }
-            finally
-            {
-                chunkLocks.Exit(key);
-            }
+                setBit(ref chunk.chunkData[arrayPosition / 32], arrayPosition % 32, notWalkable);
+            });
         }
 
         public void BlockRect(Rect blockingBounds)
@@ -151,7 +72,7 @@ namespace Simulation.Game.World
                 {
                     Point walkableGridChunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
 
-                    if (IsChunkLoaded(walkableGridChunkPos.X, walkableGridChunkPos.Y))
+                    if (IsLoaded(GeometryUtils.ConvertPointToLong(walkableGridChunkPos.X, walkableGridChunkPos.Y)))
                     {
                         setBlockNotWalkable(blockX, blockY, true);
                     }
@@ -168,10 +89,10 @@ namespace Simulation.Game.World
                 {
                     Point walkableGridChunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
 
-                    if (IsChunkLoaded(walkableGridChunkPos.X, walkableGridChunkPos.Y))
+                    if (IsLoaded(GeometryUtils.ConvertPointToLong(walkableGridChunkPos.X, walkableGridChunkPos.Y)))
                     {
                         Point worldGridChunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
-                        WorldGridChunk worldGridChunk = SimulationGame.World.GetWorldGridChunk(worldGridChunkPos.X, worldGridChunkPos.Y);
+                        WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(worldGridChunkPos.X, worldGridChunkPos.Y);
                         BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
                         if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
@@ -194,64 +115,22 @@ namespace Simulation.Game.World
                 }
         }
 
-        private void garbageCollectWalkableGrid()
+        protected override bool shouldRemoveDuringGarbageCollection(ulong key, WalkableGridChunk part)
         {
-            ThreadingUtils.assertMainThread();
-            int chunksUnloaded = 0;
-
-            foreach(var walkableGridChunkItem in walkableGrid)
+            foreach (var durableEntity in SimulationGame.World.DurableEntities)
             {
-                var key = walkableGridChunkItem.Key;
-                chunkLocks.Enter(key);
-
-                try
+                if (durableEntity.Value.InteriorID == Interior.Outside && part.realChunkBounds.Intersects(durableEntity.Value.PreloadedWorldGridChunkPixelBounds))
                 {
-                    var found = false;
-
-                    foreach (var durableEntity in SimulationGame.World.DurableEntities)
-                    {
-                        if (durableEntity.Value.InteriorID == Interior.Outside && walkableGridChunkItem.Value.realChunkBounds.Intersects(durableEntity.Value.PreloadedWorldGridChunkPixelBounds))
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if(!found)
-                    {
-                        WalkableGridChunk removedItem;
-
-                        string[] pos = key.Split(',');
-
-                        walkableGrid.TryRemove(key, out removedItem);
-
-                        // Save async
-                        saveGridChunkAsync(Int32.Parse(pos[0]), Int32.Parse(pos[1]), removedItem);
-
-                        chunksUnloaded++;
-                    }
-                }
-                finally
-                {
-                    chunkLocks.Exit(key);
+                    return false;
                 }
             }
 
-            if(chunksUnloaded > 0)
-            {
-                GameConsole.WriteLine("ChunkLoading", "Garbage Collector unloaded " + chunksUnloaded + " walkable grid chunks");
-            }
+            return true;
         }
 
-        public void Update(GameTime gameTime)
+        protected override void unloadPart(ulong key, WalkableGridChunk part)
         {
-            timeSinceLastGarbageCollect += gameTime.ElapsedGameTime;
-
-            if (timeSinceLastGarbageCollect > garbageCollectInterval)
-            {
-                timeSinceLastGarbageCollect = TimeSpan.Zero;
-                garbageCollectWalkableGrid();
-            }
+            // Noop
         }
 
         // Don't care about concurrency

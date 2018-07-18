@@ -11,7 +11,7 @@ namespace Simulation.PathFinding
     {
         private static int outsideSearchDistanceAllowed = 32;
 
-        private Dictionary<string, Node> nodeDir = new Dictionary<string, Node>();
+        private Dictionary<ulong, Node> nodeDir = new Dictionary<ulong, Node>();
         private WalkableGrid walkableGrid;
 
         private Rect dynamicGridBounds;
@@ -40,7 +40,7 @@ namespace Simulation.PathFinding
 
         public override Node GetNodeAt(int blockX, int blockY)
         {
-            string key = blockX + "," + blockY;
+            ulong key = GeometryUtils.ConvertPointToLong(blockX, blockY);
 
             if (!nodeDir.ContainsKey(key))
             {
@@ -71,7 +71,7 @@ namespace Simulation.PathFinding
 
         public override void Reset()
         {
-            nodeDir = new Dictionary<string, Node>();
+            nodeDir = new Dictionary<ulong, Node>();
         }
     }
 }
