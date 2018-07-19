@@ -37,7 +37,11 @@ namespace Simulation.Game.Objects.Entities
 
             for (int i = PreloadedWorldGridChunkBounds.Left; i <= PreloadedWorldGridChunkBounds.Right; i++)
                 for (int j = PreloadedWorldGridChunkBounds.Top; j <= PreloadedWorldGridChunkBounds.Bottom; j++)
-                    SimulationGame.World.LoadAsync(GeometryUtils.ConvertPointToLong(i, j));
+                {
+                    if(!SimulationGame.World.IsLoaded(GeometryUtils.ConvertPointToLong(i, j)))
+                        SimulationGame.World.LoadAsync(GeometryUtils.ConvertPointToLong(i, j));
+                }
+                    
         }
 
         protected override void UpdatePosition(WorldPosition newPosition)

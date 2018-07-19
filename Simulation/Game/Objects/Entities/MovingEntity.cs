@@ -96,11 +96,6 @@ namespace Simulation.Game.Objects.Entities
             }
         }
 
-        private void updatePositionWithOverflow(float newPosX, float newPosY)
-        {
-            UpdatePosition(new WorldPosition((int)Math.Round(newPosX), (int)Math.Round(newPosY)));
-        }
-
         public override void Update(GameTime gameTime)
         {
             loadWalkpath(gameTime);
@@ -130,14 +125,13 @@ namespace Simulation.Game.Objects.Entities
                     Direction = new Vector2(destPos.X - Position.X, destPos.Y - Position.Y);
                     Direction.Normalize();
 
-                    // TODO: OVERFLOW
-                    float newPosX = Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds;
-                    float newPosY = Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds;
+                    int newPosX = (int)Math.Round(Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds);
+                    int newPosY = (int)Math.Round(Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds);
 
-                    newPosX = Position.X < destPos.X ? Math.Min(destPos.X, newPosX) : Math.Max(destPos.X, newPosX);
-                    newPosY = Position.Y < destPos.Y ? Math.Min(destPos.Y, newPosY) : Math.Max(destPos.Y, newPosY);
+                    newPosX = Position.X < destPos.X ? (int)Math.Min(destPos.X, newPosX) : (int)Math.Max(destPos.X, newPosX);
+                    newPosY = Position.Y < destPos.Y ? (int)Math.Min(destPos.Y, newPosY) : (int)Math.Max(destPos.Y, newPosY);
 
-                    var newPos = new WorldPosition((int)Math.Round(newPosX), (int)Math.Round(newPosY), InteriorID);
+                    var newPos = new WorldPosition((int)newPosX, (int)newPosY, InteriorID);
 
                     if (CanWalk && canMove(newPos))
                     {
@@ -153,7 +147,6 @@ namespace Simulation.Game.Objects.Entities
             {
                 if (Direction != Vector2.Zero)
                 {
-                    // TODO: OVERFLOW
                     float newPosX = Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds;
                     float newPosY = Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds;
                     var newPos = new WorldPosition((int)Math.Round(newPosX), (int)Math.Round(newPosY), InteriorID);

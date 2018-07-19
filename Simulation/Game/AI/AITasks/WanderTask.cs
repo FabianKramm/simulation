@@ -46,9 +46,11 @@ namespace Simulation.Game.AI.AITasks
                     if (randomPoint.X == findCircle.CenterX && randomPoint.Y == findCircle.CenterY)
                         continue;
 
-                    bool isBlockWalkable = interiorID == Interior.Outside ? SimulationGame.World.WalkableGrid.IsBlockWalkable(randomPoint.X, randomPoint.Y) : SimulationGame.World.InteriorManager.Get(interiorID).IsBlockWalkable(randomPoint.X, randomPoint.Y);
+                    var realPosition = new WorldPosition(randomPoint.X * WorldGrid.BlockSize.X, randomPoint.Y * WorldGrid.BlockSize.Y, interiorID);
+                    var isBlockWalkable = SimulationGame.World.IsRealPositionWalkable(realPosition);
+                    var worldLink = SimulationGame.World.GetWorldLinkFromPosition(realPosition);
 
-                    if (isBlockWalkable)
+                    if (isBlockWalkable && worldLink == null)
                         return randomPoint;
                 }
 
