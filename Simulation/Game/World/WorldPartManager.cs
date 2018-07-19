@@ -96,10 +96,10 @@ namespace Simulation.Game.World
 
                     if (couldRemove)
                     {
-                        unloadPart(part.Key, part.Value);
+                        unloadPart(key, removedPart);
 
                         // Save async
-                        SaveAsync(part.Key, removedPart);
+                        SaveAsync(key, removedPart);
 
                         partsUnloaded++;
                     }

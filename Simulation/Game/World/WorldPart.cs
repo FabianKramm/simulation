@@ -11,9 +11,9 @@ namespace Simulation.Game.World
 {
     public abstract class WorldPart
     {
-        public bool Connected = false;
-
         protected BlockType[,] blockingGrid;
+
+        public bool Connected = false;
 
         // These objects stay on this chunk and are drawn
         private List<HitableObject> containedObjects;

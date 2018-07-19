@@ -16,7 +16,6 @@ namespace Simulation.Game.World
 {
     public class WorldGrid: WorldPartManager<ulong, WorldGridChunk>
     {
-        public static readonly object WorldUpdateLock = new object();
         public static readonly Point BlockSize = new Point(32, 32);
         public static readonly Point WorldChunkBlockSize = new Point(32, 32); // 32 * 32 BlockSize
         public static readonly Point WorldChunkPixelSize = new Point(WorldChunkBlockSize.X * BlockSize.X, WorldChunkBlockSize.Y * BlockSize.Y);
@@ -237,31 +236,28 @@ namespace Simulation.Game.World
 
         public override void Update(GameTime gameTime)
         {
-            lock(WorldUpdateLock)
+            base.Update(gameTime);
+
+            ICollection<ulong> keys = GetKeys();
+
+            for (int i = 0; i < keys.Count; i++)
             {
-                base.Update(gameTime);
+                var worldGridChunkItem = Get(keys.ElementAt(i), false);
 
-                ICollection<ulong> keys = GetKeys();
-
-                for (int i = 0; i < keys.Count; i++)
+                if (worldGridChunkItem != null)
                 {
-                    var worldGridChunkItem = Get(keys.ElementAt(i), false);
-
-                    if (worldGridChunkItem != null)
+                    if (!worldGridChunkItem.Connected)
                     {
-                        if (!worldGridChunkItem.Connected)
-                        {
-                            connectWorldGridChunk(keys.ElementAt(i), worldGridChunkItem);
-                            worldGridChunkItem.Connected = false;
-                        }
-
-                        worldGridChunkItem.Update(gameTime);
+                        connectWorldGridChunk(keys.ElementAt(i), worldGridChunkItem);
+                        worldGridChunkItem.Connected = false;
                     }
-                }
 
-                WalkableGrid.Update(gameTime);
-                InteriorManager.Update(gameTime);
+                    worldGridChunkItem.Update(gameTime);
+                }
             }
+
+            WalkableGrid.Update(gameTime);
+            InteriorManager.Update(gameTime);
         }
     }
 }

@@ -34,12 +34,19 @@ namespace Simulation.Game.World
 
             Rect blockBounds = new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
-            lock (WorldGrid.WorldUpdateLock)
+            if (ContainedObjects != null)
             {
-                if (ContainedObjects != null)
+                lock(ContainedObjects)
+                {
                     foreach (var containedObject in ContainedObjects)
-                        if (containedObject.BlockingType == BlockingType.BLOCKING && containedObject.BlockingBounds.Intersects(blockBounds))
-                            return false;
+                    {
+                        lock(containedObject)
+                        {
+                            if (containedObject.BlockingType == BlockingType.BLOCKING && containedObject.BlockingBounds.Intersects(blockBounds))
+                                return false;
+                        }
+                    }
+                }
             }
 
             return true;
