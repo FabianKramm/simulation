@@ -11,7 +11,7 @@ namespace Simulation.Game.World
 {
     public abstract class WorldPart
     {
-        public volatile bool Connected = false;
+        public bool Connected = false;
 
         protected BlockType[,] blockingGrid;
 
@@ -41,6 +41,11 @@ namespace Simulation.Game.World
 
         public void SetBlockType(int blockX, int blockY, BlockType blockType)
         {
+            if(Connected)
+            {
+                throw new Exception("Cannot set block type, when already connected to world!");
+            }
+
             var projectedPosition = GeometryUtils.GetPositionWithinChunk(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
 
             blockingGrid[projectedPosition.X, projectedPosition.Y] = blockType;

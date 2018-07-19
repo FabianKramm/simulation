@@ -7,7 +7,7 @@ namespace Simulation.Game.World
 {
     public class WalkableGridChunk
     {
-        public UInt32[] chunkData;
+        private UInt32[] chunkData;
         public Rect realChunkBounds
         {
             get; private set;
@@ -43,6 +43,34 @@ namespace Simulation.Game.World
             retData = new byte[chunkData.Length * 4];
 
             Buffer.BlockCopy(chunkData, 0, retData, 0, chunkData.Length * 4);
+        }
+
+        public bool IsBlockWalkable(int blockX, int blockY)
+        {
+            var arrayPosition = GeometryUtils.GetIndexFromPoint(blockX, blockY, WalkableGrid.WalkableGridBlockChunkSize.X, WalkableGrid.WalkableGridBlockChunkSize.Y);
+
+            return !getBit(chunkData[arrayPosition / 32], arrayPosition % 32);
+        }
+
+        public void SetWalkable(int blockX, int blockY, bool notWalkable)
+        {
+            var arrayPosition = GeometryUtils.GetIndexFromPoint(blockX, blockY, WalkableGrid.WalkableGridBlockChunkSize.X, WalkableGrid.WalkableGridBlockChunkSize.Y);
+
+
+            setBit(ref chunkData[arrayPosition / 32], arrayPosition % 32, notWalkable);
+        }
+
+        private static bool getBit(UInt32 x, int bitnum)
+        {
+            return (x & (1 << bitnum)) != 0;
+        }
+
+        private static void setBit(ref UInt32 x, int bitnum, bool val)
+        {
+            if (val)
+                x |= (UInt32)(1 << bitnum);
+            else
+                x &= ~(UInt32)(1 << bitnum);
         }
     }
 }

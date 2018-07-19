@@ -12,9 +12,6 @@ namespace Simulation.Game.World
         public string ID;
         public Point Dimensions;
 
-        // This object is needed for restricting access to the contained objects
-        private object ContainedObjectsLock = new object();
-
         // Used for json
         private Interior() { }
 
@@ -37,8 +34,7 @@ namespace Simulation.Game.World
 
             Rect blockBounds = new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
-            // Check Contained Objects
-            lock(ContainedObjectsLock)
+            lock (WorldGrid.WorldUpdateLock)
             {
                 if (ContainedObjects != null)
                     foreach (var containedObject in ContainedObjects)
@@ -47,22 +43,6 @@ namespace Simulation.Game.World
             }
 
             return true;
-        }
-
-        public override void AddContainedObject(HitableObject containedObject)
-        {
-            lock(ContainedObjectsLock)
-            {
-                base.AddContainedObject(containedObject);
-            }
-        }
-
-        public override void RemoveContainedObject(HitableObject containedObject)
-        {
-            lock(ContainedObjectsLock)
-            {
-                base.RemoveContainedObject(containedObject);
-            }
         }
     }
 }

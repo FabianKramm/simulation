@@ -11,11 +11,10 @@ namespace Simulation.Game.World
 {
     public abstract class WorldPartManager<KEY, PART>
     {
+        private ConcurrentDictionary<KEY, PART> loadedParts = new ConcurrentDictionary<KEY, PART>();
+
         protected TimeSpan garbageCollectInterval;
         protected TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
-
-        private ConcurrentDictionary<KEY, PART> loadedParts = new ConcurrentDictionary<KEY, PART>();
-        private NamedLock<KEY> partLocks = new NamedLock<KEY>();
 
         protected abstract PART loadUnguarded(KEY key);
         protected abstract void saveUnguarded(KEY key, PART part);
@@ -38,26 +37,11 @@ namespace Simulation.Game.World
             return loadedParts.Keys;
         }
 
-        public void LoadGuarded(KEY key)
-        {
-            partLocks.Enter(key);
-
-            try
-            {
-                if (loadedParts.ContainsKey(key) == false)
-                    loadedParts[key] = loadUnguarded(key);
-            }
-            finally
-            {
-                partLocks.Exit(key);
-            }
-        }
-
         public void LoadAsync(KEY key)
         {
             Task.Run(() =>
             {
-                LoadGuarded(key);
+                loadedParts.GetOrAdd(key, this.loadUnguarded);
             });
         }
 
@@ -65,16 +49,7 @@ namespace Simulation.Game.World
         {
             Task.Run(() =>
             {
-                partLocks.Enter(key);
-
-                try
-                {
-                    saveUnguarded(key, part);
-                }
-                finally
-                {
-                    partLocks.Exit(key);
-                }
+                saveUnguarded(key, part);
             });
         }
 
@@ -83,55 +58,19 @@ namespace Simulation.Game.World
             return loadedParts.ContainsKey(key);
         }
 
-        public void Set(KEY key, Action<PART> action, bool loadIfNotExists = true)
-        {
-            partLocks.Enter(key);
-
-            try
-            {
-                if (loadedParts.ContainsKey(key) == false)
-                {
-                    if (loadIfNotExists)
-                    {
-                        loadedParts[key] = loadUnguarded(key);
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-
-                action(loadedParts[key]);
-            }
-            finally
-            {
-                partLocks.Exit(key);
-            }
-        }
-
         public PART Get(KEY key, bool loadIfNotExists = true)
         {
-            partLocks.Enter(key);
-
-            try
+            if (loadIfNotExists)
             {
-                if (loadedParts.ContainsKey(key) == false)
-                {
-                    if (loadIfNotExists)
-                    {
-                        loadedParts[key] = loadUnguarded(key);
-                    }
-                    else
-                    {
-                        return default(PART);
-                    }
-                }
-
-                return loadedParts[key];
+                return loadedParts.GetOrAdd(key, this.loadUnguarded);
             }
-            finally
+            else
             {
-                partLocks.Exit(key);
+                PART value;
+
+                loadedParts.TryGetValue(key, out value);
+
+                return value;
             }
         }
 
@@ -147,19 +86,16 @@ namespace Simulation.Game.World
             foreach (var part in loadedParts)
             {
                 var key = part.Key;
+                var shouldRemove = shouldRemoveDuringGarbageCollection(part.Key, part.Value);
 
-                partLocks.Enter(key);
-
-                try
+                if (shouldRemove)
                 {
-                    var shouldRemove = shouldRemoveDuringGarbageCollection(part.Key, part.Value);
+                    PART removedPart;
 
-                    if (shouldRemove)
+                    bool couldRemove = loadedParts.TryRemove(key, out removedPart);
+
+                    if (couldRemove)
                     {
-                        PART removedPart;
-
-                        loadedParts.TryRemove(key, out removedPart);
-
                         unloadPart(part.Key, part.Value);
 
                         // Save async
@@ -167,10 +103,6 @@ namespace Simulation.Game.World
 
                         partsUnloaded++;
                     }
-                }
-                finally
-                {
-                    partLocks.Exit(key);
                 }
             }
 

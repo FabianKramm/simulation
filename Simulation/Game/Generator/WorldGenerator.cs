@@ -78,7 +78,7 @@ namespace Simulation.Game.Generator
                     {
                         worldGrid[(worldGridChunk.X, worldGridChunk.Y)].SetBlockType(i, j, BlockType.GRASS_WATERHOLE);
 
-                        WalkableGrid.setBlockNotWalkableInChunk(walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)], i, j, true);
+                        walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)].SetWalkable(i, j, true);
                     }
                     else
                     {

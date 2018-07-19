@@ -17,7 +17,7 @@ namespace Simulation.PathFinding
             return Task.Run(() => FindPathSync(startBlockX, startBlockY, endBlockX, endBlockY, interior));
         }
 
-        public static List<GridPos> FindPathSync(int startBlockX, int startBlockY, int endBlockX, int endBlockY, Interior interior = null)
+        private static List<GridPos> FindPathSync(int startBlockX, int startBlockY, int endBlockX, int endBlockY, Interior interior = null)
         {
             ThreadingUtils.assertChildThread();
 

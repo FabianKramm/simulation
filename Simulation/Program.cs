@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using Simulation.Util.Geometry;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Simulation
 {
@@ -19,12 +21,69 @@ namespace Simulation
     /// </summary>
     public static class Program
     {
+        public class TestMe
+        {
+            public List<string> list = new List<string>();
+
+            public TestMe() {}
+
+            public void Add(string a)
+            {
+                lock(list)
+                {
+                    list.Add(a);
+                }
+            }
+
+            public void RemoveAt(int index)
+            {
+                lock(list)
+                {
+                    list.RemoveAt(index);
+                }
+            }
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
+            /*Dictionary<int, int> dict = new Dictionary<int, int>();
+
+            TestMe testMe = new TestMe();
+            List<Task> tasks = new List<Task>();
+
+            testMe.list.Add("swag");*/
+
+            // testMe.Add("abc");
+            // testMe.Add("bcd");
+
+            /*for (int i=0;i<100;i++)
+            {
+                int j = i;
+
+                tasks.Add(Task.Run(() =>
+                {
+                    for(int x=0;x<10000;x++)
+                    {
+                        
+                    }
+                }));
+            }*/
+
+            /*for (int i=0;i<testMe.list.Count;i++)
+            {
+                Task.Run(() =>
+                {
+                    lock (testMe.list)
+                    {
+                        testMe.Add("hhhddg");
+                    }
+                }).Wait();
+            }*/
+
             // Console.WriteLine("Hello World!");
 
             //Console.WriteLine(WorldObjectSerializer.Deserialize(WorldObjectSerializer.Serialize(AmbientObjectFactory.createTree(new Vector2(0,0)))));

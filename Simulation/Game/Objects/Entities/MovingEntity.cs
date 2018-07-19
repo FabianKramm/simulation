@@ -84,6 +84,14 @@ namespace Simulation.Game.Objects.Entities
             }
         }
 
+        public void StopWalking()
+        {
+            findPathTask = null;
+            walkPath = null;
+
+            Direction = Vector2.Zero;
+        }
+
         private bool walkIfWalkpath(GameTime gameTime)
         {
             if (findPathTask != null && findPathTask.IsCompleted)
@@ -135,14 +143,6 @@ namespace Simulation.Game.Objects.Entities
             }
 
             return false;
-        }
-
-        public void StopWalking()
-        {
-            findPathTask = null;
-            walkPath = null;
-
-            Direction = Vector2.Zero;
         }
 
         public override void Update(GameTime gameTime)

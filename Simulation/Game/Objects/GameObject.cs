@@ -6,6 +6,8 @@ namespace Simulation.Game.Objects
 {
     public abstract class GameObject
     {
+        protected object positionChangeLock;
+
         public string ID
         {
             get; private set;

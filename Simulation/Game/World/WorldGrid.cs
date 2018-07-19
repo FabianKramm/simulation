@@ -16,6 +16,7 @@ namespace Simulation.Game.World
 {
     public class WorldGrid: WorldPartManager<ulong, WorldGridChunk>
     {
+        public static readonly object WorldUpdateLock = new object();
         public static readonly Point BlockSize = new Point(32, 32);
         public static readonly Point WorldChunkBlockSize = new Point(32, 32); // 32 * 32 BlockSize
         public static readonly Point WorldChunkPixelSize = new Point(WorldChunkBlockSize.X * BlockSize.X, WorldChunkBlockSize.Y * BlockSize.Y);
@@ -39,7 +40,7 @@ namespace Simulation.Game.World
 
             var walkableGridChunkPosition = GeometryUtils.GetChunkPosition(chunkPos.X * WorldChunkPixelSize.X, chunkPos.Y * WorldChunkPixelSize.Y, WalkableGrid.WalkableGridPixelChunkSize.X, WalkableGrid.WalkableGridPixelChunkSize.Y);
 
-            WalkableGrid.LoadGuarded(GeometryUtils.ConvertPointToLong(walkableGridChunkPosition.X, walkableGridChunkPosition.Y));
+            WalkableGrid.Get(GeometryUtils.ConvertPointToLong(walkableGridChunkPosition.X, walkableGridChunkPosition.Y));
 
             return WorldLoader.LoadWorldGridChunk(chunkPos.X, chunkPos.Y);
         }
@@ -236,28 +237,31 @@ namespace Simulation.Game.World
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-
-            ICollection<ulong> keys = GetKeys();
-
-            for (int i = 0; i < keys.Count; i++)
+            lock(WorldUpdateLock)
             {
-                var worldGridChunkItem = Get(keys.ElementAt(i), false);
+                base.Update(gameTime);
 
-                if (worldGridChunkItem != null)
+                ICollection<ulong> keys = GetKeys();
+
+                for (int i = 0; i < keys.Count; i++)
                 {
-                    if (!worldGridChunkItem.Connected)
+                    var worldGridChunkItem = Get(keys.ElementAt(i), false);
+
+                    if (worldGridChunkItem != null)
                     {
-                        connectWorldGridChunk(keys.ElementAt(i), worldGridChunkItem);
-                        worldGridChunkItem.Connected = false;
+                        if (!worldGridChunkItem.Connected)
+                        {
+                            connectWorldGridChunk(keys.ElementAt(i), worldGridChunkItem);
+                            worldGridChunkItem.Connected = false;
+                        }
+
+                        worldGridChunkItem.Update(gameTime);
                     }
-
-                    worldGridChunkItem.Update(gameTime);
                 }
-            }
 
-            WalkableGrid.Update(gameTime);
-            InteriorManager.Update(gameTime);
+                WalkableGrid.Update(gameTime);
+                InteriorManager.Update(gameTime);
+            }
         }
     }
 }

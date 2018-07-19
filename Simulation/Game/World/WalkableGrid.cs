@@ -44,22 +44,17 @@ namespace Simulation.Game.World
         public bool IsBlockWalkable(int blockX, int blockY)
         {
             var chunkPosition = GeometryUtils.GetChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
-            var arrayPosition = GeometryUtils.GetIndexFromPoint(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
-            var key = GeometryUtils.ConvertPointToLong(chunkPosition.X, chunkPosition.Y);
+            var chunk = Get(GeometryUtils.ConvertPointToLong(chunkPosition.X, chunkPosition.Y));
 
-            return !getBit(Get(key).chunkData[arrayPosition / 32], arrayPosition % 32);
+            return chunk.IsBlockWalkable(blockX, blockY);
         }
 
-        public void setBlockNotWalkable(int blockX, int blockY, bool notWalkable)
+        private void setBlockNotWalkable(int blockX, int blockY, bool notWalkable)
         {
             var chunkPosition = GeometryUtils.GetChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
-            var arrayPosition = GeometryUtils.GetIndexFromPoint(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
-            var key = GeometryUtils.ConvertPointToLong(chunkPosition.X, chunkPosition.Y);
+            var chunk = Get(GeometryUtils.ConvertPointToLong(chunkPosition.X, chunkPosition.Y), true);
 
-            Set(key, (WalkableGridChunk chunk) =>
-            {
-                setBit(ref chunk.chunkData[arrayPosition / 32], arrayPosition % 32, notWalkable);
-            });
+            chunk.SetWalkable(blockX, blockY, notWalkable);
         }
 
         public void BlockRect(Rect blockingBounds)
@@ -131,27 +126,6 @@ namespace Simulation.Game.World
         protected override void unloadPart(ulong key, WalkableGridChunk part)
         {
             // Noop
-        }
-
-        // Don't care about concurrency
-        public static void setBlockNotWalkableInChunk(WalkableGridChunk chunk, int blockX, int blockY, bool notWalkable)
-        {
-            var arrayPosition = GeometryUtils.GetIndexFromPoint(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
-
-            setBit(ref chunk.chunkData[arrayPosition / 32], arrayPosition % 32, notWalkable);
-        }
-
-        private static bool getBit(UInt32 x, int bitnum)
-        {
-            return (x & (1 << bitnum)) != 0;
-        }
-
-        private static void setBit(ref UInt32 x, int bitnum, bool val)
-        {
-            if (val)
-                x |= (UInt32)(1 << bitnum);
-            else
-                x &= ~(UInt32)(1 << bitnum);
         }
     }
 }
