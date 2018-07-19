@@ -11,6 +11,7 @@ using System.Threading;
 using Simulation.Util.Geometry;
 using Simulation.Game.Effects;
 using System.Linq;
+using Simulation.Game.Enums;
 
 namespace Simulation.Game.World
 {

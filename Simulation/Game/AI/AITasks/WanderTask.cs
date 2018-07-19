@@ -10,12 +10,8 @@ namespace Simulation.Game.AI.AITasks
 {
     public class WanderTask: AITask
     {
-        public int BlockRadius
-        {
-            get; private set;
-        }
-
         private Task<Point> findNextWalkablePoint;
+
         private Circle wanderCircle;
         private string interiorID;
         

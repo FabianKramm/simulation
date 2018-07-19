@@ -2,6 +2,7 @@
 using Simulation.Game.Renderer;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;
+using Simulation.Game.Enums;
 
 namespace Simulation.Game.Objects
 {
@@ -13,7 +14,7 @@ namespace Simulation.Game.Objects
         protected AmbientHitableObject() { }
 
         public AmbientHitableObject(AmbientHitableObjectType ambientHitableObjectType, WorldPosition position, Rect relativeBlockingRectangle):
-            base(position, relativeBlockingRectangle, World.BlockingType.BLOCKING) {
+            base(position, relativeBlockingRectangle, BlockingType.BLOCKING) {
             this.AmbientHitableObjectType = ambientHitableObjectType;
         }
     }

@@ -1,23 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Util.Geometry;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Game
 {
     class CollisionDetection
     {
-        public static bool intersect(ref Rect r1, ref Rect r2)
+        public static bool Intersect(ref Rect r1, ref Rect r2)
         {
             return r1.Intersects(r2);
         }
 
-        public static bool intersect(ref Rect r1, Vector2[] poly2)
+        public static bool Intersect(ref Rect r1, Vector2[] poly2)
         {
-            return intersect(poly2, new Vector2[] {
+            return Intersect(poly2, new Vector2[] {
                 new Vector2(r1.Left, r1.Top),
                 new Vector2(r1.Right, r1.Top),
                 new Vector2(r1.Right, r1.Bottom),
@@ -26,7 +21,7 @@ namespace Simulation.Game
         }
 
         // Based on http://www.dyn4j.org/2010/01/sat/#sat-nointer
-        public static bool intersect(Vector2[] poly1, Vector2[] poly2)
+        public static bool Intersect(Vector2[] poly1, Vector2[] poly2)
         {
             Vector2[] axes1 = getAxes(poly1);
             Vector2[] axes2 = getAxes(poly2);

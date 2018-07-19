@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.Enums;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
 using Simulation.Util;

@@ -5,6 +5,7 @@ using Simulation.Util;
 using System;
 using System.Collections.Generic;
 using Simulation.Spritesheet;
+using Simulation.Game.Enums;
 
 namespace Simulation.Game.Renderer.Entities
 {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.Enums;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;
 
@@ -21,8 +22,8 @@ namespace Simulation.Game.Objects.Entities
         // Create from JSON
         protected DurableEntity() { }
 
-        public DurableEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds, int preloadedSurroundingWorldGridChunkRadius = 1) :
-            base(livingEntityType, position, relativeHitBoxBounds)
+        public DurableEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds, FractionType fraction, int preloadedSurroundingWorldGridChunkRadius = 1) :
+            base(livingEntityType, position, relativeHitBoxBounds, fraction)
         {
             this.preloadedSurroundingWorldGridChunkRadius = preloadedSurroundingWorldGridChunkRadius;
 

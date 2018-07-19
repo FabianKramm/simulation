@@ -4,6 +4,7 @@ using Simulation.Game.Generator;
 using Simulation.Util;
 using System;
 using Simulation.Util.Geometry;
+using Simulation.Game.Enums;
 
 /*
  * The WalkableGrid is only used for quick pathfinding

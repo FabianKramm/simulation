@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.AI;
+using Simulation.Game.Enums;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.World;

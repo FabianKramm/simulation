@@ -8,6 +8,7 @@ using Simulation.Util;
 using System;
 using System.Collections.Generic;
 using Simulation.Util.Geometry;
+using Simulation.Game.Enums;
 
 namespace Simulation.Game.Generator
 {

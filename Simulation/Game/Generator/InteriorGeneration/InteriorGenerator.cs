@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.Enums;
 using Simulation.Game.World;
 
 namespace Simulation.Game.Generator.InteriorGeneration

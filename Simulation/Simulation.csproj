@@ -53,6 +53,13 @@
     <Compile Include="Game\AI\FightingAI.cs" />
     <Compile Include="Game\AI\FollowAI.cs" />
     <Compile Include="Game\AI\WanderAI.cs" />
+    <Compile Include="Game\Enums\BlockingType.cs" />
+    <Compile Include="Game\Enums\BlockType.cs" />
+    <Compile Include="Game\Enums\FractionRelationType.cs" />
+    <Compile Include="Game\Enums\FractionType.cs" />
+    <Compile Include="Game\Enums\HitBoxType.cs" />
+    <Compile Include="Game\Enums\LivingEntityType.cs" />
+    <Compile Include="Game\Fractions\FractionRelations.cs" />
     <Compile Include="Game\Generator\GeneratorUtils.cs" />
     <Compile Include="Game\Objects\Entities\DurableEntity.cs" />
     <Compile Include="Game\Objects\Entities\LivingEntity.cs" />
@@ -108,7 +115,6 @@
     <Compile Include="Util\MovementUtils.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\Skills\FireballSkill.cs" />
-    <Compile Include="Game\World\Block.cs" />
     <Compile Include="Game\Generator\WorldLoader.cs" />
     <Compile Include="Game\World\Interior.cs" />
     <Compile Include="Game\World\InteriorManager.cs" />

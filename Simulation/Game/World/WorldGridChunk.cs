@@ -1,19 +1,10 @@
-﻿using Simulation.Game.Objects;
+﻿using Simulation.Game.Enums;
+using Simulation.Game.Objects;
 using Simulation.Util.Geometry;
 using System.Collections.Generic;
 
 namespace Simulation.Game.World
 {
-    public enum BlockType
-    {
-        NONE = 0,
-        GRASS_01,
-        GRASS_02,
-        GRASS_03,
-        GRASS_04,
-        GRASS_WATERHOLE,
-    }
-
     public class WorldGridChunk: WorldPart
     {
         public Rect RealChunkBounds;

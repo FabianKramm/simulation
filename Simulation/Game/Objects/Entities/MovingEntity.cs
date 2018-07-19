@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.AI;
+using Simulation.Game.Enums;
 using Simulation.Game.World;
 using Simulation.PathFinding;
 using Simulation.Util;
@@ -31,11 +32,11 @@ namespace Simulation.Game.Objects.Entities
         // Create from JSON
         protected MovingEntity() {}
 
-        public MovingEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds):
-            base(livingEntityType, position, relativeHitBoxBounds) {}
+        public MovingEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds, FractionType fraction) :
+            base(livingEntityType, position, relativeHitBoxBounds, fraction) {}
 
-        public MovingEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds, BaseAI baseAI) :
-            base(livingEntityType, position, relativeHitBoxBounds)
+        public MovingEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds, BaseAI baseAI, FractionType fraction) :
+            base(livingEntityType, position, relativeHitBoxBounds, fraction)
         {
             SetAI(baseAI);
         }

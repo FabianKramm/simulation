@@ -9,7 +9,8 @@ namespace Simulation.Game.Serialization.Objects
     {
         private static readonly Type livingEntityType = typeof(LivingEntity);
         private static readonly string[] serializeableProperties = new string[] {
-            "LivingEntityType"
+            "LivingEntityType",
+            "Fraction"
         };
 
         protected static void Deserialize(ref JObject jObject, LivingEntity livingEntity)
