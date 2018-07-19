@@ -74,7 +74,7 @@ namespace Simulation.Game.AI.AITasks
 
                         if (wanderCircle.Contains(destBlock))
                         {
-                            movingSubject.WalkTo(destBlock.X, destBlock.Y);
+                            movingSubject.WalkTo(new WorldPosition(destBlock.X, destBlock.Y, movingSubject.InteriorID));
                         }
                         else
                         {

@@ -88,10 +88,10 @@ namespace Simulation
 
             //Console.WriteLine(WorldObjectSerializer.Deserialize(WorldObjectSerializer.Serialize(AmbientObjectFactory.createTree(new Vector2(0,0)))));
 
-            //WorldGenerator.ResetWorld();
+            WorldGenerator.ResetWorld();
 
-            //using (var game = new SimulationGame())
-            //  game.Run();           
+            using (var game = new SimulationGame())
+              game.Run();           
 
             //ulong point = GeometryUtils.ConvertPointToLong(0, 0);
 

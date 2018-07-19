@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.World;
+using Simulation.Util;
 using Simulation.Util.Geometry;
 
 namespace Simulation.Game.Objects
@@ -44,10 +45,12 @@ namespace Simulation.Game.Objects
             ID = Util.Util.getUUID();
         }
 
-        public virtual void UpdatePosition(WorldPosition newPosition)
+        protected virtual void UpdatePosition(WorldPosition newPosition)
         {
+            ThreadingUtils.assertMainThread();
+
             Position = newPosition.Clone();
-            BlockPosition = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            BlockPosition = GeometryUtils.GetChunkPosition(Position.X, Position.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
         }
 
         public virtual void Destroy()

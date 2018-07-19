@@ -57,31 +57,21 @@ namespace Simulation.Game.Objects.Entities
             return false;
         }
 
-        public void WalkTo(int destBlockX, int destBlockY)
+        public void WalkTo(WorldPosition worldPosition)
         {
             Point currentBlock = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
-            findPathTask = PathFinder.FindPath(currentBlock.X, currentBlock.Y, destBlockX, destBlockY);
+            // TODO: WHAT HAPPENS IF WE CHANGE INTERIOR
+            findPathTask = PathFinder.FindPath(new WorldPosition(currentBlock.X, currentBlock.Y, Position.InteriorID), worldPosition);
 
             walkPath = null;
             Direction = Vector2.Zero;
         }
 
-        public override void UpdatePosition(WorldPosition newPosition)
+        protected override void UpdatePosition(WorldPosition newPosition)
         {
-            ThreadingUtils.assertMainThread();
-
-            if (!CanWalk) return;
-
-            if (canMove(newPosition))
-            {
-                // TODO: Check if we are moving into unloaded area and we aren't a durable entity => if yes then we load the tile and unload us
-                base.UpdatePosition(newPosition);
-            }
-            else
-            {
-                StopWalking();
-            }
+            // TODO: Check if we are moving into unloaded area and we aren't a durable entity => if yes then we load the tile and unload us
+            base.UpdatePosition(newPosition);
         }
 
         public void StopWalking()
@@ -92,7 +82,7 @@ namespace Simulation.Game.Objects.Entities
             Direction = Vector2.Zero;
         }
 
-        private bool walkIfWalkpath(GameTime gameTime)
+        private void loadWalkpath(GameTime gameTime)
         {
             if (findPathTask != null && findPathTask.IsCompleted)
             {
@@ -104,6 +94,16 @@ namespace Simulation.Game.Objects.Entities
 
                 findPathTask = null;
             }
+        }
+
+        private void updatePositionWithOverflow(float newPosX, float newPosY)
+        {
+            UpdatePosition(new WorldPosition((int)Math.Round(newPosX), (int)Math.Round(newPosY)));
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            loadWalkpath(gameTime);
 
             if (walkPath != null)
             {
@@ -122,7 +122,6 @@ namespace Simulation.Game.Objects.Entities
 
                         // We call this because we now want to check if we are on a world link
                         executeWorldLink();
-                        return true;
                     }
                 }
 
@@ -131,31 +130,45 @@ namespace Simulation.Game.Objects.Entities
                     Direction = new Vector2(destPos.X - Position.X, destPos.Y - Position.Y);
                     Direction.Normalize();
 
-                    WorldPosition newPos = new WorldPosition(Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds);
+                    // TODO: OVERFLOW
+                    float newPosX = Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds;
+                    float newPosY = Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds;
 
-                    newPos.X = Position.X < destPos.X ? Math.Min(destPos.X, newPos.X) : Math.Max(destPos.X, newPos.X);
-                    newPos.Y = Position.Y < destPos.Y ? Math.Min(destPos.Y, newPos.Y) : Math.Max(destPos.Y, newPos.Y);
+                    newPosX = Position.X < destPos.X ? Math.Min(destPos.X, newPosX) : Math.Max(destPos.X, newPosX);
+                    newPosY = Position.Y < destPos.Y ? Math.Min(destPos.Y, newPosY) : Math.Max(destPos.Y, newPosY);
 
-                    UpdatePosition(newPos);
+                    var newPos = new WorldPosition((int)Math.Round(newPosX), (int)Math.Round(newPosY), InteriorID);
+
+                    if (CanWalk && canMove(newPos))
+                    {
+                        UpdatePosition(newPos);
+                    }
+                    else
+                    {
+                        StopWalking();
+                    }
                 }
-
-                return true;
             }
-
-            return false;
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            if(walkIfWalkpath(gameTime) == false)
+            else
             {
                 if (Direction != Vector2.Zero)
                 {
-                    var newWorldPosition = new WorldPosition(Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds, Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds, InteriorID);
-                    var executedWorldLink = executeWorldLink(newWorldPosition);
+                    // TODO: OVERFLOW
+                    float newPosX = Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds;
+                    float newPosY = Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds;
+                    var newPos = new WorldPosition((int)Math.Round(newPosX), (int)Math.Round(newPosY), InteriorID);
 
-                    if(executedWorldLink == false) 
-                        UpdatePosition(newWorldPosition);
+                    if (CanWalk && canMove(newPos))
+                    {
+                        var executedWorldLink = executeWorldLink(newPos);
+
+                        if (executedWorldLink == false)
+                            UpdatePosition(newPos);
+                    }
+                    else
+                    {
+                        StopWalking();
+                    }
                 }
             }
 

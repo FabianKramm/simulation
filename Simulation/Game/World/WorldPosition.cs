@@ -5,8 +5,8 @@ namespace Simulation.Game.World
 {
     public class WorldPosition
     {
-        public float X;
-        public float Y;
+        public int X;
+        public int Y;
 
         public string InteriorID;
 
@@ -43,15 +43,15 @@ namespace Simulation.Game.World
 
         public WorldPosition(Vector2 position)
         {
-            X = position.X;
-            Y = position.Y;
+            X = (int)position.X;
+            Y = (int)position.Y;
             InteriorID = Interior.Outside;
         }
 
         public WorldPosition(float x, float y)
         {
-            X = x;
-            Y = y;
+            X = (int)x;
+            Y = (int)y;
             InteriorID = Interior.Outside;
         }
 
@@ -64,15 +64,15 @@ namespace Simulation.Game.World
 
         public WorldPosition(Vector2 position, string interiorID)
         {
-            X = position.X;
-            Y = position.Y;
+            X = (int)position.X;
+            Y = (int)position.Y;
             InteriorID = interiorID;
         }
 
         public WorldPosition(float x, float y, string interiorID)
         {
-            X = x;
-            Y = y;
+            X = (int)x;
+            Y = (int)y;
             InteriorID = interiorID;
         }
     }

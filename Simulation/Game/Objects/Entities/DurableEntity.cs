@@ -40,7 +40,7 @@ namespace Simulation.Game.Objects.Entities
                     SimulationGame.World.LoadAsync(GeometryUtils.ConvertPointToLong(i, j));
         }
 
-        public override void UpdatePosition(WorldPosition newPosition)
+        protected override void UpdatePosition(WorldPosition newPosition)
         {
             base.UpdatePosition(newPosition);
 

@@ -193,6 +193,21 @@ namespace Simulation.Game.World
             }
         }
 
+        public bool IsBlockPositionWalkable(WorldPosition blockPosition)
+        {
+            if (blockPosition.InteriorID == Interior.Outside) {
+                return SimulationGame.World.WalkableGrid.IsBlockWalkable(blockPosition.X, blockPosition.Y);
+            }
+            else {
+                return SimulationGame.World.InteriorManager.Get(blockPosition.InteriorID).IsBlockWalkable(blockPosition.X, blockPosition.Y);
+            }
+        }
+
+        public WorldLink GetWorldLinkFromBlockPosition(WorldPosition blockPosition)
+        {
+            return null;
+        }
+
         private void addDurableEntity(DurableEntity durableEntity)
         {
             ThreadingUtils.assertMainThread();

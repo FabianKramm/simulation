@@ -16,11 +16,7 @@ namespace Simulation.Game.World
         public bool Connected = false;
 
         // These objects stay on this chunk and are drawn
-        private List<HitableObject> containedObjects;
-        public IList<HitableObject> ContainedObjects
-        {
-            get { return containedObjects == null ? null : containedObjects.AsReadOnly(); }
-        }
+        public List<HitableObject> ContainedObjects;
 
         // These objects are not important for the world and are just displayed here
         public List<AmbientObject> AmbientObjects;
@@ -105,22 +101,22 @@ namespace Simulation.Game.World
 
         public virtual void AddContainedObject(HitableObject containedObject)
         {
-            if (containedObjects == null)
-                containedObjects = new List<HitableObject>();
+            if (ContainedObjects == null)
+                ContainedObjects = new List<HitableObject>();
 
-            if(containedObjects.Contains(containedObject) == false)
-                containedObjects.Add(containedObject);
+            if(ContainedObjects.Contains(containedObject) == false)
+                ContainedObjects.Add(containedObject);
         }
 
         public virtual void RemoveContainedObject(HitableObject containedObject)
         {
-            if (containedObjects != null)
+            if (ContainedObjects != null)
             {
-                containedObjects.Remove(containedObject);
+                ContainedObjects.Remove(containedObject);
 
-                if (containedObjects.Count == 0)
+                if (ContainedObjects.Count == 0)
                 {
-                    containedObjects = null;
+                    ContainedObjects = null;
                 }
             }
         }

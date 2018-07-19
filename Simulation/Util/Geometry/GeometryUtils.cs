@@ -113,16 +113,8 @@ namespace Simulation.Util.Geometry
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Point GetPointFromLong(ulong point) => new Point((int)(point >> 32), (int)point);
 
-        /* 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static Point GetChunkPositionNew(int realX, int realY, int chunkWidth, int chunkHeight)
-            {
-                float x = (float)realX / (float)chunkWidth;
-                float y = (float)realY / (float)chunkHeight;
-
-                return new Point((int)x - ((x < (int)x) ? 1 : 0), (int)y - ((y < (int)y) ? 1 : 0));
-            }
-        */
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FastFloor(float v) => (int)v - ((v < (int)v) ? 1 : 0);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Point GetPositionWithinChunk(int realX, int realY, int chunkWidth, int chunkHeight)

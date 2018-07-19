@@ -22,7 +22,7 @@ namespace Simulation.Game
             Velocity = 0.2f;
         }
 
-        public override void UpdatePosition(WorldPosition newPosition)
+        protected override void UpdatePosition(WorldPosition newPosition)
         {
             base.UpdatePosition(newPosition);
 
@@ -73,7 +73,7 @@ namespace Simulation.Game
                 if (!leftMouseClick)
                 {
                     Point clickedBlock = GeometryUtils.GetChunkPosition((int)SimulationGame.MousePosition.X, (int)SimulationGame.MousePosition.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
-                    WalkTo(clickedBlock.X, clickedBlock.Y);
+                    WalkTo(new WorldPosition(clickedBlock.X, clickedBlock.Y, SimulationGame.Player.InteriorID));
 
                     leftMouseClick = true;
                 }
