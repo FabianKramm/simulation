@@ -16,9 +16,9 @@ namespace Simulation.Game.Objects.Entities
 
     public abstract class LivingEntity: HitableObject
     {
-        public BaseAI BaseAI;
-
         public LivingEntityRendererInformation RendererInformation;
+
+        public BaseAI BaseAI;
 
         public LivingEntityType LivingEntityType
         {
@@ -38,6 +38,8 @@ namespace Simulation.Game.Objects.Entities
         {
             this.BaseAI = baseAI;
         }
+
+
 
         public virtual void Update(GameTime gameTime)
         {

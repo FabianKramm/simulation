@@ -10,7 +10,79 @@ namespace Simulation.Util
 {
     public class CollisionUtils
     {
+        public static LivingEntity GetClosestLivingTarget(Circle hitboxBounds, HitableObject origin)
+        {
+            Rect rectangleHitboxBounds = new Rect(hitboxBounds.CenterX - hitboxBounds.Radius, hitboxBounds.CenterY - hitboxBounds.Radius, 2 * hitboxBounds.Radius, 2 * hitboxBounds.Radius);
+            LivingEntity livingTarget = GetClosestLivingTarget(rectangleHitboxBounds, origin);
 
+            return hitboxBounds.Intersects(livingTarget.HitBoxBounds) ? livingTarget : null;
+        }
+
+        public static LivingEntity GetClosestLivingTarget(Rect hitboxBounds, HitableObject origin)
+        {
+            ThreadingUtils.assertMainThread();
+
+            HitableObject closestTarget = null;
+            float closestDistance = float.PositiveInfinity;
+
+            if (origin.InteriorID == Interior.Outside)
+            {
+                // Check collision with interactive && contained objects
+                Point chunkTopLeft = GeometryUtils.GetChunkPosition(hitboxBounds.Left, hitboxBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                Point chunkBottomRight = GeometryUtils.GetChunkPosition(hitboxBounds.Right, hitboxBounds.Bottom, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+
+                for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
+                    for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
+                    {
+                        WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkX, chunkY);
+
+                        if (worldGridChunk.OverlappingObjects != null)
+                            foreach (HitableObject hitableObject in worldGridChunk.OverlappingObjects)
+                                if (hitableObject is LivingEntity && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
+                                {
+                                    var distance = GeometryUtils.GetDiagonalDistance(hitableObject.Position.X, hitableObject.Position.Y, origin.Position.X, origin.Position.Y);
+
+                                    if(distance < closestDistance)
+                                    {
+                                        closestDistance = distance;
+                                        closestTarget = hitableObject;
+                                    }
+                                }
+                                    
+
+                        if (worldGridChunk.ContainedObjects != null)
+                            foreach (var hitableObject in worldGridChunk.ContainedObjects)
+                                if (hitableObject is LivingEntity && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
+                                {
+                                    var distance = GeometryUtils.GetDiagonalDistance(hitableObject.Position.X, hitableObject.Position.Y, origin.Position.X, origin.Position.Y);
+
+                                    if (distance < closestDistance)
+                                    {
+                                        closestDistance = distance;
+                                        closestTarget = hitableObject;
+                                    }
+                                }
+                    }
+            }
+            else
+            {
+                Interior interior = SimulationGame.World.InteriorManager.Get(origin.InteriorID);
+
+                foreach (var hitableObject in interior.ContainedObjects)
+                    if (hitableObject is LivingEntity && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
+                    {
+                        var distance = GeometryUtils.GetDiagonalDistance(hitableObject.Position.X, hitableObject.Position.Y, origin.Position.X, origin.Position.Y);
+
+                        if (distance < closestDistance)
+                        {
+                            closestDistance = distance;
+                            closestTarget = hitableObject;
+                        }
+                    }
+            }
+
+            return (LivingEntity)closestTarget;
+        }
 
         public static List<LivingEntity> GetLivingHittedObjects(Circle hitboxBounds, HitableObject origin)
         {

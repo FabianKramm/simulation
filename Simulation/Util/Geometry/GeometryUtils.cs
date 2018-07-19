@@ -20,6 +20,15 @@ namespace Simulation.Util.Geometry
         public static readonly float SmallFloat = 0.1f;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetDiagonalDistance(WorldPosition from, WorldPosition to)
+        {
+            if (from.InteriorID != to.InteriorID)
+                return float.PositiveInfinity;
+            
+            return GetDiagonalDistance(from.X, from.Y, to.X, to.Y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float GetDiagonalDistance(float x1, float y1, float x2, float y2)
         {
             float dx = Math.Abs(x1 - x2);
