@@ -87,7 +87,7 @@ namespace Simulation.PathFinding
                 if (worldLinkItem.Value.ToInteriorID == Interior.Outside || done.Contains(worldLinkItem.Value.ToInteriorID))
                     continue;
 
-                open.Add(GeometryUtils.GetVectorDistance(startBlockPos.X, startBlockPos.Y, worldLinkItem.Value.FromBlock.X, worldLinkItem.Value.FromBlock.Y), worldLinkItem.Value);
+                open.Add(GeometryUtils.GetDiagonalDistance(startBlockPos.X, startBlockPos.Y, worldLinkItem.Value.FromBlock.X, worldLinkItem.Value.FromBlock.Y), worldLinkItem.Value);
                 done.Add(worldLinkItem.Value.ToInteriorID);
             }
 
@@ -108,7 +108,7 @@ namespace Simulation.PathFinding
                     if (worldLinkItem.Value.ToInteriorID == Interior.Outside || done.Contains(worldLinkItem.Value.ToInteriorID))
                         continue;
 
-                    open.Add(distance + GeometryUtils.GetVectorDistance(worldLink.ToBlock.X, worldLink.ToBlock.Y, worldLinkItem.Value.FromBlock.X, worldLinkItem.Value.FromBlock.Y), worldLinkItem.Value);
+                    open.Add(distance + GeometryUtils.GetDiagonalDistance(worldLink.ToBlock.X, worldLink.ToBlock.Y, worldLinkItem.Value.FromBlock.X, worldLinkItem.Value.FromBlock.Y), worldLinkItem.Value);
                     done.Add(worldLinkItem.Value.ToInteriorID);
                 }
             }

@@ -62,8 +62,8 @@ namespace Simulation.Game.Effects
                         oldChunk.RemoveEffect(this);
                     
                     // Add to new chunk
-                    if(oldChunk != null)
-                        oldChunk.AddEffect(this);
+                    if(newChunk != null)
+                        newChunk.AddEffect(this);
                 }
             }
 

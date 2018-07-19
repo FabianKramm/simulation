@@ -74,9 +74,9 @@ namespace Simulation.Game.AI.AITasks
                     {
                         Point destBlock = findNextWalkablePoint.Result;
 
-                        if (wanderCircle.Contains(destBlock))
+                        if (wanderCircle.Contains(destBlock) && interiorID == movingSubject.InteriorID)
                         {
-                            movingSubject.WalkTo(new WorldPosition(destBlock.X, destBlock.Y, movingSubject.InteriorID));
+                            movingSubject.WalkToBlock(new WorldPosition(destBlock.X, destBlock.Y, interiorID));
                         }
                         else
                         {

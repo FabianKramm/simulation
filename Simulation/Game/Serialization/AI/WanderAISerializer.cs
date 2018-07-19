@@ -14,7 +14,7 @@ namespace Simulation.Game.Serialization.AI
     {
         private static readonly Type type = typeof(WanderAI);
         private static readonly string[] serializeableProperties = new string[] {
-            "blockCircle",
+            "BlockStartPosition",
             "BlockRadius"
         };
 

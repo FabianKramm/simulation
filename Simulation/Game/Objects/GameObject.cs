@@ -50,7 +50,7 @@ namespace Simulation.Game.Objects
             ThreadingUtils.assertMainThread();
 
             Position = newPosition.Clone();
-            BlockPosition = GeometryUtils.GetChunkPosition(Position.X, Position.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            BlockPosition = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
         }
 
         public virtual void Destroy()

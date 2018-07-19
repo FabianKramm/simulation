@@ -15,8 +15,9 @@ namespace Simulation.Game.Effects
         public bool HasHitTarget = false;
 
         private Vector2 startPosition;
-        private float velocity = 0.4f;
         private Vector2 direction;
+
+        private float velocity = 0.2f;
 
         public Fireball(LivingEntity origin, Vector2 target, Vector2? relativeOriginPosition = null) : base(origin.Position, origin)
         {
@@ -47,7 +48,7 @@ namespace Simulation.Game.Effects
                     var rotateVector = new Vector2(Position.X, Position.Y + 7.5f);
                     var rotatedPoint = GeometryUtils.Rotate(Angle, Position.ToVector(), ref rotateVector);
                     var collisionRect = new Rect((int)(rotatedPoint.X - 7.5f), (int)(rotatedPoint.Y - 7.5f), 15, 15);
-                    var hittedObjects = CollisionUtils.GetHittedObjects(collisionRect, Origin, InteriorID);
+                    var hittedObjects = CollisionUtils.GetHittedObjects(collisionRect, Origin);
 
                     if(hittedObjects.Count == 0)
                     {

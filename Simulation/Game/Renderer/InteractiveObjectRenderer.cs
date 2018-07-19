@@ -64,11 +64,11 @@ namespace Simulation.Game.Renderer
                     {
                         if (interactiveObject.BlockingType == BlockingType.BLOCKING)
                         {
-                            SimulationGame.PrimitiveDrawer.Rectangle(interactiveObject.UnionBounds.ToRectangle(), Color.Red);
+                            SimulationGame.PrimitiveDrawer.Rectangle(interactiveObject.UnionBounds.ToXnaRectangle(), Color.Red);
                         }
                         else
                         {
-                            SimulationGame.PrimitiveDrawer.Rectangle(interactiveObject.HitBoxBounds.ToRectangle(), Color.White);
+                            SimulationGame.PrimitiveDrawer.Rectangle(interactiveObject.HitBoxBounds.ToXnaRectangle(), Color.White);
                         }
                     }
                 }

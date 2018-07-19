@@ -10,7 +10,7 @@ namespace Simulation.Util.Geometry
         public static Rect Union(Rect rect1, Rect rect2)
         {
             // Doesn't have to be efficient so we just use the XNA one
-            return new Rect(Rectangle.Union(rect1.ToRectangle(), rect2.ToRectangle()));
+            return new Rect(Rectangle.Union(rect1.ToXnaRectangle(), rect2.ToXnaRectangle()));
         }
 
         public int X;
@@ -94,7 +94,7 @@ namespace Simulation.Util.Geometry
             return (x >= X) && (x <= Right) && (y >= Y) && (y <= Bottom);
         }
 
-        public Rectangle ToRectangle()
+        public Rectangle ToXnaRectangle()
         {
             return new Rectangle(X, Y, Width, Height);
         }

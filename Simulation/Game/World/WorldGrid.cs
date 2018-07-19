@@ -28,6 +28,90 @@ namespace Simulation.Game.World
 
         public WorldGrid(): base(TimeSpan.FromSeconds(20)) { }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public WorldGridChunk GetFromChunkPoint(int chunkX, int chunkY)
+        {
+            return Get(GeometryUtils.ConvertPointToLong(chunkX, chunkY));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public WorldGridChunk GetFromRealPoint(int realX, int realY)
+        {
+            Point positionChunk = GeometryUtils.GetChunkPosition(realX, realY, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
+
+            return Get(GeometryUtils.ConvertPointToLong(positionChunk.X, positionChunk.Y));
+        }
+
+        public void AddHitableObjectToWorld(HitableObject hitableObject)
+        {
+            hitableObject.ConnectToWorld();
+
+            if (hitableObject is DurableEntity)
+            {
+                addDurableEntity((DurableEntity)hitableObject);
+            }
+        }
+
+        public void AddEffectToWorld(Effect effect)
+        {
+            // Add Effect to chunk
+            if (effect.InteriorID == Interior.Outside)
+            {
+                SimulationGame.World.GetFromRealPoint((int)effect.Position.X, (int)effect.Position.Y).AddEffect(effect);
+            }
+            else
+            {
+                SimulationGame.World.InteriorManager.Get(effect.InteriorID).AddEffect(effect);
+            }
+        }
+
+        public bool IsRealPositionWalkable(WorldPosition realPosition)
+        {
+            var blockPosition = realPosition.BlockPosition;
+
+            if (realPosition.InteriorID == Interior.Outside)
+            {
+                return SimulationGame.World.WalkableGrid.IsBlockWalkable(blockPosition.X, blockPosition.Y);
+            }
+            else
+            {
+                return SimulationGame.World.InteriorManager.Get(realPosition.InteriorID).IsBlockWalkable(blockPosition.X, blockPosition.Y);
+            }
+        }
+
+        
+
+        public WorldLink GetWorldLinkFromPosition(WorldPosition realPosition)
+        {
+            var worldBlockPosition = realPosition.BlockPosition;
+            WorldLink worldLink = null;
+
+            if (realPosition.InteriorID == Interior.Outside)
+            {
+                // Check if we are on a worldLink
+                WorldGridChunk worldGridChunk = GetFromRealPoint((int)realPosition.X, (int)realPosition.Y);
+                ulong key = GeometryUtils.ConvertPointToLong(worldBlockPosition.X, worldBlockPosition.Y);
+
+                if (worldGridChunk.WorldLinks != null && worldGridChunk.WorldLinks.ContainsKey(key) == true)
+                {
+                    worldLink = worldGridChunk.WorldLinks[key];
+                }
+            }
+            else
+            {
+                // Check if we were on a worldLink
+                Interior interior = InteriorManager.Get(realPosition.InteriorID);
+                ulong key = GeometryUtils.ConvertPointToLong(worldBlockPosition.X, worldBlockPosition.Y);
+
+                if (interior.WorldLinks != null && interior.WorldLinks.ContainsKey(key) == true)
+                {
+                    worldLink = interior.WorldLinks[key];
+                }
+            }
+
+            return worldLink;
+        }
+
         protected override WorldGridChunk loadUnguarded(ulong key)
         {
             Point chunkPos = GeometryUtils.GetPointFromLong(key);
@@ -155,56 +239,6 @@ namespace Simulation.Game.World
                     containedEntity.Destroy();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public WorldGridChunk GetFromChunkPoint(int chunkX, int chunkY)
-        {
-            return Get(GeometryUtils.ConvertPointToLong(chunkX, chunkY));
-        } 
-
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public WorldGridChunk GetFromRealPoint(int realX, int realY)
-        {
-            Point positionChunk = GeometryUtils.GetChunkPosition(realX, realY, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
-
-            return Get(GeometryUtils.ConvertPointToLong(positionChunk.X, positionChunk.Y));
-        } 
-
-        public void AddHitableObjectToWorld(HitableObject hitableObject)
-        {
-            hitableObject.ConnectToWorld();
-
-            if (hitableObject is DurableEntity)
-            {
-                addDurableEntity((DurableEntity)hitableObject);
-            }
-        }
-
-        public void AddEffectToWorld(Effect effect)
-        {
-            // Add Effect to chunk
-            if (effect.InteriorID == Interior.Outside)
-            {
-                SimulationGame.World.GetFromRealPoint((int)effect.Position.X, (int)effect.Position.Y).AddEffect(effect);
-            }
-            else
-            {
-                SimulationGame.World.InteriorManager.Get(effect.InteriorID).AddEffect(effect);
-            }
-        }
-
-        public bool IsRealPositionWalkable(WorldPosition realPosition)
-        {
-            var blockPosition = realPosition.BlockPosition;
-
-            if (realPosition.InteriorID == Interior.Outside) {
-                return SimulationGame.World.WalkableGrid.IsBlockWalkable(blockPosition.X, blockPosition.Y);
-            }
-            else {
-                return SimulationGame.World.InteriorManager.Get(realPosition.InteriorID).IsBlockWalkable(blockPosition.X, blockPosition.Y);
-            }
-        }
-
         private void addDurableEntity(DurableEntity durableEntity)
         {
             ThreadingUtils.assertMainThread();
@@ -213,37 +247,6 @@ namespace Simulation.Game.World
             {
                 DurableEntities[durableEntity.ID] = durableEntity;
             }
-        }
-
-        public WorldLink GetWorldLinkFromPosition(WorldPosition realPosition)
-        {
-            var worldBlockPosition = realPosition.BlockPosition;
-            WorldLink worldLink = null;
-
-            if (realPosition.InteriorID == Interior.Outside)
-            {
-                // Check if we are on a worldLink
-                WorldGridChunk worldGridChunk = GetFromRealPoint((int)realPosition.X, (int)realPosition.Y);
-                ulong key = GeometryUtils.ConvertPointToLong(worldBlockPosition.X, worldBlockPosition.Y);
-
-                if (worldGridChunk.WorldLinks != null && worldGridChunk.WorldLinks.ContainsKey(key) == true)
-                {
-                    worldLink = worldGridChunk.WorldLinks[key];
-                }
-            }
-            else
-            {
-                // Check if we were on a worldLink
-                Interior interior = InteriorManager.Get(realPosition.InteriorID);
-                ulong key = GeometryUtils.ConvertPointToLong(worldBlockPosition.X, worldBlockPosition.Y);
-
-                if (interior.WorldLinks != null && interior.WorldLinks.ContainsKey(key) == true)
-                {
-                    worldLink = interior.WorldLinks[key];
-                }
-            }
-
-            return worldLink;
         }
 
         public override void Update(GameTime gameTime)

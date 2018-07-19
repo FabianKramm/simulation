@@ -18,7 +18,7 @@ namespace Simulation.Game.Generator.Factories
         {
             var geralt = new DurableEntity(LivingEntityType.GERALT, new WorldPosition(WorldGrid.BlockSize.X * 3, WorldGrid.BlockSize.Y * 3), new Rect(-8, -20, 16, 20));
 
-            geralt.BaseAI = new WanderAI(geralt, 10);
+            geralt.BaseAI = new WanderAI(geralt, 4);
 
             return geralt;
         }

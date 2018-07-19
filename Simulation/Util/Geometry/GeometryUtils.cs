@@ -20,7 +20,16 @@ namespace Simulation.Util.Geometry
         public static readonly float SmallFloat = 0.1f;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float GetVectorDistance(float x1, float y1, float x2, float y2)
+        public static float GetDiagonalDistance(float x1, float y1, float x2, float y2)
+        {
+            float dx = Math.Abs(x1 - x2);
+            float dy = Math.Abs(y1 - y2);
+
+            return (dx + dy) - Math.Min(dx, dy);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetEuclideanDistance(float x1, float y1, float x2, float y2)
         {
             return (float)Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
         }
