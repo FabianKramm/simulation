@@ -48,8 +48,7 @@ namespace Simulation.Game.Objects.Entities
             if (oldWorldLink == null && newWorldLink != null)
             {
                 Vector2 newWorldPosition = new Vector2(newWorldLink.ToBlock.X * WorldGrid.BlockSize.X + WorldGrid.BlockSize.X / 2, newWorldLink.ToBlock.Y * WorldGrid.BlockSize.Y + WorldGrid.BlockSize.Y - 1);
-
-                base.UpdatePosition(new WorldPosition(newWorldPosition, newWorldLink.ToInteriorID));
+                UpdatePosition(new WorldPosition(newWorldPosition, newWorldLink.ToInteriorID));
 
                 return true;
             }
@@ -116,7 +115,13 @@ namespace Simulation.Game.Objects.Entities
                         StopWalking();
 
                         // We call this because we now want to check if we are on a world link
-                        executeWorldLink();
+                        WorldLink newWorldLink = SimulationGame.World.GetWorldLinkFromPosition(Position);
+
+                        if(newWorldLink != null)
+                        {
+                            Vector2 newWorldPosition = new Vector2(newWorldLink.ToBlock.X * WorldGrid.BlockSize.X + WorldGrid.BlockSize.X / 2, newWorldLink.ToBlock.Y * WorldGrid.BlockSize.Y + WorldGrid.BlockSize.Y - 1);
+                            UpdatePosition(new WorldPosition(newWorldPosition, newWorldLink.ToInteriorID));
+                        }
                     }
                 }
 

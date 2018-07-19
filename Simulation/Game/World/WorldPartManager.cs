@@ -110,7 +110,7 @@ namespace Simulation.Game.World
 
             if (partsUnloaded > 0)
             {
-                GameConsole.WriteLine("ChunkLoading", "Garbage Collector unloaded " + partsUnloaded + " " + GetType().Name + " took " + stopwatch.ElapsedMilliseconds + "ms");
+                GameConsole.WriteLine("ChunkLoading", "Garbage Collector unloaded " + partsUnloaded + " " + GetType().Name + " parts took " + stopwatch.ElapsedMilliseconds + "ms");
             }
         }
 
