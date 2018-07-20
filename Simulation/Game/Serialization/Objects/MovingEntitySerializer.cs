@@ -11,6 +11,7 @@ namespace Simulation.Game.Serialization.Objects
         private static readonly string[] serializeableProperties = new string[] {
             "Velocity",
             "Direction",
+            "destPosition",
             "CanWalk",
             "walkPath"
         };

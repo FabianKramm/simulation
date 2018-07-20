@@ -5,6 +5,7 @@ using Simulation.Util;
 using Simulation.Spritesheet;
 using Simulation.Util.Geometry;
 using System;
+using Simulation.Game.Enums;
 
 namespace Simulation.Game.Renderer.Entities
 {
@@ -22,6 +23,18 @@ namespace Simulation.Game.Renderer.Entities
             }
 
             spriteBatch.Draw(movingEntity.RendererInformation.currentAnimation, new Vector2((int)movingEntity.Position.X, (int)movingEntity.Position.Y), color: GameRenderer.BlendColor, layerDepth: GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, movingEntity.Position.Y));
+
+            if (SimulationGame.IsDebug)
+            {
+                if (movingEntity.BlockingType == BlockingType.BLOCKING)
+                {
+                    SimulationGame.PrimitiveDrawer.Rectangle(movingEntity.UnionBounds.ToXnaRectangle(), Color.Red);
+                }
+                else if (movingEntity.IsHitable)
+                {
+                    SimulationGame.PrimitiveDrawer.Rectangle(movingEntity.HitBoxBounds.ToXnaRectangle(), Color.White);
+                }
+            }
         }
     }
 }

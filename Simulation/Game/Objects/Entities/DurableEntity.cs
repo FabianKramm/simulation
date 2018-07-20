@@ -22,6 +22,14 @@ namespace Simulation.Game.Objects.Entities
         // Create from JSON
         protected DurableEntity() { }
 
+        public DurableEntity(LivingEntityType livingEntityType, WorldPosition position, FractionType fraction, int preloadedSurroundingWorldGridChunkRadius = 1) :
+            base(livingEntityType, position, fraction)
+        {
+            this.preloadedSurroundingWorldGridChunkRadius = preloadedSurroundingWorldGridChunkRadius;
+
+            preloadGridChunks();
+        }
+
         public DurableEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds, FractionType fraction, int preloadedSurroundingWorldGridChunkRadius = 1) :
             base(livingEntityType, position, relativeHitBoxBounds, fraction)
         {

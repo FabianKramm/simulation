@@ -15,7 +15,8 @@ namespace Simulation.Game.Serialization.Objects
             "BlockingType",
             "HitBoxBounds",
             "BlockingBounds",
-            "UnionBounds"
+            "UnionBounds",
+            "IsHitable"
         };
 
         protected static void Deserialize(ref JObject jObject, HitableObject hitableObject)

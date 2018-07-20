@@ -15,7 +15,7 @@ namespace Simulation.Game
 
         private bool leftMouseClick;
 
-        public Player(): base(LivingEntityType.PLAYER, new WorldPosition(0, 0), new Rect(-8, -20, 16, 20), 3)
+        public Player(): base(LivingEntityType.PLAYER, new WorldPosition(0, 0), FractionType.PLAYER, 3)
         {
             fireballSkill = new FireballSkill(this, new Vector2(0, -20));
             slashSkill = new SlashSkill(this, new Vector2(0, -24));
@@ -73,8 +73,10 @@ namespace Simulation.Game
 
                 if (!leftMouseClick)
                 {
-                    Point clickedBlock = GeometryUtils.GetChunkPosition((int)SimulationGame.MousePosition.X, (int)SimulationGame.MousePosition.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
-                    WalkToBlock(new WorldPosition(clickedBlock.X, clickedBlock.Y, SimulationGame.Player.InteriorID));
+                    // Point clickedBlock = GeometryUtils.GetChunkPosition((int)SimulationGame.MousePosition.X, (int)SimulationGame.MousePosition.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
+                    //WalkToBlock(new WorldPosition(clickedBlock.X, clickedBlock.Y, SimulationGame.Player.InteriorID));
+
+                    WalkToPosition(new WorldPosition(SimulationGame.MousePosition.X, SimulationGame.MousePosition.Y, SimulationGame.Player.InteriorID));
 
                     leftMouseClick = true;
                 }

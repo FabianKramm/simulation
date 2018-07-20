@@ -17,7 +17,7 @@ namespace Simulation.Game.Effects
         private Vector2 startPosition;
         private Vector2 direction;
 
-        private float velocity = 0.2f;
+        private float velocity = 0.4f;
 
         public Fireball(LivingEntity origin, Vector2 target, Vector2? relativeOriginPosition = null) : base(origin.Position, origin)
         {
