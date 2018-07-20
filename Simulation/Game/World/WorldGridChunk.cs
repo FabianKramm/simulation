@@ -1,4 +1,5 @@
-﻿using Simulation.Game.Enums;
+﻿using Microsoft.Xna.Framework;
+using Simulation.Game.Enums;
 using Simulation.Game.Objects;
 using Simulation.Util.Geometry;
 using System.Collections.Generic;
@@ -18,6 +19,15 @@ namespace Simulation.Game.World
         {
             blockingGrid = new BlockType[WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y];
             RealChunkBounds = new Rect(realX, realY, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+        }
+
+        public void SetPersistent(bool persistent)
+        {
+            IsPersistent = persistent;
+
+            Point chunkPosition = GeometryUtils.GetChunkPosition(RealChunkBounds.X, RealChunkBounds.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+
+            SimulationGame.World.WalkableGrid.Get(GeometryUtils.ConvertPointToLong(chunkPosition.X, chunkPosition.Y)).SetPersistent(persistent);
         }
 
         public void AddOverlappingObject(HitableObject overlappingObject)

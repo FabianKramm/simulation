@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 
 namespace Simulation.Util
@@ -7,18 +8,12 @@ namespace Simulation.Util
     {
         public static void assertChildThread()
         {
-            if (Thread.CurrentThread.ManagedThreadId == 1)
-            {
-                throw new Exception("Method execution not allowed in main thread");
-            }
+            Debug.Assert(Thread.CurrentThread.ManagedThreadId == 1, "Method should only be called in child thread");
         }
 
         public static void assertMainThread()
         {
-            if (Thread.CurrentThread.ManagedThreadId != 1)
-            {
-                throw new Exception("Method execution not allowed in child thread");
-            }
+            Debug.Assert(Thread.CurrentThread.ManagedThreadId != 1, "Method should only be called in main thread");
         }
     }
 }

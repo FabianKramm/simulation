@@ -43,9 +43,7 @@ namespace Simulation.Game.Objects.Entities
 
         public MovingEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds, FractionType fraction) :
             base(livingEntityType, position, relativeHitBoxBounds, fraction)
-        {
-            
-        }
+        { }
 
         public MovingEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds, BaseAI baseAI, FractionType fraction) :
             base(livingEntityType, position, relativeHitBoxBounds, fraction)

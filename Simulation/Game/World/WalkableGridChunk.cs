@@ -7,6 +7,11 @@ namespace Simulation.Game.World
 {
     public class WalkableGridChunk
     {
+        public bool IsPersistent
+        {
+            get; private set;
+        }
+
         private UInt32[] chunkData;
         public Rect realChunkBounds
         {
@@ -16,6 +21,11 @@ namespace Simulation.Game.World
         private WalkableGridChunk(int chunkX, int chunkY)
         {
             realChunkBounds = new Rect(chunkX * WalkableGrid.WalkableGridPixelChunkSize.X, chunkY * WalkableGrid.WalkableGridPixelChunkSize.Y, WalkableGrid.WalkableGridPixelChunkSize.X, WalkableGrid.WalkableGridPixelChunkSize.Y);
+        }
+
+        public void SetPersistent(bool persistent)
+        {
+            IsPersistent = persistent;
         }
 
         public static WalkableGridChunk createEmpty(int chunkX, int chunkY)

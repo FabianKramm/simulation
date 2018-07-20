@@ -42,7 +42,7 @@ namespace Simulation.Game.Objects
             Position = position.Clone();
             BlockPosition = Position.BlockPosition;
 
-            ID = Util.Util.getUUID();
+            ID = Util.Util.GetUUID();
         }
 
         protected virtual void UpdatePosition(WorldPosition newPosition)

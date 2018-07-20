@@ -102,14 +102,18 @@ namespace Simulation.Game.Objects
 
         protected bool canMove(WorldPosition newPosition)
         {
+            Rect blockingRect;
+
             if (UseSameBounds)
             {
-                return !CollisionUtils.IsRectBlocked(this, new Rect((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height));
+                blockingRect = new Rect((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height);
             }
             else
             {
-                return !CollisionUtils.IsRectBlocked(this, new Rect((int)(relativeBlockingBounds.X + newPosition.X), (int)(relativeBlockingBounds.Y + newPosition.Y), relativeBlockingBounds.Width, relativeBlockingBounds.Height));
+                blockingRect = new Rect((int)(relativeBlockingBounds.X + newPosition.X), (int)(relativeBlockingBounds.Y + newPosition.Y), relativeBlockingBounds.Width, relativeBlockingBounds.Height);
             }
+
+            return (this is Player) ? !CollisionUtils.IsRectBlockedAccurate(this, blockingRect) : !CollisionUtils.IsRectBlockedFast(this, blockingRect);
         }
 
         private void connectToOverlappingChunks()
@@ -226,6 +230,7 @@ namespace Simulation.Game.Objects
             } 
             else if(InteriorID != newPosition.InteriorID)
             {
+                // Remove from old part
                 if(InteriorID == Interior.Outside)
                 {
                     Point oldWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
@@ -237,22 +242,50 @@ namespace Simulation.Game.Objects
                 }
                 else
                 {
-                    SimulationGame.World.InteriorManager.Get(InteriorID).RemoveContainedObject(this);
+                    Interior interior = SimulationGame.World.InteriorManager.Get(InteriorID, false);
+
+                    if(interior != null)
+                    {
+                        interior.RemoveContainedObject(this);
+                    }
                 }
 
+                // Add to new part
                 if (newPosition.InteriorID == Interior.Outside)
                 {
                     var newWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)newPosition.X, (int)newPosition.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
                     var newChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y), false);
 
-                    // TODO: What happens if not loaded??
                     // Add to new chunk
-                    if (newPosition.InteriorID == Interior.Outside && newChunk != null)
+                    if (newChunk != null)
+                    {
                         newChunk.AddContainedObject(this);
+                    }
+                    else
+                    {
+                        // Load chunk, add entity, save chunk
+                        newChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y));
+                        newChunk.AddContainedObject(this);
+
+                        SimulationGame.World.UnloadChunk(GeometryUtils.ConvertPointToLong((int)Position.X, (int)Position.Y));
+                    }
                 }
                 else
                 {
-                    SimulationGame.World.InteriorManager.Get(newPosition.InteriorID).AddContainedObject(this);
+                    Interior interior = SimulationGame.World.InteriorManager.Get(newPosition.InteriorID, false);
+
+                    if (interior != null)
+                    {
+                        interior.AddContainedObject(this);
+                    }
+                    else
+                    {
+                        // Load chunk, add entity, save chunk
+                        interior = SimulationGame.World.InteriorManager.Get(newPosition.InteriorID);
+                        interior.AddContainedObject(this);
+
+                        SimulationGame.World.InteriorManager.UnloadChunk(newPosition.InteriorID);
+                    }
                 }
             }
 

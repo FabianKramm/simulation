@@ -42,7 +42,7 @@ namespace Simulation.Game.Effects
 
             IsFinished = false;
 
-            ID = Util.Util.getUUID();
+            ID = Util.Util.GetUUID();
         }
 
         protected void updatePosition(WorldPosition newPosition)

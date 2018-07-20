@@ -240,7 +240,59 @@ namespace Simulation.Util
             return false;
         }
 
-        public static bool IsRectBlocked(HitableObject origin, Rect rect)
+        public static bool IsRectBlockedFast(HitableObject origin, Rect rect)
+        {
+            ThreadingUtils.assertMainThread();
+
+            if (origin.InteriorID == Interior.Outside)
+            {
+                // Check if blocks are of type blocking
+                Point topLeft = GeometryUtils.GetChunkPosition(rect.Left, rect.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+                Point bottomRight = GeometryUtils.GetChunkPosition(rect.Right, rect.Bottom, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+
+                for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
+                    for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
+                    {
+                        Point chunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
+                        WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkPos.X, chunkPos.Y);
+
+                        if (!SimulationGame.World.WalkableGrid.IsBlockWalkable(blockX, blockY))
+                            return true;
+                    }
+
+                return false;
+            }
+            else
+            {
+                Interior interior = SimulationGame.World.InteriorManager.Get(origin.InteriorID);
+
+                // Check if blocks are of type blocking
+                Point topLeft = GeometryUtils.GetChunkPosition(rect.Left, rect.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+                Point bottomRight = GeometryUtils.GetChunkPosition(rect.Right, rect.Bottom, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+
+                for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
+                    for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
+                    {
+                        if (blockX < 0 || blockX >= interior.Dimensions.X)
+                            return true;
+                        if (blockY < 0 || blockY >= interior.Dimensions.Y)
+                            return true;
+
+                        BlockType blockType = interior.GetBlockType(blockX, blockY);
+
+                        if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
+                            return true;
+                    }
+
+                foreach (var hitableObject in interior.ContainedObjects)
+                    if (hitableObject.BlockingType == BlockingType.BLOCKING && hitableObject.IsHitable && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
+                        return true;
+
+                return false;
+            }
+        }
+
+        public static bool IsRectBlockedAccurate(HitableObject origin, Rect rect)
         {
             ThreadingUtils.assertMainThread();
 

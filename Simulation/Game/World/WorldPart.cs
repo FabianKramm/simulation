@@ -12,6 +12,11 @@ namespace Simulation.Game.World
 {
     public abstract class WorldPart
     {
+        public bool IsPersistent
+        {
+            get; protected set;
+        }
+
         protected BlockType[,] blockingGrid;
 
         public bool Connected = false;

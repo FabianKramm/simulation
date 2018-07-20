@@ -11,22 +11,22 @@ namespace Simulation.Util
 
         public static string GetInteriorSavePath()
         {
-            return Path.Combine(getGameFolder(), InteriorSavePath);
+            return Path.Combine(GetGameFolder(), InteriorSavePath);
         }
 
         public static string GetWorldSavePath()
         {
-            return Path.Combine(getGameFolder(), WorldSavePath);
+            return Path.Combine(GetGameFolder(), WorldSavePath);
         }
 
         public static string GetWalkableGridSavePath()
         {
-            return Path.Combine(getGameFolder(), WalkableGridSavePath);
+            return Path.Combine(GetGameFolder(), WalkableGridSavePath);
         }
 
         public static void clearWorldFiles()
         {
-            var gameFolder = getGameFolder();
+            var gameFolder = GetGameFolder();
 
             if(Directory.Exists(Path.Combine(gameFolder, WorldSavePath)))
             {
@@ -43,12 +43,12 @@ namespace Simulation.Util
                 Directory.Delete(Path.Combine(gameFolder, InteriorSavePath), true);
             }
 
-            createGameFolders();
+            CreateGameFolders();
         }
 
-        public static void createGameFolders()
+        public static void CreateGameFolders()
         {
-            var gameFolder = getGameFolder();
+            var gameFolder = GetGameFolder();
 
             Directory.CreateDirectory(gameFolder);
             Directory.CreateDirectory(Path.Combine(gameFolder, WorldSavePath));
@@ -56,12 +56,12 @@ namespace Simulation.Util
             Directory.CreateDirectory(Path.Combine(gameFolder, InteriorSavePath));
         }
 
-        public static string getGameFolder()
+        public static string GetGameFolder()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SimulationGame");
         }
 
-        public static string getUUID()
+        public static string GetUUID()
         {
             return Guid.NewGuid().ToString();
         }

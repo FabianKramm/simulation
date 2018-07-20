@@ -32,11 +32,6 @@ namespace Simulation.Game.Generator
             }
         }
 
-        public static void ResetWorld()
-        {
-            Util.Util.clearWorldFiles();
-        }
-
         private void generateWorld(int blockX, int blockY)
         {
             Point chunkPosition = GeometryUtils.GetChunkPosition(blockX, blockY, generatedChunkBlockSize.X, generatedChunkBlockSize.Y);

@@ -18,7 +18,7 @@ namespace Simulation.Game.World
 
         public Interior(Point dimensions)
         {
-            ID = Util.Util.getUUID();
+            ID = Util.Util.GetUUID();
             Dimensions = dimensions;
 
             blockingGrid = new BlockType[dimensions.X, dimensions.Y];

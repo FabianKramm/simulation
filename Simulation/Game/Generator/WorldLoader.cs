@@ -1,32 +1,60 @@
 ﻿using Newtonsoft.Json.Bson;
 using Newtonsoft.Json.Linq;
 using Simulation.Game.Serialization;
-using Simulation.Game.Serialization.Objects;
 using Simulation.Game.World;
 using Simulation.Util;
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace Simulation.Game.Generator
 {
     public class WorldLoader
     {
+        private static string persistentIdentifier = "persistent_";
         private static NamedLock<string> fileLocks = new NamedLock<string>();
+
+        public static void ResetWorld()
+        {
+            Debug.Assert(SimulationGame.World == null, "Should only be called at startup!");
+
+            Util.Util.CreateGameFolders();
+            var gameFolder = Util.Util.GetGameFolder();
+
+            string[] files = Directory.GetFiles(Util.Util.GetWalkableGridSavePath());
+
+            foreach(var file in files)
+                if (file.StartsWith(persistentIdentifier) == false)
+                    File.Delete(file);
+
+            files = Directory.GetFiles(Util.Util.GetWorldSavePath());
+
+            foreach (var file in files)
+                if (file.StartsWith(persistentIdentifier) == false)
+                    File.Delete(file);
+
+            files = Directory.GetFiles(Util.Util.GetInteriorSavePath());
+
+            foreach (var file in files)
+                if (file.StartsWith(persistentIdentifier) == false)
+                    File.Delete(file);
+        }
 
         public static bool DoesWorldGridChunkExist(int chunkX, int chunkY)
         {
+            var chunkPathPersistent = Path.Combine(Util.Util.GetWorldSavePath(), persistentIdentifier + (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
             var chunkPath = Path.Combine(Util.Util.GetWorldSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 
             fileLocks.Enter(chunkPath);
 
             try
             {
-                if (!File.Exists(chunkPath))
+                if (File.Exists(chunkPathPersistent) || File.Exists(chunkPath))
                 {
-                    return false;
+                    return true;
                 }
 
-                return true;
+                return false;
             }
             finally
             {
@@ -36,13 +64,16 @@ namespace Simulation.Game.Generator
 
         public static void SaveInterior(Interior interior)
         {
+            var chunkPathPersistent = Path.Combine(Util.Util.GetInteriorSavePath(), persistentIdentifier + interior.ID);
             var chunkPath = Path.Combine(Util.Util.GetInteriorSavePath(), interior.ID);
 
             fileLocks.Enter(chunkPath);
 
             try
             {
-                using (var stream = File.OpenWrite(chunkPath))
+                var savePath = interior.IsPersistent ? chunkPathPersistent : chunkPath;
+
+                using (var stream = File.OpenWrite(savePath))
                 using (var writer = new BsonWriter(stream))
                 {
                     InteriorSerializer.Serialize(interior).WriteTo(writer);
@@ -56,11 +87,13 @@ namespace Simulation.Game.Generator
 
         public static Interior LoadInterior(string ID)
         {
-            if (ID == Interior.Outside) throw new Exception("Cannot load outside interior!");
+            Debug.Assert(ID == Interior.Outside, "Cannot load outside interior!");
 
+            var chunkPathPersistent = Path.Combine(Util.Util.GetInteriorSavePath(), persistentIdentifier + ID);
+            var chunkPathPersistentExists = File.Exists(chunkPathPersistent);
             var chunkPath = Path.Combine(Util.Util.GetInteriorSavePath(), ID);
-
-            if (!File.Exists(chunkPath))
+            
+            if (!chunkPathPersistentExists && !File.Exists(chunkPath))
             {
                 throw new Exception("Cannot find interior with ID " + ID);
             }
@@ -71,7 +104,9 @@ namespace Simulation.Game.Generator
             {
                 Interior interior;
 
-                using (var stream = File.OpenRead(chunkPath))
+                var loadPath = chunkPathPersistentExists ? chunkPathPersistent : chunkPath;
+
+                using (var stream = File.OpenRead(loadPath))
                 using (var reader = new BsonReader(stream))
                 {
                     JToken jToken = JToken.ReadFrom(reader);
@@ -89,6 +124,7 @@ namespace Simulation.Game.Generator
 
         public static void SaveWalkableGridChunk(int chunkX, int chunkY, WalkableGridChunk chunk)
         {
+            var chunkPathPersistent = Path.Combine(Util.Util.GetWalkableGridSavePath(), persistentIdentifier + (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
             var chunkPath = Path.Combine(Util.Util.GetWalkableGridSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 
             fileLocks.Enter(chunkPath);
@@ -96,9 +132,10 @@ namespace Simulation.Game.Generator
             try
             {
                 byte[] bytes;
+                var savePath = chunk.IsPersistent ? chunkPathPersistent : chunkPath;
 
                 chunk.copyDataTo(out bytes);
-                File.WriteAllBytes(chunkPath, bytes);
+                File.WriteAllBytes(savePath, bytes);
             }
             finally
             {
@@ -108,9 +145,11 @@ namespace Simulation.Game.Generator
 
         public static WalkableGridChunk LoadWalkableGridChunk(int chunkX, int chunkY)
         {
+            var chunkPathPersistent = Path.Combine(Util.Util.GetWalkableGridSavePath(), persistentIdentifier + (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
+            var chunkPathPersistentExists = File.Exists(chunkPathPersistent);
             var chunkPath = Path.Combine(Util.Util.GetWalkableGridSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 
-            if (!File.Exists(chunkPath))
+            if (!chunkPathPersistentExists && !File.Exists(chunkPath))
             {
                 SimulationGame.WorldGenerator.generateChunk(chunkX * WalkableGrid.WalkableGridBlockChunkSize.X, chunkY * WalkableGrid.WalkableGridBlockChunkSize.Y);
             }
@@ -119,7 +158,8 @@ namespace Simulation.Game.Generator
 
             try
             {
-                var content = File.ReadAllBytes(chunkPath);
+                var loadPath = chunkPathPersistentExists ? chunkPathPersistent : chunkPath;
+                var content = File.ReadAllBytes(loadPath);
 
                 return WalkableGridChunk.createChunkFrom(chunkX, chunkY, ref content);
             }
@@ -131,9 +171,11 @@ namespace Simulation.Game.Generator
 
         public static WorldGridChunk LoadWorldGridChunk(int chunkX, int chunkY)
         {
+            var chunkPathPersistent = Path.Combine(Util.Util.GetWorldSavePath(), persistentIdentifier + (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
+            var chunkPathPersistentExists = File.Exists(chunkPathPersistent);
             var chunkPath = Path.Combine(Util.Util.GetWorldSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 
-            if (!File.Exists(chunkPath))
+            if (!chunkPathPersistentExists && !File.Exists(chunkPath))
             {
                 SimulationGame.WorldGenerator.generateChunk(chunkX * WorldGrid.WorldChunkBlockSize.X, chunkY * WorldGrid.WorldChunkBlockSize.Y);
             }
@@ -142,9 +184,10 @@ namespace Simulation.Game.Generator
 
             try
             {
+                var loadPath = chunkPathPersistentExists ? chunkPathPersistent : chunkPath;
                 WorldGridChunk worldGridChunk;
 
-                using (var stream = File.OpenRead(chunkPath))
+                using (var stream = File.OpenRead(loadPath))
                 using (var reader = new BsonReader(stream))
                 {
                     JToken jToken = JToken.ReadFrom(reader);
@@ -162,13 +205,16 @@ namespace Simulation.Game.Generator
 
         public static void SaveWorldGridChunk(int chunkX, int chunkY, WorldGridChunk chunk)
         {
+            var chunkPathPersistent = Path.Combine(Util.Util.GetWorldSavePath(), persistentIdentifier + (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
             var chunkPath = Path.Combine(Util.Util.GetWorldSavePath(), (chunkX < 0 ? "m" + Math.Abs(chunkX) : "" + chunkX) + "_" + (chunkY < 0 ? "m" + Math.Abs(chunkY) : "" + chunkY));
 
             fileLocks.Enter(chunkPath);
 
             try
             {
-                using (var stream = File.OpenWrite(chunkPath))
+                var savePath = chunk.IsPersistent ? chunkPathPersistent : chunkPath;
+
+                using (var stream = File.OpenWrite(savePath))
                 using (var writer = new BsonWriter(stream))
                 {
                     WorldGridChunkSerializer.Serialize(chunk).WriteTo(writer);

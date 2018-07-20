@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Util.Geometry;
+using System;
 
 namespace Simulation.Game
 {
@@ -58,6 +59,50 @@ namespace Simulation.Game
 
             // if we get here then we know that every axis had overlap on it
             // so we can guarantee an intersection
+            return true;
+        }
+
+        // Untested
+        public static bool Intersects(Vector2 a, Vector2 b, Rect r)
+        {
+            var minX = Math.Min(a.X, b.X);
+            var maxX = Math.Max(a.X, b.X);
+            var minY = Math.Min(a.Y, b.Y);
+            var maxY = Math.Max(a.Y, b.Y);
+
+            if (r.Left > maxX || r.Right < minX)
+            {
+                return false;
+            }
+
+            if (r.Top > maxY || r.Bottom < minY)
+            {
+                return false;
+            }
+
+            if (r.Left < minX && maxX < r.Right)
+            {
+                return true;
+            }
+
+            if (r.Top < minY && maxY < r.Bottom)
+            {
+                return true;
+            }
+
+            var yAtRectLeft = a.Y - (r.Left - a.X) * ((a.Y - b.Y) / (b.X - a.X));
+            var yAtRectRight = a.Y - (r.Right - a.X) * ((a.Y - b.Y) / (b.X - a.X));
+
+            if (r.Top > yAtRectLeft && r.Top > yAtRectRight)
+            {
+                return false;
+            }
+
+            if (r.Bottom < yAtRectLeft && r.Bottom < yAtRectRight)
+            {
+                return false;
+            }
+
             return true;
         }
 

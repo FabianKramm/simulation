@@ -10,16 +10,18 @@ using System.Collections.Generic;
 using Simulation.Util;
 using Simulation.Game.Hud;
 using Simulation.Game.Renderer;
-using System.IO;
 using Simulation.Game.Generator;
 using Simulation.Game.Generator.Factories;
 using System.Threading;
 using Simulation.Util.Geometry;
 
 /*
+ * Open Issues:
+ * - Geometry Util function to detect obstacles within rectangle line (Hitbox & Blocking)
+ * - Save World on exit
+ * 
     Open Points:
     - World Generation
-    - Pathfinding
     - AI
 */
 
@@ -132,7 +134,7 @@ namespace Simulation
         /// </summary>
         protected override void Initialize()
         {
-            Util.Util.createGameFolders();
+            Util.Util.CreateGameFolders();
 
             WorldGenerator = new WorldGenerator(1);
 

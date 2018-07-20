@@ -74,6 +74,24 @@ namespace Simulation.Game.World
             }
         }
 
+        public bool UnloadChunk(KEY key)
+        {
+            ThreadingUtils.assertMainThread();
+
+            PART removedPart;
+            bool couldRemove = loadedParts.TryRemove(key, out removedPart);
+
+            if (couldRemove)
+            {
+                unloadPart(key, removedPart);
+
+                // Save async
+                SaveAsync(key, removedPart);
+            }
+
+            return couldRemove;
+        }
+
         private void garbageCollect()
         {
             ThreadingUtils.assertMainThread();
@@ -90,17 +108,8 @@ namespace Simulation.Game.World
 
                 if (shouldRemove)
                 {
-                    PART removedPart;
-
-                    bool couldRemove = loadedParts.TryRemove(key, out removedPart);
-
-                    if (couldRemove)
+                    if(UnloadChunk(key))
                     {
-                        unloadPart(key, removedPart);
-
-                        // Save async
-                        SaveAsync(key, removedPart);
-
                         partsUnloaded++;
                     }
                 }
