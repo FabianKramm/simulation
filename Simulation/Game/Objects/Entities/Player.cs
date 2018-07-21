@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Input;
 using Simulation.Game.Skills;
 using Simulation.Game.World;
 using Simulation.Game.Enums;
+using Simulation.Util.Geometry;
 
 namespace Simulation.Game.Objects.Entities
 {
@@ -62,19 +63,19 @@ namespace Simulation.Game.Objects.Entities
 
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                Skills[1].Use(SimulationGame.MousePosition);
+                // Skills[1].Use(SimulationGame.MousePosition);
             }
 
-            /* if (mouseState.LeftButton == ButtonState.Pressed)
+             if (mouseState.LeftButton == ButtonState.Pressed)
             {
                 // slashSkill.use(SimulationGame.MousePosition);
 
                 if (!leftMouseClick)
                 {
-                    // Point clickedBlock = GeometryUtils.GetChunkPosition((int)SimulationGame.MousePosition.X, (int)SimulationGame.MousePosition.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
-                    //WalkToBlock(new WorldPosition(clickedBlock.X, clickedBlock.Y, SimulationGame.Player.InteriorID));
+                    Point clickedBlock = GeometryUtils.GetChunkPosition((int)SimulationGame.MousePosition.X, (int)SimulationGame.MousePosition.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
+                    WalkToBlock(new WorldPosition(clickedBlock.X, clickedBlock.Y, SimulationGame.Player.InteriorID));
 
-                    WalkToPosition(new WorldPosition(SimulationGame.MousePosition.X, SimulationGame.MousePosition.Y, SimulationGame.Player.InteriorID));
+                    // WalkToPosition(new WorldPosition(SimulationGame.MousePosition.X, SimulationGame.MousePosition.Y, SimulationGame.Player.InteriorID));
 
                     leftMouseClick = true;
                 }
@@ -82,7 +83,7 @@ namespace Simulation.Game.Objects.Entities
             else
             {
                 leftMouseClick = false;
-            } */
+            } 
 
             Direction = newDirection;
 

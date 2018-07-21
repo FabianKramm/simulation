@@ -87,7 +87,7 @@ namespace Simulation
 
             //Console.WriteLine(WorldObjectSerializer.Deserialize(WorldObjectSerializer.Serialize(AmbientObjectFactory.createTree(new Vector2(0,0)))));
 
-            WorldLoader.ResetWorld();
+            // WorldLoader.ResetWorld();
 
             using (var game = new SimulationGame())
               game.Run();           

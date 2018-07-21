@@ -41,7 +41,7 @@ namespace Simulation.PathFinding
             if(startBlockPosition.InteriorID == Interior.Outside)
             {
                 JumpPointParam jpp = new JumpPointParam(
-                    new DynamicWalkableGrid(SimulationGame.World.WalkableGrid, (int)startBlockPosition.X, (int)startBlockPosition.Y, (int)endBlockPosition.X, (int)endBlockPosition.X), 
+                    new DynamicWalkableGrid(SimulationGame.World.WalkableGrid, (int)startBlockPosition.X, (int)startBlockPosition.Y, (int)endBlockPosition.X, (int)endBlockPosition.Y), 
                     new GridPos((int)startBlockPosition.X, (int)startBlockPosition.Y), 
                     new GridPos((int)endBlockPosition.X, (int)endBlockPosition.Y), 
                     DiagonalMovement.OnlyWhenNoObstacles
