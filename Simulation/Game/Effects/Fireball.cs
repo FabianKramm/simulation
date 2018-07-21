@@ -4,6 +4,7 @@ using Simulation.Util;
 using System;
 using Simulation.Util.Geometry;
 using Simulation.Game.World;
+using Simulation.Util.Collision;
 
 namespace Simulation.Game.Effects
 {

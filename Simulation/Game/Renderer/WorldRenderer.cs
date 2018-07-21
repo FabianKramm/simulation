@@ -5,7 +5,6 @@ using Simulation.Game.Objects.Entities;
 using Simulation.Game.Renderer.Effects;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.World;
-using Simulation.Util;
 using Simulation.Util.Geometry;
 using System;
 
@@ -16,7 +15,7 @@ namespace Simulation.Game.Renderer
         private static void drawOutside(SpriteBatch spriteBatch, GameTime gameTime)
         {
             Point topLeft = GeometryUtils.GetChunkPosition(SimulationGame.VisibleArea.Left, SimulationGame.VisibleArea.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-            Point bottomRight = GeometryUtils.GetChunkPosition(SimulationGame.VisibleArea.Right, SimulationGame.VisibleArea.Bottom, WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
+            Point bottomRight = GeometryUtils.GetChunkPosition(SimulationGame.VisibleArea.Right, SimulationGame.VisibleArea.Bottom, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
             for (int blockX = topLeft.X; blockX < bottomRight.X; blockX++)
                 for (int blockY = topLeft.Y; blockY < bottomRight.Y; blockY++)

@@ -7,7 +7,7 @@ using Simulation.Util.Geometry;
 using System;
 using System.Collections.Generic;
 
-namespace Simulation.Util
+namespace Simulation.Util.Collision
 {
     public class CollisionUtils
     {

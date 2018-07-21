@@ -2,18 +2,13 @@
 using Simulation.Util.Geometry;
 using System;
 
-namespace Simulation.Game
+namespace Simulation.Util.Collision
 {
-    class CollisionDetection
+    class ShapeCollision
     {
-        public static bool Intersect(ref Rect r1, ref Rect r2)
+        public static bool RectIntersectsPoly(Rect r1, Vector2[] poly2)
         {
-            return r1.Intersects(r2);
-        }
-
-        public static bool Intersect(ref Rect r1, Vector2[] poly2)
-        {
-            return Intersect(poly2, new Vector2[] {
+            return PolyIntersectsPoly(poly2, new Vector2[] {
                 new Vector2(r1.Left, r1.Top),
                 new Vector2(r1.Right, r1.Top),
                 new Vector2(r1.Right, r1.Bottom),
@@ -22,7 +17,7 @@ namespace Simulation.Game
         }
 
         // Based on http://www.dyn4j.org/2010/01/sat/#sat-nointer
-        public static bool Intersect(Vector2[] poly1, Vector2[] poly2)
+        public static bool PolyIntersectsPoly(Vector2[] poly1, Vector2[] poly2)
         {
             Vector2[] axes1 = getAxes(poly1);
             Vector2[] axes2 = getAxes(poly2);
@@ -62,8 +57,9 @@ namespace Simulation.Game
             return true;
         }
 
-        // Untested
-        public static bool Intersects(Vector2 a, Vector2 b, Rect r)
+        // Line Intersection
+        // https://stackoverflow.com/questions/5514366/how-to-know-if-a-line-intersects-a-rectangle
+        public static bool LineIntersectsRectangle(Vector2 a, Vector2 b, Rect r)
         {
             var minX = Math.Min(a.X, b.X);
             var maxX = Math.Max(a.X, b.X);
@@ -75,30 +71,20 @@ namespace Simulation.Game
                 return false;
             }
 
-            if (r.Top > maxY || r.Bottom < minY)
+            if (r.Top < minY || r.Bottom > maxY)
             {
                 return false;
-            }
-
-            if (r.Left < minX && maxX < r.Right)
-            {
-                return true;
-            }
-
-            if (r.Top < minY && maxY < r.Bottom)
-            {
-                return true;
             }
 
             var yAtRectLeft = a.Y - (r.Left - a.X) * ((a.Y - b.Y) / (b.X - a.X));
             var yAtRectRight = a.Y - (r.Right - a.X) * ((a.Y - b.Y) / (b.X - a.X));
 
-            if (r.Top > yAtRectLeft && r.Top > yAtRectRight)
+            if (r.Bottom > yAtRectLeft && r.Bottom > yAtRectRight)
             {
                 return false;
             }
 
-            if (r.Bottom < yAtRectLeft && r.Bottom < yAtRectRight)
+            if (r.Top < yAtRectLeft && r.Top < yAtRectRight)
             {
                 return false;
             }

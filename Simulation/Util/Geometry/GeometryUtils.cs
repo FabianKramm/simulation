@@ -19,6 +19,26 @@ namespace Simulation.Util.Geometry
 
         public static readonly float SmallFloat = 0.1f;
 
+        public static Vector2[] GetRectangleFromPoints(Point start, Point end, float radius)
+        {
+            Vector2 perpendicularVector = GetPerpendicularVector(start, end);
+            perpendicularVector.Normalize();
+
+            return new Vector2[]
+            {
+                new Vector2(start.X - perpendicularVector.X * radius, start.Y - perpendicularVector.Y * radius),
+                new Vector2(start.X + perpendicularVector.X * radius, start.Y + perpendicularVector.Y * radius),
+                new Vector2(end.X + perpendicularVector.X * radius, end.Y + perpendicularVector.Y * radius),
+                new Vector2(end.X - perpendicularVector.X * radius, end.Y - perpendicularVector.Y * radius)
+            };
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 GetPerpendicularVector(Point p1, Point p2)
+        {
+            return new Vector2(-(p1.Y - p2.Y), p1.X - p2.X);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float GetDiagonalDistance(WorldPosition from, WorldPosition to)
         {

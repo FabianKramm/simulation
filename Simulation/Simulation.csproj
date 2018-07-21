@@ -108,7 +108,7 @@
     <Compile Include="Game\Serialization\WorldPartSerialization.cs" />
     <Compile Include="Game\Skills\Skill.cs" />
     <Compile Include="Game\Skills\SlashSkill.cs" />
-    <Compile Include="Game\World\CollisionDetection.cs" />
+    <Compile Include="Util\Collision\ShapeCollision.cs" />
     <Compile Include="Game\World\WorldPart.cs" />
     <Compile Include="Game\World\WorldPartManager.cs" />
     <Compile Include="Game\World\WorldPosition.cs" />
@@ -149,7 +149,7 @@
     <Compile Include="Util\NamedLock.cs" />
     <Compile Include="Util\ReflectionUtils.cs" />
     <Compile Include="Util\ThreadingUtils.cs" />
-    <Compile Include="Util\CollisionUtils.cs" />
+    <Compile Include="Util\Collision\CollisionUtils.cs" />
     <Compile Include="Util\Geometry\GeometryUtils.cs" />
     <Compile Include="Util\IPrimitive.cs" />
     <Compile Include="Util\Primitive.cs" />

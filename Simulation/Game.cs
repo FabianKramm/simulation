@@ -17,7 +17,6 @@ using Simulation.Util.Geometry;
 
 /*
  * Open Issues:
- * - Geometry Util function to detect obstacles within rectangle line (Hitbox & Blocking)
  * - Save World on exit
  * 
     Open Points:
@@ -219,7 +218,6 @@ namespace Simulation
             }
 
             Camera.Update(gameTime);
-
             Hud.Update(gameTime);
             World.Update(gameTime);
 

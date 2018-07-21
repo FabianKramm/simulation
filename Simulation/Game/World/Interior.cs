@@ -2,6 +2,7 @@
 using Simulation.Game.Enums;
 using Simulation.Game.Objects;
 using Simulation.Util;
+using Simulation.Util.Collision;
 using Simulation.Util.Geometry;
 
 namespace Simulation.Game.World
