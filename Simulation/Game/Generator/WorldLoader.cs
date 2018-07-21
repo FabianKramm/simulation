@@ -87,7 +87,7 @@ namespace Simulation.Game.Generator
 
         public static Interior LoadInterior(string ID)
         {
-            Debug.Assert(ID == Interior.Outside, "Cannot load outside interior!");
+            Debug.Assert(ID != Interior.Outside, "Cannot load outside interior!");
 
             var chunkPathPersistent = Path.Combine(Util.Util.GetInteriorSavePath(), persistentIdentifier + ID);
             var chunkPathPersistentExists = File.Exists(chunkPathPersistent);

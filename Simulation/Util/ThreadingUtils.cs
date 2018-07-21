@@ -8,12 +8,12 @@ namespace Simulation.Util
     {
         public static void assertChildThread()
         {
-            Debug.Assert(Thread.CurrentThread.ManagedThreadId == 1, "Method should only be called in child thread");
+            Debug.Assert(Thread.CurrentThread.ManagedThreadId != 1, "Method should only be called in child thread");
         }
 
         public static void assertMainThread()
         {
-            Debug.Assert(Thread.CurrentThread.ManagedThreadId != 1, "Method should only be called in main thread");
+            Debug.Assert(Thread.CurrentThread.ManagedThreadId == 1, "Method should only be called in main thread");
         }
     }
 }

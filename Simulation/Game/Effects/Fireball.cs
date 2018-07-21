@@ -35,21 +35,21 @@ namespace Simulation.Game.Effects
 
             Angle = GeometryUtils.GetAngleFromDirection(direction) + (float)Math.PI * 0.5f;
 
-            updatePosition(new WorldPosition(newPosition));
+            updatePosition(new WorldPosition(newPosition, origin.InteriorID));
         }
 
         public override void Update(GameTime gameTime)
         {
             if(!HasHitTarget)
             {
-                updatePosition(new WorldPosition(Position.X + (direction.X * velocity * gameTime.ElapsedGameTime.Milliseconds), Position.Y + (direction.Y * velocity * gameTime.ElapsedGameTime.Milliseconds)));
+                updatePosition(new WorldPosition(Position.X + (direction.X * velocity * gameTime.ElapsedGameTime.Milliseconds), Position.Y + (direction.Y * velocity * gameTime.ElapsedGameTime.Milliseconds), Position.InteriorID));
 
                 if (GeometryUtils.VectorsWithinDistance(Position.X, Position.Y, startPosition.X, startPosition.Y, maxDistance))
                 {
                     var rotateVector = new Vector2(Position.X, Position.Y + 7.5f);
                     var rotatedPoint = GeometryUtils.Rotate(Angle, Position.ToVector(), ref rotateVector);
                     var collisionRect = new Rect((int)(rotatedPoint.X - 7.5f), (int)(rotatedPoint.Y - 7.5f), 15, 15);
-                    var hittedObjects = CollisionUtils.GetHittedObjects(collisionRect, Origin);
+                    var hittedObjects = CollisionUtils.GetHittedObjects(collisionRect, Position.InteriorID, Origin);
 
                     if(hittedObjects.Count == 0)
                     {

@@ -6,26 +6,32 @@ namespace Simulation.Game.Skills
 {
     public abstract class Skill
     {
-        protected int cooldown;
+        public int Cooldown;
+
         protected LivingEntity owner;
         protected TimeSpan cooldownLeft = TimeSpan.Zero;
+
+        protected Skill(LivingEntity owner)
+        {
+            this.owner = owner;
+        }
 
         public Skill(LivingEntity owner, int cooldown = 0)
         {
             this.owner = owner;
-            this.cooldown = cooldown;
+            this.Cooldown = cooldown;
         }
 
-        public virtual bool isReady()
+        public virtual bool IsReady()
         {
             return cooldownLeft.Milliseconds <= 0;
         }
 
-        public virtual void use(Vector2 targetPosition)
+        public virtual void Use(Vector2 targetPosition)
         {
-            if(isReady())
+            if(IsReady())
             {
-                cooldownLeft = TimeSpan.FromMilliseconds(cooldown);
+                cooldownLeft = TimeSpan.FromMilliseconds(Cooldown);
                 trigger(targetPosition);
             }
         }

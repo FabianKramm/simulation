@@ -18,6 +18,11 @@ namespace Simulation.Util.Geometry
             Radius = radius;
         }
 
+        public Vector2 ToVector()
+        {
+            return new Vector2(CenterX, CenterY);
+        }
+
         public bool Contains(Point point) => (point.X - CenterX) * (point.X - CenterX) + (point.Y - CenterY) * (point.Y - CenterY) <= Radius * Radius;
 
         public bool Contains(int x, int y) => (x - CenterX) * (x - CenterX) + (y - CenterY) * (y - CenterY) <= Radius * Radius;

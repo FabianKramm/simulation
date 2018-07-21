@@ -29,14 +29,6 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
-            Rect rect = new Rect(-2, 5, 4, 2);
-            Vector2 p1 = new Vector2(0, 10);
-            Vector2 p2 = new Vector2(0, 0);
-
-            // Vector2[] rect2 = GeometryUtils.GetRectangleFromPoints(new Point(-10, 10), new Point(1, 1), 2);
-
-            Console.WriteLine(ShapeCollision.LineIntersectsRectangle(p1, p2, rect));
-
             /* var rect1 = new Rect(0, 0, 10, 10);
             var rect2 = new Rect(0, 0, 10, 10);
 
@@ -95,10 +87,10 @@ namespace Simulation
 
             //Console.WriteLine(WorldObjectSerializer.Deserialize(WorldObjectSerializer.Serialize(AmbientObjectFactory.createTree(new Vector2(0,0)))));
 
-            //WorldGenerator.ResetWorld();
+            WorldLoader.ResetWorld();
 
-            //using (var game = new SimulationGame())
-            //  game.Run();           
+            using (var game = new SimulationGame())
+              game.Run();           
 
             //ulong point = GeometryUtils.ConvertPointToLong(0, 0);
 

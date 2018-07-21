@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Newtonsoft.Json;
 using Simulation.Game.AI;
 using Simulation.Game.Enums;
 using Simulation.Game.Renderer.Entities;
+using Simulation.Game.Skills;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;
 using System.Collections.Generic;
@@ -13,6 +13,17 @@ namespace Simulation.Game.Objects.Entities
     {
         public LivingEntityRendererInformation RendererInformation;
         public BaseAI BaseAI;
+        public Skill[] Skills;
+
+        public int MaximumLife
+        {
+            get; protected set;
+        }
+
+        public int CurrentLife
+        {
+            get; protected set;
+        }
 
         public FractionType Fraction
         {
@@ -36,6 +47,11 @@ namespace Simulation.Game.Objects.Entities
             this.Fraction = fraction;
         }
 
+        public void UseSkill(Skill skill, Vector2 target)
+        {
+            skill.Use(target);
+        }
+
         public void SetAI(BaseAI baseAI)
         {
             this.BaseAI = baseAI;
@@ -44,9 +60,11 @@ namespace Simulation.Game.Objects.Entities
         public virtual void Update(GameTime gameTime)
         {
             if(BaseAI != null)
-            {
                 BaseAI.Update(gameTime);
-            }
+
+            if (Skills != null)
+                foreach (var skill in Skills)
+                    skill.Update(gameTime);
         }
     }
 }

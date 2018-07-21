@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Enums;
+using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
 using Simulation.Util;
 using Simulation.Util.Collision;
@@ -254,7 +255,7 @@ namespace Simulation.Game.Objects
                 if (newPosition.InteriorID == Interior.Outside)
                 {
                     var newWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)newPosition.X, (int)newPosition.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-                    var newChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y), false);
+                    var newChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y), this is DurableEntity);
 
                     // Add to new chunk
                     if (newChunk != null)
@@ -272,7 +273,7 @@ namespace Simulation.Game.Objects
                 }
                 else
                 {
-                    Interior interior = SimulationGame.World.InteriorManager.Get(newPosition.InteriorID, false);
+                    Interior interior = SimulationGame.World.InteriorManager.Get(newPosition.InteriorID, this is DurableEntity);
 
                     if (interior != null)
                     {

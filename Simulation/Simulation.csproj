@@ -103,6 +103,10 @@
     <Compile Include="Game\Serialization\Objects\MovingEntitySerializer.cs" />
     <Compile Include="Game\Serialization\SerializationUtils.cs" />
     <Compile Include="Game\Serialization\Objects\AmbientHitableObjectSerializer.cs" />
+    <Compile Include="Game\Serialization\Skills\BaseSkillSerializer.cs" />
+    <Compile Include="Game\Serialization\Skills\FireballSkillSerializer.cs" />
+    <Compile Include="Game\Serialization\Skills\SkillSerializer.cs" />
+    <Compile Include="Game\Serialization\Skills\SlashSkillSerializer.cs" />
     <Compile Include="Game\Serialization\WorldGridChunkSerializer.cs" />
     <Compile Include="Game\Serialization\Objects\WorldObjectSerializer.cs" />
     <Compile Include="Game\Serialization\WorldPartSerialization.cs" />
@@ -113,7 +117,7 @@
     <Compile Include="Game\World\WorldPartManager.cs" />
     <Compile Include="Game\World\WorldPosition.cs" />
     <Compile Include="Util\MovementUtils.cs" />
-    <Compile Include="Game\Player.cs" />
+    <Compile Include="Game\Objects\Entities\Player.cs" />
     <Compile Include="Game\Skills\FireballSkill.cs" />
     <Compile Include="Game\Generator\WorldLoader.cs" />
     <Compile Include="Game\World\Interior.cs" />

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Effects;
 using Simulation.Game.Hud;
@@ -14,6 +9,9 @@ namespace Simulation.Game.Skills
     {
         private Vector2 relativeOriginPosition;
         private bool flipped;
+
+        // Serialization
+        protected SlashSkill(LivingEntity owner): base(owner) { }
 
         public SlashSkill(LivingEntity owner, Vector2? relativeOriginPosition = null): 
             base(owner, 200)

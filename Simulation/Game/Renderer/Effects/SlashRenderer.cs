@@ -37,6 +37,11 @@ namespace Simulation.Game.Renderer.Effects
                 slashRendererInformation.slashAnimation.Update(gameTime);
 
                 spriteBatch.Draw(slashRendererInformation.slashAnimation, slash.Position.ToVector(), rotation: slashRendererInformation.Angle, layerDepth: 1.0f);
+
+                if(SimulationGame.IsDebug)
+                {
+                    SimulationGame.PrimitiveDrawer.Circle(slash.hitboxCircle.ToVector(), slash.hitboxCircle.Radius, Color.Red);
+                }
             }
         }
     }

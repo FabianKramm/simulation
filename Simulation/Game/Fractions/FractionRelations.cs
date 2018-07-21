@@ -56,7 +56,7 @@ namespace Simulation.Game.Fractions
             return FractionRelationType.HOSTILE;
         }
 
-        public static FractionRelationType GetInitialFractionRelation(LivingEntity origin, LivingEntity target)
+        public static FractionRelationType GetFractionRelation(LivingEntity origin, LivingEntity target)
         {
             if (origin.Fraction == target.Fraction)
                 return FractionRelationType.ALLIED;

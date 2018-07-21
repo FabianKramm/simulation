@@ -13,7 +13,8 @@ namespace Simulation.Game.Serialization
         private static readonly string[] serializeableProperties = new string[] {
             "blockingGrid",
             "WorldLinks",
-            "IsPersistent"
+            "IsPersistent",
+            "Dimensions"
         };
 
         protected static void Deserialize(ref JObject jObject, WorldPart worldPart)

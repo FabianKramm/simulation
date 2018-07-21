@@ -12,8 +12,7 @@ namespace Simulation.Game.Serialization
     {
         private static readonly Type interiorType = typeof(Interior);
         private static readonly string[] serializeableProperties = new string[] {
-            "ID",
-            "Dimensions"
+            "ID"
         };
 
         public static Interior Deserialize(JObject jObject)

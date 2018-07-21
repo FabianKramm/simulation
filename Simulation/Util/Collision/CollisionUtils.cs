@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Enums;
+using Simulation.Game.Fractions;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
@@ -11,22 +12,22 @@ namespace Simulation.Util.Collision
 {
     public class CollisionUtils
     {
-        public static LivingEntity GetClosestLivingTarget(Circle hitboxBounds, HitableObject origin)
+        public static LivingEntity GetClosestLivingTarget(Circle hitboxBounds, string interiorId, HitableObject origin, FractionRelationType fractionRelationType)
         {
             Rect rectangleHitboxBounds = new Rect(hitboxBounds.CenterX - hitboxBounds.Radius, hitboxBounds.CenterY - hitboxBounds.Radius, 2 * hitboxBounds.Radius, 2 * hitboxBounds.Radius);
-            LivingEntity livingTarget = GetClosestLivingTarget(rectangleHitboxBounds, origin);
+            LivingEntity livingTarget = GetClosestLivingTarget(rectangleHitboxBounds, interiorId, origin, fractionRelationType);
 
             return hitboxBounds.Intersects(livingTarget.HitBoxBounds) ? livingTarget : null;
         }
 
-        public static LivingEntity GetClosestLivingTarget(Rect hitboxBounds, HitableObject origin)
+        public static LivingEntity GetClosestLivingTarget(Rect hitboxBounds, string interiorId, HitableObject origin, FractionRelationType fractionRelationType = FractionRelationType.ALLIED)
         {
             ThreadingUtils.assertMainThread();
 
             HitableObject closestTarget = null;
             float closestDistance = float.PositiveInfinity;
 
-            if (origin.InteriorID == Interior.Outside)
+            if (interiorId == Interior.Outside)
             {
                 // Check collision with interactive && contained objects
                 Point chunkTopLeft = GeometryUtils.GetChunkPosition(hitboxBounds.Left, hitboxBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
@@ -39,7 +40,10 @@ namespace Simulation.Util.Collision
 
                         if (worldGridChunk.OverlappingObjects != null)
                             foreach (HitableObject hitableObject in worldGridChunk.OverlappingObjects)
-                                if (hitableObject is LivingEntity && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
+                                if (hitableObject is LivingEntity && 
+                                    hitableObject != origin && 
+                                    FractionRelations.GetFractionRelation((LivingEntity)origin, (LivingEntity)hitableObject) == fractionRelationType && 
+                                    hitableObject.HitBoxBounds.Intersects(hitboxBounds))
                                 {
                                     var distance = GeometryUtils.GetDiagonalDistance(hitableObject.Position.X, hitableObject.Position.Y, origin.Position.X, origin.Position.Y);
 
@@ -53,7 +57,10 @@ namespace Simulation.Util.Collision
 
                         if (worldGridChunk.ContainedObjects != null)
                             foreach (var hitableObject in worldGridChunk.ContainedObjects)
-                                if (hitableObject is LivingEntity && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
+                                if (hitableObject is LivingEntity && 
+                                    hitableObject != origin &&
+                                    FractionRelations.GetFractionRelation((LivingEntity)origin, (LivingEntity)hitableObject) == fractionRelationType &&
+                                    hitableObject.HitBoxBounds.Intersects(hitboxBounds))
                                 {
                                     var distance = GeometryUtils.GetDiagonalDistance(hitableObject.Position.X, hitableObject.Position.Y, origin.Position.X, origin.Position.Y);
 
@@ -67,10 +74,13 @@ namespace Simulation.Util.Collision
             }
             else
             {
-                Interior interior = SimulationGame.World.InteriorManager.Get(origin.InteriorID);
+                Interior interior = SimulationGame.World.InteriorManager.Get(interiorId);
 
                 foreach (var hitableObject in interior.ContainedObjects)
-                    if (hitableObject is LivingEntity && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
+                    if (hitableObject is LivingEntity && 
+                        hitableObject != origin &&
+                        FractionRelations.GetFractionRelation((LivingEntity)origin, (LivingEntity)hitableObject) == fractionRelationType && 
+                        hitableObject.HitBoxBounds.Intersects(hitboxBounds))
                     {
                         var distance = GeometryUtils.GetDiagonalDistance(hitableObject.Position.X, hitableObject.Position.Y, origin.Position.X, origin.Position.Y);
 
@@ -85,10 +95,10 @@ namespace Simulation.Util.Collision
             return (LivingEntity)closestTarget;
         }
 
-        public static List<LivingEntity> GetLivingHittedObjects(Circle hitboxBounds, HitableObject origin)
+        public static List<LivingEntity> GetLivingHittedObjects(Circle hitboxBounds, string interiorId, HitableObject origin)
         {
             Rect rectangleHitboxBounds = new Rect(hitboxBounds.CenterX - hitboxBounds.Radius, hitboxBounds.CenterY - hitboxBounds.Radius, 2 * hitboxBounds.Radius, 2 * hitboxBounds.Radius);
-            List<LivingEntity> hittedObjects = GetLivingHittedObjects(rectangleHitboxBounds, origin);
+            List<LivingEntity> hittedObjects = GetLivingHittedObjects(rectangleHitboxBounds, interiorId, origin);
 
             for (int i = 0; i < hittedObjects.Count; i++)
             {
@@ -102,12 +112,12 @@ namespace Simulation.Util.Collision
             return hittedObjects;
         }
 
-        public static List<LivingEntity> GetLivingHittedObjects(Rect hitboxBounds, HitableObject origin)
+        public static List<LivingEntity> GetLivingHittedObjects(Rect hitboxBounds, string interiorId, HitableObject origin)
         {
             ThreadingUtils.assertMainThread();
             List<LivingEntity> hittedObjecs = new List<LivingEntity>();
 
-            if (origin.InteriorID == Interior.Outside)
+            if (interiorId == Interior.Outside)
             {
                 // Check collision with interactive && contained objects
                 Point chunkTopLeft = GeometryUtils.GetChunkPosition(hitboxBounds.Left, hitboxBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
@@ -141,10 +151,10 @@ namespace Simulation.Util.Collision
             return hittedObjecs;
         }
 
-        public static List<HitableObject> GetHittedObjects(Circle hitboxBounds, HitableObject origin)
+        public static List<HitableObject> GetHittedObjects(Circle hitboxBounds, string interiorId, HitableObject origin)
         {
             Rect rectangleHitboxBounds = new Rect(hitboxBounds.CenterX - hitboxBounds.Radius, hitboxBounds.CenterY - hitboxBounds.Radius, 2 * hitboxBounds.Radius, 2 * hitboxBounds.Radius);
-            List<HitableObject> hittedObjects = GetHittedObjects(rectangleHitboxBounds, origin);
+            List<HitableObject> hittedObjects = GetHittedObjects(rectangleHitboxBounds, interiorId, origin);
             
             for(int i=0;i<hittedObjects.Count;i++)
             {
@@ -158,12 +168,12 @@ namespace Simulation.Util.Collision
             return hittedObjects;
         }
 
-        public static List<HitableObject> GetHittedObjects(Rect hitboxBounds, HitableObject origin)
+        public static List<HitableObject> GetHittedObjects(Rect hitboxBounds, string interiorId, HitableObject origin)
         {
             ThreadingUtils.assertMainThread();
             List<HitableObject> hittedObjecs = new List<HitableObject>();
 
-            if (origin.InteriorID == Interior.Outside)
+            if (interiorId == Interior.Outside)
             {
                 // Check collision with interactive && contained objects
                 Point chunkTopLeft = GeometryUtils.GetChunkPosition(hitboxBounds.Left, hitboxBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
@@ -187,7 +197,7 @@ namespace Simulation.Util.Collision
             }
             else
             {
-                Interior interior = SimulationGame.World.InteriorManager.Get(origin.InteriorID);
+                Interior interior = SimulationGame.World.InteriorManager.Get(interiorId);
 
                 foreach (var hitableObject in interior.ContainedObjects)
                     if (hitableObject != origin && hitableObject.IsHitable && hitableObject.HitBoxBounds.Intersects(hitboxBounds))

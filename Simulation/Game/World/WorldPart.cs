@@ -17,6 +17,11 @@ namespace Simulation.Game.World
             get; protected set;
         }
 
+        public Point Dimensions
+        {
+            get; protected set;
+        }
+
         protected BlockType[,] blockingGrid;
 
         public bool Connected = false;
@@ -34,24 +39,8 @@ namespace Simulation.Game.World
 
         protected WorldPart() { }
 
-        public BlockType GetBlockType(int blockX, int blockY)
-        {
-            var projectedPosition = GeometryUtils.GetPositionWithinChunk(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
-
-            return blockingGrid[projectedPosition.X, projectedPosition.Y];
-        }
-
-        public void SetBlockType(int blockX, int blockY, BlockType blockType)
-        {
-            if(Connected)
-            {
-                throw new Exception("Cannot set block type, when already connected to world!");
-            }
-
-            var projectedPosition = GeometryUtils.GetPositionWithinChunk(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
-
-            blockingGrid[projectedPosition.X, projectedPosition.Y] = blockType;
-        }
+        public abstract BlockType GetBlockType(int blockX, int blockY);
+        public abstract void SetBlockType(int blockX, int blockY, BlockType blockType);
 
         public void AddEffect(Effect effect)
         {

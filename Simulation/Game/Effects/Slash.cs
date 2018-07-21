@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Simulation.Game.Hud;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
+using Simulation.Util.Collision;
 using Simulation.Util.Geometry;
 
 namespace Simulation.Game.Effects
@@ -12,6 +15,8 @@ namespace Simulation.Game.Effects
         public bool Flipped;
         public TimeSpan Duration = TimeSpan.FromMilliseconds(300);
 
+        public Circle hitboxCircle;
+
         public Slash(MovingEntity origin, Vector2 target, bool flipped, Vector2? relativeOriginPosition = null) : base(origin.Position, origin)
         {
             Vector2 _relativeOriginPosition = relativeOriginPosition ?? Vector2.Zero;
@@ -19,6 +24,9 @@ namespace Simulation.Game.Effects
 
             Vector2 direction = new Vector2(target.X - newPosition.X, target.Y - newPosition.Y);
             direction.Normalize();
+
+            // Get Hitted Targets
+            hitboxCircle = new Circle((int)(newPosition.X + direction.X * WorldGrid.BlockSize.X), (int)(newPosition.Y + direction.Y * WorldGrid.BlockSize.Y), (int)(WorldGrid.BlockSize.X));
 
             newPosition.X += (direction.X * WorldGrid.BlockSize.X * 1.5f);
             newPosition.Y += (direction.Y * WorldGrid.BlockSize.Y * 1.5f);
@@ -29,7 +37,11 @@ namespace Simulation.Game.Effects
 
             origin.CanWalk = false;
 
-            updatePosition(new WorldPosition(newPosition));
+            updatePosition(new WorldPosition(newPosition, origin.InteriorID));
+
+            List<LivingEntity> hittedObjects = CollisionUtils.GetLivingHittedObjects(hitboxCircle, origin.InteriorID, origin);
+
+            // TODO: Do stuff
         }
 
         public override void Update(GameTime gameTime)

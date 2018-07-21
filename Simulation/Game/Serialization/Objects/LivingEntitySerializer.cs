@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Serialization.AI;
+using Simulation.Game.Serialization.Skills;
+using Simulation.Game.Skills;
 using System;
 
 namespace Simulation.Game.Serialization.Objects
@@ -10,7 +12,10 @@ namespace Simulation.Game.Serialization.Objects
         private static readonly Type livingEntityType = typeof(LivingEntity);
         private static readonly string[] serializeableProperties = new string[] {
             "LivingEntityType",
-            "Fraction"
+            "Fraction",
+            "MaximumLife",
+            "CurrentLife",
+            "Skills"
         };
 
         protected static void Deserialize(ref JObject jObject, LivingEntity livingEntity)
@@ -23,6 +28,18 @@ namespace Simulation.Game.Serialization.Objects
             {
                 livingEntity.BaseAI = AISerializer.Deserialize((JObject)jObject.GetValue("BaseAI"), livingEntity);
             }
+
+            if(jObject.GetValue("Skills") != null)
+            {
+                // Deserialize Skills
+                JArray skills = (JArray)jObject.GetValue("Skills");
+                Skill[] skillObjects = new Skill[skills.Count];
+
+                for (int i=0;i<skills.Count;i++)
+                    skillObjects[i] = ((Skill)BaseSkillSerializer.Deserialize((JObject)skills[i], livingEntity));
+
+                livingEntity.Skills = skillObjects;
+            }
         }
 
         protected static void Serialize(LivingEntity livingEntity, ref JObject jObject)
@@ -32,6 +49,17 @@ namespace Simulation.Game.Serialization.Objects
             SerializationUtils.AddToObject(jObject, livingEntity, livingEntityType, serializeableProperties);
 
             jObject.Add("BaseAI", livingEntity.BaseAI != null ? AISerializer.Serialize(livingEntity.BaseAI) : null);
+
+            // Serialize skills
+            if(livingEntity.Skills != null)
+            {
+                JArray skills = new JArray();
+                
+                foreach (var skill in livingEntity.Skills)
+                    skills.Add(BaseSkillSerializer.Serialize(skill));
+
+                jObject.Add("Skills", skills);
+            }
         }
     }
 }

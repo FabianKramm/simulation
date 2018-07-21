@@ -1,24 +1,22 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Simulation.Game.Objects.Entities;
 using Simulation.Game.Skills;
 using Simulation.Game.World;
 using Simulation.Game.Enums;
-using Simulation.Util.Geometry;
 
-namespace Simulation.Game
+namespace Simulation.Game.Objects.Entities
 {
     public class Player: DurableEntity
     {
-        private FireballSkill fireballSkill;
-        private SlashSkill slashSkill;
-
         private bool leftMouseClick;
 
         public Player(): base(LivingEntityType.PLAYER, new WorldPosition(0, 0), FractionType.PLAYER, 3)
         {
-            fireballSkill = new FireballSkill(this, new Vector2(0, -20));
-            slashSkill = new SlashSkill(this, new Vector2(0, -24));
+            Skills = new Skill[]
+            {
+                new FireballSkill(this, new Vector2(0, -20)),
+                new SlashSkill(this, new Vector2(0, -24))
+            };
 
             Velocity = 0.2f;
         }
@@ -59,15 +57,15 @@ namespace Simulation.Game
 
             if (state.IsKeyDown(Keys.D1))
             {
-                fireballSkill.use(SimulationGame.MousePosition);
+                Skills[0].Use(SimulationGame.MousePosition);
             }
 
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                // slashSkill.use(SimulationGame.MousePosition);
+                Skills[1].Use(SimulationGame.MousePosition);
             }
 
-            if (mouseState.LeftButton == ButtonState.Pressed)
+            /* if (mouseState.LeftButton == ButtonState.Pressed)
             {
                 // slashSkill.use(SimulationGame.MousePosition);
 
@@ -84,12 +82,9 @@ namespace Simulation.Game
             else
             {
                 leftMouseClick = false;
-            }
+            } */
 
             Direction = newDirection;
-
-            fireballSkill.Update(gameTime);
-            slashSkill.Update(gameTime);
 
             base.Update(gameTime);
         }

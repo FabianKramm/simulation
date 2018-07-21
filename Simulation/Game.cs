@@ -14,6 +14,7 @@ using Simulation.Game.Generator;
 using Simulation.Game.Generator.Factories;
 using System.Threading;
 using Simulation.Util.Geometry;
+using Simulation.Game.Objects.Entities;
 
 /*
  * Open Issues:
@@ -41,8 +42,9 @@ namespace Simulation
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class SimulationGame : Microsoft.Xna.Framework.Game
+    public class SimulationGame: Microsoft.Xna.Framework.Game
     {
+        public static readonly Size Resolution = new Size(1600, 768);
         public static readonly int TicksPerHour = 20;
         public static readonly int TicksPerDay = 24 * TicksPerHour;
         public static readonly int MilliSecondsPerTick = 500;
@@ -86,8 +88,7 @@ namespace Simulation
         {
             get; private set;
         }
-
-        public static readonly Size Resolution = new Size(1280, 768);
+        
         public static Rect VisibleArea;
 
         public static Vector2 MousePosition
@@ -95,9 +96,15 @@ namespace Simulation
             get; private set;
         }
 
-        public static Player Player;
+        public static Player Player
+        {
+            get; private set;
+        }
 
-        public static GraphicsDeviceManager Graphics;
+        public static GraphicsDeviceManager Graphics
+        {
+            get; private set;
+        }
 
         private SpriteBatch spriteBatch;
         private float zoom = 1.0f;
