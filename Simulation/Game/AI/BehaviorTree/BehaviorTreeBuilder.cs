@@ -109,6 +109,15 @@ namespace Simulation.Game.AI.BehaviorTree
             return this;
         }
 
+        public BehaviorTreeBuilder LongRunningBlocking(Func<BehaviorTask> taskCreator)
+        {
+            var longRunningActionNode = new LongRunningActionNode(taskCreator, true);
+
+            parentNodeStack.Peek().AddChild(longRunningActionNode);
+
+            return this;
+        }
+
         /// <summary>
         /// Splice a sub tree into the parent tree.
         /// </summary>
