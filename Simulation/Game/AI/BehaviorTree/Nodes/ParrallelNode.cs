@@ -3,22 +3,29 @@ using System.Collections.Generic;
 
 namespace Simulation.Game.AI.BehaviorTree.Nodes
 {
-    public class ParallelNode: IParentBehaviorTreeNode
+    public class ParallelNode: ParentBaseNode
     {
         private List<IBehaviorTreeNode> children = new List<IBehaviorTreeNode>();
-        protected RootNode rootNode;
 
-        public ParallelNode(RootNode rootNode)
-        {
-            this.rootNode = rootNode;
-        }
+        public ParallelNode(RootNode rootNode): base(rootNode) { }
 
-        public void AddChild(IBehaviorTreeNode child)
+        public override void AddChild(IBehaviorTreeNode child)
         {
             children.Add(child);
         }
 
-        public void Reset()
+        public override void ExchangeRootNode(RootNode newRootNode)
+        {
+            base.ExchangeRootNode(newRootNode);
+
+            foreach (var child in children)
+            {
+                if (child is ParentBaseNode)
+                    ((ParentBaseNode)child).ExchangeRootNode(newRootNode);
+            }
+        }
+
+        public override void Reset()
         {
             foreach (var child in children)
             {
@@ -26,7 +33,7 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
             }
         }
 
-        public BehaviourTreeStatus Tick(GameTime time)
+        public override BehaviourTreeStatus Tick(GameTime time)
         {
             var numChildrenSuceeded = 0;
             var numChildrenFailed = 0;

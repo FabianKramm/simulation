@@ -1,21 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
+using Simulation.Game.AI.Tasks;
+using System;
 
 namespace Simulation.Game.AI.UtilitySystem
 {
     public class UtilitySystem
     {
-        public UtilitySystem()
+        public float HighestScore { get; private set; } = float.NegativeInfinity;
+        public string TaskIdentifier { get; private set; } = null;
+        public Func<GameTime, BehaviorTask> TaskCreator { get; private set; } = null;
+
+        public void AddTask(float score, Func<GameTime, BehaviorTask> taskCreator, string taskIdentifier = null)
         {
-
-        }
-
-        public void Update()
-        {
-
+            if(score > HighestScore)
+            {
+                HighestScore = score;
+                TaskCreator = taskCreator;
+                TaskIdentifier = taskIdentifier;
+            }
         }
     }
 }

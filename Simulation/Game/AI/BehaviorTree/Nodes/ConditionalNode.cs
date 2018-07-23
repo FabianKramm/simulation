@@ -4,18 +4,16 @@ using Microsoft.Xna.Framework;
 
 namespace Simulation.Game.AI.BehaviorTree.Nodes
 {
-    public class ConditionalNode : IParentBehaviorTreeNode
+    public class ConditionalNode : ParentBaseNode
     {
         public bool AddIfChild = true;
 
         private Func<GameTime, bool> condition;
         private IBehaviorTreeNode ifTrue;
         private IBehaviorTreeNode ifFalse;
-        protected RootNode rootNode;
 
-        public ConditionalNode(RootNode rootNode, Func<GameTime, bool> condition)
+        public ConditionalNode(RootNode rootNode, Func<GameTime, bool> condition): base(rootNode)
         {
-            this.rootNode = rootNode;
             this.condition = condition;
         }
 
@@ -25,19 +23,7 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
 
             AddIfChild = false;
         }
-
-        public void AddChild(IBehaviorTreeNode child)
-        {
-            if(AddIfChild)
-            {
-                ifTrue = child;
-            }
-            else
-            {
-                ifFalse = child;
-            }
-        }
-
+        
         public void SetIfTrue(IBehaviorTreeNode child)
         {
             Debug.Assert(ifTrue == null, "ifTrue was already set!");
@@ -52,7 +38,19 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
             ifFalse = child;
         }
 
-        public void Reset()
+        public override void AddChild(IBehaviorTreeNode child)
+        {
+            if (AddIfChild)
+            {
+                ifTrue = child;
+            }
+            else
+            {
+                ifFalse = child;
+            }
+        }
+
+        public override void Reset()
         {
             ifTrue.Reset();
 
@@ -60,7 +58,7 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
                 ifFalse.Reset();
         }
 
-        public BehaviourTreeStatus Tick(GameTime gameTime)
+        public override BehaviourTreeStatus Tick(GameTime gameTime)
         {
             if(condition(gameTime))
             {
@@ -84,6 +82,21 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
                     rootNode.AddBlockingNode((LongRunningActionNode)ifFalse);
 
                 return status;
+            }
+        }
+
+        public override void ExchangeRootNode(RootNode newRootNode)
+        {
+            base.ExchangeRootNode(newRootNode);
+
+            if (ifTrue is ParentBaseNode)
+            {
+                ((ParentBaseNode)ifTrue).ExchangeRootNode(newRootNode);
+            }
+
+            if (ifFalse != null && ifFalse is IParentBehaviorTreeNode)
+            {
+                ((ParentBaseNode)ifFalse).ExchangeRootNode(newRootNode);
             }
         }
     }

@@ -11,11 +11,19 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
 
         private bool forceTreeTick = true;
         private TimeSpan elapsedTime = TimeSpan.Zero;
-        private TimeSpan tickFrequency; // Only tick in this frequency when a task is busy
+        public TimeSpan TickFrequency { get; private set; } // Only tick in this frequency when a task is busy
 
         public RootNode(TimeSpan? tickFrequency = null)
         {
-            this.tickFrequency = tickFrequency ?? TimeSpan.FromMilliseconds(300);
+            TickFrequency = tickFrequency ?? TimeSpan.FromMilliseconds(300);
+        }
+
+        public IBehaviorTreeNode ExchangeRootNode(RootNode newRootNode)
+        {
+            if (childNode is ParentBaseNode)
+                ((ParentBaseNode)childNode).ExchangeRootNode(newRootNode);
+
+            return childNode;
         }
 
         public void AddChild(IBehaviorTreeNode child)
@@ -41,7 +49,7 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
         {
             elapsedTime += gameTime.ElapsedGameTime;
 
-            if(forceTreeTick || elapsedTime >= tickFrequency)
+            if(forceTreeTick || elapsedTime >= TickFrequency)
             {
                 forceTreeTick = false;
 

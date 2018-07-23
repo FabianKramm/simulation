@@ -6,22 +6,29 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
     /// <summary>
     /// Selects the first node that succeeds. Tries successive nodes until it finds one that doesn't fail.
     /// </summary>
-    public class SelectorNode : IParentBehaviorTreeNode
+    public class SelectorNode: ParentBaseNode
     {
         private List<IBehaviorTreeNode> children = new List<IBehaviorTreeNode>();
-        protected RootNode rootNode;
 
-        public SelectorNode(RootNode rootNode)
+        public SelectorNode(RootNode rootNode): base(rootNode) { }
+
+        public override void ExchangeRootNode(RootNode newRootNode)
         {
-            this.rootNode = rootNode;
+            base.ExchangeRootNode(newRootNode);
+
+            foreach (var child in children)
+            {
+                if (child is ParentBaseNode)
+                    ((ParentBaseNode)child).ExchangeRootNode(newRootNode);
+            }
         }
 
-        public void AddChild(IBehaviorTreeNode child)
+        public override void AddChild(IBehaviorTreeNode child)
         {
             children.Add(child);
         }
 
-        public void Reset()
+        public override void Reset()
         {
             foreach (var child in children)
             {
@@ -29,7 +36,7 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
             }
         }
 
-        public BehaviourTreeStatus Tick(GameTime time)
+        public override BehaviourTreeStatus Tick(GameTime time)
         {
             foreach (var child in children)
             {

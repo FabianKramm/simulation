@@ -124,8 +124,9 @@ namespace Simulation.Game.AI.BehaviorTree
         public BehaviorTreeBuilder Splice(IBehaviorTreeNode subTree)
         {
             Debug.Assert(subTree != null, "Subtree is null");
+            Debug.Assert(subTree is RootNode, "Subtree has to start with a root node");
 
-            parentNodeStack.Peek().AddChild(subTree);
+            parentNodeStack.Peek().AddChild(((RootNode)subTree).ExchangeRootNode(rootNode));
 
             return this;
         }

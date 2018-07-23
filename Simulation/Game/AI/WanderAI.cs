@@ -1,11 +1,8 @@
-﻿using Simulation.Game.AI.AITasks;
-using Simulation.Game.AI.BehaviorTree;
+﻿using Simulation.Game.AI.BehaviorTree;
 using Simulation.Game.AI.Tasks;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
-using Simulation.Util.Geometry;
 using System;
-using System.Collections.Generic;
 
 namespace Simulation.Game.AI
 {
@@ -35,12 +32,15 @@ namespace Simulation.Game.AI
         {
             BehaviorTreeBuilder builder = new BehaviorTreeBuilder();
 
-            return builder
+            return AIExtensions.WithFightingAI(
+                builder
                 .Sequence()
                     .LongRunning(() => new WaitTask(Entity, TimeSpan.FromMilliseconds(1000)))
                     .LongRunning(() => new WanderTask(Entity, BlockStartPosition, BlockRadius))
                 .End()
-                .Build();
+                .Build(),
+                Entity
+            );
         }
     }
 }
