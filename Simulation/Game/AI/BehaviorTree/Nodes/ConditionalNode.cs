@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 
 namespace Simulation.Game.AI.BehaviorTree.Nodes
@@ -20,6 +21,8 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
 
         public void SwitchMode()
         {
+            Debug.Assert(AddIfChild == true, "Mode was already switched!");
+
             AddIfChild = false;
         }
 
@@ -37,11 +40,15 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
 
         public void SetIfTrue(IBehaviorTreeNode child)
         {
+            Debug.Assert(ifTrue == null, "ifTrue was already set!");
+
             ifTrue = child;
         }
 
         public void SetIfFalse(IBehaviorTreeNode child)
         {
+            Debug.Assert(ifFalse == null, "ifFalse was already set!");
+
             ifFalse = child;
         }
 

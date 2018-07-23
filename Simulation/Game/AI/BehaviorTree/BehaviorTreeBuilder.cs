@@ -3,6 +3,7 @@ using Simulation.Game.AI.BehaviorTree.Nodes;
 using Simulation.Game.AI.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Simulation.Game.AI.BehaviorTree
 {
@@ -47,6 +48,7 @@ namespace Simulation.Game.AI.BehaviorTree
         public BehaviorTreeBuilder Else()
         {
             ((ConditionalNode)parentNodeStack.Peek()).SwitchMode();
+
             return this;
         }
 
@@ -106,6 +108,19 @@ namespace Simulation.Game.AI.BehaviorTree
 
             return this;
         }
+
+        /// <summary>
+        /// Splice a sub tree into the parent tree.
+        /// </summary>
+        public BehaviorTreeBuilder Splice(IBehaviorTreeNode subTree)
+        {
+            Debug.Assert(subTree != null, "Subtree is null");
+
+            parentNodeStack.Peek().AddChild(subTree);
+
+            return this;
+        }
+
 
         /// <summary>
         /// Build the actual tree.
