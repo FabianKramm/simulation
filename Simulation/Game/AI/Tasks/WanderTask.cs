@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.AI.BehaviorTree;
 using Simulation.Game.Generator;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
@@ -6,9 +7,9 @@ using Simulation.Util.Geometry;
 using System;
 using System.Threading.Tasks;
 
-namespace Simulation.Game.AI.AITasks
+namespace Simulation.Game.AI.Tasks
 {
-    public class WanderTask: AITask
+    public class WanderTask: BehaviorTask
     {
         private Task<Point> findNextWalkablePoint;
 
@@ -56,31 +57,28 @@ namespace Simulation.Game.AI.AITasks
 
         public override void Update(GameTime gameTime)
         {
-            if(IsStarted)
+            var movingSubject = (MovingEntity)subject;
+
+            if (!movingSubject.IsWalking)
             {
-                var movingSubject = (MovingEntity)subject;
-
-                if (!movingSubject.IsWalking)
+                if (findNextWalkablePoint == null)
                 {
-                    if (findNextWalkablePoint == null)
-                    {
-                        IsFinished = true;
-                    }
-                    else if (findNextWalkablePoint != null && findNextWalkablePoint.IsCompleted)
-                    {
-                        Point destBlock = findNextWalkablePoint.Result;
+                    Status = BehaviourTreeStatus.Success;
+                }
+                else if (findNextWalkablePoint != null && findNextWalkablePoint.IsCompleted)
+                {
+                    Point destBlock = findNextWalkablePoint.Result;
 
-                        if (wanderCircle.Contains(destBlock) && interiorID == movingSubject.InteriorID)
-                        {
-                            movingSubject.WalkToBlock(new WorldPosition(destBlock.X, destBlock.Y, interiorID));
-                        }
-                        else
-                        {
-                            IsFinished = true;
-                        }
-
-                        findNextWalkablePoint = null;
+                    if (wanderCircle.Contains(destBlock) && interiorID == movingSubject.InteriorID)
+                    {
+                        movingSubject.WalkToPosition(new WorldPosition(destBlock.X * WorldGrid.BlockSize.X, destBlock.Y * WorldGrid.BlockSize.Y, interiorID));
                     }
+                    else
+                    {
+                        Status = BehaviourTreeStatus.Success;
+                    }
+
+                    findNextWalkablePoint = null;
                 }
             }
         }

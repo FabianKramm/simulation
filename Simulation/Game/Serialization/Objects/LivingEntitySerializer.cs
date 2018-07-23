@@ -27,6 +27,7 @@ namespace Simulation.Game.Serialization.Objects
             if(jObject.GetValue("BaseAI") != null)
             {
                 livingEntity.BaseAI = AISerializer.Deserialize((JObject)jObject.GetValue("BaseAI"), livingEntity);
+                livingEntity.BaseAI.Init(); // Important to create behaviortree
             }
 
             if(jObject.GetValue("Skills") != null)

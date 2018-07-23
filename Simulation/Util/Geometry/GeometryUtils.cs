@@ -54,7 +54,7 @@ namespace Simulation.Util.Geometry
             float dx = Math.Abs(x1 - x2);
             float dy = Math.Abs(y1 - y2);
 
-            return (dx + dy) - Math.Min(dx, dy);
+            return (dx + dy) + (-0.585786f) * Math.Min(dx, dy);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

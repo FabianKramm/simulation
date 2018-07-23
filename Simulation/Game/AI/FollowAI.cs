@@ -3,13 +3,8 @@ using System;
 
 namespace Simulation.Game.AI
 {
-    public class FollowAI: BaseAI
+    public class FollowAI
     {
-        public FollowAI(MovingEntity movingEntity): base(movingEntity) { }
-
-        protected override void addAITasks()
-        {
-            throw new NotImplementedException();
-        }
+        public FollowAI(MovingEntity movingEntity) { }
     }
 }

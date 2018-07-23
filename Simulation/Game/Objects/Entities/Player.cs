@@ -68,8 +68,6 @@ namespace Simulation.Game.Objects.Entities
 
              if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                // slashSkill.use(SimulationGame.MousePosition);
-
                 if (!leftMouseClick)
                 {
                     Point clickedBlock = GeometryUtils.GetChunkPosition((int)SimulationGame.MousePosition.X, (int)SimulationGame.MousePosition.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);

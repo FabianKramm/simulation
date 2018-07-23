@@ -45,13 +45,26 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
-    <Compile Include="Game\AI\AITasks\AITask.cs" />
-    <Compile Include="Game\AI\AITasks\GoToObjectTask.cs" />
-    <Compile Include="Game\AI\AITasks\WaitTask.cs" />
-    <Compile Include="Game\AI\AITasks\WanderTask.cs" />
+    <Compile Include="Game\AI\Tasks\FightTask.cs" />
+    <Compile Include="Game\AI\Tasks\GoToObjectTask.cs" />
+    <Compile Include="Game\AI\Tasks\WaitTask.cs" />
+    <Compile Include="Game\AI\Tasks\WanderTask.cs" />
     <Compile Include="Game\AI\BaseAI.cs" />
+    <Compile Include="Game\AI\BehaviorTree\BehaviorTreeBuilder.cs" />
+    <Compile Include="Game\AI\BehaviorTree\IParentBehaviorTreeNode.cs" />
+    <Compile Include="Game\AI\BehaviorTree\Nodes\LongRunningActionNode.cs" />
+    <Compile Include="Game\AI\Tasks\BehaviorTask.cs" />
+    <Compile Include="Game\AI\BehaviorTree\BehaviourTreeStatus.cs" />
+    <Compile Include="Game\AI\BehaviorTree\Nodes\ConditionalNode.cs" />
+    <Compile Include="Game\AI\BehaviorTree\IBehaviorTreeNode.cs" />
+    <Compile Include="Game\AI\BehaviorTree\Nodes\ParrallelNode.cs" />
+    <Compile Include="Game\AI\BehaviorTree\Nodes\RootNode.cs" />
+    <Compile Include="Game\AI\BehaviorTree\Nodes\SelectorNode.cs" />
+    <Compile Include="Game\AI\BehaviorTree\Nodes\SequenceNode.cs" />
+    <Compile Include="Game\AI\BehaviorTree\Nodes\SingleStepActionNode.cs" />
     <Compile Include="Game\AI\FightingAI.cs" />
     <Compile Include="Game\AI\FollowAI.cs" />
+    <Compile Include="Game\AI\UtilitySystem\UtilitySystem.cs" />
     <Compile Include="Game\AI\WanderAI.cs" />
     <Compile Include="Game\Enums\BlockingType.cs" />
     <Compile Include="Game\Enums\BlockType.cs" />

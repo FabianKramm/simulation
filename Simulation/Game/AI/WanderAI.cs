@@ -1,4 +1,6 @@
 ﻿using Simulation.Game.AI.AITasks;
+using Simulation.Game.AI.BehaviorTree;
+using Simulation.Game.AI.Tasks;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;
@@ -25,15 +27,20 @@ namespace Simulation.Game.AI
         {
             BlockRadius = blockRadius;
             BlockStartPosition = new WorldPosition(movingEntity.BlockPosition.X, movingEntity.BlockPosition.Y, movingEntity.Position.InteriorID);
+
+            Init();
         }
 
-        protected override void addAITasks()
+        protected override IBehaviorTreeNode createBehaviorTree()
         {
-            tasksToProcess = new List<AITask>()
-            {
-                new WaitTask(Entity, TimeSpan.FromMilliseconds(1000)),
-                new WanderTask(Entity, BlockStartPosition, BlockRadius)
-            };
+            BehaviorTreeBuilder builder = new BehaviorTreeBuilder();
+
+            return builder
+                .Sequence()
+                    .LongRunning(() => new WaitTask(Entity, TimeSpan.FromMilliseconds(1000)))
+                    .LongRunning(() => new WanderTask(Entity, BlockStartPosition, BlockRadius))
+                .End()
+                .Build();
         }
     }
 }
