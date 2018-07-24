@@ -38,13 +38,21 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
 
         public override BehaviourTreeStatus Tick(GameTime time)
         {
-            foreach (var child in children)
+            for (int i = 0; i < children.Count; i++)
             {
+                var child = children[i];
                 var childStatus = child.Tick(time);
+
                 if (childStatus != BehaviourTreeStatus.Failure)
                 {
                     if (child is LongRunningActionNode && ((LongRunningActionNode)child).IsBlocking && childStatus == BehaviourTreeStatus.Running)
                         rootNode.AddBlockingNode((LongRunningActionNode)child);
+
+                    if (childStatus == BehaviourTreeStatus.Running)
+                        for (int j = i + 1; j < children.Count; j++)
+                        {
+                            children[j].Reset();
+                        }
 
                     return childStatus;
                 }

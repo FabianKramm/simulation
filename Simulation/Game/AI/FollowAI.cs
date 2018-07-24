@@ -25,8 +25,8 @@ namespace Simulation.Game.AI
             return AIExtensions.WithFightingAI(
                 builder
                 .Sequence()
-                    .LongRunning(() => new WaitTask(Entity, TimeSpan.FromMilliseconds(200)))
-                    .LongRunning(() => new FollowObjectTask(Entity, target, tillDistance))
+                    .LongRunningResultCached(() => new WaitTask(Entity, TimeSpan.FromMilliseconds(200)))
+                    .LongRunningResultCached(() => new FollowObjectTask(Entity, target, tillDistance))
                 .End()
                 .Build(),
                 Entity

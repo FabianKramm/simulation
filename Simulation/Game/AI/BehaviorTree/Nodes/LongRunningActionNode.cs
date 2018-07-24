@@ -15,6 +15,11 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
             get; private set;
         } = false;
 
+        public bool IsResultCached
+        {
+            get; private set;
+        } = false;
+
         private BehaviorTask taskInstance;
         private Func<BehaviorTask> taskCreator;
 
@@ -23,10 +28,11 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
             this.taskCreator = taskCreator;
         }
 
-        public LongRunningActionNode(Func<BehaviorTask> taskCreator, bool isBlocking)
+        public LongRunningActionNode(Func<BehaviorTask> taskCreator, bool isBlocking, bool isResultCached)
         {
             this.taskCreator = taskCreator;
             this.IsBlocking = isBlocking;
+            this.IsResultCached = isResultCached;
         }
 
         public void Reset()
@@ -49,6 +55,13 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
             if(taskInstance.Status == BehaviourTreeStatus.Running)
             {
                 taskInstance.Update(gameTime);
+            }
+
+            var retStatus = taskInstance.Status;
+
+            if(!IsResultCached && retStatus != BehaviourTreeStatus.Running)
+            {
+                Reset();
             }
 
             return taskInstance.Status;

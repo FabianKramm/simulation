@@ -29,8 +29,7 @@ namespace Simulation.Game.Objects.Entities
             }
         }
 
-        
-        public float Velocity = 0.08f;
+        public float Velocity = 0.16f;
 
         public bool CanWalk = true;
 

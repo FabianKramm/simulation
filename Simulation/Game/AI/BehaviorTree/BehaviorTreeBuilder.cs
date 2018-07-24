@@ -109,9 +109,18 @@ namespace Simulation.Game.AI.BehaviorTree
             return this;
         }
 
+        public BehaviorTreeBuilder LongRunningResultCached(Func<BehaviorTask> taskCreator)
+        {
+            var longRunningActionNode = new LongRunningActionNode(taskCreator, false, true);
+
+            parentNodeStack.Peek().AddChild(longRunningActionNode);
+
+            return this;
+        }
+
         public BehaviorTreeBuilder LongRunningBlocking(Func<BehaviorTask> taskCreator)
         {
-            var longRunningActionNode = new LongRunningActionNode(taskCreator, true);
+            var longRunningActionNode = new LongRunningActionNode(taskCreator, true, false);
 
             parentNodeStack.Peek().AddChild(longRunningActionNode);
 
