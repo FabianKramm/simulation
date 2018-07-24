@@ -40,7 +40,7 @@ namespace Simulation.Game.Objects
         protected GameObject(WorldPosition position)
         {
             Position = position.Clone();
-            BlockPosition = Position.BlockPosition;
+            BlockPosition = Position.ToBlockPositionPoint();
 
             ID = Util.Util.GetUUID();
         }
@@ -50,7 +50,7 @@ namespace Simulation.Game.Objects
             ThreadingUtils.assertMainThread();
 
             Position = newPosition.Clone();
-            BlockPosition = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            BlockPosition = Position.ToBlockPositionPoint();
         }
 
         public virtual void Destroy()

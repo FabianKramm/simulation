@@ -66,7 +66,7 @@ namespace Simulation.Game.Objects.Entities
                 // Skills[1].Use(SimulationGame.MousePosition);
             }
 
-             if (mouseState.LeftButton == ButtonState.Pressed)
+            /* if (mouseState.LeftButton == ButtonState.Pressed)
             {
                 if (!leftMouseClick)
                 {
@@ -81,7 +81,7 @@ namespace Simulation.Game.Objects.Entities
             else
             {
                 leftMouseClick = false;
-            } 
+            }*/
 
             Direction = newDirection;
 

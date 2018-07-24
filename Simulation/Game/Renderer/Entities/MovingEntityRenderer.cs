@@ -33,6 +33,7 @@ namespace Simulation.Game.Renderer.Entities
                 else if (movingEntity.IsHitable)
                 {
                     SimulationGame.PrimitiveDrawer.Rectangle(movingEntity.HitBoxBounds.ToXnaRectangle(), Color.White);
+                    SimulationGame.PrimitiveDrawer.Rectangle(movingEntity.BlockingBounds.ToXnaRectangle(), Color.Red);
                 }
             }
         }

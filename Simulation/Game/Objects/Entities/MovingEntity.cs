@@ -16,14 +16,16 @@ namespace Simulation.Game.Objects.Entities
         private Task<List<GridPos>> findPathTask;
 
         public Vector2 Direction;
-        private WorldPosition destPosition;
+        public WorldPosition DestRealPosition { get; private set; }
+        public WorldPosition DestBlockPosition { get; private set; }
+
         private List<GridPos> walkPath;
 
         public bool IsWalking
         {
             get
             {
-                return destPosition != null || findPathTask != null || walkPath != null || Direction != Vector2.Zero;
+                return DestBlockPosition != null || DestRealPosition != null || findPathTask != null || walkPath != null || Direction != Vector2.Zero;
             }
         }
 
@@ -36,9 +38,9 @@ namespace Simulation.Game.Objects.Entities
         protected MovingEntity() {}
 
         public MovingEntity(LivingEntityType livingEntityType, WorldPosition position, FractionType fraction) :
-            base(livingEntityType, position, new Rect(-14, -48, 28, 48), fraction)
+            base(livingEntityType, position, new Rect(-14, -38, 28, 48), fraction)
         {
-            SetBlockingBounds(new Rect(-8, -20, 16, 20));
+            SetBlockingBounds(new Rect(-8, -10, 16, 20));
         }
 
         public MovingEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds, FractionType fraction) :
@@ -71,46 +73,48 @@ namespace Simulation.Game.Objects.Entities
         {
             findPathTask = null;
             walkPath = null;
-            destPosition = null;
+            DestRealPosition = null;
+            DestBlockPosition = null;
 
             Direction = Vector2.Zero;
         }
 
         public void WalkToPosition(WorldPosition realPosition)
         {
-            StopWalking();
+            if (DestRealPosition != null && DestRealPosition.X == realPosition.X && DestRealPosition.Y == realPosition.Y && DestRealPosition.InteriorID == realPosition.InteriorID)
+                return;
 
-            if(realPosition.InteriorID == Position.InteriorID && (realPosition.X != Position.X || realPosition.Y != Position.Y))
+            if(realPosition.X != Position.X || realPosition.Y != Position.Y)
             {
-                destPosition = realPosition.Clone();
-            }
-        }
+                WorldPosition blockPosition = realPosition.ToBlockPosition();
 
-        public void WalkToBlock(Point blockPosition)
-        {
-            StopWalking();
+                if (realPosition.InteriorID != Position.InteriorID)
+                {
+                    WalkToBlock(blockPosition);
+                }
+                else
+                {
+                    if (DestBlockPosition != null && DestBlockPosition.X == blockPosition.X && DestBlockPosition.Y == blockPosition.Y) // TODO Add interior ID
+                        return;
 
-            Point currentBlock = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-
-            if(currentBlock.X != blockPosition.X || currentBlock.Y != blockPosition.Y)
-            {
-                findPathTask = PathFinder.FindPath(new WorldPosition(currentBlock.X, currentBlock.Y, Position.InteriorID), new WorldPosition(blockPosition.X, blockPosition.Y, Position.InteriorID));
-
-                walkPath = null;
-                Direction = Vector2.Zero;
+                    StopWalking();
+                    DestRealPosition = realPosition.Clone();
+                }
             }
         }
 
         public void WalkToBlock(WorldPosition blockPosition)
         {
+            if (DestBlockPosition != null && DestBlockPosition.X == blockPosition.X && DestBlockPosition.Y == blockPosition.Y && DestBlockPosition.InteriorID == blockPosition.InteriorID)
+                return;
+
             StopWalking();
 
-            Point currentBlock = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            Point currentBlock = Position.ToBlockPositionPoint();
 
             if (Position.InteriorID != blockPosition.InteriorID || currentBlock.X != blockPosition.X || currentBlock.Y != blockPosition.Y)
             {
-                // TODO: WHAT HAPPENS IF WE CHANGE INTERIOR => AI TOPIC?
-                findPathTask = PathFinder.FindPath(new WorldPosition(currentBlock.X, currentBlock.Y, Position.InteriorID), blockPosition);
+                DestBlockPosition = blockPosition;
 
                 walkPath = null;
                 Direction = Vector2.Zero;
@@ -125,12 +129,19 @@ namespace Simulation.Game.Objects.Entities
 
         private void loadWalkpath(GameTime gameTime)
         {
+            if (DestBlockPosition != null && walkPath == null && findPathTask == null)
+            {
+                // TODO: WHAT HAPPENS IF WE CHANGE INTERIOR => AI TOPIC?
+                findPathTask = PathFinder.FindPath(Position.ToBlockPosition(), DestBlockPosition);
+            }
+
+
             if (findPathTask != null && findPathTask.IsCompleted)
             {
                 if (findPathTask.Result != null && findPathTask.Result.Count > 1)
                 {
                     walkPath = findPathTask.Result;
-                    walkPath.RemoveAt(0);
+                    // walkPath.RemoveAt(0);
                 }
 
                 findPathTask = null;
@@ -163,7 +174,7 @@ namespace Simulation.Game.Objects.Entities
 
             if (walkPath != null)
             {
-                var destPos = new Vector2(walkPath[0].x * WorldGrid.BlockSize.X + 16, walkPath[0].y * WorldGrid.BlockSize.Y + 31);
+                var destPos = new Vector2(walkPath[0].x * WorldGrid.BlockSize.X + 16, walkPath[0].y * WorldGrid.BlockSize.Y + 20);
 
                 // Check if we are at position
                 if (Math.Abs(destPos.X - Position.X) < GeometryUtils.SmallFloat && Math.Abs(destPos.Y - Position.Y) < GeometryUtils.SmallFloat)
@@ -201,24 +212,22 @@ namespace Simulation.Game.Objects.Entities
                     }
                 }
             }
-            else if(destPosition != null)
+            else if(DestRealPosition != null)
             {
                 if(Direction == Vector2.Zero)
                 {
-                    Direction = new Vector2(destPosition.X - Position.X, destPosition.Y - Position.Y);
+                    Direction = new Vector2(DestRealPosition.X - Position.X, DestRealPosition.Y - Position.Y);
                     Direction.Normalize();
                 }
 
-                bool couldWalk = changePosition(gameTime, destPosition.ToVector());
+                bool couldWalk = changePosition(gameTime, DestRealPosition.ToVector());
 
                 // Check if we couldn't move to position
                 if (!couldWalk)
                 {
-                    Point destBlock = GeometryUtils.GetChunkPosition((int)destPosition.X, (int)destPosition.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-
-                    WalkToBlock(destBlock);
+                    WalkToBlock(DestRealPosition.ToBlockPosition());
                 }
-                else if (Math.Abs(destPosition.X - Position.X) < GeometryUtils.SmallFloat && Math.Abs(destPosition.Y - Position.Y) < GeometryUtils.SmallFloat)
+                else if (Math.Abs(DestRealPosition.X - Position.X) < GeometryUtils.SmallFloat && Math.Abs(DestRealPosition.Y - Position.Y) < GeometryUtils.SmallFloat)
                 {
                     StopWalking();
 
@@ -232,7 +241,7 @@ namespace Simulation.Game.Objects.Entities
                     }
                 }
             }
-            else
+            else if(this is Player)
             {
                 if (Direction != Vector2.Zero)
                 {

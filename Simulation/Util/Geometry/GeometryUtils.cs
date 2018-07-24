@@ -64,6 +64,18 @@ namespace Simulation.Util.Geometry
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool VectorsWithinDistance(WorldPosition p1, WorldPosition p2, float d)
+        {
+            return p1.InteriorID == p2.InteriorID && ((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y)) < d * d;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool VectorsWithinDistance(Vector2 v1, Vector2 v2, float d)
+        {
+            return ((v1.X - v2.X) * (v1.X - v2.X) + (v1.Y - v2.Y) * (v1.Y - v2.Y)) < d * d;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool VectorsWithinDistance(float x1, float y1, float x2, float y2, float d)
         {
             return ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) < d * d;

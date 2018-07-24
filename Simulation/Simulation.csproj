@@ -48,7 +48,7 @@
     <Compile Include="Game\AI\BehaviorTree\Nodes\ParentBaseNode.cs" />
     <Compile Include="Game\AI\AIExtensions.cs" />
     <Compile Include="Game\AI\Tasks\FightTask.cs" />
-    <Compile Include="Game\AI\Tasks\GoToObjectTask.cs" />
+    <Compile Include="Game\AI\Tasks\FollowObjectTask.cs" />
     <Compile Include="Game\AI\Tasks\WaitTask.cs" />
     <Compile Include="Game\AI\Tasks\WanderTask.cs" />
     <Compile Include="Game\AI\BaseAI.cs" />
@@ -64,9 +64,9 @@
     <Compile Include="Game\AI\BehaviorTree\Nodes\SelectorNode.cs" />
     <Compile Include="Game\AI\BehaviorTree\Nodes\SequenceNode.cs" />
     <Compile Include="Game\AI\BehaviorTree\Nodes\SingleStepActionNode.cs" />
-    <Compile Include="Game\AI\FightingAI.cs" />
     <Compile Include="Game\AI\FollowAI.cs" />
-    <Compile Include="Game\AI\UtilitySystem\UtilitySystem.cs" />
+    <Compile Include="Game\AI\TaskRater\TaskDescription.cs" />
+    <Compile Include="Game\AI\TaskRater\TaskRater.cs" />
     <Compile Include="Game\AI\WanderAI.cs" />
     <Compile Include="Game\Enums\BlockingType.cs" />
     <Compile Include="Game\Enums\BlockType.cs" />

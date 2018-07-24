@@ -1,10 +1,36 @@
-﻿using Simulation.Game.Objects.Entities;
+﻿using Simulation.Game.AI.BehaviorTree;
+using Simulation.Game.AI.Tasks;
+using Simulation.Game.Objects.Entities;
 using System;
 
 namespace Simulation.Game.AI
 {
-    public class FollowAI
+    public class FollowAI: BaseAI
     {
-        public FollowAI(MovingEntity movingEntity) { }
+        private LivingEntity target;
+        private float tillDistance;
+
+        public FollowAI(MovingEntity movingEntity, LivingEntity target, float realDistance): base(movingEntity)
+        {
+            this.target = target;
+            this.tillDistance = realDistance;
+
+            Init();
+        }
+
+        protected override IBehaviorTreeNode createBehaviorTree()
+        {
+            BehaviorTreeBuilder builder = new BehaviorTreeBuilder();
+
+            return AIExtensions.WithFightingAI(
+                builder
+                .Sequence()
+                    .LongRunning(() => new WaitTask(Entity, TimeSpan.FromMilliseconds(200)))
+                    .LongRunning(() => new FollowObjectTask(Entity, target, tillDistance))
+                .End()
+                .Build(),
+                Entity
+            );
+        }
     }
 }

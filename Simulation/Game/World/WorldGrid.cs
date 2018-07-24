@@ -68,7 +68,7 @@ namespace Simulation.Game.World
 
         public bool IsRealPositionWalkable(WorldPosition realPosition)
         {
-            var blockPosition = realPosition.BlockPosition;
+            var blockPosition = realPosition.ToBlockPositionPoint();
 
             if (realPosition.InteriorID == Interior.Outside)
             {
@@ -84,7 +84,7 @@ namespace Simulation.Game.World
 
         public WorldLink GetWorldLinkFromPosition(WorldPosition realPosition)
         {
-            var worldBlockPosition = realPosition.BlockPosition;
+            var worldBlockPosition = realPosition.ToBlockPositionPoint();
             WorldLink worldLink = null;
 
             if (realPosition.InteriorID == Interior.Outside)

@@ -13,7 +13,7 @@ namespace Simulation.Game.Renderer.Entities
         public static LivingEntityRendererInformation createPlayerRenderInformation()
         {
             var texture = SimulationGame.ContentManager.Load<Texture2D>(@"Characters\Player");
-            var sheet = new Spritesheet.Spritesheet(texture).WithGrid((32, 48)).WithCellOrigin(new Point(16, 48)).WithFrameDuration(160);
+            var sheet = new Spritesheet.Spritesheet(texture).WithGrid((32, 48)).WithCellOrigin(new Point(16, 38)).WithFrameDuration(160);
             var rendererInformation = new LivingEntityRendererInformation(
                 sheet.CreateAnimation((0, 0), (1, 0), (2, 0), (3, 0)),
                 sheet.CreateAnimation((0, 3), (1, 3), (2, 3), (3, 3)),
@@ -27,7 +27,7 @@ namespace Simulation.Game.Renderer.Entities
         public static LivingEntityRendererInformation CreateGeraltRenderInformation()
         {
             var texture = SimulationGame.ContentManager.Load<Texture2D>(@"Characters\Geralt");
-            var sheet = new Spritesheet.Spritesheet(texture).WithGrid((32, 48)).WithCellOrigin(new Point(16, 48)).WithFrameDuration(160);
+            var sheet = new Spritesheet.Spritesheet(texture).WithGrid((32, 48)).WithCellOrigin(new Point(16, 38)).WithFrameDuration(160);
             var rendererInformation = new LivingEntityRendererInformation(
                 sheet.CreateAnimation((1, 0), (0, 0), (1, 0), (2, 0)),
                 sheet.CreateAnimation((1, 3), (0, 3), (1, 3), (2, 3)),
