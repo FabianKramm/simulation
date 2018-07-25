@@ -2,9 +2,9 @@
 {
     public enum FractionRelationType
     {
-        NEUTRAL = 1,
-        HOSTILE = 2,
-        FRIENDLY = 4,
-        ALLIED = 8
+        HOSTILE = -1,
+        NEUTRAL = 49,
+        FRIENDLY = 99,
+        ALLIED = 100
     }
 }

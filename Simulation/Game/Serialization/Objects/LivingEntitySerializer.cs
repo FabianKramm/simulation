@@ -15,7 +15,7 @@ namespace Simulation.Game.Serialization.Objects
             "Fraction",
             "MaximumLife",
             "CurrentLife",
-            "Skills"
+            "AttentionRadius"
         };
 
         protected static void Deserialize(ref JObject jObject, LivingEntity livingEntity)

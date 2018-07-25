@@ -65,8 +65,8 @@
     <Compile Include="Game\AI\BehaviorTree\Nodes\SequenceNode.cs" />
     <Compile Include="Game\AI\BehaviorTree\Nodes\SingleStepActionNode.cs" />
     <Compile Include="Game\AI\FollowAI.cs" />
-    <Compile Include="Game\AI\TaskRater\TaskDescription.cs" />
-    <Compile Include="Game\AI\TaskRater\TaskRater.cs" />
+    <Compile Include="Game\AI\Evaluation\TaskDescription.cs" />
+    <Compile Include="Game\AI\Evaluation\TaskRater.cs" />
     <Compile Include="Game\AI\WanderAI.cs" />
     <Compile Include="Game\Enums\BlockingType.cs" />
     <Compile Include="Game\Enums\BlockType.cs" />

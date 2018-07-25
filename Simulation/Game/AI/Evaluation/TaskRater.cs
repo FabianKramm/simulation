@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Simulation.Game.AI.TaskRater
+namespace Simulation.Game.AI.Evaluation
 {
     public class TaskRater
     {

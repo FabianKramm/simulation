@@ -1,12 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.AI.Tasks;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Simulation.Game.AI.TaskRater
+namespace Simulation.Game.AI.Evaluation
 {
     public class TaskDescription
     {

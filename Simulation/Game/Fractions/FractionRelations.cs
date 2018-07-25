@@ -28,21 +28,7 @@ namespace Simulation.Game.Fractions
             }}
         };
 
-        public static int GetAggroFromFractionRelation(FractionRelationType fractionRelation)
-        {
-            if (fractionRelation == FractionRelationType.ALLIED)
-                return 125;
-
-            if (fractionRelation == FractionRelationType.FRIENDLY)
-                return 75;
-
-            if (fractionRelation == FractionRelationType.NEUTRAL)
-                return 25;
-
-            return -25;
-        }
-
-        public static FractionRelationType GetFractionRelationFromAggro(int aggro)
+        /*public static FractionRelationType GetFractionRelationFromAggro(int aggro)
         {
             if (aggro >= 100)
                 return FractionRelationType.ALLIED;
@@ -54,20 +40,20 @@ namespace Simulation.Game.Fractions
                 return FractionRelationType.NEUTRAL;
 
             return FractionRelationType.HOSTILE;
-        }
+        } */
 
-        public static FractionRelationType GetFractionRelation(LivingEntity origin, LivingEntity target)
+        public static int GetAggro(LivingEntity origin, LivingEntity target)
         {
             if (origin.Fraction == target.Fraction)
-                return FractionRelationType.ALLIED;
+                return (int)FractionRelationType.ALLIED;
 
             if (fractionRelations.ContainsKey(origin.Fraction) == false)
-                return FractionRelationType.NEUTRAL;
+                return (int)FractionRelationType.NEUTRAL;
 
             if (fractionRelations[origin.Fraction].ContainsKey(target.Fraction) == false)
-                return FractionRelationType.NEUTRAL;
+                return (int)FractionRelationType.NEUTRAL;
 
-            return fractionRelations[origin.Fraction][target.Fraction];
+            return (int)fractionRelations[origin.Fraction][target.Fraction];
         }
     }
 }

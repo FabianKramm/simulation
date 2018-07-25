@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Objects.Entities;
-using Simulation.Util;
 using System;
 using Simulation.Util.Geometry;
 using Simulation.Game.World;
@@ -10,7 +9,7 @@ namespace Simulation.Game.Effects
 {
     public class Fireball: Effect
     {
-        private static float maxDistance = 16 * WorldGrid.BlockSize.X;
+        public static readonly float MaxDistance = 16 * WorldGrid.BlockSize.X;
 
         public float Angle;
         public bool HasHitTarget = false;
@@ -44,7 +43,7 @@ namespace Simulation.Game.Effects
             {
                 updatePosition(new WorldPosition(Position.X + (direction.X * velocity * gameTime.ElapsedGameTime.Milliseconds), Position.Y + (direction.Y * velocity * gameTime.ElapsedGameTime.Milliseconds), Position.InteriorID));
 
-                if (GeometryUtils.VectorsWithinDistance(Position.X, Position.Y, startPosition.X, startPosition.Y, maxDistance))
+                if (GeometryUtils.VectorsWithinDistance(Position.X, Position.Y, startPosition.X, startPosition.Y, MaxDistance))
                 {
                     var rotateVector = new Vector2(Position.X, Position.Y + 7.5f);
                     var rotatedPoint = GeometryUtils.Rotate(Angle, Position.ToVector(), ref rotateVector);

@@ -6,6 +6,66 @@ namespace Simulation.Util.Collision
 {
     class ShapeCollision
     {
+        public static Rect ConvertLineToRect(Point v1, Point v2)
+        {
+            int minX = v1.X;
+            int minY = v1.Y;
+            int maxX = v1.X;
+            int maxY = v1.Y;
+
+            if (v2.X < minX)
+                minX = v2.X;
+            if (v2.X > maxX)
+                maxX = v2.X;
+            if (v2.Y < minY)
+                minY = v2.Y;
+            if (v2.Y > maxY)
+                maxY = v2.Y;
+
+            return new Rect(minX, minY, (maxX - minX) + 1, (maxY - minY) + 1);
+        }
+
+        public static Rect ConvertLineToRect(Vector2 v1, Vector2 v2)
+        {
+            float minX = v1.X;
+            float minY = v1.Y;
+            float maxX = v1.X;
+            float maxY = v1.Y;
+
+            if (v2.X < minX)
+                minX = v2.X;
+            if (v2.X > maxX)
+                maxX = v2.X;
+            if (v2.Y < minY)
+                minY = v2.Y;
+            if (v2.Y > maxY)
+                maxY = v2.Y;
+
+            return new Rect((int)minX, (int)minY, ((int)maxX - (int)minX) + 1, ((int)maxY - (int)minY) + 1);
+        }
+
+        public static Rect ConvertPolyToRect(Vector2[] poly)
+        {
+            float minX = float.PositiveInfinity;
+            float minY = float.PositiveInfinity;
+            float maxX = float.NegativeInfinity;
+            float maxY = float.NegativeInfinity;
+
+            foreach (var v in poly)
+            {
+                if (v.X < minX)
+                    minX = v.X;
+                if (v.X > maxX)
+                    maxX = v.X;
+                if (v.Y < minY)
+                    minY = v.Y;
+                if (v.Y > maxY)
+                    maxY = v.Y;
+            }
+
+            return new Rect((int)minX, (int)minY, ((int)maxX - (int)minX) + 1, ((int)maxY - (int)minY) + 1);
+        }
+
         public static bool RectIntersectsPoly(Rect r1, Vector2[] poly2)
         {
             return PolyIntersectsPoly(poly2, new Vector2[] {

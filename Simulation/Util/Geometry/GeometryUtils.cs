@@ -19,17 +19,17 @@ namespace Simulation.Util.Geometry
 
         public static readonly float SmallFloat = 0.1f;
 
-        public static Vector2[] GetRectangleFromPoints(Point start, Point end, float radius)
+        public static Vector2[] GetRectangleFromLine(Point start, Point end, float lineWidth)
         {
             Vector2 perpendicularVector = GetPerpendicularVector(start, end);
             perpendicularVector.Normalize();
 
             return new Vector2[]
             {
-                new Vector2(start.X - perpendicularVector.X * radius, start.Y - perpendicularVector.Y * radius),
-                new Vector2(start.X + perpendicularVector.X * radius, start.Y + perpendicularVector.Y * radius),
-                new Vector2(end.X + perpendicularVector.X * radius, end.Y + perpendicularVector.Y * radius),
-                new Vector2(end.X - perpendicularVector.X * radius, end.Y - perpendicularVector.Y * radius)
+                new Vector2(start.X - perpendicularVector.X * lineWidth, start.Y - perpendicularVector.Y * lineWidth),
+                new Vector2(start.X + perpendicularVector.X * lineWidth, start.Y + perpendicularVector.Y * lineWidth),
+                new Vector2(end.X + perpendicularVector.X * lineWidth, end.Y + perpendicularVector.Y * lineWidth),
+                new Vector2(end.X - perpendicularVector.X * lineWidth, end.Y - perpendicularVector.Y * lineWidth)
             };
         }
 

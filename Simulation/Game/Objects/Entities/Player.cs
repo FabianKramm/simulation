@@ -4,6 +4,11 @@ using Simulation.Game.Skills;
 using Simulation.Game.World;
 using Simulation.Game.Enums;
 using Simulation.Util.Geometry;
+using Simulation.Util.Collision;
+using System.Collections.Generic;
+using System.Diagnostics;
+using Simulation.Game.Hud;
+using System;
 
 namespace Simulation.Game.Objects.Entities
 {
@@ -15,8 +20,8 @@ namespace Simulation.Game.Objects.Entities
         {
             Skills = new Skill[]
             {
-                new FireballSkill(this, new Vector2(0, -20)),
-                new SlashSkill(this, new Vector2(0, -24))
+                new FireballSkill(this, new Vector2(0, -10)),
+                new SlashSkill(this, new Vector2(0, -14))
             };
 
             Velocity = 0.2f;
@@ -66,13 +71,29 @@ namespace Simulation.Game.Objects.Entities
                 // Skills[1].Use(SimulationGame.MousePosition);
             }
 
-            /* if (mouseState.LeftButton == ButtonState.Pressed)
+            if (mouseState.LeftButton == ButtonState.Pressed)
             {
                 if (!leftMouseClick)
                 {
-                    Point clickedBlock = GeometryUtils.GetChunkPosition((int)SimulationGame.MousePosition.X, (int)SimulationGame.MousePosition.Y, World.WorldGrid.BlockSize.X, World.WorldGrid.BlockSize.Y);
-                    WalkToBlock(new WorldPosition(clickedBlock.X, clickedBlock.Y, SimulationGame.Player.InteriorID));
+                    List<LivingEntity> entities = CollisionUtils.GetLivingHittedObjects(new Rect((int)SimulationGame.MousePosition.X, (int)SimulationGame.MousePosition.Y, 1, 1), InteriorID, this);
 
+                    if(entities.Count > 0)
+                    {
+                        var target = entities[0];
+
+                        var stopwatch = Stopwatch.StartNew();
+                        stopwatch.Start();
+
+                        var isBlocked = CollisionUtils.IsSightBlocked(this, target, 16);
+
+                        stopwatch.Stop();
+
+                        GameConsole.WriteLine("IsBlocked to Target(" + target.ID + "): " + (isBlocked ? "true" : "false") + " took " + stopwatch.ElapsedMilliseconds + "ms");
+                    }
+
+                    // Point clickedBlock = GeometryUtils.GetChunkPosition((int)SimulationGame.MousePosition.X, (int)SimulationGame.MousePosition.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+                    
+                    // WalkToBlock(new WorldPosition(clickedBlock.X, clickedBlock.Y, SimulationGame.Player.InteriorID));
                     // WalkToPosition(new WorldPosition(SimulationGame.MousePosition.X, SimulationGame.MousePosition.Y, SimulationGame.Player.InteriorID));
 
                     leftMouseClick = true;
@@ -81,7 +102,7 @@ namespace Simulation.Game.Objects.Entities
             else
             {
                 leftMouseClick = false;
-            }*/
+            }
 
             Direction = newDirection;
 

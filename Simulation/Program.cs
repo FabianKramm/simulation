@@ -29,6 +29,11 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
+            // WorldLoader.ResetWorld();
+
+            using (var game = new SimulationGame())
+              game.Run(); 
+
             /* var rect1 = new Rect(0, 0, 10, 10);
             var rect2 = new Rect(0, 0, 10, 10);
 
@@ -87,10 +92,7 @@ namespace Simulation
 
             //Console.WriteLine(WorldObjectSerializer.Deserialize(WorldObjectSerializer.Serialize(AmbientObjectFactory.createTree(new Vector2(0,0)))));
 
-            // WorldLoader.ResetWorld();
 
-            using (var game = new SimulationGame())
-              game.Run();           
 
             //ulong point = GeometryUtils.ConvertPointToLong(0, 0);
 

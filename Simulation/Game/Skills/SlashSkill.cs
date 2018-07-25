@@ -2,11 +2,14 @@
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Effects;
 using Simulation.Game.Hud;
+using Simulation.Game.World;
 
 namespace Simulation.Game.Skills
 {
     public class SlashSkill : Skill
     {
+        public static readonly int Range = WorldGrid.BlockSize.X * 2;
+
         private Vector2 relativeOriginPosition;
         private bool flipped;
 

@@ -1,26 +1,80 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Enums;
-using Simulation.Game.Fractions;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;
-using System;
 using System.Collections.Generic;
 
 namespace Simulation.Util.Collision
 {
     public class CollisionUtils
     {
-        public static LivingEntity GetClosestLivingTarget(Circle hitboxBounds, string interiorId, HitableObject origin, FractionRelationType fractionRelationType)
+        public static bool IsSightBlocked(HitableObject origin, HitableObject target, int lineWidth)
+        {
+            if (origin.InteriorID != target.InteriorID)
+                return true;
+
+            Point originPoint = origin.Position.ToPoint();
+            Point targetPoint = target.Position.ToPoint();
+
+            Rect unionRect = ShapeCollision.ConvertLineToRect(originPoint, targetPoint);
+            List<HitableObject> hittedObjects = GetHittedObjects(unionRect, origin.InteriorID, origin);
+
+            Vector2[] polyRect = GeometryUtils.GetRectangleFromLine(originPoint, targetPoint, lineWidth);
+
+            foreach (var hitableObject in hittedObjects)
+                if (hitableObject != target && ShapeCollision.RectIntersectsPoly(hitableObject.HitBoxBounds, polyRect))
+                    return true;
+
+            // Check if blocks are of type hitable && if they intersect with the polyRect
+            Point topLeft = GeometryUtils.GetChunkPosition(unionRect.Left, unionRect.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            Point bottomRight = GeometryUtils.GetChunkPosition(unionRect.Right, unionRect.Bottom, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+
+            for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
+                for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
+                    if (GetHitBoxTypeFromBlock(blockX, blockY, origin.InteriorID) == HitBoxType.HITABLE_BLOCK && ShapeCollision.RectIntersectsPoly(new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y), polyRect))
+                        return true;
+
+            return false;
+        }
+
+        public static bool IsSightBlocked(HitableObject origin, HitableObject target)
+        {
+            if (origin.InteriorID != target.InteriorID)
+                return true;
+
+            Vector2 originVector = origin.Position.ToVector();
+            Vector2 targetVector = target.Position.ToVector();
+
+            Rect unionRect = ShapeCollision.ConvertLineToRect(originVector, targetVector);
+            List<HitableObject> hittedObjects = GetHittedObjects(unionRect, origin.InteriorID, origin);
+
+            foreach(var hitableObject in hittedObjects)
+                if (hitableObject != target && ShapeCollision.LineIntersectsRectangle(originVector, targetVector, hitableObject.HitBoxBounds))
+                    return true;
+
+            // Check if blocks are of type hitable
+            Point topLeft = GeometryUtils.GetChunkPosition(unionRect.Left, unionRect.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+            Point bottomRight = GeometryUtils.GetChunkPosition(unionRect.Right, unionRect.Bottom, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+
+            for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
+                for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
+                    if (GetHitBoxTypeFromBlock(blockX, blockY, origin.InteriorID) == HitBoxType.HITABLE_BLOCK && ShapeCollision.LineIntersectsRectangle(originVector, targetVector, new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
+                        return true;
+
+            return false;
+        }
+
+        public static LivingEntity GetClosestLivingTarget(Circle hitboxBounds, string interiorId, HitableObject origin, int maxAggro)
         {
             Rect rectangleHitboxBounds = new Rect(hitboxBounds.CenterX - hitboxBounds.Radius, hitboxBounds.CenterY - hitboxBounds.Radius, 2 * hitboxBounds.Radius, 2 * hitboxBounds.Radius);
-            LivingEntity livingTarget = GetClosestLivingTarget(rectangleHitboxBounds, interiorId, origin, fractionRelationType);
+            LivingEntity livingTarget = GetClosestLivingTarget(rectangleHitboxBounds, interiorId, origin, maxAggro);
 
             return hitboxBounds.Intersects(livingTarget.HitBoxBounds) ? livingTarget : null;
         }
 
-        public static LivingEntity GetClosestLivingTarget(Rect hitboxBounds, string interiorId, HitableObject origin, FractionRelationType fractionRelationType = FractionRelationType.ALLIED)
+        public static LivingEntity GetClosestLivingTarget(Rect hitboxBounds, string interiorId, HitableObject origin, int maxAggro)
         {
             ThreadingUtils.assertMainThread();
 
@@ -42,7 +96,7 @@ namespace Simulation.Util.Collision
                             foreach (HitableObject hitableObject in worldGridChunk.OverlappingObjects)
                                 if (hitableObject is LivingEntity && 
                                     hitableObject != origin && 
-                                    FractionRelations.GetFractionRelation((LivingEntity)origin, (LivingEntity)hitableObject) == fractionRelationType && 
+                                    ((LivingEntity)origin).GetAggroTowardsEntity((LivingEntity)hitableObject) <= maxAggro && 
                                     hitableObject.HitBoxBounds.Intersects(hitboxBounds))
                                 {
                                     var distance = GeometryUtils.GetDiagonalDistance(hitableObject.Position.X, hitableObject.Position.Y, origin.Position.X, origin.Position.Y);
@@ -59,7 +113,7 @@ namespace Simulation.Util.Collision
                             foreach (var hitableObject in worldGridChunk.ContainedObjects)
                                 if (hitableObject is LivingEntity && 
                                     hitableObject != origin &&
-                                    FractionRelations.GetFractionRelation((LivingEntity)origin, (LivingEntity)hitableObject) == fractionRelationType &&
+                                    ((LivingEntity)origin).GetAggroTowardsEntity((LivingEntity)hitableObject) <= maxAggro &&
                                     hitableObject.HitBoxBounds.Intersects(hitboxBounds))
                                 {
                                     var distance = GeometryUtils.GetDiagonalDistance(hitableObject.Position.X, hitableObject.Position.Y, origin.Position.X, origin.Position.Y);
@@ -79,7 +133,7 @@ namespace Simulation.Util.Collision
                 foreach (var hitableObject in interior.ContainedObjects)
                     if (hitableObject is LivingEntity && 
                         hitableObject != origin &&
-                        FractionRelations.GetFractionRelation((LivingEntity)origin, (LivingEntity)hitableObject) == fractionRelationType && 
+                        ((LivingEntity)origin).GetAggroTowardsEntity((LivingEntity)hitableObject) <= maxAggro &&
                         hitableObject.HitBoxBounds.Intersects(hitboxBounds))
                     {
                         var distance = GeometryUtils.GetDiagonalDistance(hitableObject.Position.X, hitableObject.Position.Y, origin.Position.X, origin.Position.Y);
@@ -93,6 +147,39 @@ namespace Simulation.Util.Collision
             }
 
             return (LivingEntity)closestTarget;
+        }
+
+        public static List<LivingEntity> GetLivingHittedObjects(Circle hitboxBounds, string interiorId, HitableObject origin, int maxAggro)
+        {
+            Rect rectangleHitboxBounds = new Rect(hitboxBounds.CenterX - hitboxBounds.Radius, hitboxBounds.CenterY - hitboxBounds.Radius, 2 * hitboxBounds.Radius, 2 * hitboxBounds.Radius);
+            List<LivingEntity> hittedObjects = GetLivingHittedObjects(rectangleHitboxBounds, interiorId, origin);
+
+            for (int i = 0; i < hittedObjects.Count; i++)
+            {
+                if (hitboxBounds.Intersects(hittedObjects[i].HitBoxBounds) == false || ((LivingEntity)origin).GetAggroTowardsEntity(hittedObjects[i]) > maxAggro)
+                {
+                    hittedObjects.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            return hittedObjects;
+        }
+
+        public static List<LivingEntity> GetLivingHittedObjects(Rect hitboxBounds, string interiorId, HitableObject origin, int maxAggro)
+        {
+            List<LivingEntity> hittedObjects = GetLivingHittedObjects(hitboxBounds, interiorId, origin);
+
+            for (int i = 0; i < hittedObjects.Count; i++)
+            {
+                if (((LivingEntity)origin).GetAggroTowardsEntity(hittedObjects[i]) > maxAggro)
+                {
+                    hittedObjects.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            return hittedObjects;
         }
 
         public static List<LivingEntity> GetLivingHittedObjects(Circle hitboxBounds, string interiorId, HitableObject origin)
@@ -397,6 +484,44 @@ namespace Simulation.Util.Collision
                     return HitBoxType.HITABLE_BLOCK;
                 default:
                     return HitBoxType.NO_HITBOX;
+            }
+        }
+
+        public static BlockingType GetBlockingTypeFromBlock(int blockX, int blockY, string interiorID)
+        {
+            if (interiorID == Interior.Outside)
+            {
+                Point chunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
+                WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkPos.X, chunkPos.Y);
+                BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
+
+                return GetBlockingTypeFromBlock(blockType);
+            }
+            else
+            {
+                Interior interior = SimulationGame.World.InteriorManager.Get(interiorID);
+                BlockType blockType = interior.GetBlockType(blockX, blockY);
+
+                return GetBlockingTypeFromBlock(blockType);
+            }
+        }
+
+        public static HitBoxType GetHitBoxTypeFromBlock(int blockX, int blockY, string interiorID)
+        {
+            if (interiorID == Interior.Outside)
+            {
+                Point chunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
+                WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkPos.X, chunkPos.Y);
+                BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
+
+                return GetHitBoxTypeFromBlock(blockType);
+            }
+            else
+            {
+                Interior interior = SimulationGame.World.InteriorManager.Get(interiorID);
+                BlockType blockType = interior.GetBlockType(blockX, blockY);
+
+                return GetHitBoxTypeFromBlock(blockType);
             }
         }
     }

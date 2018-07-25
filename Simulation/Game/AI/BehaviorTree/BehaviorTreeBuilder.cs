@@ -109,6 +109,7 @@ namespace Simulation.Game.AI.BehaviorTree
             return this;
         }
 
+        // The result of the task is cached till a different branch is executed or the tree is out of running state
         public BehaviorTreeBuilder LongRunningResultCached(Func<BehaviorTask> taskCreator)
         {
             var longRunningActionNode = new LongRunningActionNode(taskCreator, false, true);
