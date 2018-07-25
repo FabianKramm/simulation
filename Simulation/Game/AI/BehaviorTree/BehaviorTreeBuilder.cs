@@ -100,6 +100,15 @@ namespace Simulation.Game.AI.BehaviorTree
             return this;
         }
 
+        public BehaviorTreeBuilder SingleStepResultCached(Func<GameTime, BehaviourTreeStatus> action)
+        {
+            var singleStepActionNode = new SingleStepActionNode(action, true);
+
+            parentNodeStack.Peek().AddChild(singleStepActionNode);
+
+            return this;
+        }
+
         public BehaviorTreeBuilder LongRunning(Func<BehaviorTask> taskCreator)
         {
             var longRunningActionNode = new LongRunningActionNode(taskCreator);

@@ -15,7 +15,15 @@ namespace Simulation.Game.AI
             return builder
                 .Selector()
                     .LongRunning(() => new FightTask(entity))
-                    .Splice(tree)
+                    .Sequence()
+                        .SingleStepResultCached((GameTime gameTime) =>
+                        {
+                            entity.StopWalking();
+
+                            return BehaviourTreeStatus.Success;
+                        })
+                        .Splice(tree)
+                    .End()
                 .End()
                 .Build();
         }

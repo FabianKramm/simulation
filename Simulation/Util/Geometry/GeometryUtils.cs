@@ -64,6 +64,12 @@ namespace Simulation.Util.Geometry
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetEuclideanDistance(WorldPosition p1, WorldPosition p2)
+        {
+            return p1.InteriorID == p2.InteriorID ? (float)Math.Sqrt((p2.X - p1.X) * (p2.X - p1.X) + (p2.Y - p1.Y) * (p2.Y - p1.Y)) : float.PositiveInfinity;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool VectorsWithinDistance(WorldPosition p1, WorldPosition p2, float d)
         {
             return p1.InteriorID == p2.InteriorID && ((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y)) < d * d;

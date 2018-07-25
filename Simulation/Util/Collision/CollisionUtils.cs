@@ -218,12 +218,14 @@ namespace Simulation.Util.Collision
                         if (worldGridChunk.OverlappingObjects != null)
                             foreach (HitableObject hitableObject in worldGridChunk.OverlappingObjects)
                                 if (hitableObject is LivingEntity && hitableObject.IsHitable && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
-                                    hittedObjecs.Add((LivingEntity)hitableObject);
+                                    if (hittedObjecs.Contains((LivingEntity)hitableObject) == false)
+                                        hittedObjecs.Add((LivingEntity)hitableObject);
 
                         if (worldGridChunk.ContainedObjects != null)
                             foreach (var hitableObject in worldGridChunk.ContainedObjects)
                                 if (hitableObject is LivingEntity && hitableObject.IsHitable && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
-                                    hittedObjecs.Add((LivingEntity)hitableObject);
+                                    if (hittedObjecs.Contains((LivingEntity)hitableObject) == false)
+                                        hittedObjecs.Add((LivingEntity)hitableObject);
                     }
             }
             else
@@ -232,7 +234,8 @@ namespace Simulation.Util.Collision
 
                 foreach (var hitableObject in interior.ContainedObjects)
                     if (hitableObject is LivingEntity && hitableObject.IsHitable && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
-                        hittedObjecs.Add((LivingEntity)hitableObject);
+                        if (hittedObjecs.Contains((LivingEntity)hitableObject) == false)
+                            hittedObjecs.Add((LivingEntity)hitableObject);
             }
 
             return hittedObjecs;
@@ -274,12 +277,14 @@ namespace Simulation.Util.Collision
                         if (worldGridChunk.OverlappingObjects != null)
                             foreach (HitableObject hitableObject in worldGridChunk.OverlappingObjects)
                                 if (hitableObject != origin && hitableObject.IsHitable && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
-                                    hittedObjecs.Add(hitableObject);
+                                    if (hittedObjecs.Contains(hitableObject) == false)
+                                        hittedObjecs.Add(hitableObject);
 
                         if (worldGridChunk.ContainedObjects != null)
                             foreach (var hitableObject in worldGridChunk.ContainedObjects)
                                 if (hitableObject != origin && hitableObject.IsHitable && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
-                                    hittedObjecs.Add(hitableObject);
+                                    if (hittedObjecs.Contains(hitableObject) == false)
+                                        hittedObjecs.Add(hitableObject);
                     }
             }
             else
@@ -288,7 +293,8 @@ namespace Simulation.Util.Collision
 
                 foreach (var hitableObject in interior.ContainedObjects)
                     if (hitableObject != origin && hitableObject.IsHitable && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
-                        hittedObjecs.Add(hitableObject);
+                        if (hittedObjecs.Contains(hitableObject) == false)
+                            hittedObjecs.Add(hitableObject);
             }
 
             return hittedObjecs;

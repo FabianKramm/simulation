@@ -16,7 +16,7 @@ namespace Simulation.Game.Objects.Entities
         public BaseAI BaseAI;
         public Skill[] Skills;
 
-        public int AttentionRadius
+        public int AttentionBlockRadius
         {
             get; protected set;
         } = 10;
@@ -34,7 +34,7 @@ namespace Simulation.Game.Objects.Entities
         public FractionType Fraction
         {
             get; private set;
-        }
+        } = FractionType.NEUTRAL;
         
         public LivingEntityType LivingEntityType
         {
@@ -80,7 +80,7 @@ namespace Simulation.Game.Objects.Entities
 
         public void SetAttentionRadius(int attentionRadius)
         {
-            AttentionRadius = attentionRadius;
+            AttentionBlockRadius = attentionRadius;
         }
 
         public void SetAI(BaseAI baseAI)

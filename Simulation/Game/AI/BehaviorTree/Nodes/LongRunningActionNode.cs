@@ -68,7 +68,7 @@ namespace Simulation.Game.AI.BehaviorTree.Nodes
                 Reset();
             }
 
-            return taskInstance.Status;
+            return retStatus;
         }
     }
 }

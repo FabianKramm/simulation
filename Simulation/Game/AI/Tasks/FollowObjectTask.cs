@@ -7,6 +7,8 @@ namespace Simulation.Game.AI.Tasks
 {
     public class FollowObjectTask: BehaviorTask
     {
+        public static readonly string ID = "FollowObjectTask";
+
         private float tillDistance;
         private GameObject target;
 

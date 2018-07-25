@@ -12,7 +12,10 @@ namespace Simulation.Game.AI.Evaluation
 
         public void AddTask(string taskIdentifier, Func<GameTime, BehaviorTask> taskCreator, float initialScore = 0)
         {
-            taskDictionary[taskIdentifier] = new TaskDescription(taskIdentifier, taskCreator, initialScore);
+            if(taskDictionary.ContainsKey(taskIdentifier) == false)
+            {
+                taskDictionary[taskIdentifier] = new TaskDescription(taskIdentifier, taskCreator, initialScore);
+            }
         }
 
         public void ModifyScore(string taskIdentifier, float modify)

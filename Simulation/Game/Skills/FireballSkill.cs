@@ -12,7 +12,7 @@ namespace Simulation.Game.Skills
         // Serialization
         protected FireballSkill(LivingEntity owner) : base(owner) { }
 
-        public FireballSkill(LivingEntity owner, Vector2? relativeOriginPosition = null) : base(owner, 200)
+        public FireballSkill(LivingEntity owner, Vector2? relativeOriginPosition = null) : base(owner, 700)
         {
             this.relativeOriginPosition = relativeOriginPosition ?? Vector2.Zero;
         }
