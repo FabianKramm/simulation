@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.AI.Evaluation;
 using Simulation.Game.AI.Tasks;
+using Simulation.Game.Effects;
 using Simulation.Game.Enums;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Skills;
@@ -45,26 +46,39 @@ namespace Simulation.Game.AI.AITasks
             {
                 Circle circle = new Circle((int)subject.Position.X, (int)subject.Position.Y, subject.AttentionRadius);
                 List<LivingEntity> hittedEntities = CollisionUtils.GetLivingHittedObjects(circle, subject.InteriorID, subject, (int)FractionRelationType.HOSTILE);
+                Vector2 subjectVectorPosition = subject.Position.ToVector();
 
                 if (hittedEntities.Count > 0)
                 {
                     foreach(var hittedEntity in hittedEntities)
                     {
-                        
+                        if (CollisionUtils.IsSightBlocked(subject, hittedEntity))
+                            continue;
+
+                        var hittedEntityVector = hittedEntity.Position.ToVector();
+                        var needToGetCloser = false;
 
                         foreach (var skill in subject.Skills)
                         {
                             if (skill.IsReady() == false)
                                 continue;
 
-                            if (skill is FireballSkill)
+                            if (skill is FireballSkill && GeometryUtils.VectorsWithinDistance(subjectVectorPosition, hittedEntityVector, Fireball.MaxDistance) && CollisionUtils.IsSightBlocked(subject, hittedEntity, 15))
                             {
-
+                                skill.Use(hittedEntityVector);
+                            }
+                            else
+                            {
+                                needToGetCloser = true;
                             }
 
-                            if (skill is SlashSkill)
+                            if (skill is SlashSkill && GeometryUtils.VectorsWithinDistance(subjectVectorPosition, hittedEntityVector, SlashSkill.Range))
                             {
-
+                                skill.Use(hittedEntityVector);
+                            }
+                            else
+                            {
+                                needToGetCloser = true;
                             }
                         }
                     }
