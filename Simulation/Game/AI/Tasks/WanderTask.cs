@@ -40,9 +40,6 @@ namespace Simulation.Game.AI.Tasks
                 {
                     Point randomPoint = GeneratorUtils.GetRandomPointInCircle(random, findCircle);
 
-                    if (randomPoint.X == findCircle.CenterX && randomPoint.Y == findCircle.CenterY)
-                        continue;
-
                     var realPosition = new WorldPosition(randomPoint.X * WorldGrid.BlockSize.X, randomPoint.Y * WorldGrid.BlockSize.Y, interiorID);
                     var isBlockWalkable = SimulationGame.World.IsRealPositionWalkable(realPosition);
                     var worldLink = SimulationGame.World.GetWorldLinkFromPosition(realPosition);

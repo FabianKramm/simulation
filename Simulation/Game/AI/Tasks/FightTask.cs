@@ -117,8 +117,6 @@ namespace Simulation.Game.AI.AITasks
                     }
                     else
                     {
-                        ((MovingEntity)subject).StopWalking();
-
                         activeTask = null;
                         activeTaskId = null;
                     }
