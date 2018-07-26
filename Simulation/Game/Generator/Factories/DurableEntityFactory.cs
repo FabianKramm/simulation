@@ -11,7 +11,7 @@ namespace Simulation.Game.Generator.Factories
     {
         public static DurableEntity CreateGeralt()
         {
-            var geralt = new DurableEntity(LivingEntityType.GERALT, new WorldPosition(WorldGrid.BlockSize.X * 3, WorldGrid.BlockSize.Y * 3), FractionType.BANDIT);
+            var geralt = new DurableEntity(LivingEntityType.GERALT, new WorldPosition(WorldGrid.BlockSize.X * 3, WorldGrid.BlockSize.Y * 3, Interior.Outside), FractionType.NPC);
 
             geralt.Skills = new Skill[2]
             {
@@ -19,7 +19,8 @@ namespace Simulation.Game.Generator.Factories
                 new SlashSkill(geralt, new Vector2(0, -14))
             };
 
-            geralt.BaseAI = new WanderAI(geralt, 10);
+            // geralt.BaseAI = new WanderAI(geralt, 10);
+            geralt.BaseAI = new FollowAI(geralt, SimulationGame.Player, WorldGrid.BlockSize.X);
 
             return geralt;
         }

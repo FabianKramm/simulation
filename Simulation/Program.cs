@@ -31,8 +31,8 @@ namespace Simulation
         {
             // WorldLoader.ResetWorld();
 
-            using (var game = new SimulationGame())
-              game.Run(); 
+            // using (var game = new SimulationGame())
+            //   game.Run(); 
 
             /* var rect1 = new Rect(0, 0, 10, 10);
             var rect2 = new Rect(0, 0, 10, 10);

@@ -469,6 +469,44 @@ namespace Simulation.Util.Collision
             }
         }
 
+        public static bool IsRealPositionWalkable(WorldPosition realPosition)
+        {
+            var blockPosition = realPosition.ToBlockPositionPoint();
+
+            if (realPosition.InteriorID == Interior.Outside)
+            {
+                return SimulationGame.World.WalkableGrid.IsBlockWalkable(blockPosition.X, blockPosition.Y);
+            }
+            else
+            {
+                return SimulationGame.World.InteriorManager.Get(realPosition.InteriorID).IsBlockWalkable(blockPosition.X, blockPosition.Y);
+            }
+        }
+
+        public static bool IsBlockPositionWalkable(WorldPosition blockPosition)
+        {
+            if (blockPosition.InteriorID == Interior.Outside)
+            {
+                return SimulationGame.World.WalkableGrid.IsBlockWalkable((int)blockPosition.X, (int)blockPosition.Y);
+            }
+            else
+            {
+                return SimulationGame.World.InteriorManager.Get(blockPosition.InteriorID).IsBlockWalkable((int)blockPosition.X, (int)blockPosition.Y);
+            }
+        }
+
+        public static bool IsBlockPositionWalkable(int blockX, int blockY, string interiorID)
+        {
+            if (interiorID == Interior.Outside)
+            {
+                return SimulationGame.World.WalkableGrid.IsBlockWalkable(blockX, blockY);
+            }
+            else
+            {
+                return SimulationGame.World.InteriorManager.Get(interiorID).IsBlockWalkable(blockX, blockY);
+            }
+        }
+
         public static BlockingType GetBlockingTypeFromBlock(BlockType blockType)
         {
             switch(blockType)

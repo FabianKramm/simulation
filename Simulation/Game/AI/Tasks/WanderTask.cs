@@ -3,6 +3,7 @@ using Simulation.Game.AI.BehaviorTree;
 using Simulation.Game.Generator;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
+using Simulation.Util.Collision;
 using Simulation.Util.Geometry;
 using System;
 using System.Threading.Tasks;
@@ -41,7 +42,7 @@ namespace Simulation.Game.AI.Tasks
                     Point randomPoint = GeneratorUtils.GetRandomPointInCircle(random, findCircle);
 
                     var realPosition = new WorldPosition(randomPoint.X * WorldGrid.BlockSize.X, randomPoint.Y * WorldGrid.BlockSize.Y, interiorID);
-                    var isBlockWalkable = SimulationGame.World.IsRealPositionWalkable(realPosition);
+                    var isBlockWalkable = CollisionUtils.IsRealPositionWalkable(realPosition);
                     var worldLink = SimulationGame.World.GetWorldLinkFromPosition(realPosition);
 
                     if (isBlockWalkable && worldLink == null)
@@ -52,7 +53,7 @@ namespace Simulation.Game.AI.Tasks
             });
         }
 
-        public override void Update(GameTime gameTime)
+        protected override BehaviourTreeStatus internalUpdate(GameTime gameTime)
         {
             var movingSubject = (MovingEntity)subject;
 
@@ -60,7 +61,7 @@ namespace Simulation.Game.AI.Tasks
             {
                 if (findNextWalkablePoint == null)
                 {
-                    Status = BehaviourTreeStatus.Success;
+                    return BehaviourTreeStatus.Success;
                 }
                 else if (findNextWalkablePoint != null && findNextWalkablePoint.IsCompleted)
                 {
@@ -72,12 +73,14 @@ namespace Simulation.Game.AI.Tasks
                     }
                     else
                     {
-                        Status = BehaviourTreeStatus.Success;
+                        return BehaviourTreeStatus.Success;
                     }
 
                     findNextWalkablePoint = null;
                 }
             }
+
+            return BehaviourTreeStatus.Running;
         }
     }
 }

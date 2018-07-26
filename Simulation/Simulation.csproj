@@ -48,7 +48,8 @@
     <Compile Include="Game\AI\BehaviorTree\Nodes\ParentBaseNode.cs" />
     <Compile Include="Game\AI\AIExtensions.cs" />
     <Compile Include="Game\AI\Tasks\FightTask.cs" />
-    <Compile Include="Game\AI\Tasks\FollowObjectTask.cs" />
+    <Compile Include="Game\AI\Tasks\FleeTask.cs" />
+    <Compile Include="Game\AI\Tasks\FollowTask.cs" />
     <Compile Include="Game\AI\Tasks\WaitTask.cs" />
     <Compile Include="Game\AI\Tasks\WanderTask.cs" />
     <Compile Include="Game\AI\BaseAI.cs" />

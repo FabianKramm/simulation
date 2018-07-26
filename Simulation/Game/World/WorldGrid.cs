@@ -66,22 +66,6 @@ namespace Simulation.Game.World
             }
         }
 
-        public bool IsRealPositionWalkable(WorldPosition realPosition)
-        {
-            var blockPosition = realPosition.ToBlockPositionPoint();
-
-            if (realPosition.InteriorID == Interior.Outside)
-            {
-                return SimulationGame.World.WalkableGrid.IsBlockWalkable(blockPosition.X, blockPosition.Y);
-            }
-            else
-            {
-                return SimulationGame.World.InteriorManager.Get(realPosition.InteriorID).IsBlockWalkable(blockPosition.X, blockPosition.Y);
-            }
-        }
-
-        
-
         public WorldLink GetWorldLinkFromPosition(WorldPosition realPosition)
         {
             var worldBlockPosition = realPosition.ToBlockPositionPoint();

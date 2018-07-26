@@ -6,6 +6,7 @@ using Simulation.Game.Renderer.Entities;
 using Simulation.Game.Skills;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;
+using System;
 using System.Collections.Generic;
 
 namespace Simulation.Game.Objects.Entities
@@ -24,7 +25,7 @@ namespace Simulation.Game.Objects.Entities
         public int MaximumLife
         {
             get; protected set;
-        }
+        } = 100;
 
         public int CurrentLife
         {
@@ -51,6 +52,7 @@ namespace Simulation.Game.Objects.Entities
         {
             this.LivingEntityType = livingEntityType;
             this.Fraction = fraction;
+            this.CurrentLife = MaximumLife;
         }
 
         public void ChangeAggroTowardsEntity(LivingEntity otherEntity, int modifier)
@@ -72,10 +74,10 @@ namespace Simulation.Game.Objects.Entities
 
             return aggroLookup[otherEntity.ID];
         }
-
-        public void UseSkill(Skill skill, Vector2 target)
+       
+        public bool IsDead()
         {
-            skill.Use(target);
+            return CurrentLife <= 0;
         }
 
         public void SetAttentionRadius(int attentionRadius)
@@ -86,6 +88,18 @@ namespace Simulation.Game.Objects.Entities
         public void SetAI(BaseAI baseAI)
         {
             this.BaseAI = baseAI;
+        }
+
+        public void ModifyHealth(int modifier)
+        {
+            CurrentLife = Math.Max(0, Math.Min(MaximumLife, CurrentLife + modifier));
+
+            if(CurrentLife <= 0)
+            {
+                // Add die effect
+
+                DisconnectFromWorld();
+            }
         }
 
         public virtual void Update(GameTime gameTime)

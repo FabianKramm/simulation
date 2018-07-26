@@ -2,6 +2,7 @@
 using Simulation.Game.World;
 using Simulation.Util;
 using Simulation.Util.Geometry;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -68,33 +69,38 @@ namespace Simulation.PathFinding
             if (startBlockPos.InteriorID == endBlockPos.InteriorID)
                 return null;
 
+            bool switched = false;
+
             // We want to start at the end, because starting outside can be problematic
             if (startBlockPos.InteriorID == Interior.Outside)
             {
                 WorldPosition temp = startBlockPos;
                 startBlockPos = endBlockPos;
                 endBlockPos = temp;
+
+                switched = true;
             }
 
             List<string> done = new List<string>() { startBlockPos.InteriorID };
-            SortedList<float, WorldLink> open = new SortedList<float, WorldLink>();
+            SortedList<float, List<WorldLink>> open = new SortedList<float, List<WorldLink>>();
             Interior startInterior = SimulationGame.World.InteriorManager.Get(startBlockPos.InteriorID);
 
             foreach (var worldLinkItem in startInterior.WorldLinks)
             {
                 if (worldLinkItem.Value.ToInteriorID == endBlockPos.InteriorID)
-                    return worldLinkItem.Value.ToBlock;
+                    return switched ? worldLinkItem.Value.ToBlock : worldLinkItem.Value.FromBlock;
                 if (worldLinkItem.Value.ToInteriorID == Interior.Outside || done.Contains(worldLinkItem.Value.ToInteriorID))
                     continue;
 
-                open.Add(GeometryUtils.GetDiagonalDistance(startBlockPos.X, startBlockPos.Y, worldLinkItem.Value.FromBlock.X, worldLinkItem.Value.FromBlock.Y), worldLinkItem.Value);
+                open.Add(GeometryUtils.GetDiagonalDistance(startBlockPos.X, startBlockPos.Y, worldLinkItem.Value.FromBlock.X, worldLinkItem.Value.FromBlock.Y), new List<WorldLink>() { worldLinkItem.Value });
                 done.Add(worldLinkItem.Value.ToInteriorID);
             }
 
             while (open.Count > 0)
             {
                 float distance = open.Keys[0];
-                WorldLink worldLink = open.Values[0];
+                List<WorldLink> worldLinkList = open.Values[0];
+                WorldLink worldLink = worldLinkList[worldLinkList.Count - 1];
 
                 open.RemoveAt(0);
 
@@ -104,11 +110,15 @@ namespace Simulation.PathFinding
                 foreach (var worldLinkItem in interior.WorldLinks)
                 {
                     if (worldLinkItem.Value.ToInteriorID == endBlockPos.InteriorID)
-                        return worldLinkItem.Value.ToBlock;
+                        return switched ? worldLinkItem.Value.ToBlock : worldLinkList[0].FromBlock;
                     if (worldLinkItem.Value.ToInteriorID == Interior.Outside || done.Contains(worldLinkItem.Value.ToInteriorID))
                         continue;
 
-                    open.Add(distance + GeometryUtils.GetDiagonalDistance(worldLink.ToBlock.X, worldLink.ToBlock.Y, worldLinkItem.Value.FromBlock.X, worldLinkItem.Value.FromBlock.Y), worldLinkItem.Value);
+                    List<WorldLink> clonedList = new List<WorldLink>(worldLinkList);
+
+                    clonedList.Add(worldLinkItem.Value);
+
+                    open.Add(distance + GeometryUtils.GetDiagonalDistance(worldLink.ToBlock.X, worldLink.ToBlock.Y, worldLinkItem.Value.FromBlock.X, worldLinkItem.Value.FromBlock.Y), clonedList);
                     done.Add(worldLinkItem.Value.ToInteriorID);
                 }
             }

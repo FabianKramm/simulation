@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.AI.BehaviorTree;
 using Simulation.Game.AI.Evaluation;
 using Simulation.Game.AI.Tasks;
 using Simulation.Game.Effects;
@@ -21,29 +22,7 @@ namespace Simulation.Game.AI.AITasks
 
         public FightTask(LivingEntity livingEntity): base(livingEntity) { }
 
-        /*
-            * Wander AI:
-            * Selector    
-            *  FightTask
-            *  Sequence
-            *    WaitTask
-            *    WanderTask
-            * 
-            * while(Fightable Entity is in radius) {
-            *     Decide between actions
-            *      MoveCloserToTarget
-            *      Wait
-            *      UseSkillIfInRange And Not Cooldown
-            *      Flee
-            *      
-            *  Tick
-            *      Class
-            *          Score, TaskCreator
-            *  
-            *  
-            * }
-            */
-        public override void Update(GameTime gameTime)
+        protected override BehaviourTreeStatus internalUpdate(GameTime gameTime)
         {
             if(subject.Skills.Length > 0)
             {
@@ -99,7 +78,7 @@ namespace Simulation.Game.AI.AITasks
                         }
 
                         if (getCloser)
-                            taskRater.AddTask(FollowObjectTask.ID + hittedEntity.ID, (GameTime _gameTime) => new FollowObjectTask((MovingEntity)subject, hittedEntity, WorldGrid.BlockSize.X), 20 * WorldGrid.BlockSize.X - distance + aggro);
+                            taskRater.AddTask(FollowTask.ID + hittedEntity.ID, (GameTime _gameTime) => new FollowTask((MovingEntity)subject, hittedEntity, WorldGrid.BlockSize.X), 100 - (distance / WorldGrid.BlockSize.X) + -aggro);
                     }
 
                     var highestTask = taskRater.GetHighestRanked();
@@ -122,11 +101,11 @@ namespace Simulation.Game.AI.AITasks
                     }
 
                     if(enemyInSight == true)
-                        return;
+                        return BehaviourTreeStatus.Running;
                 }
             }
 
-            setFailed();
+            return BehaviourTreeStatus.Failure;
         }
     }
 }

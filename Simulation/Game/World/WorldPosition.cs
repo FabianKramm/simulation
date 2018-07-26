@@ -27,27 +27,6 @@ namespace Simulation.Game.World
             InteriorID = Interior.Outside;
         }
 
-        public WorldPosition(Point position)
-        {
-            X = position.X;
-            Y = position.Y;
-            InteriorID = Interior.Outside;
-        }
-
-        public WorldPosition(Vector2 position)
-        {
-            X = position.X;
-            Y = position.Y;
-            InteriorID = Interior.Outside;
-        }
-
-        public WorldPosition(float x, float y)
-        {
-            X = x;
-            Y = y;
-            InteriorID = Interior.Outside;
-        }
-
         public WorldPosition(Point position, string interiorID)
         {
             X = position.X;

@@ -14,14 +14,16 @@ namespace Simulation.Game.AI.Tasks
             waited = waitTime;
         }
 
-        public override void Update(GameTime gameTime)
+        protected override BehaviourTreeStatus internalUpdate(GameTime gameTime)
         {
             waited -= gameTime.ElapsedGameTime;
 
             if (waited.TotalMilliseconds <= 0)
             {
-                Status = BehaviourTreeStatus.Success;
+                return BehaviourTreeStatus.Success;
             }
+
+            return BehaviourTreeStatus.Running;
         }
     }
 }

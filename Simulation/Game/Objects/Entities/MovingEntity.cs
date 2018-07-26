@@ -83,7 +83,7 @@ namespace Simulation.Game.Objects.Entities
             if (DestRealPosition != null && DestRealPosition.X == realPosition.X && DestRealPosition.Y == realPosition.Y && DestRealPosition.InteriorID == realPosition.InteriorID)
                 return;
 
-            if(realPosition.X != Position.X || realPosition.Y != Position.Y)
+            if(realPosition.InteriorID != Position.InteriorID || realPosition.X != Position.X || realPosition.Y != Position.Y)
             {
                 WorldPosition blockPosition = realPosition.ToBlockPosition();
 
@@ -93,7 +93,7 @@ namespace Simulation.Game.Objects.Entities
                 }
                 else
                 {
-                    if (DestBlockPosition != null && DestBlockPosition.X == blockPosition.X && DestBlockPosition.Y == blockPosition.Y) // TODO Add interior ID
+                    if (DestBlockPosition != null && DestBlockPosition.X == blockPosition.X && DestBlockPosition.Y == blockPosition.Y && DestBlockPosition.InteriorID == realPosition.InteriorID)
                         return;
 
                     StopWalking();

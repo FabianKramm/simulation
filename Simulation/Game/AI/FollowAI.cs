@@ -26,7 +26,7 @@ namespace Simulation.Game.AI
                 builder
                 .Sequence()
                     .LongRunningResultCached(() => new WaitTask(Entity, TimeSpan.FromMilliseconds(200)))
-                    .LongRunningResultCached(() => new FollowObjectTask(Entity, target, tillDistance))
+                    .LongRunningResultCached(() => new FollowTask(Entity, target, tillDistance))
                 .End()
                 .Build(),
                 Entity

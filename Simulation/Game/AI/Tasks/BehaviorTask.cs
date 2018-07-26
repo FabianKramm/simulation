@@ -8,7 +8,7 @@ namespace Simulation.Game.AI.Tasks
     {
         public BehaviourTreeStatus Status
         {
-            get; protected set;
+            get; private set;
         } = BehaviourTreeStatus.Running;
 
         protected LivingEntity subject;
@@ -28,16 +28,12 @@ namespace Simulation.Game.AI.Tasks
 
         }
 
-        protected void setSuccessful()
+        public void Update(GameTime gameTime)
         {
-            Status = BehaviourTreeStatus.Success;
+            if(Status == BehaviourTreeStatus.Running)
+                Status = internalUpdate(gameTime);
         }
 
-        protected void setFailed()
-        {
-            Status = BehaviourTreeStatus.Failure;
-        }
-
-        public abstract void Update(GameTime gameTime);
+        protected abstract BehaviourTreeStatus internalUpdate(GameTime gameTime);
     }
 }
