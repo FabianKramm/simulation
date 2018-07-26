@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.AI.BehaviorTree;
-using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
 using Simulation.Util.Collision;
@@ -14,9 +13,9 @@ namespace Simulation.Game.AI.Tasks
         public static readonly string ID = "FleeTask";
 
         private float maxDistance;
-        private GameObject from;
+        private LivingEntity from;
 
-        public FleeTask(MovingEntity subject, GameObject from, float maxDistance): base(subject)
+        public FleeTask(MovingEntity subject, LivingEntity from, float maxDistance): base(subject)
         {
             this.from = from;
             this.maxDistance = maxDistance;

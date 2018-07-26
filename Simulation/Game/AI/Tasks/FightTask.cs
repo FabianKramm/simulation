@@ -9,8 +9,6 @@ using Simulation.Game.Skills;
 using Simulation.Game.World;
 using Simulation.Util.Collision;
 using Simulation.Util.Geometry;
-using System;
-using System.Collections.Generic;
 
 namespace Simulation.Game.AI.AITasks
 {
@@ -79,6 +77,9 @@ namespace Simulation.Game.AI.AITasks
 
                         if (getCloser)
                             taskRater.AddTask(FollowTask.ID + hittedEntity.ID, (GameTime _gameTime) => new FollowTask((MovingEntity)subject, hittedEntity, WorldGrid.BlockSize.X), 100 - (distance / WorldGrid.BlockSize.X) + -aggro);
+
+                        if (subject.CurrentLife / subject.MaximumLife < 0.2f)
+                            taskRater.AddTask(FleeTask.ID + hittedEntity.ID, (GameTime _gameTime) => new FleeTask((MovingEntity)subject, hittedEntity, 20 * WorldGrid.BlockSize.X), 1000 - (distance / WorldGrid.BlockSize.X) + -aggro);
                     }
 
                     var highestTask = taskRater.GetHighestRanked();
@@ -91,7 +92,7 @@ namespace Simulation.Game.AI.AITasks
                             activeTaskId = highestTask.TaskIdentifier;
                         }
 
-                        if(activeTask.Status == BehaviorTree.BehaviourTreeStatus.Running)
+                        if(activeTask.Status == BehaviourTreeStatus.Running)
                             activeTask.Update(gameTime);
                     }
                     else

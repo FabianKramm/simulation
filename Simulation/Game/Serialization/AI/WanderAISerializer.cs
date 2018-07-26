@@ -3,10 +3,6 @@ using Simulation.Game.AI;
 using Simulation.Game.Objects.Entities;
 using Simulation.Util;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Game.Serialization.AI
 {
@@ -20,7 +16,7 @@ namespace Simulation.Game.Serialization.AI
 
         public static WanderAI Deserialize(JObject jObject, MovingEntity movingEntity)
         {
-            WanderAI deserializedObject = ReflectionUtils.CallPrivateConstructor<WanderAI>(new Type[] { typeof(LivingEntity) }, new object[] { movingEntity });
+            WanderAI deserializedObject = ReflectionUtils.CallPrivateConstructor<WanderAI>(new Type[] { typeof(MovingEntity) }, new object[] { movingEntity });
 
             Deserialize(ref jObject, deserializedObject);
 

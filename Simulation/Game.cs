@@ -49,6 +49,8 @@ namespace Simulation
         public static readonly int TicksPerDay = 24 * TicksPerHour;
         public static readonly int MilliSecondsPerTick = 500;
 
+        public static bool IsPaused;
+
         public static float Ticks
         {
             get; private set;
@@ -205,7 +207,7 @@ namespace Simulation
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
-        {
+        {            
             Ticks += (float)gameTime.ElapsedGameTime.Milliseconds / (float)MilliSecondsPerTick;
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -213,7 +215,7 @@ namespace Simulation
 
             if (Keyboard.GetState().IsKeyDown(Keys.F1))
             {
-                if(!debugKeyDown)
+                if (!debugKeyDown)
                 {
                     debugKeyDown = true;
                     SimulationGame.IsDebug = !SimulationGame.IsDebug;
@@ -224,9 +226,12 @@ namespace Simulation
                 debugKeyDown = false;
             }
 
-            Camera.Update(gameTime);
-            Hud.Update(gameTime);
-            World.Update(gameTime);
+            if (IsPaused == false)
+            {
+                Camera.Update(gameTime);
+                Hud.Update(gameTime);
+                World.Update(gameTime);
+            }
 
             base.Update(gameTime);
         }

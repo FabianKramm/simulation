@@ -13,6 +13,8 @@ namespace Simulation.Game.Objects.Entities
 {
     public abstract class LivingEntity: HitableObject
     {
+        private static readonly TimeSpan lifeRegenInterval = TimeSpan.FromMilliseconds(500);
+
         public LivingEntityRendererInformation RendererInformation;
         public BaseAI BaseAI;
         public Skill[] Skills;
@@ -32,6 +34,11 @@ namespace Simulation.Game.Objects.Entities
             get; protected set;
         }
 
+        public float LifeRegeneration
+        {
+            get; protected set;
+        } = 0;
+
         public FractionType Fraction
         {
             get; private set;
@@ -43,6 +50,7 @@ namespace Simulation.Game.Objects.Entities
         }
 
         private Dictionary<string, int> aggroLookup = new Dictionary<string, int>();
+        private TimeSpan timeTillLifeRegen = TimeSpan.Zero;
 
         // Create from JSON
         protected LivingEntity() { }
@@ -110,6 +118,14 @@ namespace Simulation.Game.Objects.Entities
             if (Skills != null)
                 foreach (var skill in Skills)
                     skill.Update(gameTime);
+
+            timeTillLifeRegen += gameTime.ElapsedGameTime;
+
+            if(timeTillLifeRegen >= lifeRegenInterval)
+            {
+                ModifyHealth((int)(LifeRegeneration * timeTillLifeRegen.Milliseconds));
+                timeTillLifeRegen = TimeSpan.Zero;
+            }
         }
     }
 }
