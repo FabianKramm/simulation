@@ -41,7 +41,7 @@ namespace Simulation.Game.Effects
         {
             if(!HasHitTarget)
             {
-                updatePosition(new WorldPosition(Position.X + (direction.X * velocity * gameTime.ElapsedGameTime.Milliseconds), Position.Y + (direction.Y * velocity * gameTime.ElapsedGameTime.Milliseconds), Position.InteriorID));
+                updatePosition(new WorldPosition(Position.X + (direction.X * velocity * (int)gameTime.ElapsedGameTime.TotalMilliseconds), Position.Y + (direction.Y * velocity * gameTime.ElapsedGameTime.Milliseconds), Position.InteriorID));
 
                 if (GeometryUtils.VectorsWithinDistance(Position.X, Position.Y, startPosition.X, startPosition.Y, MaxDistance))
                 {

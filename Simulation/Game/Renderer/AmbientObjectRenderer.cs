@@ -1,56 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Simulation.Game.Enums;
 using Simulation.Game.Objects;
-using Simulation.Util;
 using Simulation.Util.Geometry;
 using System.Collections.Generic;
 
 namespace Simulation.Game.Renderer
 {
-    public enum AmbientObjectType
-    {
-        NO_OBJECT = 0,
-        SMALL_ROCK01,
-        SMALL_ROCK02,
-        SMALL_ROCK03,
-        SMALL_ROCK04,
-        SMALL_ROCK05
-    }
-
     public class AmbientObjectRenderer
     {
-        private class AmbientObjectRenderInformation
-        {
-            public string texture
-            {
-                get; private set;
-            }
-
-            public Rectangle spriteRectangle
-            {
-                get; private set;
-            }
-
-            public Vector2 origin
-            {
-                get; private set;
-            }
-
-            public bool hasDepth
-            {
-                get; private set;
-            }
-
-            public AmbientObjectRenderInformation(string texture, Rectangle spriteRectangle, bool hasDepth = false)
-            {
-                this.texture = texture;
-                this.spriteRectangle = spriteRectangle;
-                this.hasDepth = hasDepth;
-
-                origin = new Vector2(0, spriteRectangle.Height);
-            }
-        }
-
         private static Dictionary<AmbientObjectType, AmbientObjectRenderInformation> ambientObjectLookup = new Dictionary<AmbientObjectType, AmbientObjectRenderInformation> {
             { AmbientObjectType.NO_OBJECT, null },
             { AmbientObjectType.SMALL_ROCK01, new AmbientObjectRenderInformation(@"Environment\Rock01", new Rectangle(0, 0, 25, 20)) },

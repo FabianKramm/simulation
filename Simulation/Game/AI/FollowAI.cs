@@ -10,9 +10,9 @@ namespace Simulation.Game.AI
         private LivingEntity target;
         private float tillDistance;
 
-        public FollowAI(MovingEntity movingEntity, string targetId, float realDistance): base(movingEntity)
+        public FollowAI(MovingEntity movingEntity, LivingEntity target, float realDistance): base(movingEntity)
         {
-            // this.target = target;
+            this.target = target;
             this.tillDistance = realDistance;
 
             Init();

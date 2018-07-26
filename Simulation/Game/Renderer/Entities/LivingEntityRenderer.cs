@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Objects.Entities;
-using Simulation.Util;
 using System;
 using System.Collections.Generic;
-using Simulation.Spritesheet;
 using Simulation.Game.Enums;
 
 namespace Simulation.Game.Renderer.Entities
@@ -13,7 +11,7 @@ namespace Simulation.Game.Renderer.Entities
     {
         private static Dictionary<LivingEntityType, Func<LivingEntityRendererInformation>> informationGeneratorLookup = new Dictionary<LivingEntityType, Func<LivingEntityRendererInformation>> {
             { LivingEntityType.NO_ENTITY, null },
-            { LivingEntityType.PLAYER, () => LivingEntityRendererInformationFactory.createPlayerRenderInformation() },
+            { LivingEntityType.PLAYER, () => LivingEntityRendererInformationFactory.CreatePlayerRenderInformation() },
             { LivingEntityType.GERALT, () => LivingEntityRendererInformationFactory.CreateGeraltRenderInformation() }
         };
 

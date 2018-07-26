@@ -29,6 +29,11 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
+            TimeSpan abc = TimeSpan.FromMilliseconds(1000);
+            TimeSpan bcd = TimeSpan.FromSeconds(1);
+
+            Console.WriteLine(abc.TotalMilliseconds + " - " + bcd.TotalMilliseconds);
+
             // WorldLoader.ResetWorld();
 
             // using (var game = new SimulationGame())

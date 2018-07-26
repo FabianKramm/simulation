@@ -16,7 +16,7 @@ namespace Simulation.Game.Objects.Entities
     {
         private bool leftMouseClick;
 
-        public Player(): base(LivingEntityType.PLAYER, new WorldPosition(0, 0), FractionType.PLAYER, 3)
+        public Player(): base(LivingEntityType.PLAYER, new WorldPosition(0, 0, Interior.Outside), FractionType.PLAYER, 3)
         {
             Skills = new Skill[]
             {

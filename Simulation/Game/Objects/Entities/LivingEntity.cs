@@ -98,6 +98,14 @@ namespace Simulation.Game.Objects.Entities
             this.BaseAI = baseAI;
         }
 
+        public void Talk(string line)
+        {
+            if(RendererInformation != null)
+            {
+                RendererInformation.SpeechLine = line;
+            }
+        }
+
         public void ModifyHealth(int modifier)
         {
             CurrentLife = Math.Max(0, Math.Min(MaximumLife, CurrentLife + modifier));
@@ -123,7 +131,7 @@ namespace Simulation.Game.Objects.Entities
 
             if(timeTillLifeRegen >= lifeRegenInterval)
             {
-                ModifyHealth((int)(LifeRegeneration * timeTillLifeRegen.Milliseconds));
+                ModifyHealth((int)(LifeRegeneration * timeTillLifeRegen.TotalMilliseconds));
                 timeTillLifeRegen = TimeSpan.Zero;
             }
         }

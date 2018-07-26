@@ -48,7 +48,7 @@ namespace Simulation.Game.Effects
         {
             Duration -= gameTime.ElapsedGameTime;
 
-            if(Duration.Milliseconds <= 0)
+            if(Duration.TotalMilliseconds <= 0)
             {
                 ((MovingEntity)Origin).CanWalk = true;
                 IsFinished = true;

@@ -14,7 +14,7 @@ namespace Simulation.Game.Renderer.Effects
         public SlashRendererInformation(Slash slash)
         {
             var texture = SimulationGame.ContentManager.Load<Texture2D>(@"Spells\Slash\Slash");
-            var sheet = new Spritesheet.Spritesheet(texture).WithFrameEffect(slash.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None).WithGrid((64, 64)).WithCellOrigin(new Point(32, 32)).WithFrameDuration(slash.Duration.Milliseconds / 5);
+            var sheet = new Spritesheet.Spritesheet(texture).WithFrameEffect(slash.Flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None).WithGrid((64, 64)).WithCellOrigin(new Point(32, 32)).WithFrameDuration(slash.Duration.TotalMilliseconds / 5);
 
             slashAnimation = sheet.CreateAnimation((0, 0), (1, 0), (2, 0), (3, 0), (4, 0));
             slashAnimation.Start(Repeat.Mode.Once);

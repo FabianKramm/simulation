@@ -1,9 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Newtonsoft.Json;
-using Simulation.Game.Renderer;
+﻿using Simulation.Game.Enums;
 using Simulation.Game.World;
-using Simulation.Util;
 
 /*
 Requirements:

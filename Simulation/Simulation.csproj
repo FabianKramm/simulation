@@ -69,6 +69,7 @@
     <Compile Include="Game\AI\Evaluation\TaskDescription.cs" />
     <Compile Include="Game\AI\Evaluation\TaskRater.cs" />
     <Compile Include="Game\AI\WanderAI.cs" />
+    <Compile Include="Game\Enums\AmbientObjectType.cs" />
     <Compile Include="Game\Enums\BlockingType.cs" />
     <Compile Include="Game\Enums\BlockType.cs" />
     <Compile Include="Game\Enums\FractionRelationType.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Game\Generator\Factories\DurableEntityFactory.cs" />
     <Compile Include="Game\Generator\InteriorGeneration\InteriorGenerator.cs" />
     <Compile Include="Game\Hud\DebugHud.cs" />
+    <Compile Include="Game\Renderer\AmbientObjectRendererInformation.cs" />
     <Compile Include="Game\Renderer\Effects\EffectRenderer.cs" />
     <Compile Include="Game\Renderer\Effects\EffectRendererInformation.cs" />
     <Compile Include="Game\Renderer\Effects\SlashRenderer.cs" />

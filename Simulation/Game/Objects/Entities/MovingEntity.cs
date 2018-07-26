@@ -149,8 +149,8 @@ namespace Simulation.Game.Objects.Entities
 
         private bool changePosition(GameTime gameTime, Vector2 destPos)
         {
-            float newPosX = Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds;
-            float newPosY = Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds;
+            float newPosX = Position.X + Direction.X * Velocity * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            float newPosY = Position.Y + Direction.Y * Velocity * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             newPosX = Position.X < destPos.X ? Math.Min(destPos.X, newPosX) : Math.Max(destPos.X, newPosX);
             newPosY = Position.Y < destPos.Y ? Math.Min(destPos.Y, newPosY) : Math.Max(destPos.Y, newPosY);
@@ -244,8 +244,8 @@ namespace Simulation.Game.Objects.Entities
             {
                 if (Direction != Vector2.Zero)
                 {
-                    float newPosX = Position.X + Direction.X * Velocity * gameTime.ElapsedGameTime.Milliseconds;
-                    float newPosY = Position.Y + Direction.Y * Velocity * gameTime.ElapsedGameTime.Milliseconds;
+                    float newPosX = Position.X + Direction.X * Velocity * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    float newPosY = Position.Y + Direction.Y * Velocity * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                     var newPos = new WorldPosition(newPosX, newPosY, InteriorID);
 
                     if (CanWalk && canMove(newPos))

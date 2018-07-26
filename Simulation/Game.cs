@@ -208,7 +208,7 @@ namespace Simulation
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {            
-            Ticks += (float)gameTime.ElapsedGameTime.Milliseconds / (float)MilliSecondsPerTick;
+            Ticks += (float)gameTime.ElapsedGameTime.TotalMilliseconds / (float)MilliSecondsPerTick;
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();

@@ -6,6 +6,8 @@ namespace Simulation.Game.Renderer.Entities
 {
     public class LivingEntityRendererInformation
     {
+        public string SpeechLine;
+
         public WalkingDirection walkingDirection
         {
             get; private set;

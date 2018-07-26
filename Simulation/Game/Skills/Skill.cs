@@ -24,7 +24,7 @@ namespace Simulation.Game.Skills
 
         public virtual bool IsReady()
         {
-            return cooldownLeft.Milliseconds <= 0;
+            return cooldownLeft.TotalMilliseconds <= 0;
         }
 
         public virtual void Use(Vector2 targetPosition)

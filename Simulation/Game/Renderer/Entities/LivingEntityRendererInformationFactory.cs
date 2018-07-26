@@ -1,16 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Game.Renderer.Entities
 {
     public class LivingEntityRendererInformationFactory
     {
-        public static LivingEntityRendererInformation createPlayerRenderInformation()
+        public static LivingEntityRendererInformation CreatePlayerRenderInformation()
         {
             var texture = SimulationGame.ContentManager.Load<Texture2D>(@"Characters\Player");
             var sheet = new Spritesheet.Spritesheet(texture).WithGrid((32, 48)).WithCellOrigin(new Point(16, 38)).WithFrameDuration(160);
