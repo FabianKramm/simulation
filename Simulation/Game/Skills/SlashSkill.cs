@@ -40,7 +40,7 @@ namespace Simulation.Game.Skills
 
             flipped = !flipped;
 
-            SimulationGame.World.AddEffectToWorld(new Slash((MovingEntity)owner, targetPosition, flipped, relativeOriginPosition));
+            SimulationGame.World.AddEffectToWorld(new Slash((MovingEntity)owner, targetPosition, DamagePerHit, flipped, relativeOriginPosition));
         }
     }
 }

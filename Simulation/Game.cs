@@ -2,11 +2,8 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Simulation.Game;
 using Simulation.Game.World;
-using Simulation.Spritesheet;
 using Comora;
-using System.Collections.Generic;
 using Simulation.Util;
 using Simulation.Game.Hud;
 using Simulation.Game.Renderer;
@@ -111,6 +108,8 @@ namespace Simulation
 
         private SpriteBatch spriteBatch;
         private float zoom = 1.0f;
+
+        private bool pauseKeyDown = false;
         private bool debugKeyDown = false;
 
         public SimulationGame()
@@ -186,6 +185,17 @@ namespace Simulation
             // TODO: Unload any non ContentManager content here
         }
 
+        private void SaveAndExit()
+        {
+            IsPaused = true;
+
+            World.SaveAll();
+            World.WalkableGrid.SaveAll();
+            World.InteriorManager.SaveAll();
+
+            Exit();
+        }
+
         private void updateVisibleArea()
         {
             VisibleArea.X = (int)(SimulationGame.Camera.Position.X - Resolution.Width * 0.5f * (1/zoom)) - WorldGrid.RenderOuterBlockRange * WorldGrid.BlockSize.X;
@@ -212,19 +222,32 @@ namespace Simulation
             Ticks += (float)gameTime.ElapsedGameTime.TotalMilliseconds / (float)MilliSecondsPerTick;
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+                SaveAndExit();
 
             if (Keyboard.GetState().IsKeyDown(Keys.F1))
             {
                 if (!debugKeyDown)
                 {
                     debugKeyDown = true;
-                    SimulationGame.IsDebug = !SimulationGame.IsDebug;
+                    IsDebug = !IsDebug;
                 }
             }
             else
             {
                 debugKeyDown = false;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.F2))
+            {
+                if (!pauseKeyDown)
+                {
+                    pauseKeyDown = true;
+                    IsPaused = !IsPaused;
+                }
+            }
+            else
+            {
+                pauseKeyDown = false;
             }
 
             if (IsPaused == false)

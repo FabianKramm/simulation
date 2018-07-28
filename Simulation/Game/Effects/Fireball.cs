@@ -18,9 +18,12 @@ namespace Simulation.Game.Effects
         private Vector2 direction;
 
         private float velocity = 0.4f;
+        private float damage;
 
-        public Fireball(LivingEntity origin, Vector2 target, Vector2? relativeOriginPosition = null) : base(origin.Position, origin)
+        public Fireball(LivingEntity origin, Vector2 target, float damage, Vector2? relativeOriginPosition = null) : base(origin.Position, origin)
         {
+            this.damage = damage;
+
             Vector2 _relativeOriginPosition = relativeOriginPosition ?? Vector2.Zero;
             Vector2 newPosition = Vector2.Add(origin.Position.ToVector(), _relativeOriginPosition);
 
@@ -61,7 +64,9 @@ namespace Simulation.Game.Effects
                     {
                         HasHitTarget = true;
 
-                        // TODO: Apply effect on targets
+                        foreach (var hittedObject in hittedObjects)
+                            if (hittedObject is LivingEntity)
+                                ((LivingEntity)hittedObject).ModifyHealth((int)-damage);
                     }
                 }
                 else

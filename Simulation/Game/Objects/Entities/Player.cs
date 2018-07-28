@@ -57,15 +57,15 @@ namespace Simulation.Game.Objects.Entities
 
             if (state.IsKeyDown(Keys.D1))
             {
-                Skills[0].Use(SimulationGame.MousePosition);
+                Skills[1].Use(SimulationGame.MousePosition);
             }
 
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                // Skills[1].Use(SimulationGame.MousePosition);
+                Skills[0].Use(SimulationGame.MousePosition);
             }
 
-            if (mouseState.LeftButton == ButtonState.Pressed)
+            /*if (mouseState.LeftButton == ButtonState.Pressed)
             {
                 if (!leftMouseClick)
                 {
@@ -96,7 +96,7 @@ namespace Simulation.Game.Objects.Entities
             else
             {
                 leftMouseClick = false;
-            }
+            }*/
 
             SetDirection(newDirection);
 

@@ -53,6 +53,16 @@ namespace Simulation.Game.World
             });
         }
 
+        public void SaveAll()
+        {
+            ThreadingUtils.assertMainThread();
+
+            foreach(var part in loadedParts)
+            {
+                saveUnguarded(part.Key, part.Value);
+            }
+        }
+
         public bool IsLoaded(KEY key)
         {
             return loadedParts.ContainsKey(key);

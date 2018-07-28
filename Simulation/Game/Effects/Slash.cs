@@ -17,7 +17,7 @@ namespace Simulation.Game.Effects
 
         public Circle hitboxCircle;
 
-        public Slash(MovingEntity origin, Vector2 target, bool flipped, Vector2? relativeOriginPosition = null) : base(origin.Position, origin)
+        public Slash(MovingEntity origin, Vector2 target, float damage, bool flipped, Vector2? relativeOriginPosition = null) : base(origin.Position, origin)
         {
             Vector2 _relativeOriginPosition = relativeOriginPosition ?? Vector2.Zero;
             Vector2 newPosition = Vector2.Add(origin.Position.ToVector(), _relativeOriginPosition);
@@ -41,7 +41,9 @@ namespace Simulation.Game.Effects
 
             List<LivingEntity> hittedObjects = CollisionUtils.GetLivingHittedObjects(hitboxCircle, origin.InteriorID, origin);
 
-            // TODO: Do stuff
+            foreach (var hittedObject in hittedObjects)
+                if (hittedObject is LivingEntity)
+                    ((LivingEntity)hittedObject).ModifyHealth((int)-damage);
         }
 
         public override void Update(GameTime gameTime)
