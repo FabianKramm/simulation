@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Enums;
+using Simulation.Game.MetaData;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
@@ -316,7 +317,7 @@ namespace Simulation.Util.Collision
                         Point chunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
                         WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkPos.X, chunkPos.Y);
 
-                        BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
+                        int blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
                         if (GetHitBoxTypeFromBlock(blockType) == HitBoxType.HITABLE_BLOCK)
                             return true;
@@ -333,7 +334,7 @@ namespace Simulation.Util.Collision
                 for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
                     for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
                     {
-                        BlockType blockType = interior.GetBlockType(blockX, blockY);
+                        int blockType = interior.GetBlockType(blockX, blockY);
 
                         if (GetHitBoxTypeFromBlock(blockType) == HitBoxType.HITABLE_BLOCK)
                             return true;
@@ -381,7 +382,7 @@ namespace Simulation.Util.Collision
                         if (blockY < 0 || blockY >= interior.Dimensions.Y)
                             return true;
 
-                        BlockType blockType = interior.GetBlockType(blockX, blockY);
+                        int blockType = interior.GetBlockType(blockX, blockY);
 
                         if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
                             return true;
@@ -411,7 +412,7 @@ namespace Simulation.Util.Collision
                         Point chunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
                         WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkPos.X, chunkPos.Y);
 
-                        BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
+                        int blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
                         if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
                             return true;
@@ -455,7 +456,7 @@ namespace Simulation.Util.Collision
                         if (blockY < 0 || blockY >= interior.Dimensions.Y)
                             return true;
 
-                        BlockType blockType = interior.GetBlockType(blockX, blockY);
+                        int blockType = interior.GetBlockType(blockX, blockY);
 
                         if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
                             return true;
@@ -507,28 +508,14 @@ namespace Simulation.Util.Collision
             }
         }
 
-        public static BlockingType GetBlockingTypeFromBlock(BlockType blockType)
+        public static BlockingType GetBlockingTypeFromBlock(int blockType)
         {
-            switch(blockType)
-            {
-                case BlockType.NONE:
-                case BlockType.GRASS_WATERHOLE:
-                    return BlockingType.BLOCKING;
-                default:
-                    return BlockingType.NOT_BLOCKING;
-            }
+            return BlockType.lookup[blockType].BlockingType;
         }
 
-        public static HitBoxType GetHitBoxTypeFromBlock(BlockType blockType)
+        public static HitBoxType GetHitBoxTypeFromBlock(int blockType)
         {
-            switch (blockType)
-            {
-                case BlockType.NONE:
-                case BlockType.GRASS_WATERHOLE:
-                    return HitBoxType.HITABLE_BLOCK;
-                default:
-                    return HitBoxType.NO_HITBOX;
-            }
+            return BlockType.lookup[blockType].HitBoxType;
         }
 
         public static BlockingType GetBlockingTypeFromBlock(int blockX, int blockY, string interiorID)
@@ -537,14 +524,14 @@ namespace Simulation.Util.Collision
             {
                 Point chunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
                 WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkPos.X, chunkPos.Y);
-                BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
+                int blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
                 return GetBlockingTypeFromBlock(blockType);
             }
             else
             {
                 Interior interior = SimulationGame.World.InteriorManager.Get(interiorID);
-                BlockType blockType = interior.GetBlockType(blockX, blockY);
+                int blockType = interior.GetBlockType(blockX, blockY);
 
                 return GetBlockingTypeFromBlock(blockType);
             }
@@ -556,14 +543,14 @@ namespace Simulation.Util.Collision
             {
                 Point chunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
                 WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkPos.X, chunkPos.Y);
-                BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
+                int blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
                 return GetHitBoxTypeFromBlock(blockType);
             }
             else
             {
                 Interior interior = SimulationGame.World.InteriorManager.Get(interiorID);
-                BlockType blockType = interior.GetBlockType(blockX, blockY);
+                int blockType = interior.GetBlockType(blockX, blockY);
 
                 return GetHitBoxTypeFromBlock(blockType);
             }

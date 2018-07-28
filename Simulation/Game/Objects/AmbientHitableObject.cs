@@ -3,19 +3,17 @@ using Simulation.Game.Renderer;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;
 using Simulation.Game.Enums;
+using Simulation.Game.MetaData;
 
 namespace Simulation.Game.Objects
 {
     public class AmbientHitableObject: HitableObject
     {
-        public AmbientHitableObjectType AmbientHitableObjectType;
+        public int AmbientHitableObjectType;
 
         // Create from JSON
-        protected AmbientHitableObject() { }
+        protected AmbientHitableObject(): base() { }
 
-        public AmbientHitableObject(AmbientHitableObjectType ambientHitableObjectType, WorldPosition position, Rect relativeBlockingRectangle):
-            base(position, relativeBlockingRectangle, BlockingType.BLOCKING) {
-            this.AmbientHitableObjectType = ambientHitableObjectType;
-        }
+        public AmbientHitableObject(WorldPosition position): base(position) {}
     }
 }

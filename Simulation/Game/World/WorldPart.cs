@@ -22,7 +22,7 @@ namespace Simulation.Game.World
             get; protected set;
         }
 
-        protected BlockType[,] blockingGrid;
+        protected int[,] blockingGrid;
 
         public bool Connected = false;
 
@@ -39,8 +39,8 @@ namespace Simulation.Game.World
 
         protected WorldPart() { }
 
-        public abstract BlockType GetBlockType(int blockX, int blockY);
-        public abstract void SetBlockType(int blockX, int blockY, BlockType blockType);
+        public abstract int GetBlockType(int blockX, int blockY);
+        public abstract void SetBlockType(int blockX, int blockY, int blockType);
 
         public void AddEffect(Effect effect)
         {

@@ -15,6 +15,7 @@ using Simulation.Game.Generator.Factories;
 using System.Threading;
 using Simulation.Util.Geometry;
 using Simulation.Game.Objects.Entities;
+using Simulation.Game.MetaData;
 
 /*
  * Open Issues:
@@ -150,7 +151,7 @@ namespace Simulation
             Camera = new Camera(Graphics.GraphicsDevice);
             Camera.Zoom = zoom;
 
-            Player = new Player();
+            Player = (Player)LivingEntityType.Create(new WorldPosition(0, 0, Interior.Outside), LivingEntityType.lookup[LivingEntityType.Player]);
 
             base.Initialize();
         }

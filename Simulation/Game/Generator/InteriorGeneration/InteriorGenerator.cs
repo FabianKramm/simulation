@@ -20,7 +20,7 @@ namespace Simulation.Game.Generator.InteriorGeneration
             {
                 for(int j=0;j<dimY;j++)
                 {
-                    retInterior.SetBlockType(i, j, BlockType.GRASS_01);
+                    retInterior.SetBlockType(i, j, 1);
                 }
             }
 

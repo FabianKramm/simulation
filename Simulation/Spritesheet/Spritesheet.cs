@@ -51,6 +51,11 @@
             return this.WithGrid(cell, (0, 0), (0, 0));
         }
 
+        public Spritesheet WithGrid(Point cell)
+        {
+            return new Spritesheet(this.Texture, cell, Point.Zero, Point.Zero, this.FrameDefaultDuration, this.FrameDefaultEffects);
+        }
+
         #endregion
 
         #region Frame default settings

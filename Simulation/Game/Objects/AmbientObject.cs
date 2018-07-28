@@ -1,27 +1,21 @@
-﻿using Simulation.Game.Enums;
-using Simulation.Game.World;
-
-/*
+﻿/*
 Requirements:
     - Travel through large area
     - Enable background actions for some npcs
  
  */
+using Simulation.Game.MetaData;
+using Simulation.Game.World;
+
 namespace Simulation.Game.Objects
 {
     public class AmbientObject: GameObject
     {
-        public AmbientObjectType AmbientObjectType
-        {
-            get; private set;
-        }
+        public int AmbientObjectType;
 
-        // Create from JSON
-        protected AmbientObject() {}
+        // Json
+        protected AmbientObject(): base() { }
 
-        public AmbientObject(AmbientObjectType ambientObjectType, WorldPosition position, bool hasDepth = false) :base(position)
-        {
-            AmbientObjectType = ambientObjectType;
-        }
+        public AmbientObject(WorldPosition worldPosition): base(worldPosition) { }
     }
 }

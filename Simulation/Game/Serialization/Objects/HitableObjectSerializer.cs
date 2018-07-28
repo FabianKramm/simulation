@@ -9,9 +9,8 @@ namespace Simulation.Game.Serialization.Objects
     {
         private static readonly Type hitableObjectType = typeof(HitableObject);
         private static readonly string[] serializeableProperties = new string[] {
-            "relativeHitBoxBounds",
-            "relativeBlockingBounds",
-            "UseSameBounds",
+            "RelativeHitBoxBounds",
+            "RelativeBlockingBounds",
             "BlockingType",
             "HitBoxBounds",
             "BlockingBounds",

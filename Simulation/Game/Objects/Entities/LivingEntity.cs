@@ -5,7 +5,6 @@ using Simulation.Game.Fractions;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.Skills;
 using Simulation.Game.World;
-using Simulation.Util.Geometry;
 using System;
 using System.Collections.Generic;
 
@@ -14,54 +13,26 @@ namespace Simulation.Game.Objects.Entities
     public abstract class LivingEntity: HitableObject
     {
         private static readonly TimeSpan lifeRegenInterval = TimeSpan.FromMilliseconds(500);
-
         public LivingEntityRendererInformation RendererInformation;
+
+        public int LivingEntityType;
+        
         public BaseAI BaseAI;
         public Skill[] Skills;
 
-        public int AttentionBlockRadius
-        {
-            get; protected set;
-        } = 10;
-
-        public int MaximumLife
-        {
-            get; protected set;
-        } = 100;
-
-        public int CurrentLife
-        {
-            get; protected set;
-        }
-
-        public float LifeRegeneration
-        {
-            get; protected set;
-        } = 0;
-
-        public FractionType Fraction
-        {
-            get; private set;
-        } = FractionType.NEUTRAL;
-        
-        public LivingEntityType LivingEntityType
-        {
-            get; private set;
-        }
+        public int AttentionBlockRadius;
+        public int MaximumLife;
+        public int CurrentLife;
+        public float LifeRegeneration;
+        public FractionType Fraction;
 
         private Dictionary<string, int> aggroLookup = new Dictionary<string, int>();
         private TimeSpan timeTillLifeRegen = TimeSpan.Zero;
 
         // Create from JSON
-        protected LivingEntity() { }
+        protected LivingEntity() : base() { }
 
-        public LivingEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds, FractionType fraction) : 
-            base(position, relativeHitBoxBounds)
-        {
-            this.LivingEntityType = livingEntityType;
-            this.Fraction = fraction;
-            this.CurrentLife = MaximumLife;
-        }
+        protected LivingEntity(WorldPosition worldPosition): base(worldPosition) { }
 
         public void ChangeAggroTowardsEntity(LivingEntity otherEntity, int modifier)
         {

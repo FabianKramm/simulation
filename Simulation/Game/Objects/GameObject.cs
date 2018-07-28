@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.World;
 using Simulation.Util;
-using Simulation.Util.Geometry;
 
 namespace Simulation.Game.Objects
 {
@@ -34,15 +33,18 @@ namespace Simulation.Game.Objects
             get => Position.InteriorID;
         }
 
-        // Create from JSON
-        protected GameObject() {}
+        // Json
+        protected GameObject() { }
 
-        protected GameObject(WorldPosition position)
+        public GameObject(WorldPosition realPosition)
         {
-            Position = position.Clone();
-            BlockPosition = Position.ToBlockPositionPoint();
-
             ID = Util.Util.GetUUID();
+            Position = realPosition.Clone();
+        }
+
+        public virtual void Init()
+        {
+            BlockPosition = Position.ToBlockPositionPoint();
         }
 
         protected virtual void UpdatePosition(WorldPosition newPosition)

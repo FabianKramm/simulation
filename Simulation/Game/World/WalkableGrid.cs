@@ -90,7 +90,7 @@ namespace Simulation.Game.World
                     {
                         Point worldGridChunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
                         WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(worldGridChunkPos.X, worldGridChunkPos.Y);
-                        BlockType blockType = worldGridChunk.GetBlockType(blockX, blockY);
+                        int blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
                         if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
                             continue;

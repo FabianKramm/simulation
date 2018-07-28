@@ -72,15 +72,13 @@ namespace Simulation.Game.Generator
 
                     if (Value <= 2)
                     {
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].SetBlockType(i, j, BlockType.GRASS_WATERHOLE);
+                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].SetBlockType(i, j, 2);
 
                         walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)].SetWalkable(i, j, true);
                     }
                     else
                     {
-                        int randomTexture = random.Next((int)BlockType.GRASS_01, (int)BlockType.GRASS_04 + 1);
-
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].SetBlockType(i, j, (BlockType)randomTexture);
+                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].SetBlockType(i, j, 1);
 
                         if(Value == 95)
                         {

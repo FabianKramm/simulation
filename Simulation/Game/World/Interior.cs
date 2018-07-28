@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Enums;
+using Simulation.Game.MetaData;
 using Simulation.Game.Objects;
 using Simulation.Util;
 using Simulation.Util.Collision;
@@ -20,18 +21,18 @@ namespace Simulation.Game.World
         {
             ID = Util.Util.GetUUID();
             Dimensions = dimensions;
-            blockingGrid = new BlockType[dimensions.X, dimensions.Y];
+            blockingGrid = new int[dimensions.X, dimensions.Y];
         }
 
-        public override BlockType GetBlockType(int blockX, int blockY)
+        public override int GetBlockType(int blockX, int blockY)
         {
             if (blockX < 0 || blockX >= Dimensions.X || blockY < 0 || blockY >= Dimensions.Y)
-                return BlockType.NONE;
+                return BlockType.None;
 
             return blockingGrid[blockX, blockY];
         }
 
-        public override void SetBlockType(int blockX, int blockY, BlockType blockType)
+        public override void SetBlockType(int blockX, int blockY, int blockType)
         {
             Debug.Assert(Connected == false, "Cannot set block type, when already connected to world!");
 

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Simulation.Game;
 using Simulation.Util.Collision;
+using Simulation.Game.Enums;
 
 namespace Simulation
 {
@@ -29,15 +30,10 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
-            TimeSpan abc = TimeSpan.FromMilliseconds(1000);
-            TimeSpan bcd = TimeSpan.FromSeconds(1);
-
-            Console.WriteLine(abc.TotalMilliseconds + " - " + bcd.TotalMilliseconds);
-
             // WorldLoader.ResetWorld();
 
-            // using (var game = new SimulationGame())
-            //   game.Run(); 
+            using (var game = new SimulationGame())
+               game.Run(); 
 
             /* var rect1 = new Rect(0, 0, 10, 10);
             var rect2 = new Rect(0, 0, 10, 10);

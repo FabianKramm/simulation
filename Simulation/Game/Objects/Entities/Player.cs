@@ -16,16 +16,10 @@ namespace Simulation.Game.Objects.Entities
     {
         private bool leftMouseClick;
 
-        public Player(): base(LivingEntityType.PLAYER, new WorldPosition(0, 0, Interior.Outside), FractionType.PLAYER, 3)
-        {
-            Skills = new Skill[]
-            {
-                new FireballSkill(this, new Vector2(0, -10)),
-                new SlashSkill(this, new Vector2(0, -14))
-            };
+        // Create from JSON
+        protected Player() : base() { }
 
-            Velocity = 0.2f;
-        }
+        public Player(WorldPosition worldPosition): base(worldPosition) { }
 
         protected override void UpdatePosition(WorldPosition newPosition)
         {
@@ -104,7 +98,7 @@ namespace Simulation.Game.Objects.Entities
                 leftMouseClick = false;
             }
 
-            Direction = newDirection;
+            SetDirection(newDirection);
 
             base.Update(gameTime);
         }

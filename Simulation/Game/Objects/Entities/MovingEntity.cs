@@ -13,13 +13,12 @@ namespace Simulation.Game.Objects.Entities
 {
     public class MovingEntity: LivingEntity
     {
-        private Task<List<GridPos>> findPathTask;
+        public float Velocity = 0.10f;
+        public bool CanWalk = true;
 
-        public Vector2 Direction;
         public WorldPosition DestRealPosition { get; private set; }
         public WorldPosition DestBlockPosition { get; private set; }
-
-        private List<GridPos> walkPath;
+        public Vector2 Direction;
 
         public bool IsWalking
         {
@@ -29,28 +28,13 @@ namespace Simulation.Game.Objects.Entities
             }
         }
 
-        public float Velocity = 0.10f;
-
-        public bool CanWalk = true;
+        private List<GridPos> walkPath;
+        private Task<List<GridPos>> findPathTask;
 
         // Create from JSON
-        protected MovingEntity() {}
+        protected MovingEntity() : base() { }
 
-        public MovingEntity(LivingEntityType livingEntityType, WorldPosition position, FractionType fraction) :
-            base(livingEntityType, position, new Rect(-14, -38, 28, 48), fraction)
-        {
-            SetBlockingBounds(new Rect(-8, -10, 16, 20));
-        }
-
-        public MovingEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds, FractionType fraction) :
-            base(livingEntityType, position, relativeHitBoxBounds, fraction)
-        { }
-
-        public MovingEntity(LivingEntityType livingEntityType, WorldPosition position, Rect relativeHitBoxBounds, BaseAI baseAI, FractionType fraction) :
-            base(livingEntityType, position, relativeHitBoxBounds, fraction)
-        {
-            SetAI(baseAI);
-        }
+        public MovingEntity(WorldPosition worldPosition): base(worldPosition) {}
 
         private bool executeWorldLink(WorldPosition newPosition = null)
         {
@@ -165,6 +149,14 @@ namespace Simulation.Game.Objects.Entities
             }
 
             return false;
+        }
+
+        public void SetDirection(Vector2 newDirection)
+        {
+            if(this is Player)
+            {
+                Direction = newDirection;
+            }
         }
 
         public override void Update(GameTime gameTime)

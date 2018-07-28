@@ -2,7 +2,6 @@
 using Simulation.Game.Enums;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
-using Simulation.Util;
 using Simulation.Util.Collision;
 using Simulation.Util.Geometry;
 
@@ -10,20 +9,11 @@ namespace Simulation.Game.Objects
 {
     public abstract class HitableObject: GameObject
     {
-        protected Rect relativeHitBoxBounds;
-        protected Rect relativeBlockingBounds;
+        public Rect RelativeHitBoxBounds;
+        public Rect RelativeBlockingBounds;
 
-        private bool UseSameBounds;
-
-        public BlockingType BlockingType
-        {
-            get; private set;
-        }
-
-        public bool IsHitable
-        {
-            get; private set;
-        }
+        public BlockingType BlockingType;
+        public bool IsHitable = true;
 
         public Rect HitBoxBounds
         {
@@ -41,85 +31,34 @@ namespace Simulation.Game.Objects
         }
 
         // Create from JSON
-        protected HitableObject() { }
+        protected HitableObject(): base() { }
 
-        public HitableObject(WorldPosition position, Rect relativeHitBoxBounds, BlockingType blockingType = BlockingType.NOT_BLOCKING, Rect? relativeBlockingBounds = null)
-            :base(position)
+        protected HitableObject(WorldPosition worldPosition): base(worldPosition){}
+
+        public override void Init()
         {
-            this.relativeHitBoxBounds = relativeHitBoxBounds;
-            IsHitable = true;
-
-            SetBlockingType(blockingType);
-
-            if(relativeBlockingBounds != null)
-            {
-                this.relativeBlockingBounds = relativeBlockingBounds ?? Rect.Empty;
-                UseSameBounds = false;
-            }
-            else
-            {
-                UseSameBounds = true;
-            }
-
-            updateHitableBounds(position);
-        }
-
-        public void SetHitable(bool hitable)
-        {
-            IsHitable = hitable;
-        }
-
-        public void UnsetBlockingBounds()
-        {
-            UseSameBounds = true;
-            updateHitableBounds(Position);
-        }
-
-        public void SetBlockingBounds(Rect relativeBlockingBounds)
-        {
-            this.relativeBlockingBounds = relativeBlockingBounds;
-            UseSameBounds = false;
+            base.Init();
 
             updateHitableBounds(Position);
-        }
-
-        public void SetHitboxBounds(Rect relativeHitBoxBounds)
-        {
-            this.relativeHitBoxBounds = relativeHitBoxBounds;
-            updateHitableBounds(Position);
-        }
-
-        public void SetBlockingType(BlockingType blockingType)
-        {
-            this.BlockingType = blockingType;
         }
 
         private void updateHitableBounds(WorldPosition newPosition)
         {
-            HitBoxBounds = new Rect((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height);
-            BlockingBounds = UseSameBounds ? HitBoxBounds : new Rect((int)(relativeBlockingBounds.X + newPosition.X), (int)(relativeBlockingBounds.Y + newPosition.Y), relativeBlockingBounds.Width, relativeBlockingBounds.Height);
-            UnionBounds = UseSameBounds ? HitBoxBounds : Rect.Union(HitBoxBounds, BlockingBounds);
+            HitBoxBounds = new Rect((int)(RelativeHitBoxBounds.X + newPosition.X), (int)(RelativeHitBoxBounds.Y + newPosition.Y), RelativeHitBoxBounds.Width, RelativeHitBoxBounds.Height);
+            BlockingBounds = new Rect((int)(RelativeBlockingBounds.X + newPosition.X), (int)(RelativeBlockingBounds.Y + newPosition.Y), RelativeBlockingBounds.Width, RelativeBlockingBounds.Height);
+            UnionBounds = Rect.Union(HitBoxBounds, BlockingBounds);
         }
 
         protected bool canMove(WorldPosition newPosition)
         {
-            Rect blockingRect;
-
-            if (UseSameBounds)
-            {
-                blockingRect = new Rect((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height);
-            }
-            else
-            {
-                blockingRect = new Rect((int)(relativeBlockingBounds.X + newPosition.X), (int)(relativeBlockingBounds.Y + newPosition.Y), relativeBlockingBounds.Width, relativeBlockingBounds.Height);
-            }
+            Rect blockingRect = new Rect((int)(RelativeBlockingBounds.X + newPosition.X), (int)(RelativeBlockingBounds.Y + newPosition.Y), RelativeBlockingBounds.Width, RelativeBlockingBounds.Height);
 
             return (this is Player) ? !CollisionUtils.IsRectBlockedAccurate(this, blockingRect) : !CollisionUtils.IsRectBlockedFast(this, blockingRect);
         }
 
-        private void connectToOverlappingChunks()
+        public void ConnectToOverlappingChunks()
         {
-            if(IsHitable)
+            if (IsHitable)
             {
                 Point positionChunk = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
                 Point chunkTopLeft = GeometryUtils.GetChunkPosition(UnionBounds.Left, UnionBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
@@ -168,7 +107,7 @@ namespace Simulation.Game.Objects
                 SimulationGame.World.WalkableGrid.UnblockRect(BlockingBounds);
         }
 
-        public void ConnectToWorld()
+        public virtual void ConnectToWorld()
         {
             if (InteriorID == Interior.Outside)
             {
@@ -179,7 +118,7 @@ namespace Simulation.Game.Objects
                 // We load it here 
                 SimulationGame.World.GetFromChunkPoint(positionChunk.X, positionChunk.Y).AddContainedObject(this);
 
-                connectToOverlappingChunks();
+                ConnectToOverlappingChunks();
             }
             else
             {
@@ -187,7 +126,7 @@ namespace Simulation.Game.Objects
             }
         }
 
-        public void DisconnectFromWorld()
+        public virtual void DisconnectFromWorld()
         {
             if (InteriorID == Interior.Outside)
             {
@@ -297,7 +236,7 @@ namespace Simulation.Game.Objects
             updateHitableBounds(Position);
 
             if (Position.InteriorID == Interior.Outside)
-                connectToOverlappingChunks();
+                ConnectToOverlappingChunks();
         }
     }
 }

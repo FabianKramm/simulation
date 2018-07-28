@@ -121,26 +121,7 @@ namespace Simulation.Game.World
             // Set walkable grid blocking for contained objects
             if (part.ContainedObjects != null)
                 foreach (var hitableObject in part.ContainedObjects)
-                {
-                    Point chunkTopLeft = GeometryUtils.GetChunkPosition(hitableObject.UnionBounds.Left, hitableObject.UnionBounds.Top, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
-                    Point chunkBottomRight = GeometryUtils.GetChunkPosition(hitableObject.UnionBounds.Right, hitableObject.UnionBounds.Bottom, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
-
-                    for (int sChunkX = chunkTopLeft.X; sChunkX <= chunkBottomRight.X; sChunkX++)
-                        for (int sChunkY = chunkTopLeft.Y; sChunkY <= chunkBottomRight.Y; sChunkY++)
-                        {
-                            if (sChunkX == chunkPos.X && sChunkY == chunkPos.Y) continue;
-
-                            var neighborChunk = Get(GeometryUtils.ConvertPointToLong(sChunkX, sChunkY), false);
-
-                            if (neighborChunk != null)
-                            {
-                                neighborChunk.AddOverlappingObject(hitableObject);
-                            }
-                        }
-
-                    if (hitableObject.BlockingType == BlockingType.BLOCKING)
-                        SimulationGame.World.WalkableGrid.BlockRect(hitableObject.BlockingBounds);
-                }
+                    hitableObject.ConnectToOverlappingChunks();
 
             for (int i = -1; i <= 1; i++)
                 for (int j = -1; j < 1; j++)
