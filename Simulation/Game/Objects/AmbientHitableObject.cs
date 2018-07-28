@@ -1,14 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Renderer;
-using Simulation.Game.World;
-using Simulation.Util.Geometry;
-using Simulation.Game.Enums;
-using Simulation.Game.MetaData;
+﻿using Simulation.Game.World;
+using Simulation.Game.Serialization;
 
 namespace Simulation.Game.Objects
 {
     public class AmbientHitableObject: HitableObject
     {
+        [Serialize]
         public int AmbientHitableObjectType;
 
         // Create from JSON

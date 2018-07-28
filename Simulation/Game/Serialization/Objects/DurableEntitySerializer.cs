@@ -8,11 +8,7 @@ namespace Simulation.Game.Serialization.Objects
     public class DurableEntitySerializer: MovingEntitySerializer
     {
         private static readonly Type durableEntityType = typeof(DurableEntity);
-        private static readonly string[] serializeableProperties = new string[] {
-            "PreloadedSurroundingWorldGridChunkRadius",
-            "PreloadedWorldGridChunkBounds",
-            "PreloadedWorldGridChunkPixelBounds"
-        };
+        private static readonly string[] serializeableProperties = SerializationUtils.GetSerializeables(durableEntityType);
 
         public new static DurableEntity Deserialize(JObject jObject)
         {

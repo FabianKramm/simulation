@@ -3,6 +3,7 @@ using Simulation.Game.AI;
 using Simulation.Game.Enums;
 using Simulation.Game.Fractions;
 using Simulation.Game.Renderer.Entities;
+using Simulation.Game.Serialization;
 using Simulation.Game.Skills;
 using Simulation.Game.World;
 using System;
@@ -15,15 +16,21 @@ namespace Simulation.Game.Objects.Entities
         private static readonly TimeSpan lifeRegenInterval = TimeSpan.FromMilliseconds(500);
         public LivingEntityRendererInformation RendererInformation;
 
-        public int LivingEntityType;
-        
         public BaseAI BaseAI;
         public Skill[] Skills;
 
+        [Serialize]
+        public int LivingEntityType;
+
+        [Serialize]
         public int AttentionBlockRadius;
+        [Serialize]
         public int MaximumLife;
+        [Serialize]
         public int CurrentLife;
+        [Serialize]
         public float LifeRegeneration;
+        [Serialize]
         public FractionType Fraction;
 
         private Dictionary<string, int> aggroLookup = new Dictionary<string, int>();

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Enums;
 using Simulation.Game.MetaData;
-using Simulation.Game.Objects;
+using Simulation.Game.Serialization;
 using Simulation.Util;
 using Simulation.Util.Collision;
 using Simulation.Util.Geometry;
@@ -12,6 +12,8 @@ namespace Simulation.Game.World
     public class Interior: WorldPart
     {
         public static string Outside = null;
+
+        [Serialize]
         public string ID;
 
         // Used for json

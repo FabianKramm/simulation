@@ -6,11 +6,12 @@ namespace Simulation.Game.MetaData.Skills
 {
     public class FireballSkillMetaData: SkillMetaData
     {
+        public float DamagePerHit = 10;
         public Vector2? RelativeOriginPosition = new Vector2(0, -10);
 
         public static FireballSkill Create(MovingEntity movingEntity, FireballSkillMetaData fireballSkillMetaData)
         {
-            return new FireballSkill(movingEntity, fireballSkillMetaData.RelativeOriginPosition);
+            return new FireballSkill(movingEntity, fireballSkillMetaData.DamagePerHit, fireballSkillMetaData.RelativeOriginPosition);
         }
     }
 }

@@ -11,9 +11,7 @@ namespace Simulation.Game.Serialization.Skills
     public abstract class SkillSerializer
     {
         private static readonly Type type = typeof(Skill);
-        private static readonly string[] serializeableProperties = new string[] {
-            "Cooldown"
-        };
+        private static readonly string[] serializeableProperties = SerializationUtils.GetSerializeables(type);
 
         protected static void Deserialize(ref JObject jObject, Skill deserialize)
         {

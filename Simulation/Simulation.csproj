@@ -125,6 +125,7 @@
     <Compile Include="Game\Serialization\Objects\MovingEntitySerializer.cs" />
     <Compile Include="Game\Serialization\SerializationUtils.cs" />
     <Compile Include="Game\Serialization\Objects\AmbientHitableObjectSerializer.cs" />
+    <Compile Include="Game\Serialization\SerializeAttribute.cs" />
     <Compile Include="Game\Serialization\Skills\BaseSkillSerializer.cs" />
     <Compile Include="Game\Serialization\Skills\FireballSkillSerializer.cs" />
     <Compile Include="Game\Serialization\Skills\SkillSerializer.cs" />

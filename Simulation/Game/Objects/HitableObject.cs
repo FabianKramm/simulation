@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Enums;
 using Simulation.Game.Objects.Entities;
+using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Util.Collision;
 using Simulation.Util.Geometry;
@@ -9,22 +10,29 @@ namespace Simulation.Game.Objects
 {
     public abstract class HitableObject: GameObject
     {
+        [Serialize]
         public Rect RelativeHitBoxBounds;
+        [Serialize]
         public Rect RelativeBlockingBounds;
 
+        [Serialize]
         public BlockingType BlockingType;
+        [Serialize]
         public bool IsHitable = true;
 
+        [Serialize]
         public Rect HitBoxBounds
         {
             get; private set;
         }
 
+        [Serialize]
         public Rect BlockingBounds
         {
             get; private set;
         }
 
+        [Serialize]
         public Rect UnionBounds
         {
             get; private set;

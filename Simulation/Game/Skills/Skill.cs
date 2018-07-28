@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Objects.Entities;
+using Simulation.Game.Serialization;
 using System;
 
 namespace Simulation.Game.Skills
 {
     public abstract class Skill
     {
+        [Serialize]
         public int Cooldown;
 
         protected LivingEntity owner;

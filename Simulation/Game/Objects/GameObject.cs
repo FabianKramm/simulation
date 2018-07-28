@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Util;
 
@@ -8,16 +9,19 @@ namespace Simulation.Game.Objects
     {
         protected object positionChangeLock;
 
+        [Serialize]
         public string ID
         {
             get; private set;
         }
 
+        [Serialize]
         public WorldPosition Position
         {
             get; private set;
         }
 
+        [Serialize]
         public Point BlockPosition
         {
             get; private set;

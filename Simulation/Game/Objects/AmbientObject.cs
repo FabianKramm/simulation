@@ -1,16 +1,11 @@
-﻿/*
-Requirements:
-    - Travel through large area
-    - Enable background actions for some npcs
- 
- */
-using Simulation.Game.MetaData;
+﻿using Simulation.Game.Serialization;
 using Simulation.Game.World;
 
 namespace Simulation.Game.Objects
 {
     public class AmbientObject: GameObject
     {
+        [Serialize]
         public int AmbientObjectType;
 
         // Json

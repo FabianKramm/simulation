@@ -1,6 +1,7 @@
 ﻿using Simulation.Game.AI.BehaviorTree;
 using Simulation.Game.AI.Tasks;
 using Simulation.Game.Objects.Entities;
+using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using System;
 
@@ -10,11 +11,13 @@ namespace Simulation.Game.AI
     {
         private static readonly TimeSpan waitAfterWalking = TimeSpan.FromMilliseconds(1000);
 
+        [Serialize]
         public int BlockRadius
         {
             get; private set;
         }
 
+        [Serialize]
         public WorldPosition BlockStartPosition;
 
         // From JSON

@@ -10,14 +10,7 @@ namespace Simulation.Game.Serialization.Objects
     public class LivingEntitySerializer: HitableObjectSerializer
     {
         private static readonly Type livingEntityType = typeof(LivingEntity);
-        private static readonly string[] serializeableProperties = new string[] {
-            "LivingEntityType",
-            "Fraction",
-            "MaximumLife",
-            "CurrentLife",
-            "AttentionBlockRadius",
-            "LifeRegeneration"
-        };
+        private static readonly string[] serializeableProperties = SerializationUtils.GetSerializeables(livingEntityType);
 
         protected static void Deserialize(ref JObject jObject, LivingEntity livingEntity)
         {

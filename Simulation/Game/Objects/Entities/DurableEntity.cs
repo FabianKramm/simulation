@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;
 
@@ -6,13 +7,16 @@ namespace Simulation.Game.Objects.Entities
 {
     public class DurableEntity: MovingEntity
     {
+        [Serialize]
         public int PreloadedSurroundingWorldGridChunkRadius = 1;
 
+        [Serialize]
         public Rect PreloadedWorldGridChunkBounds
         {
             get; private set;
         }
 
+        [Serialize]
         public Rect PreloadedWorldGridChunkPixelBounds
         {
             get; private set;

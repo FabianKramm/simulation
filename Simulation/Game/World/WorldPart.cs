@@ -3,6 +3,7 @@ using Simulation.Game.Effects;
 using Simulation.Game.Enums;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
+using Simulation.Game.Serialization;
 using Simulation.Util.Geometry;
 using System;
 using System.Collections.Generic;
@@ -12,17 +13,23 @@ namespace Simulation.Game.World
 {
     public abstract class WorldPart
     {
+        [Serialize]
         public bool IsPersistent
         {
             get; protected set;
         }
 
+        [Serialize]
         public Point Dimensions
         {
             get; protected set;
         }
 
+        [Serialize]
         protected int[,] blockingGrid;
+        
+        [Serialize] // These objects link to the interiors
+        public volatile Dictionary<ulong, WorldLink> WorldLinks;
 
         public bool Connected = false;
 
@@ -33,9 +40,6 @@ namespace Simulation.Game.World
         public List<AmbientObject> AmbientObjects;
 
         public Dictionary<string, Effect> ContainedEffects;
-
-        // These objects link to the interiors
-        public volatile Dictionary<ulong, WorldLink> WorldLinks;
 
         protected WorldPart() { }
 

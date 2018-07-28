@@ -8,7 +8,7 @@ namespace Simulation.Game.Serialization.Objects
     public class AmbientObjectSerializer: GameObjectSerializer
     {
         private static readonly Type ambientObjectType = typeof(AmbientObject);
-        private static readonly string[] serializeableProperties = new string[] { "AmbientObjectType" };
+        private static readonly string[] serializeableProperties = SerializationUtils.GetSerializeables(ambientObjectType);
 
         public static AmbientObject Deserialize(JObject jObject)
         {

@@ -4,19 +4,13 @@ using Simulation.Game.Serialization.AI;
 using Simulation.Game.Skills;
 using Simulation.Util;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Game.Serialization.Skills
 {
     public class SlashSkillSerializer: SkillSerializer
     {
         private static readonly Type type = typeof(SlashSkill);
-        private static readonly string[] serializeableProperties = new string[] {
-            "relativeOriginPosition"
-        };
+        private static readonly string[] serializeableProperties = SerializationUtils.GetSerializeables(type);
 
         public static SlashSkill Deserialize(JObject jObject, LivingEntity deserialize)
         {

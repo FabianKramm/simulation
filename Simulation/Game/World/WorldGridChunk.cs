@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Enums;
 using Simulation.Game.Objects;
+using Simulation.Game.Serialization;
 using Simulation.Util.Geometry;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +10,7 @@ namespace Simulation.Game.World
 {
     public class WorldGridChunk: WorldPart
     {
+        [Serialize]
         public Rect RealChunkBounds;
 
         // These objects are just passing by or are overlapping with this chunk

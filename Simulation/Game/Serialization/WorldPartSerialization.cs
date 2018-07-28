@@ -10,12 +10,7 @@ namespace Simulation.Game.Serialization
     public class WorldPartSerialization
     {
         private static readonly Type worldPartType = typeof(WorldPart);
-        private static readonly string[] serializeableProperties = new string[] {
-            "blockingGrid",
-            "WorldLinks",
-            "IsPersistent",
-            "Dimensions"
-        };
+        private static readonly string[] serializeableProperties = SerializationUtils.GetSerializeables(worldPartType);
 
         protected static void Deserialize(ref JObject jObject, WorldPart worldPart)
         {

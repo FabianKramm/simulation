@@ -8,9 +8,7 @@ namespace Simulation.Game.Serialization
     public class WorldGridChunkSerializer: WorldPartSerialization
     {
         private static readonly Type worldGridChunkType = typeof(WorldGridChunk);
-        private static readonly string[] serializeableProperties = new string[] {
-            "RealChunkBounds"
-        };
+        private static readonly string[] serializeableProperties = SerializationUtils.GetSerializeables(worldGridChunkType);
 
         public static WorldGridChunk Deserialize(JObject jObject)
         {

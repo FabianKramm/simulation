@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using Simulation.Game.Objects;
-using Simulation.Game.Objects.Entities;
-using Simulation.Game.Serialization.Objects;
 using Simulation.Game.World;
 using Simulation.Util;
 using System;
@@ -11,9 +8,7 @@ namespace Simulation.Game.Serialization
     public class InteriorSerializer: WorldPartSerialization
     {
         private static readonly Type interiorType = typeof(Interior);
-        private static readonly string[] serializeableProperties = new string[] {
-            "ID"
-        };
+        private static readonly string[] serializeableProperties = SerializationUtils.GetSerializeables(interiorType);
 
         public static Interior Deserialize(JObject jObject)
         {

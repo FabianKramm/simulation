@@ -30,7 +30,7 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
-            // WorldLoader.ResetWorld();
+            WorldLoader.ResetWorld();
 
             using (var game = new SimulationGame())
                game.Run(); 

@@ -2,18 +2,43 @@
 using Newtonsoft.Json.Linq;
 using Simulation.Util;
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Simulation.Game.Serialization
 {
     public class SerializationUtils
     {
         public static readonly JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings {
-                TypeNameHandling = TypeNameHandling.All
-            });
+            TypeNameHandling = TypeNameHandling.All
+        });
 
         public static void SerializeType(Type type, ref JObject jObject) => jObject.Add("type", type.FullName);
         public static object GetObjectFromToken(Type type, JToken jToken) => serializer.Deserialize(new JTokenReader(jToken), type);
         public static JToken GetJTokenFromObject(object obj) => JToken.FromObject(obj, serializer);
+
+        public static string[] GetSerializeables(Type type)
+        {
+            List<string> retFields = new List<string>();
+
+            var properties = type.GetProperties(ReflectionUtils.Flags | BindingFlags.DeclaredOnly);
+
+            foreach (var property in properties)
+            {
+                if (Attribute.IsDefined(property, typeof(SerializeAttribute)))
+                    retFields.Add(property.Name);
+            }
+
+            var fields = type.GetFields(ReflectionUtils.Flags | BindingFlags.DeclaredOnly);
+
+            foreach (var field in fields)
+            {
+                if (Attribute.IsDefined(field, typeof(SerializeAttribute)))
+                    retFields.Add(field.Name);
+            }
+
+            return retFields.ToArray();
+        }
 
         public static void AddToObject(JObject jObject, object obj, Type type, string[] names)
         {

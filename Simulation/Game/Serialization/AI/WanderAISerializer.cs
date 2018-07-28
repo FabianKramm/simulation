@@ -9,10 +9,7 @@ namespace Simulation.Game.Serialization.AI
     public class WanderAISerializer: BaseAISerializer
     {
         private static readonly Type type = typeof(WanderAI);
-        private static readonly string[] serializeableProperties = new string[] {
-            "BlockStartPosition",
-            "BlockRadius"
-        };
+        private static readonly string[] serializeableProperties = SerializationUtils.GetSerializeables(type);
 
         public static WanderAI Deserialize(JObject jObject, MovingEntity movingEntity)
         {

@@ -8,9 +8,7 @@ namespace Simulation.Game.Serialization.Objects
     public class AmbientHitableObjectSerializer: HitableObjectSerializer
     {
         private static readonly Type staticBlockingObjectType = typeof(AmbientHitableObject);
-        private static readonly string[] serializeableProperties = new string[] {
-            "AmbientHitableObjectType"
-        };
+        private static readonly string[] serializeableProperties = SerializationUtils.GetSerializeables(staticBlockingObjectType);
 
         public static AmbientHitableObject Deserialize(JObject jObject)
         {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.AI;
 using Simulation.Game.Enums;
+using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.PathFinding;
 using Simulation.Util;
@@ -13,11 +14,19 @@ namespace Simulation.Game.Objects.Entities
 {
     public class MovingEntity: LivingEntity
     {
+        [Serialize]
         public float Velocity = 0.10f;
+
+        [Serialize]
         public bool CanWalk = true;
 
+        [Serialize]
         public WorldPosition DestRealPosition { get; private set; }
+
+        [Serialize]
         public WorldPosition DestBlockPosition { get; private set; }
+
+        [Serialize]
         public Vector2 Direction;
 
         public bool IsWalking

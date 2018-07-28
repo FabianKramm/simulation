@@ -5,7 +5,7 @@ namespace Simulation.Util
 {
     public class ReflectionUtils
     {
-        private static BindingFlags Flags = BindingFlags.Instance
+        public static readonly BindingFlags Flags = BindingFlags.Instance
                                             | BindingFlags.GetProperty
                                             | BindingFlags.SetProperty
                                             | BindingFlags.GetField

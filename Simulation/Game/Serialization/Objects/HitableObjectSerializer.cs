@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using Simulation.Game.Objects;
-using Simulation.Util;
 using System;
 
 namespace Simulation.Game.Serialization.Objects
@@ -8,15 +7,7 @@ namespace Simulation.Game.Serialization.Objects
     public class HitableObjectSerializer: GameObjectSerializer
     {
         private static readonly Type hitableObjectType = typeof(HitableObject);
-        private static readonly string[] serializeableProperties = new string[] {
-            "RelativeHitBoxBounds",
-            "RelativeBlockingBounds",
-            "BlockingType",
-            "HitBoxBounds",
-            "BlockingBounds",
-            "UnionBounds",
-            "IsHitable"
-        };
+        private static readonly string[] serializeableProperties = SerializationUtils.GetSerializeables(hitableObjectType);
 
         protected static void Deserialize(ref JObject jObject, HitableObject hitableObject)
         {
