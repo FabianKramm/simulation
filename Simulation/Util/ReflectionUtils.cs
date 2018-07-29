@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.CSharp;
+using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Simulation.Util
@@ -128,6 +131,31 @@ namespace Simulation.Util
                 null, paramTypes, null);
 
             return (T)ci.Invoke(paramValues);
+        }
+
+        // Eval > Evaluates C# sourcelanguage
+        public static object Eval(string code)
+        {
+            var csc = new CSharpCodeProvider(new Dictionary<string, string> () { { "CompilerVersion", "v4.0" } });
+            var p = new CompilerParameters(new[] { "mscorlib.dll", "System.Core.dll" }, null, true);
+
+            p.GenerateInMemory = true;
+            p.GenerateExecutable = false;
+
+            CompilerResults r = csc.CompileAssemblyFromSource(p, "using System; class p {public static object c(){" + code + "}}");
+
+            if (r.Errors.Count > 0)
+            {
+                foreach(var error in r.Errors)
+                    Console.WriteLine(((CompilerError)error).ErrorText);
+
+                return null;
+            }
+
+            var a = r.CompiledAssembly;
+            MethodInfo o = a.CreateInstance("p").GetType().GetMethod("c");
+
+            return o.Invoke(o, null);
         }
     }
 }

@@ -14,11 +14,9 @@ namespace Simulation.Game.Hud
     {
         private Texture2D cursor;
         
-
         private GameConsole console;
         private DebugHud debugHud;
         
-
         public void LoadContent()
         {
             console = new GameConsole();

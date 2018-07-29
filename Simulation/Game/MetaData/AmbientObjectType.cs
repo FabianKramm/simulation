@@ -7,7 +7,7 @@ namespace Simulation.Game.MetaData
 {
     public class AmbientObjectType
     {
-        public static readonly Dictionary<int, AmbientObjectType> lookup = new Dictionary<int, AmbientObjectType>() {
+        public static Dictionary<int, AmbientObjectType> lookup = new Dictionary<int, AmbientObjectType>() {
             { 0, new AmbientObjectType()
             {
                 ID=0,

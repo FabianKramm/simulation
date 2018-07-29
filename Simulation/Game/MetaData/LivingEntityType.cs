@@ -16,7 +16,7 @@ namespace Simulation.Game.MetaData
     public class LivingEntityType
     {
         public static readonly int Player = 0;
-        public static readonly Dictionary<int, LivingEntityType> lookup = new Dictionary<int, LivingEntityType>()
+        public static Dictionary<int, LivingEntityType> lookup = new Dictionary<int, LivingEntityType>()
         {
             {0, new LivingEntityType(){
                 ID=0,

@@ -59,9 +59,7 @@ namespace Simulation.Game.World
 
         public Vector2 ToRealPositionVector()
         {
-            Point realPosition = ToRealPositionPoint();
-
-            return new Vector2(realPosition.X, realPosition.Y);
+            return new Vector2((int)X * WorldGrid.BlockSize.X, (int)Y * WorldGrid.BlockSize.Y);
         }
 
         public WorldPosition ToRealPosition()

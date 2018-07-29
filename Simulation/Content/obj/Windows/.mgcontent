@@ -20,5 +20,7 @@
     <File>D:/Programmieren/simulation/Simulation/Content/Characters/Geralt.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Characters/Player.gif</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Spells/Slash/Slash.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/GUI/SpeechBubble.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/ArialSmall.spritefont</File>
   </SourceFiles>
 </SourceFileCollection>

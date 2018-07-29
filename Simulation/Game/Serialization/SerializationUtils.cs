@@ -9,13 +9,13 @@ namespace Simulation.Game.Serialization
 {
     public class SerializationUtils
     {
-        public static readonly JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings {
+        public static readonly JsonSerializer Serializer = JsonSerializer.Create(new JsonSerializerSettings {
             TypeNameHandling = TypeNameHandling.All
         });
 
         public static void SerializeType(Type type, ref JObject jObject) => jObject.Add("type", type.FullName);
-        public static object GetObjectFromToken(Type type, JToken jToken) => serializer.Deserialize(new JTokenReader(jToken), type);
-        public static JToken GetJTokenFromObject(object obj) => JToken.FromObject(obj, serializer);
+        public static object GetObjectFromToken(Type type, JToken jToken) => Serializer.Deserialize(new JTokenReader(jToken), type);
+        public static JToken GetJTokenFromObject(object obj) => JToken.FromObject(obj, Serializer);
 
         public static string[] GetSerializeables(Type type)
         {
@@ -48,7 +48,7 @@ namespace Simulation.Game.Serialization
 
                 if(value != null)
                 {
-                    jObject.Add(propertyName, JToken.FromObject(value, serializer));
+                    jObject.Add(propertyName, JToken.FromObject(value, Serializer));
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace Simulation.Game.Serialization
         public static void SetFromObject(JObject jObject, object obj, Type type, string[] names)
         {
             foreach (var propertyName in names)
-                ReflectionUtils.SetMemberValue(type, obj, propertyName, serializer.Deserialize(new JTokenReader(jObject.GetValue(propertyName)), ReflectionUtils.GetMemberType(type, propertyName)));
+                ReflectionUtils.SetMemberValue(type, obj, propertyName, Serializer.Deserialize(new JTokenReader(jObject.GetValue(propertyName)), ReflectionUtils.GetMemberType(type, propertyName)));
         }
     }
 }

@@ -15,6 +15,8 @@ using System.Threading;
 using Simulation.Game;
 using Simulation.Util.Collision;
 using Simulation.Game.Enums;
+using Simulation.Util;
+using Simulation.Game.Hud;
 
 namespace Simulation
 {
@@ -30,7 +32,7 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
-            WorldLoader.ResetWorld();
+            // WorldLoader.ResetWorld();
 
             using (var game = new SimulationGame())
                game.Run(); 

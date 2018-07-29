@@ -9,7 +9,7 @@ namespace Simulation.Game.MetaData
 {
     public class AmbientHitableObjectType
     {
-        public static readonly Dictionary<int, AmbientHitableObjectType> lookup = new Dictionary<int, AmbientHitableObjectType>()
+        public static Dictionary<int, AmbientHitableObjectType> lookup = new Dictionary<int, AmbientHitableObjectType>()
         {
             {0, new AmbientHitableObjectType()
             {

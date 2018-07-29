@@ -81,6 +81,7 @@ namespace Simulation.Game.Objects.Entities
             if(RendererInformation != null)
             {
                 RendererInformation.SpeechLine = line;
+                RendererInformation.ShowSpeechTimeout = TimeSpan.FromMilliseconds(Math.Max(1000, line.Length * 70));
             }
         }
 
@@ -111,6 +112,19 @@ namespace Simulation.Game.Objects.Entities
             {
                 ModifyHealth((int)(LifeRegeneration * timeTillLifeRegen.TotalMilliseconds));
                 timeTillLifeRegen = TimeSpan.Zero;
+            }
+
+            if(RendererInformation != null)
+            {
+                if(RendererInformation.SpeechLine != null)
+                {
+                    RendererInformation.ShowSpeechTimeout -= gameTime.ElapsedGameTime;
+
+                    if(RendererInformation.ShowSpeechTimeout.TotalMilliseconds <= 0)
+                    {
+                        RendererInformation.SpeechLine = null;
+                    }
+                }
             }
         }
     }

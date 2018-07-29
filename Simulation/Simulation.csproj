@@ -75,6 +75,7 @@
     <Compile Include="Game\Enums\HitBoxType.cs" />
     <Compile Include="Game\Fractions\FractionRelations.cs" />
     <Compile Include="Game\Generator\GeneratorUtils.cs" />
+    <Compile Include="Game\Hud\ConsoleFunctions.cs" />
     <Compile Include="Game\MetaData\AI\AIMetaData.cs" />
     <Compile Include="Game\MetaData\AI\WanderAIMetaData.cs" />
     <Compile Include="Game\MetaData\AmbientHitableObjectType.cs" />

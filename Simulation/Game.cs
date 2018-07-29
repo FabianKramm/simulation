@@ -13,6 +13,12 @@ using System.Threading;
 using Simulation.Util.Geometry;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.MetaData;
+using Newtonsoft.Json;
+using System.IO;
+using Newtonsoft.Json.Linq;
+using Simulation.Game.Serialization;
+using System.Collections.Generic;
+using Simulation.Game.Renderer.Entities;
 
 /*
  * Open Issues:
@@ -47,7 +53,16 @@ namespace Simulation
         public static readonly int TicksPerDay = 24 * TicksPerHour;
         public static readonly int MilliSecondsPerTick = 500;
 
-        public static bool IsPaused;
+        public static bool IsPaused
+        {
+            get; private set;
+        } = false;
+
+
+        public static bool IsConsoleOpen
+        {
+            get; private set;
+        } = false;
 
         public static float Ticks
         {
@@ -111,6 +126,7 @@ namespace Simulation
 
         private bool pauseKeyDown = false;
         private bool debugKeyDown = false;
+        private bool consoleKeyDown = false;
 
         public SimulationGame()
         {
@@ -144,6 +160,42 @@ namespace Simulation
         {
             Util.Util.CreateGameFolders();
 
+            if(File.Exists(Util.Util.GetBlockTypesSavePath()))
+                using (var stream = new StreamReader(Util.Util.GetBlockTypesSavePath()))
+                using (var reader = new JsonTextReader(stream))
+                {
+                    JToken jToken = JToken.ReadFrom(reader);
+
+                    BlockType.lookup = (Dictionary<int,BlockType>)SerializationUtils.Serializer.Deserialize(new JTokenReader(jToken), BlockType.lookup.GetType());
+                }
+
+            if (File.Exists(Util.Util.GetAmbientObjectTypesSavePath()))
+                using (var stream = new StreamReader(Util.Util.GetAmbientObjectTypesSavePath()))
+                using (var reader = new JsonTextReader(stream))
+                {
+                    JToken jToken = JToken.ReadFrom(reader);
+
+                    AmbientObjectType.lookup = (Dictionary<int, AmbientObjectType>)SerializationUtils.Serializer.Deserialize(new JTokenReader(jToken), AmbientObjectType.lookup.GetType());
+                }
+
+            if (File.Exists(Util.Util.GetAmbientHitableObjectTypesSavePath()))
+                using (var stream = new StreamReader(Util.Util.GetAmbientHitableObjectTypesSavePath()))
+                using (var reader = new JsonTextReader(stream))
+                {
+                    JToken jToken = JToken.ReadFrom(reader);
+
+                    AmbientHitableObjectType.lookup = (Dictionary<int, AmbientHitableObjectType>)SerializationUtils.Serializer.Deserialize(new JTokenReader(jToken), AmbientHitableObjectType.lookup.GetType());
+                }
+
+            if (File.Exists(Util.Util.GetLivingEntityTypesSavePath()))
+                using (var stream = new StreamReader(Util.Util.GetLivingEntityTypesSavePath()))
+                using (var reader = new JsonTextReader(stream))
+                {
+                    JToken jToken = JToken.ReadFrom(reader);
+
+                    LivingEntityType.lookup = (Dictionary<int, LivingEntityType>)SerializationUtils.Serializer.Deserialize(new JTokenReader(jToken), LivingEntityType.lookup.GetType());
+                }
+
             WorldGenerator = new WorldGenerator(1);
 
             // TODO: Add your initialization logic here
@@ -169,6 +221,7 @@ namespace Simulation
 
             Camera.LoadContent();
             Hud.LoadContent();
+            MovingEntityRenderer.LoadContent();
 
             GameRenderer.LoadContent();
 
@@ -192,6 +245,30 @@ namespace Simulation
             World.SaveAll();
             World.WalkableGrid.SaveAll();
             World.InteriorManager.SaveAll();
+            
+            using (var stream = new StreamWriter(Util.Util.GetBlockTypesSavePath()))
+            using (var writer = new JsonTextWriter(stream))
+            {
+                JToken.FromObject(BlockType.lookup, SerializationUtils.Serializer).WriteTo(writer);
+            }
+
+            using (var stream = new StreamWriter(Util.Util.GetAmbientObjectTypesSavePath()))
+            using (var writer = new JsonTextWriter(stream))
+            {
+                JToken.FromObject(AmbientObjectType.lookup, SerializationUtils.Serializer).WriteTo(writer);
+            }
+
+            using (var stream = new StreamWriter(Util.Util.GetAmbientHitableObjectTypesSavePath()))
+            using (var writer = new JsonTextWriter(stream))
+            {
+                JToken.FromObject(AmbientHitableObjectType.lookup, SerializationUtils.Serializer).WriteTo(writer);
+            }
+
+            using (var stream = new StreamWriter(Util.Util.GetLivingEntityTypesSavePath()))
+            using (var writer = new JsonTextWriter(stream))
+            {
+                JToken.FromObject(LivingEntityType.lookup, SerializationUtils.Serializer).WriteTo(writer);
+            }
 
             Exit();
         }
@@ -248,6 +325,19 @@ namespace Simulation
             else
             {
                 pauseKeyDown = false;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.F3))
+            {
+                if (!consoleKeyDown)
+                {
+                    consoleKeyDown = true;
+                    IsConsoleOpen = !IsConsoleOpen;
+                }
+            }
+            else
+            {
+                consoleKeyDown = false;
             }
 
             if (IsPaused == false)

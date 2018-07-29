@@ -11,7 +11,7 @@ namespace Simulation.Game.Hud
 {
     public class GameConsole
     {
-        private static int consoleLines = 40;
+        private static readonly int consoleLines = 40;
         private static List<string> messages = new List<string>();
 
         private SpriteFont font;

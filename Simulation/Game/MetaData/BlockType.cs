@@ -8,7 +8,7 @@ namespace Simulation.Game.MetaData
     public class BlockType
     {
         public static readonly int None = 0;
-        public static readonly Dictionary<int, BlockType> lookup = new Dictionary<int, BlockType>()
+        public static Dictionary<int, BlockType> lookup = new Dictionary<int, BlockType>()
         {
             {0, new BlockType()
             {

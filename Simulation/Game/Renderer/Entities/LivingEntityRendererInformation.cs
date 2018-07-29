@@ -1,12 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Spritesheet;
 using Simulation.Util;
+using System;
 
 namespace Simulation.Game.Renderer.Entities
 {
     public class LivingEntityRendererInformation
     {
         public string SpeechLine;
+        public TimeSpan ShowSpeechTimeout;
 
         public WalkingDirection walkingDirection
         {
