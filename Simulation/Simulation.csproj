@@ -76,6 +76,13 @@
     <Compile Include="Game\Fractions\FractionRelations.cs" />
     <Compile Include="Game\Generator\GeneratorUtils.cs" />
     <Compile Include="Game\Hud\ConsoleFunctions.cs" />
+    <Compile Include="Game\Hud\WorldBuilder\WorldBuilder.cs" />
+    <Compile Include="Game\Hud\WorldBuilder\SelectMode.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Game\Hud\WorldBuilder\SelectMode.Designer.cs">
+      <DependentUpon>SelectMode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Game\MetaData\AI\AIMetaData.cs" />
     <Compile Include="Game\MetaData\AI\WanderAIMetaData.cs" />
     <Compile Include="Game\MetaData\AmbientHitableObjectType.cs" />
@@ -140,6 +147,12 @@
     <Compile Include="Game\World\WorldPart.cs" />
     <Compile Include="Game\World\WorldPartManager.cs" />
     <Compile Include="Game\World\WorldPosition.cs" />
+    <Compile Include="Util\Dialog\InputDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Util\Dialog\InputDialog.Designer.cs">
+      <DependentUpon>InputDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Util\FastNoise.cs" />
     <Compile Include="Util\MovementUtils.cs" />
     <Compile Include="Game\Objects\Entities\Player.cs" />
@@ -199,9 +212,12 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +230,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Config\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Game\Hud\WorldBuilder\SelectMode.resx">
+      <DependentUpon>SelectMode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Util\Dialog\InputDialog.resx">
+      <DependentUpon>InputDialog.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

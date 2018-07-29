@@ -53,6 +53,11 @@ namespace Simulation
         public static readonly int TicksPerDay = 24 * TicksPerHour;
         public static readonly int MilliSecondsPerTick = 500;
 
+        public static SimulationGame I
+        {
+            get; private set;
+        }
+
         public static bool IsPaused
         {
             get; private set;
@@ -60,6 +65,11 @@ namespace Simulation
 
 
         public static bool IsConsoleOpen
+        {
+            get; private set;
+        } = false;
+
+        public static bool IsWorldBuilderOpen
         {
             get; private set;
         } = false;
@@ -127,6 +137,7 @@ namespace Simulation
         private bool pauseKeyDown = false;
         private bool debugKeyDown = false;
         private bool consoleKeyDown = false;
+        private bool worldBuilderKeyDown = false;
 
         public SimulationGame()
         {
@@ -148,6 +159,8 @@ namespace Simulation
             IsDebug = false;
 
             Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
+
+            I = this;
         }
 
         /// <summary>
@@ -316,6 +329,19 @@ namespace Simulation
 
             if (Keyboard.GetState().IsKeyDown(Keys.F2))
             {
+                if (!worldBuilderKeyDown)
+                {
+                    worldBuilderKeyDown = true;
+                    IsWorldBuilderOpen = !IsWorldBuilderOpen;
+                }
+            }
+            else
+            {
+                worldBuilderKeyDown = false;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.F3))
+            {
                 if (!pauseKeyDown)
                 {
                     pauseKeyDown = true;
@@ -327,7 +353,7 @@ namespace Simulation
                 pauseKeyDown = false;
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.F3))
+            if (Keyboard.GetState().IsKeyDown(Keys.F4))
             {
                 if (!consoleKeyDown)
                 {

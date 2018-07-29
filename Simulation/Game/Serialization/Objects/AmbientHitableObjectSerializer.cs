@@ -34,6 +34,8 @@ namespace Simulation.Game.Serialization.Objects
             HitableObjectSerializer.Deserialize(ref jObject, staticBlockingObjectleObject);
 
             SerializationUtils.SetFromObject(jObject, staticBlockingObjectleObject, staticBlockingObjectType, serializeableProperties);
+
+            staticBlockingObjectleObject.Init();
         }
 
         protected static void Serialize(AmbientHitableObject staticBlockingObject, ref JObject jObject)

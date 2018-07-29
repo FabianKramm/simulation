@@ -8,7 +8,7 @@ namespace Simulation.Game.Hud
 {
     public class ConsoleFunctions
     {
-        public static void Test()
+        public static void LoadTileset(string resourcePath)
         {
             DebugHud.ConsoleWrite("Example Output");
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Enums;
+using Simulation.Game.MetaData;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
@@ -11,28 +12,23 @@ namespace Simulation.Game.Objects
     public abstract class HitableObject: GameObject
     {
         [Serialize]
-        public Rect RelativeHitBoxBounds;
-        [Serialize]
-        public Rect RelativeBlockingBounds;
-
-        [Serialize]
         public BlockingType BlockingType;
         [Serialize]
         public bool IsHitable = true;
 
-        [Serialize]
+        protected Rect relativeHitBoxBounds;
+        protected Rect relativeBlockingBounds;
+
         public Rect HitBoxBounds
         {
             get; private set;
         }
 
-        [Serialize]
         public Rect BlockingBounds
         {
             get; private set;
         }
 
-        [Serialize]
         public Rect UnionBounds
         {
             get; private set;
@@ -52,14 +48,14 @@ namespace Simulation.Game.Objects
 
         private void updateHitableBounds(WorldPosition newPosition)
         {
-            HitBoxBounds = new Rect((int)(RelativeHitBoxBounds.X + newPosition.X), (int)(RelativeHitBoxBounds.Y + newPosition.Y), RelativeHitBoxBounds.Width, RelativeHitBoxBounds.Height);
-            BlockingBounds = new Rect((int)(RelativeBlockingBounds.X + newPosition.X), (int)(RelativeBlockingBounds.Y + newPosition.Y), RelativeBlockingBounds.Width, RelativeBlockingBounds.Height);
+            HitBoxBounds = new Rect((int)(relativeHitBoxBounds.X + newPosition.X), (int)(relativeHitBoxBounds.Y + newPosition.Y), relativeHitBoxBounds.Width, relativeHitBoxBounds.Height);
+            BlockingBounds = new Rect((int)(relativeBlockingBounds.X + newPosition.X), (int)(relativeBlockingBounds.Y + newPosition.Y), relativeBlockingBounds.Width, relativeBlockingBounds.Height);
             UnionBounds = Rect.Union(HitBoxBounds, BlockingBounds);
         }
 
         protected bool canMove(WorldPosition newPosition)
         {
-            Rect blockingRect = new Rect((int)(RelativeBlockingBounds.X + newPosition.X), (int)(RelativeBlockingBounds.Y + newPosition.Y), RelativeBlockingBounds.Width, RelativeBlockingBounds.Height);
+            Rect blockingRect = new Rect((int)(relativeBlockingBounds.X + newPosition.X), (int)(relativeBlockingBounds.Y + newPosition.Y), relativeBlockingBounds.Width, relativeBlockingBounds.Height);
 
             return (this is Player) ? !CollisionUtils.IsRectBlockedAccurate(this, blockingRect) : !CollisionUtils.IsRectBlockedFast(this, blockingRect);
         }

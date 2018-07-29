@@ -62,28 +62,31 @@ namespace Simulation.Game.Objects.Entities
                     Skills[1].Use(SimulationGame.MousePosition);
                 }
 
-                if (mouseState.LeftButton == ButtonState.Pressed)
+                if(!SimulationGame.IsWorldBuilderOpen)
                 {
-                    //Skills[0].Use(SimulationGame.MousePosition);
-                }
-
-                if (mouseState.LeftButton == ButtonState.Pressed)
-                {
-                    if (!leftMouseClick)
+                    if (mouseState.LeftButton == ButtonState.Pressed)
                     {
-                        Talk("Test");
-
-                        // Point clickedBlock = GeometryUtils.GetChunkPosition((int)SimulationGame.MousePosition.X, (int)SimulationGame.MousePosition.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-
-                        // WalkToBlock(new WorldPosition(clickedBlock.X, clickedBlock.Y, SimulationGame.Player.InteriorID));
-                        // WalkToPosition(new WorldPosition(SimulationGame.MousePosition.X, SimulationGame.MousePosition.Y, SimulationGame.Player.InteriorID));
-
-                        leftMouseClick = true;
+                        //Skills[0].Use(SimulationGame.MousePosition);
                     }
-                }
-                else
-                {
-                    leftMouseClick = false;
+
+                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        if (!leftMouseClick)
+                        {
+                            Talk("Test");
+
+                            // Point clickedBlock = GeometryUtils.GetChunkPosition((int)SimulationGame.MousePosition.X, (int)SimulationGame.MousePosition.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+
+                            // WalkToBlock(new WorldPosition(clickedBlock.X, clickedBlock.Y, SimulationGame.Player.InteriorID));
+                            // WalkToPosition(new WorldPosition(SimulationGame.MousePosition.X, SimulationGame.MousePosition.Y, SimulationGame.Player.InteriorID));
+
+                            leftMouseClick = true;
+                        }
+                    }
+                    else
+                    {
+                        leftMouseClick = false;
+                    }
                 }
 
                 SetDirection(newDirection);

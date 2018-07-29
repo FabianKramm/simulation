@@ -21,9 +21,6 @@ namespace Simulation.Game.Objects.Entities
 
         [Serialize]
         public int LivingEntityType;
-
-        [Serialize]
-        public int AttentionBlockRadius;
         [Serialize]
         public int MaximumLife;
         [Serialize]
@@ -51,6 +48,14 @@ namespace Simulation.Game.Objects.Entities
             aggroLookup[otherEntity.ID] += modifier;
         }
 
+        public override void Init()
+        {
+            relativeBlockingBounds = MetaData.LivingEntityType.lookup[((LivingEntity)this).LivingEntityType].RelativeBlockingBounds;
+            relativeHitBoxBounds = MetaData.LivingEntityType.lookup[((LivingEntity)this).LivingEntityType].RelativeHitBoxBounds;
+
+            base.Init();
+        }
+
         public int GetAggroTowardsEntity(LivingEntity otherEntity)
         {
             if(aggroLookup.ContainsKey(otherEntity.ID) == false)
@@ -64,11 +69,6 @@ namespace Simulation.Game.Objects.Entities
         public bool IsDead()
         {
             return CurrentLife <= 0;
-        }
-
-        public void SetAttentionRadius(int attentionRadius)
-        {
-            AttentionBlockRadius = attentionRadius;
         }
 
         public void SetAI(BaseAI baseAI)

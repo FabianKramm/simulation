@@ -4,6 +4,7 @@ using Simulation.Game.AI.Evaluation;
 using Simulation.Game.AI.Tasks;
 using Simulation.Game.Effects;
 using Simulation.Game.Enums;
+using Simulation.Game.MetaData;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Skills;
 using Simulation.Game.World;
@@ -24,7 +25,8 @@ namespace Simulation.Game.AI.AITasks
         {
             if(subject.Skills.Length > 0)
             {
-                var circle = new Circle((int)subject.Position.X, (int)subject.Position.Y, subject.AttentionBlockRadius * WorldGrid.BlockSize.X);
+                var attentionBlockRadius = LivingEntityType.lookup[subject.LivingEntityType].AttentionBlockRadius;
+                var circle = new Circle((int)subject.Position.X, (int)subject.Position.Y, attentionBlockRadius * WorldGrid.BlockSize.X);
                 var hittedEntities = CollisionUtils.GetLivingHittedObjects(circle, subject.InteriorID, subject, (int)FractionRelationType.HOSTILE);
                 var subjectVectorPosition = subject.Position.ToVector();
                 var enemyInSight = false;

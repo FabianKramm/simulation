@@ -31,14 +31,16 @@ namespace Simulation.Game.Serialization.Objects
 
         protected static void Deserialize(ref JObject jObject, DurableEntity durableEntity)
         {
-            LivingEntitySerializer.Deserialize(ref jObject, durableEntity);
+            MovingEntitySerializer.Deserialize(ref jObject, durableEntity, true);
 
             SerializationUtils.SetFromObject(jObject, durableEntity, durableEntityType, serializeableProperties);
+
+            durableEntity.Init();
         }
 
         protected static void Serialize(DurableEntity durableEntity, ref JObject jObject)
         {
-            LivingEntitySerializer.Serialize(durableEntity, ref jObject);
+            MovingEntitySerializer.Serialize(durableEntity, ref jObject);
 
             SerializationUtils.AddToObject(jObject, durableEntity, durableEntityType, serializeableProperties);
         }

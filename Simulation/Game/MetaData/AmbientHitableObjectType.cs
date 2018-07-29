@@ -45,8 +45,6 @@ namespace Simulation.Game.MetaData
             AmbientHitableObject ambientHitableObject = new AmbientHitableObject(worldPosition)
             {
                 AmbientHitableObjectType = ambientHitableObjectType.ID,
-                RelativeHitBoxBounds = ambientHitableObjectType.RelativeHitboxRectangle,
-                RelativeBlockingBounds = ambientHitableObjectType.RelativeBlockingRectangle,
                 BlockingType=ambientHitableObjectType.BlockingType,
                 IsHitable=ambientHitableObjectType.IsHitable
             };

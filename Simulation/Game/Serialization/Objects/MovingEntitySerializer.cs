@@ -29,11 +29,16 @@ namespace Simulation.Game.Serialization.Objects
             return retObject;
         }
 
-        protected static void Deserialize(ref JObject jObject, MovingEntity movingEntity)
+        protected static void Deserialize(ref JObject jObject, MovingEntity movingEntity, bool skipInit = false)
         {
             LivingEntitySerializer.Deserialize(ref jObject, movingEntity);
 
             SerializationUtils.SetFromObject(jObject, movingEntity, movingEntityType, serializeableProperties);
+
+            if(!skipInit)
+            {
+                movingEntity.Init();
+            }
         }
 
         protected static void Serialize(MovingEntity movingEntity, ref JObject jObject)

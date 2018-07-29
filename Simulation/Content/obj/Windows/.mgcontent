@@ -22,5 +22,7 @@
     <File>D:/Programmieren/simulation/Simulation/Content/Spells/Slash/Slash.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/GUI/SpeechBubble.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/ArialSmall.spritefont</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior01.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/ArialBig.spritefont</File>
   </SourceFiles>
 </SourceFileCollection>

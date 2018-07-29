@@ -146,7 +146,6 @@ namespace Simulation.Game.MetaData
             livingEntity.CurrentLife = livingEntityType.CurrentLife;
             livingEntity.LifeRegeneration = livingEntityType.LifeRegeneration;
             livingEntity.Fraction = livingEntityType.Fraction;
-            livingEntity.AttentionBlockRadius = livingEntityType.AttentionBlockRadius;
             livingEntity.Velocity = livingEntityType.Velocity;
 
             if(livingEntityType.Skills.Length > 0)
@@ -165,11 +164,8 @@ namespace Simulation.Game.MetaData
             {
                 livingEntity.BaseAI = AIMetaData.Create(livingEntity, livingEntityType.AIMetaData);
             }
-
-            livingEntity.RelativeBlockingBounds = livingEntityType.RelativeBlockingBounds;
-            livingEntity.RelativeHitBoxBounds = livingEntityType.RelativeHitBoxBounds;
+            
             livingEntity.BlockingType = livingEntityType.BlockingType;
-
             livingEntity.Init();
 
             return livingEntity;

@@ -16,6 +16,7 @@ namespace Simulation.Game.Hud
         
         private GameConsole console;
         private DebugHud debugHud;
+        private WorldBuilder.WorldBuilder worldBuilder;
         
         public void LoadContent()
         {
@@ -26,11 +27,15 @@ namespace Simulation.Game.Hud
 
             debugHud = new DebugHud();
             debugHud.LoadContent();
+
+            worldBuilder = new WorldBuilder.WorldBuilder();
+            worldBuilder.LoadContent();
         }
 
         public void Update(GameTime gameTime)
         {
             debugHud.Update(gameTime);
+            worldBuilder.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -42,6 +47,7 @@ namespace Simulation.Game.Hud
             // SimulationGame.StringToDraw = position.X + "," + position.Y;
 
             console.Draw(spriteBatch);
+            worldBuilder.Draw(spriteBatch, gameTime);
 
             spriteBatch.Draw(cursor, new Vector2(position.X, position.Y), null, Color.White, 0.0f, Vector2.Zero, new Vector2(0.75f, 0.75f), SpriteEffects.None, 1.0f);
         }

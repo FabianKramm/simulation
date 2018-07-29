@@ -12,5 +12,13 @@ namespace Simulation.Game.Objects
         protected AmbientHitableObject(): base() { }
 
         public AmbientHitableObject(WorldPosition position): base(position) {}
+
+        public override void Init()
+        {
+            relativeBlockingBounds = MetaData.AmbientHitableObjectType.lookup[((AmbientHitableObject)this).AmbientHitableObjectType].RelativeBlockingRectangle;
+            relativeHitBoxBounds = MetaData.AmbientHitableObjectType.lookup[((AmbientHitableObject)this).AmbientHitableObjectType].RelativeHitboxRectangle;
+
+            base.Init();
+        }
     }
 }
