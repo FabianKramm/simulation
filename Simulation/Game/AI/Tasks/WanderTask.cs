@@ -69,7 +69,7 @@ namespace Simulation.Game.AI.Tasks
 
                     if (wanderCircle.Contains(destBlock) && interiorID == movingSubject.InteriorID)
                     {
-                        movingSubject.WalkToPosition(new WorldPosition(destBlock.X * WorldGrid.BlockSize.X, destBlock.Y * WorldGrid.BlockSize.Y, interiorID));
+                        movingSubject.WalkToPosition(new WorldPosition(destBlock.X * WorldGrid.BlockSize.X + 16, destBlock.Y * WorldGrid.BlockSize.Y + 16, interiorID));
                     }
                     else
                     {

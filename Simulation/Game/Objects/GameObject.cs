@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Linq;
+using Simulation.Game.Objects.Interfaces;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Util;
@@ -8,6 +10,12 @@ namespace Simulation.Game.Objects
     public abstract class GameObject
     {
         protected object positionChangeLock;
+
+        public GameObjectRenderer CustomRenderer;
+        public GameObjectController CustomController;
+
+        [Serialize]
+        public JObject CustomInformation;
 
         [Serialize]
         public string ID
@@ -62,6 +70,11 @@ namespace Simulation.Game.Objects
         public virtual void Destroy()
         {
             IsDestroyed = true;
+        }
+
+        public virtual void Update(GameTime gameTime)
+        {
+            CustomController?.Update(gameTime);
         }
     }
 }

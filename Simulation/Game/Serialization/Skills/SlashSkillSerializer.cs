@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using Simulation.Game.Objects.Entities;
-using Simulation.Game.Serialization.AI;
 using Simulation.Game.Skills;
 using Simulation.Util;
 using System;

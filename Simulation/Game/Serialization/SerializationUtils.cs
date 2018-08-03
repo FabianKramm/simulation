@@ -9,6 +9,8 @@ namespace Simulation.Game.Serialization
 {
     public class SerializationUtils
     {
+        private static readonly Dictionary<string, Assembly> loadedAssemblies = new Dictionary<string, Assembly>();
+
         public static readonly JsonSerializer Serializer = JsonSerializer.Create(new JsonSerializerSettings {
             TypeNameHandling = TypeNameHandling.All
         });
@@ -16,6 +18,16 @@ namespace Simulation.Game.Serialization
         public static void SerializeType(Type type, ref JObject jObject) => jObject.Add("type", type.FullName);
         public static object GetObjectFromToken(Type type, JToken jToken) => Serializer.Deserialize(new JTokenReader(jToken), type);
         public static JToken GetJTokenFromObject(object obj) => JToken.FromObject(obj, Serializer);
+
+        public static Assembly GetAssembly(string filepath)
+        {
+            if(!loadedAssemblies.ContainsKey(filepath))
+            {
+                loadedAssemblies[filepath] = ReflectionUtils.LoadAssembly(filepath);
+            }
+
+            return loadedAssemblies[filepath];
+        }
 
         public static string[] GetSerializeables(Type type)
         {

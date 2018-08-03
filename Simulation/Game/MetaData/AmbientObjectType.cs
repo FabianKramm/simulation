@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Objects;
+using Simulation.Game.Objects.Interfaces;
+using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using System.Collections.Generic;
 
@@ -38,12 +40,25 @@ namespace Simulation.Game.MetaData
         public Point[] SpritePositions;
         public bool HasDepth = false;
 
+        public string CustomRendererAssembly = null;
+        public string CustomControllerAssembly = null;
+
         public static AmbientObject Create(WorldPosition worldPosition, AmbientObjectType ambientObjectType)
         {
             var ambientObject = new AmbientObject(worldPosition)
             {
                 AmbientObjectType = ambientObjectType.ID
             };
+
+            if (ambientObjectType.CustomControllerAssembly != null)
+            {
+                ambientObject.CustomController = (GameObjectController)SerializationUtils.GetAssembly(ambientObjectType.CustomControllerAssembly).GetType("CustomController").GetMethod("Create").Invoke(null, new object[] { ambientObject });
+            }
+
+            if (ambientObjectType.CustomRendererAssembly != null)
+            {
+                ambientObject.CustomRenderer = (GameObjectRenderer)SerializationUtils.GetAssembly(ambientObjectType.CustomRendererAssembly).GetType("CustomRenderer").GetMethod("Create").Invoke(null, new object[] { ambientObject });
+            }
 
             ambientObject.Init();
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Enums;
 using Simulation.Game.Objects;
+using Simulation.Game.Objects.Interfaces;
+using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;
 using System.Collections.Generic;
@@ -40,6 +42,9 @@ namespace Simulation.Game.MetaData
         public Point SpriteBounds;
         public Point[] SpritePositions;
 
+        public string CustomRendererAssembly = null;
+        public string CustomControllerAssembly = null;
+
         public static AmbientHitableObject Create(WorldPosition worldPosition, AmbientHitableObjectType ambientHitableObjectType)
         {
             AmbientHitableObject ambientHitableObject = new AmbientHitableObject(worldPosition)
@@ -48,6 +53,16 @@ namespace Simulation.Game.MetaData
                 BlockingType=ambientHitableObjectType.BlockingType,
                 IsHitable=ambientHitableObjectType.IsHitable
             };
+
+            if (ambientHitableObjectType.CustomControllerAssembly != null)
+            {
+                ambientHitableObject.CustomController = (GameObjectController)SerializationUtils.GetAssembly(ambientHitableObjectType.CustomControllerAssembly).GetType("CustomController").GetMethod("Create").Invoke(null, new object[] { ambientHitableObject });
+            }
+
+            if (ambientHitableObjectType.CustomRendererAssembly != null)
+            {
+                ambientHitableObject.CustomRenderer = (GameObjectRenderer)SerializationUtils.GetAssembly(ambientHitableObjectType.CustomRendererAssembly).GetType("CustomRenderer").GetMethod("Create").Invoke(null, new object[] { ambientHitableObject });
+            }
 
             ambientHitableObject.Init();
 

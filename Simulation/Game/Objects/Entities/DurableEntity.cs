@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.Hud;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;
+using System.Diagnostics;
 
 namespace Simulation.Game.Objects.Entities
 {
@@ -29,6 +31,11 @@ namespace Simulation.Game.Objects.Entities
 
         private void preloadGridChunks()
         {
+            var partsLoaded = 0;
+            var stopwatch = new Stopwatch();
+
+            stopwatch.Start();
+
             Point chunkPosition = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
             PreloadedWorldGridChunkBounds = new Rect(chunkPosition.X - PreloadedSurroundingWorldGridChunkRadius, chunkPosition.Y - PreloadedSurroundingWorldGridChunkRadius, PreloadedSurroundingWorldGridChunkRadius * 2 + 1, PreloadedSurroundingWorldGridChunkRadius * 2 + 1);
             PreloadedWorldGridChunkPixelBounds = new Rect(PreloadedWorldGridChunkBounds.X * WorldGrid.WorldChunkPixelSize.X, PreloadedWorldGridChunkBounds.Y * WorldGrid.WorldChunkPixelSize.Y, PreloadedWorldGridChunkBounds.Width * WorldGrid.WorldChunkPixelSize.X, PreloadedWorldGridChunkBounds.Height * WorldGrid.WorldChunkPixelSize.Y);
@@ -37,16 +44,25 @@ namespace Simulation.Game.Objects.Entities
                 for (int j = PreloadedWorldGridChunkBounds.Top; j <= PreloadedWorldGridChunkBounds.Bottom; j++)
                 {
                     if(!SimulationGame.World.IsLoaded(GeometryUtils.ConvertPointToLong(i, j)))
-                        SimulationGame.World.LoadAsync(GeometryUtils.ConvertPointToLong(i, j));
+                    {
+                        if(SimulationGame.World.LoadAsync(GeometryUtils.ConvertPointToLong(i, j)))
+                            partsLoaded++;
+                    }
                 }
-                    
+
+            stopwatch.Stop();
+
+            if (partsLoaded > 0)
+            {
+                GameConsole.WriteLine("ChunkLoading", "Preloading " + partsLoaded + " parts took " + stopwatch.ElapsedMilliseconds + "ms");
+            }
         }
 
-        public override void ConnectToWorld()
+        public override void Init()
         {
             preloadGridChunks();
 
-            base.ConnectToWorld();
+            base.Init();
         }
 
         protected override void UpdatePosition(WorldPosition newPosition)

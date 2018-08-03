@@ -41,20 +41,38 @@ namespace Simulation.Game.Renderer
 
                     if (worldGridChunk.AmbientObjects != null)
                         foreach (AmbientObject ambientObject in worldGridChunk.AmbientObjects)
-                            AmbientObjectRenderer.Draw(spriteBatch, ambientObject);
+                            if (SimulationGame.VisibleArea.Contains(ambientObject.Position) && ambientObject.InteriorID == SimulationGame.Player.InteriorID)
+                            {
+                                if (ambientObject.CustomRenderer != null)
+                                {
+                                    ambientObject.CustomRenderer.Draw(spriteBatch, gameTime);
+                                }
+                                else
+                                {
+                                    AmbientObjectRenderer.Draw(spriteBatch, ambientObject);
+                                }
+                            }
 
                     if (worldGridChunk.ContainedObjects != null)
                         foreach (var containedObject in worldGridChunk.ContainedObjects)
-                        {
-                            if (containedObject is LivingEntity)
+                            if (SimulationGame.VisibleArea.Contains(containedObject.Position) && containedObject.InteriorID == SimulationGame.Player.InteriorID)
                             {
-                                LivingEntityRenderer.Draw(spriteBatch, gameTime, (LivingEntity)containedObject);
+                                if (containedObject.CustomRenderer != null)
+                                {
+                                    containedObject.CustomRenderer.Draw(spriteBatch, gameTime);
+                                }
+                                else
+                                {
+                                    if (containedObject is LivingEntity)
+                                    {
+                                        LivingEntityRenderer.Draw(spriteBatch, gameTime, (LivingEntity)containedObject);
+                                    }
+                                    else
+                                    {
+                                        AmbientHitableObjectRenderer.Draw(spriteBatch, containedObject);
+                                    }
+                                }
                             }
-                            else
-                            {
-                                InteractiveObjectRenderer.Draw(spriteBatch, containedObject);
-                            }
-                        }
 
                     if (worldGridChunk.ContainedEffects != null)
                         foreach (var effectItem in worldGridChunk.ContainedEffects)
@@ -86,20 +104,38 @@ namespace Simulation.Game.Renderer
 
             if (interior.AmbientObjects != null)
                 foreach (AmbientObject ambientObject in interior.AmbientObjects)
-                    AmbientObjectRenderer.Draw(spriteBatch, ambientObject);
+                    if (SimulationGame.VisibleArea.Contains(ambientObject.Position) && ambientObject.InteriorID == SimulationGame.Player.InteriorID)
+                    {
+                        if (ambientObject.CustomRenderer != null)
+                        {
+                            ambientObject.CustomRenderer.Draw(spriteBatch, gameTime);
+                        }
+                        else
+                        {
+                            AmbientObjectRenderer.Draw(spriteBatch, ambientObject);
+                        }
+                    }
 
             if (interior.ContainedObjects != null)
                 foreach (var containedObject in interior.ContainedObjects)
-                {
-                    if (containedObject is LivingEntity)
+                    if (SimulationGame.VisibleArea.Contains(containedObject.Position) && containedObject.InteriorID == SimulationGame.Player.InteriorID)
                     {
-                        LivingEntityRenderer.Draw(spriteBatch, gameTime, (LivingEntity)containedObject);
+                        if (containedObject.CustomRenderer != null)
+                        {
+                            containedObject.CustomRenderer.Draw(spriteBatch, gameTime);
+                        }
+                        else
+                        {
+                            if (containedObject is LivingEntity)
+                            {
+                                LivingEntityRenderer.Draw(spriteBatch, gameTime, (LivingEntity)containedObject);
+                            }
+                            else
+                            {
+                                AmbientHitableObjectRenderer.Draw(spriteBatch, containedObject);
+                            }
+                        }
                     }
-                    else
-                    {
-                        InteractiveObjectRenderer.Draw(spriteBatch, containedObject);
-                    }
-                }
 
             if (interior.ContainedEffects != null)
                 foreach (var effectItem in interior.ContainedEffects)

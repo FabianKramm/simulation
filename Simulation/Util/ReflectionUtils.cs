@@ -2,6 +2,7 @@
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 
 namespace Simulation.Util
@@ -133,16 +134,17 @@ namespace Simulation.Util
             return (T)ci.Invoke(paramValues);
         }
 
-        // Eval > Evaluates C# sourcelanguage
-        public static object Eval(string code)
+        // Loading assemblies
+        public static Assembly LoadAssembly(string filepath)
         {
             var csc = new CSharpCodeProvider(new Dictionary<string, string> () { { "CompilerVersion", "v4.0" } });
             var p = new CompilerParameters(new[] { "mscorlib.dll", "System.Core.dll" }, null, true);
 
+            p.ReferencedAssemblies.Add(Assembly.GetEntryAssembly().Location);
             p.GenerateInMemory = true;
             p.GenerateExecutable = false;
-
-            CompilerResults r = csc.CompileAssemblyFromSource(p, "using System; class p {public static object c(){" + code + "}}");
+            
+            CompilerResults r = csc.CompileAssemblyFromSource(p, File.ReadAllText(filepath));
 
             if (r.Errors.Count > 0)
             {
@@ -152,10 +154,7 @@ namespace Simulation.Util
                 return null;
             }
 
-            var a = r.CompiledAssembly;
-            MethodInfo o = a.CreateInstance("p").GetType().GetMethod("c");
-
-            return o.Invoke(o, null);
+            return r.CompiledAssembly;
         }
     }
 }

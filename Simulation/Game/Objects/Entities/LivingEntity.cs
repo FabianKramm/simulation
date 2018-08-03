@@ -15,8 +15,7 @@ namespace Simulation.Game.Objects.Entities
     {
         private static readonly TimeSpan lifeRegenInterval = TimeSpan.FromMilliseconds(500);
         public LivingEntityRendererInformation RendererInformation;
-
-        public BaseAI BaseAI;
+        
         public Skill[] Skills;
 
         [Serialize]
@@ -71,11 +70,6 @@ namespace Simulation.Game.Objects.Entities
             return CurrentLife <= 0;
         }
 
-        public void SetAI(BaseAI baseAI)
-        {
-            this.BaseAI = baseAI;
-        }
-
         public void Talk(string line)
         {
             if(RendererInformation != null)
@@ -97,10 +91,9 @@ namespace Simulation.Game.Objects.Entities
             }
         }
 
-        public virtual void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
-            if(BaseAI != null)
-                BaseAI.Update(gameTime);
+            base.Update(gameTime);
 
             if (Skills != null)
                 foreach (var skill in Skills)

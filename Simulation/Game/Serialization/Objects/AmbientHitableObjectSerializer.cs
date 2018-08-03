@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
+using Simulation.Game.MetaData;
 using Simulation.Game.Objects;
+using Simulation.Game.Objects.Interfaces;
 using Simulation.Util;
 using System;
 
@@ -7,8 +9,8 @@ namespace Simulation.Game.Serialization.Objects
 {
     public class AmbientHitableObjectSerializer: HitableObjectSerializer
     {
-        private static readonly Type staticBlockingObjectType = typeof(AmbientHitableObject);
-        private static readonly string[] serializeableProperties = SerializationUtils.GetSerializeables(staticBlockingObjectType);
+        private static readonly Type type = typeof(AmbientHitableObject);
+        private static readonly string[] serializeableProperties = SerializationUtils.GetSerializeables(type);
 
         public static AmbientHitableObject Deserialize(JObject jObject)
         {
@@ -23,26 +25,38 @@ namespace Simulation.Game.Serialization.Objects
         {
             var retObject = new JObject();
 
-            SerializationUtils.SerializeType(staticBlockingObjectType, ref retObject);
+            SerializationUtils.SerializeType(type, ref retObject);
             Serialize(staticBlockingObject, ref retObject);
 
             return retObject;
         }
 
-        protected static void Deserialize(ref JObject jObject, AmbientHitableObject staticBlockingObjectleObject)
+        protected static void Deserialize(ref JObject jObject, AmbientHitableObject ambientHitableObject)
         {
-            HitableObjectSerializer.Deserialize(ref jObject, staticBlockingObjectleObject);
+            HitableObjectSerializer.Deserialize(ref jObject, ambientHitableObject);
 
-            SerializationUtils.SetFromObject(jObject, staticBlockingObjectleObject, staticBlockingObjectType, serializeableProperties);
+            SerializationUtils.SetFromObject(jObject, ambientHitableObject, type, serializeableProperties);
 
-            staticBlockingObjectleObject.Init();
+            var ambientHitableObjectType = AmbientHitableObjectType.lookup[ambientHitableObject.AmbientHitableObjectType];
+
+            if (ambientHitableObjectType.CustomControllerAssembly != null)
+            {
+                ambientHitableObject.CustomController = (GameObjectController)SerializationUtils.GetAssembly(ambientHitableObjectType.CustomControllerAssembly).GetType("CustomController").GetMethod("Create").Invoke(null, new object[] { ambientHitableObject });
+            }
+
+            if (ambientHitableObjectType.CustomRendererAssembly != null)
+            {
+                ambientHitableObject.CustomRenderer = (GameObjectRenderer)SerializationUtils.GetAssembly(ambientHitableObjectType.CustomRendererAssembly).GetType("CustomRenderer").GetMethod("Create").Invoke(null, new object[] { ambientHitableObject });
+            }
+
+            ambientHitableObject.Init();
         }
 
         protected static void Serialize(AmbientHitableObject staticBlockingObject, ref JObject jObject)
         {
             HitableObjectSerializer.Serialize(staticBlockingObject, ref jObject);
 
-            SerializationUtils.AddToObject(jObject, staticBlockingObject, staticBlockingObjectType, serializeableProperties);
+            SerializationUtils.AddToObject(jObject, staticBlockingObject, type, serializeableProperties);
         }
     }
 }

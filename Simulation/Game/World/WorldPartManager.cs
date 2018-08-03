@@ -12,6 +12,7 @@ namespace Simulation.Game.World
     public abstract class WorldPartManager<KEY, PART>
     {
         private ConcurrentDictionary<KEY, PART> loadedParts = new ConcurrentDictionary<KEY, PART>();
+        private Dictionary<KEY, bool> partsCurrentlyLoading = new Dictionary<KEY, bool>();
 
         protected TimeSpan garbageCollectInterval;
         protected TimeSpan timeSinceLastGarbageCollect = TimeSpan.Zero;
@@ -37,12 +38,23 @@ namespace Simulation.Game.World
             return loadedParts.Keys;
         }
 
-        public void LoadAsync(KEY key)
+        public bool LoadAsync(KEY key)
         {
-            Task.Run(() =>
+            ThreadingUtils.assertMainThread();
+
+            if(!partsCurrentlyLoading.ContainsKey(key))
             {
-                loadedParts.GetOrAdd(key, this.loadUnguarded);
-            });
+                partsCurrentlyLoading[key] = true;
+
+                Task.Run(() =>
+                {
+                    loadedParts.GetOrAdd(key, this.loadUnguarded);
+                });
+
+                return true;
+            }
+
+            return false;
         }
 
         protected void SaveAsync(KEY key, PART part)
@@ -97,6 +109,11 @@ namespace Simulation.Game.World
 
                 // Save async
                 SaveAsync(key, removedPart);
+
+                if (partsCurrentlyLoading.ContainsKey(key))
+                {
+                    partsCurrentlyLoading.Remove(key);
+                }
             }
 
             return couldRemove;

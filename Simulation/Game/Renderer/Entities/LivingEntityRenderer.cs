@@ -10,19 +10,16 @@ namespace Simulation.Game.Renderer.Entities
     {
         public static void Draw(SpriteBatch spriteBatch, GameTime gameTime, LivingEntity livingEntity)
         {
-            if(SimulationGame.VisibleArea.Contains(livingEntity.Position) && livingEntity.InteriorID == SimulationGame.Player.InteriorID)
-            {
-                if (livingEntity.RendererInformation == null)
-                    livingEntity.RendererInformation = LivingEntityType.CreateRendererInformation(livingEntity);
+            if (livingEntity.RendererInformation == null)
+                livingEntity.RendererInformation = LivingEntityType.CreateRendererInformation(livingEntity);
 
-                if (livingEntity is MovingEntity)
-                {
-                    MovingEntityRenderer.Draw(spriteBatch, gameTime, (MovingEntity)livingEntity);
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
+            if (livingEntity is MovingEntity)
+            {
+                MovingEntityRenderer.Draw(spriteBatch, gameTime, (MovingEntity)livingEntity);
+            }
+            else
+            {
+                throw new NotImplementedException();
             }
         }
     }

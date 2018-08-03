@@ -4,7 +4,9 @@ using Simulation.Game.Enums;
 using Simulation.Game.MetaData.AI;
 using Simulation.Game.MetaData.Skills;
 using Simulation.Game.Objects.Entities;
+using Simulation.Game.Objects.Interfaces;
 using Simulation.Game.Renderer.Entities;
+using Simulation.Game.Serialization;
 using Simulation.Game.Skills;
 using Simulation.Game.World;
 using Simulation.Spritesheet;
@@ -117,6 +119,9 @@ namespace Simulation.Game.MetaData
         public bool WithGrid = true;
         public int FrameDuration = 160;
 
+        public string CustomRendererAssembly = null;
+        public string CustomControllerAssembly = null;
+
         public static LivingEntity Create(WorldPosition worldPosition, LivingEntityType livingEntityType)
         {
             MovingEntity livingEntity = null;
@@ -159,13 +164,19 @@ namespace Simulation.Game.MetaData
                     livingEntity.Skills[i] = SkillMetaData.Create(livingEntity, skill);
                 }
             }
-
-            if(livingEntityType.AIMetaData != null)
-            {
-                livingEntity.BaseAI = AIMetaData.Create(livingEntity, livingEntityType.AIMetaData);
-            }
             
             livingEntity.BlockingType = livingEntityType.BlockingType;
+
+            if (livingEntityType.CustomControllerAssembly != null)
+            {
+                livingEntity.CustomController = (GameObjectController)SerializationUtils.GetAssembly(livingEntityType.CustomControllerAssembly).GetType("CustomController").GetMethod("Create").Invoke(null, new object[] { livingEntity });
+            }
+
+            if (livingEntityType.CustomRendererAssembly != null)
+            {
+                livingEntity.CustomRenderer = (GameObjectRenderer)SerializationUtils.GetAssembly(livingEntityType.CustomRendererAssembly).GetType("CustomRenderer").GetMethod("Create").Invoke(null, new object[] { livingEntity });
+            }
+
             livingEntity.Init();
 
             return livingEntity;

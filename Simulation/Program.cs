@@ -20,6 +20,7 @@ using Simulation.Game.Hud;
 using Simulation.Util.Dialog;
 using System.Windows.Forms;
 using Simulation.Game.MetaData;
+using System.Reflection;
 
 namespace Simulation
 {
@@ -29,16 +30,21 @@ namespace Simulation
     /// </summary>
     public static class Program
     {
+        public static void Test()
+        {
+            Console.WriteLine("Test!");
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            WorldLoader.ResetWorld();
+            // WorldLoader.ResetWorld();
 
-            using (var game = new SimulationGame())
-               game.Run(); 
+            // using (var game = new SimulationGame())
+            //   game.Run(); 
 
             /* var rect1 = new Rect(0, 0, 10, 10);
             var rect2 = new Rect(0, 0, 10, 10);

@@ -105,7 +105,8 @@
     <Compile Include="Game\Generator\Factories\DurableEntityFactory.cs" />
     <Compile Include="Game\Generator\InteriorGeneration\InteriorGenerator.cs" />
     <Compile Include="Game\Hud\DebugHud.cs" />
-    <Compile Include="Game\Renderer\AmbientObjectRendererInformation.cs" />
+    <Compile Include="Game\Objects\Interfaces\GameObjectController.cs" />
+    <Compile Include="Game\Objects\Interfaces\GameObjectRenderer.cs" />
     <Compile Include="Game\Renderer\Effects\EffectRenderer.cs" />
     <Compile Include="Game\Renderer\Effects\EffectRendererInformation.cs" />
     <Compile Include="Game\Renderer\Effects\SlashRenderer.cs" />
@@ -117,13 +118,10 @@
     <Compile Include="Game\Renderer\Entities\LivingEntityRenderer.cs" />
     <Compile Include="Game\Renderer\AmbientObjectRenderer.cs" />
     <Compile Include="Game\Renderer\Entities\MovingEntityRenderer.cs" />
-    <Compile Include="Game\Renderer\InteractiveObjectRenderer.cs" />
+    <Compile Include="Game\Renderer\AmbientHitableObjectRenderer.cs" />
     <Compile Include="Game\Renderer\GameRenderer.cs" />
     <Compile Include="Game\Renderer\Entities\LivingEntityRendererInformation.cs" />
     <Compile Include="Game\Renderer\WorldRenderer.cs" />
-    <Compile Include="Game\Serialization\AI\AISerializer.cs" />
-    <Compile Include="Game\Serialization\AI\BaseAISerializer.cs" />
-    <Compile Include="Game\Serialization\AI\WanderAISerializer.cs" />
     <Compile Include="Game\Serialization\Objects\AmbientObjectSerializer.cs" />
     <Compile Include="Game\Serialization\Objects\GameObjectSerializer.cs" />
     <Compile Include="Game\Serialization\Objects\DurableEntitySerializer.cs" />
