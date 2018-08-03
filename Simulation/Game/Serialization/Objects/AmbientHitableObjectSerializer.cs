@@ -4,6 +4,7 @@ using Simulation.Game.Objects;
 using Simulation.Game.Objects.Interfaces;
 using Simulation.Util;
 using System;
+using System.IO;
 
 namespace Simulation.Game.Serialization.Objects
 {
@@ -41,12 +42,20 @@ namespace Simulation.Game.Serialization.Objects
 
             if (ambientHitableObjectType.CustomControllerAssembly != null)
             {
-                ambientHitableObject.CustomController = (GameObjectController)SerializationUtils.GetAssembly(ambientHitableObjectType.CustomControllerAssembly).GetType("CustomController").GetMethod("Create").Invoke(null, new object[] { ambientHitableObject });
+                ambientHitableObject.CustomController = (GameObjectController)SerializationUtils
+                    .GetAssembly(ambientHitableObjectType.CustomControllerAssembly)
+                    .GetType(Path.GetFileNameWithoutExtension(ambientHitableObjectType.CustomControllerAssembly))
+                    .GetMethod("Create")
+                    .Invoke(null, new object[] { ambientHitableObject });
             }
 
             if (ambientHitableObjectType.CustomRendererAssembly != null)
             {
-                ambientHitableObject.CustomRenderer = (GameObjectRenderer)SerializationUtils.GetAssembly(ambientHitableObjectType.CustomRendererAssembly).GetType("CustomRenderer").GetMethod("Create").Invoke(null, new object[] { ambientHitableObject });
+                ambientHitableObject.CustomRenderer = (GameObjectRenderer)SerializationUtils
+                    .GetAssembly(ambientHitableObjectType.CustomRendererAssembly)
+                    .GetType(Path.GetFileNameWithoutExtension(ambientHitableObjectType.CustomRendererAssembly))
+                    .GetMethod("Create")
+                    .Invoke(null, new object[] { ambientHitableObject });
             }
 
             ambientHitableObject.Init();

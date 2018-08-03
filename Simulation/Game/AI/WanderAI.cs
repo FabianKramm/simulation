@@ -10,25 +10,16 @@ namespace Simulation.Game.AI
     public class WanderAI: BaseAI
     {
         private static readonly TimeSpan waitAfterWalking = TimeSpan.FromMilliseconds(1000);
-
-        [Serialize]
-        public int BlockRadius
-        {
-            get; private set;
-        }
-
-        [Serialize]
+        
+        public int BlockRadius;
         public WorldPosition BlockStartPosition;
-
-        // From JSON
-        private WanderAI(MovingEntity movingEntity): base(movingEntity) { }
 
         public WanderAI(MovingEntity movingEntity, int blockRadius): base(movingEntity)
         {
             BlockRadius = blockRadius;
             BlockStartPosition = new WorldPosition(movingEntity.BlockPosition.X, movingEntity.BlockPosition.Y, movingEntity.Position.InteriorID);
 
-            Init();
+            behaviorTree = createBehaviorTree();
         }
 
         protected override IBehaviorTreeNode createBehaviorTree()

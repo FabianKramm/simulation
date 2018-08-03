@@ -5,6 +5,7 @@ using Simulation.Game.Objects.Interfaces;
 using Simulation.Game.Serialization.Skills;
 using Simulation.Game.Skills;
 using System;
+using System.IO;
 
 namespace Simulation.Game.Serialization.Objects
 {
@@ -35,12 +36,20 @@ namespace Simulation.Game.Serialization.Objects
 
             if(livingEntityType.CustomControllerAssembly != null)
             {
-                livingEntity.CustomController = (GameObjectController)SerializationUtils.GetAssembly(livingEntityType.CustomControllerAssembly).GetType("CustomController").GetMethod("Create").Invoke(null, new object[] { livingEntity });
+                livingEntity.CustomController = (GameObjectController)SerializationUtils
+                    .GetAssembly(livingEntityType.CustomControllerAssembly)
+                    .GetType(Path.GetFileNameWithoutExtension(livingEntityType.CustomControllerAssembly))
+                    .GetMethod("Create")
+                    .Invoke(null, new object[] { livingEntity });
             }
 
             if (livingEntityType.CustomRendererAssembly != null)
             {
-                livingEntity.CustomRenderer = (GameObjectRenderer)SerializationUtils.GetAssembly(livingEntityType.CustomRendererAssembly).GetType("CustomRenderer").GetMethod("Create").Invoke(null, new object[] { livingEntity });
+                livingEntity.CustomRenderer = (GameObjectRenderer)SerializationUtils
+                    .GetAssembly(livingEntityType.CustomRendererAssembly)
+                    .GetType(Path.GetFileNameWithoutExtension(livingEntityType.CustomRendererAssembly))
+                    .GetMethod("Create")
+                    .Invoke(null, new object[] { livingEntity });
             }
         }
 

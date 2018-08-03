@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using Simulation.Util;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 
 namespace Simulation.Game.Serialization
@@ -23,7 +24,7 @@ namespace Simulation.Game.Serialization
         {
             if(!loadedAssemblies.ContainsKey(filepath))
             {
-                loadedAssemblies[filepath] = ReflectionUtils.LoadAssembly(filepath);
+                loadedAssemblies[filepath] = ReflectionUtils.LoadAssembly(Path.Combine(Util.Util.GetScriptBasePath(), filepath));
             }
 
             return loadedAssemblies[filepath];

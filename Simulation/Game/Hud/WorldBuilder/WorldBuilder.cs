@@ -67,14 +67,8 @@ namespace Simulation.Game.Hud.WorldBuilder
             {
                 if(currentMode == PlacementMode.NoPlacement)
                 {
-                    var dialog = new SelectMode();
-
-                    if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    {
-                        currentMode = dialog.ResultMode;
-                    }
+                    
                 }
-
 
                 MouseState mouseState = Mouse.GetState();
 

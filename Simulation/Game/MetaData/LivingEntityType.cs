@@ -12,6 +12,7 @@ using Simulation.Game.World;
 using Simulation.Spritesheet;
 using Simulation.Util.Geometry;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Simulation.Game.MetaData
 {
@@ -169,12 +170,20 @@ namespace Simulation.Game.MetaData
 
             if (livingEntityType.CustomControllerAssembly != null)
             {
-                livingEntity.CustomController = (GameObjectController)SerializationUtils.GetAssembly(livingEntityType.CustomControllerAssembly).GetType("CustomController").GetMethod("Create").Invoke(null, new object[] { livingEntity });
+                livingEntity.CustomController = (GameObjectController)SerializationUtils
+                    .GetAssembly(livingEntityType.CustomControllerAssembly)
+                    .GetType(Path.GetFileNameWithoutExtension(livingEntityType.CustomControllerAssembly))
+                    .GetMethod("Create")
+                    .Invoke(null, new object[] { livingEntity });
             }
 
             if (livingEntityType.CustomRendererAssembly != null)
             {
-                livingEntity.CustomRenderer = (GameObjectRenderer)SerializationUtils.GetAssembly(livingEntityType.CustomRendererAssembly).GetType("CustomRenderer").GetMethod("Create").Invoke(null, new object[] { livingEntity });
+                livingEntity.CustomRenderer = (GameObjectRenderer)SerializationUtils
+                    .GetAssembly(livingEntityType.CustomRendererAssembly)
+                    .GetType(Path.GetFileNameWithoutExtension(livingEntityType.CustomRendererAssembly))
+                    .GetMethod("Create")
+                    .Invoke(null, new object[] { livingEntity });
             }
 
             livingEntity.Init();

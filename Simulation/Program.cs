@@ -21,6 +21,7 @@ using Simulation.Util.Dialog;
 using System.Windows.Forms;
 using Simulation.Game.MetaData;
 using System.Reflection;
+using System.IO;
 
 namespace Simulation
 {
@@ -30,17 +31,13 @@ namespace Simulation
     /// </summary>
     public static class Program
     {
-        public static void Test()
-        {
-            Console.WriteLine("Test!");
-        }
-
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
+            Console.WriteLine(Util.Util.GetCustomControllerBasePath());
             // WorldLoader.ResetWorld();
 
             // using (var game = new SimulationGame())

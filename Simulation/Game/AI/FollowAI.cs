@@ -15,7 +15,7 @@ namespace Simulation.Game.AI
             this.target = target;
             this.tillDistance = realDistance;
 
-            Init();
+            behaviorTree = createBehaviorTree();
         }
 
         protected override IBehaviorTreeNode createBehaviorTree()

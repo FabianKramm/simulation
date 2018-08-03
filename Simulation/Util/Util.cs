@@ -16,6 +16,19 @@ namespace Simulation.Util
         private static string WorldSavePath = @"World\WorldGrid\";
         private static string WalkableGridSavePath = @"World\WalkableGrid\";
 
+        private static string ScriptBasePath = Path.Combine(Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName).FullName).FullName, "Scripts");
+        private static string CustomControllerBasePath = Path.Combine(ScriptBasePath, "Controller");
+
+        public static string GetCustomControllerBasePath()
+        {
+            return CustomControllerBasePath;
+        }
+
+        public static string GetScriptBasePath()
+        {
+            return ScriptBasePath;
+        }
+
         public static string GetBlockTypesSavePath()
         {
             return Path.Combine(GetGameFolder(), MetaDataSavePath, BlockTypesSavePath);

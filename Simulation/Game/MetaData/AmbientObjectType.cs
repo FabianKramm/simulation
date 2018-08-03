@@ -4,6 +4,7 @@ using Simulation.Game.Objects.Interfaces;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Simulation.Game.MetaData
 {
@@ -52,12 +53,20 @@ namespace Simulation.Game.MetaData
 
             if (ambientObjectType.CustomControllerAssembly != null)
             {
-                ambientObject.CustomController = (GameObjectController)SerializationUtils.GetAssembly(ambientObjectType.CustomControllerAssembly).GetType("CustomController").GetMethod("Create").Invoke(null, new object[] { ambientObject });
+                ambientObject.CustomController = (GameObjectController)SerializationUtils
+                    .GetAssembly(ambientObjectType.CustomControllerAssembly)
+                    .GetType(Path.GetFileNameWithoutExtension(ambientObjectType.CustomControllerAssembly))
+                    .GetMethod("Create")
+                    .Invoke(null, new object[] { ambientObject });
             }
 
             if (ambientObjectType.CustomRendererAssembly != null)
             {
-                ambientObject.CustomRenderer = (GameObjectRenderer)SerializationUtils.GetAssembly(ambientObjectType.CustomRendererAssembly).GetType("CustomRenderer").GetMethod("Create").Invoke(null, new object[] { ambientObject });
+                ambientObject.CustomRenderer = (GameObjectRenderer)SerializationUtils
+                    .GetAssembly(ambientObjectType.CustomRendererAssembly)
+                    .GetType(Path.GetFileNameWithoutExtension(ambientObjectType.CustomRendererAssembly))
+                    .GetMethod("Create")
+                    .Invoke(null, new object[] { ambientObject });
             }
 
             ambientObject.Init();

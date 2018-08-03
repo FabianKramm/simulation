@@ -20,18 +20,13 @@ namespace Simulation.Game.AI
             Entity = movingEntity;
         }
 
+        protected abstract IBehaviorTreeNode createBehaviorTree();
+
         public virtual void Update(GameTime gameTime)
         {
-            Debug.Assert(behaviorTree != null, "BehaviorTree is null, did you forget to call init in the ai class?");
+            Debug.Assert(behaviorTree != null, "BehaviorTree is null, did you forget to call createBehaviorTree in the constructor?");
 
             behaviorTree.Tick(gameTime);
         }
-
-        public void Init()
-        {
-            behaviorTree = createBehaviorTree();
-        }
-
-        protected abstract IBehaviorTreeNode createBehaviorTree();
     }
 }
