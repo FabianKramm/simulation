@@ -157,14 +157,13 @@ namespace Simulation.Game.World
                 }
             }
 
+            // Update Ambient Objects
+            for (int i = 0; AmbientObjects != null && i < AmbientObjects.Count; i++) // Avoid collection changed problem with updatePosition and disconnectWorld
+                AmbientObjects[i].Update(gameTime);
+
             // Update Contained Objects
             for (int i = 0; ContainedObjects != null && i < ContainedObjects.Count; i++) // Avoid collection changed problem with updatePosition and disconnectWorld
-            {
-                var containedObject = ContainedObjects[i];
-
-                if (containedObject is MovingEntity)
-                    ((MovingEntity)containedObject).Update(gameTime);
-            }
+                ContainedObjects[i].Update(gameTime);
         }
     }
 }
