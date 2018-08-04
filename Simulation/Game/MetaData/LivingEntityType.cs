@@ -12,7 +12,6 @@ using Simulation.Game.World;
 using Simulation.Spritesheet;
 using Simulation.Util.Geometry;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Simulation.Game.MetaData
 {
@@ -65,7 +64,7 @@ namespace Simulation.Game.MetaData
                     new FireballSkillMetaData()
                 },
                 SpritePath=@"Characters\Geralt",
-                CustomControllerScript=@"Controller\WanderController.cs",
+                CustomControllerScript=@"Scripts.Controller.WanderController",
                 CustomProperties=new JObject(){
                     {"BlockRadius", 4}
                 },
@@ -172,16 +171,12 @@ namespace Simulation.Game.MetaData
 
             if (livingEntityType.CustomControllerScript != null)
             {
-                livingEntity.CustomController = (GameObjectController)SerializationUtils
-                    .GetAssembly(livingEntityType.CustomControllerScript)
-                    .CreateInstance(Path.GetFileNameWithoutExtension(livingEntityType.CustomControllerScript));
+                livingEntity.CustomController = (GameObjectController)SerializationUtils.CreateInstance(livingEntityType.CustomControllerScript);
             }
 
             if (livingEntityType.CustomRendererScript != null)
             {
-                livingEntity.CustomRenderer = (GameObjectRenderer)SerializationUtils
-                    .GetAssembly(livingEntityType.CustomRendererScript)
-                    .CreateInstance(Path.GetFileNameWithoutExtension(livingEntityType.CustomRendererScript));
+                livingEntity.CustomRenderer = (GameObjectRenderer)SerializationUtils.CreateInstance(livingEntityType.CustomRendererScript);
             }
 
             livingEntity.Init();

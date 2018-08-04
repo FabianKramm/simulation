@@ -42,16 +42,12 @@ namespace Simulation.Game.Serialization.Objects
 
             if (ambientObjectType.CustomControllerScript != null)
             {
-                ambientObject.CustomController = (GameObjectController)SerializationUtils
-                    .GetAssembly(ambientObjectType.CustomControllerScript)
-                    .CreateInstance(Path.GetFileNameWithoutExtension(ambientObjectType.CustomControllerScript));
+                ambientObject.CustomController = (GameObjectController)SerializationUtils.CreateInstance(ambientObjectType.CustomControllerScript);
             }
 
             if (ambientObjectType.CustomRendererScript != null)
             {
-                ambientObject.CustomRenderer = (GameObjectRenderer)SerializationUtils
-                    .GetAssembly(ambientObjectType.CustomRendererScript)
-                    .CreateInstance(Path.GetFileNameWithoutExtension(ambientObjectType.CustomRendererScript));
+                ambientObject.CustomRenderer = (GameObjectRenderer)SerializationUtils.CreateInstance(ambientObjectType.CustomRendererScript);
             }
 
             ambientObject.Init();

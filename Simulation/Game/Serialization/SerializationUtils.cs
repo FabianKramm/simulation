@@ -20,6 +20,18 @@ namespace Simulation.Game.Serialization
         public static object GetObjectFromToken(Type type, JToken jToken) => Serializer.Deserialize(new JTokenReader(jToken), type);
         public static JToken GetJTokenFromObject(object obj) => JToken.FromObject(obj, Serializer);
 
+        public static object CreateInstance(string filepath)
+        {
+            if(filepath.EndsWith(".cs"))
+            {
+                return GetAssembly(filepath).CreateInstance(Path.GetFileNameWithoutExtension(filepath));
+            }
+            else
+            {
+                return Assembly.GetEntryAssembly().CreateInstance(filepath);
+            }
+        }
+
         public static Assembly GetAssembly(string filepath)
         {
             if(!loadedAssemblies.ContainsKey(filepath))

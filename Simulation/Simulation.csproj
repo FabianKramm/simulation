@@ -133,7 +133,7 @@
     <Compile Include="Game\Serialization\WorldPartSerialization.cs" />
     <Compile Include="Game\Skills\Skill.cs" />
     <Compile Include="Game\Skills\SlashSkill.cs" />
-    <None Include="Scripts\Controller\WanderController.cs" />
+    <Compile Include="Scripts\Controller\WanderController.cs" />
     <Compile Include="Util\Collision\ShapeCollision.cs" />
     <Compile Include="Game\World\WorldPart.cs" />
     <Compile Include="Game\World\WorldPartManager.cs" />
