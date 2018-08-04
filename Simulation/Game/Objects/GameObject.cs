@@ -13,7 +13,7 @@ namespace Simulation.Game.Objects
         public GameObjectController CustomController;
 
         [Serialize]
-        public JObject CustomInformation;
+        private JObject customInformation;
 
         [Serialize]
         public string ID
@@ -71,6 +71,41 @@ namespace Simulation.Game.Objects
         public virtual void Destroy()
         {
             IsDestroyed = true;
+        }
+
+        public T GetCustomProperty<T>(string key)
+        {
+            if (customInformation == null)
+            {
+                return default(T);
+            }
+
+            return SerializationUtils.GetFromObject<T>(customInformation, key);
+        }
+
+        public T GetOrAddCustomProperty<T>(string key, object value)
+        {
+            if (customInformation == null)
+            {
+                customInformation = new JObject();
+            }
+
+            if (customInformation.GetValue(key) == null)
+            {
+                SerializationUtils.AddToObject(customInformation, key, value);
+            }
+
+            return SerializationUtils.GetFromObject<T>(customInformation, key);
+        }
+
+        public void SetCustomProperty(string key, object value)
+        {
+            if (customInformation == null)
+            {
+                customInformation = new JObject();
+            }
+
+            SerializationUtils.AddToObject(customInformation, key, value);
         }
 
         public virtual void Update(GameTime gameTime)

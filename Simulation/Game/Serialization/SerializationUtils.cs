@@ -53,6 +53,23 @@ namespace Simulation.Game.Serialization
             return retFields.ToArray();
         }
 
+        public static void AddToObject(JObject jObject, string key, object value)
+        {
+            if (value != null)
+            {
+                jObject.Add(key, JToken.FromObject(value, Serializer));
+            }
+            else
+            {
+                jObject.Add(key, null);
+            }
+        }
+
+        public static T GetFromObject<T>(JObject jObject, string key)
+        {
+            return (T)Serializer.Deserialize(new JTokenReader(jObject.GetValue(key)), typeof(T));
+        }
+
         public static void AddToObject(JObject jObject, object obj, Type type, string[] names)
         {
             foreach(var propertyName in names)

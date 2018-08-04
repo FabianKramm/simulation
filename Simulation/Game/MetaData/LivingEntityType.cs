@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Enums;
-using Simulation.Game.MetaData.AI;
 using Simulation.Game.MetaData.Skills;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Objects.Interfaces;
@@ -65,6 +64,7 @@ namespace Simulation.Game.MetaData
                     new FireballSkillMetaData()
                 },
                 SpritePath=@"Characters\Geralt",
+                CustomControllerScript=@"Controller\WanderController.cs",
                 DownAnimation=new Point[]
                 {
                     new Point(1, 0), new Point(0, 0), new Point(1, 0), new Point(2, 0)
@@ -116,8 +116,8 @@ namespace Simulation.Game.MetaData
         public bool WithGrid = true;
         public int FrameDuration = 160;
 
-        public string CustomRendererAssembly = null;
-        public string CustomControllerAssembly = null;
+        public string CustomRendererScript = null;
+        public string CustomControllerScript = null;
 
         public static LivingEntity Create(WorldPosition worldPosition, LivingEntityType livingEntityType)
         {
@@ -164,18 +164,18 @@ namespace Simulation.Game.MetaData
             
             livingEntity.BlockingType = livingEntityType.BlockingType;
 
-            if (livingEntityType.CustomControllerAssembly != null)
+            if (livingEntityType.CustomControllerScript != null)
             {
                 livingEntity.CustomController = (GameObjectController)SerializationUtils
-                    .GetAssembly(livingEntityType.CustomControllerAssembly)
-                    .CreateInstance(Path.GetFileNameWithoutExtension(livingEntityType.CustomControllerAssembly));
+                    .GetAssembly(livingEntityType.CustomControllerScript)
+                    .CreateInstance(Path.GetFileNameWithoutExtension(livingEntityType.CustomControllerScript));
             }
 
-            if (livingEntityType.CustomRendererAssembly != null)
+            if (livingEntityType.CustomRendererScript != null)
             {
                 livingEntity.CustomRenderer = (GameObjectRenderer)SerializationUtils
-                    .GetAssembly(livingEntityType.CustomRendererAssembly)
-                    .CreateInstance(Path.GetFileNameWithoutExtension(livingEntityType.CustomRendererAssembly));
+                    .GetAssembly(livingEntityType.CustomRendererScript)
+                    .CreateInstance(Path.GetFileNameWithoutExtension(livingEntityType.CustomRendererScript));
             }
 
             livingEntity.Init();

@@ -14,10 +14,10 @@ namespace Simulation.Game.AI
         public int BlockRadius;
         public WorldPosition BlockStartPosition;
 
-        public WanderAI(MovingEntity movingEntity, int blockRadius): base(movingEntity)
+        public WanderAI(MovingEntity movingEntity, WorldPosition blockStartPosition, int blockRadius): base(movingEntity)
         {
             BlockRadius = blockRadius;
-            BlockStartPosition = new WorldPosition(movingEntity.BlockPosition.X, movingEntity.BlockPosition.Y, movingEntity.Position.InteriorID);
+            BlockStartPosition = blockStartPosition;
 
             behaviorTree = createBehaviorTree();
         }

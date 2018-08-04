@@ -40,18 +40,18 @@ namespace Simulation.Game.Serialization.Objects
 
             var ambientObjectType = AmbientObjectType.lookup[ambientObject.AmbientObjectType];
 
-            if (ambientObjectType.CustomControllerAssembly != null)
+            if (ambientObjectType.CustomControllerScript != null)
             {
                 ambientObject.CustomController = (GameObjectController)SerializationUtils
-                    .GetAssembly(ambientObjectType.CustomControllerAssembly)
-                    .CreateInstance(Path.GetFileNameWithoutExtension(ambientObjectType.CustomControllerAssembly));
+                    .GetAssembly(ambientObjectType.CustomControllerScript)
+                    .CreateInstance(Path.GetFileNameWithoutExtension(ambientObjectType.CustomControllerScript));
             }
 
-            if (ambientObjectType.CustomRendererAssembly != null)
+            if (ambientObjectType.CustomRendererScript != null)
             {
                 ambientObject.CustomRenderer = (GameObjectRenderer)SerializationUtils
-                    .GetAssembly(ambientObjectType.CustomRendererAssembly)
-                    .CreateInstance(Path.GetFileNameWithoutExtension(ambientObjectType.CustomRendererAssembly));
+                    .GetAssembly(ambientObjectType.CustomRendererScript)
+                    .CreateInstance(Path.GetFileNameWithoutExtension(ambientObjectType.CustomRendererScript));
             }
 
             ambientObject.Init();

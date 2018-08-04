@@ -43,8 +43,8 @@ namespace Simulation.Game.MetaData
         public Point SpriteBounds;
         public Point[] SpritePositions;
 
-        public string CustomRendererAssembly = null;
-        public string CustomControllerAssembly = null;
+        public string CustomRendererScript = null;
+        public string CustomControllerScript = null;
 
         public static AmbientHitableObject Create(WorldPosition worldPosition, AmbientHitableObjectType ambientHitableObjectType)
         {
@@ -55,18 +55,18 @@ namespace Simulation.Game.MetaData
                 IsHitable=ambientHitableObjectType.IsHitable
             };
 
-            if (ambientHitableObjectType.CustomControllerAssembly != null)
+            if (ambientHitableObjectType.CustomControllerScript != null)
             {
                 ambientHitableObject.CustomController = (GameObjectController)SerializationUtils
-                    .GetAssembly(ambientHitableObjectType.CustomControllerAssembly)
-                    .CreateInstance(Path.GetFileNameWithoutExtension(ambientHitableObjectType.CustomControllerAssembly));
+                    .GetAssembly(ambientHitableObjectType.CustomControllerScript)
+                    .CreateInstance(Path.GetFileNameWithoutExtension(ambientHitableObjectType.CustomControllerScript));
             }
 
-            if (ambientHitableObjectType.CustomRendererAssembly != null)
+            if (ambientHitableObjectType.CustomRendererScript != null)
             {
                 ambientHitableObject.CustomRenderer = (GameObjectRenderer)SerializationUtils
-                    .GetAssembly(ambientHitableObjectType.CustomRendererAssembly)
-                    .CreateInstance(Path.GetFileNameWithoutExtension(ambientHitableObjectType.CustomRendererAssembly));
+                    .GetAssembly(ambientHitableObjectType.CustomRendererScript)
+                    .CreateInstance(Path.GetFileNameWithoutExtension(ambientHitableObjectType.CustomRendererScript));
             }
 
             ambientHitableObject.Init();

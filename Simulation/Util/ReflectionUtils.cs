@@ -138,7 +138,7 @@ namespace Simulation.Util
         public static Assembly LoadAssembly(string filepath)
         {
             var csc = new CSharpCodeProvider(new Dictionary<string, string> () { { "CompilerVersion", "v4.0" } });
-            var p = new CompilerParameters(new[] { "mscorlib.dll", "System.Core.dll" }, null, true);
+            var p = new CompilerParameters(new[] { "mscorlib.dll", "System.Core.dll", "MonoGame.Framework.dll", "Newtonsoft.Json.dll" }, null, true);
 
             p.ReferencedAssemblies.Add(Assembly.GetEntryAssembly().Location);
             p.GenerateInMemory = true;
