@@ -9,8 +9,6 @@ namespace Simulation.Game.Objects
 {
     public abstract class GameObject
     {
-        protected object positionChangeLock;
-
         public GameObjectRenderer CustomRenderer;
         public GameObjectController CustomController;
 
@@ -57,6 +55,9 @@ namespace Simulation.Game.Objects
         public virtual void Init()
         {
             BlockPosition = Position.ToBlockPositionPoint();
+
+            CustomController?.Init(this);
+            CustomRenderer?.Init(this);
         }
 
         protected virtual void UpdatePosition(WorldPosition newPosition)

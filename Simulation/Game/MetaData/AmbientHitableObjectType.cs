@@ -59,18 +59,14 @@ namespace Simulation.Game.MetaData
             {
                 ambientHitableObject.CustomController = (GameObjectController)SerializationUtils
                     .GetAssembly(ambientHitableObjectType.CustomControllerAssembly)
-                    .GetType(Path.GetFileNameWithoutExtension(ambientHitableObjectType.CustomControllerAssembly))
-                    .GetMethod("Create")
-                    .Invoke(null, new object[] { ambientHitableObject });
+                    .CreateInstance(Path.GetFileNameWithoutExtension(ambientHitableObjectType.CustomControllerAssembly));
             }
 
             if (ambientHitableObjectType.CustomRendererAssembly != null)
             {
                 ambientHitableObject.CustomRenderer = (GameObjectRenderer)SerializationUtils
                     .GetAssembly(ambientHitableObjectType.CustomRendererAssembly)
-                    .GetType(Path.GetFileNameWithoutExtension(ambientHitableObjectType.CustomRendererAssembly))
-                    .GetMethod("Create")
-                    .Invoke(null, new object[] { ambientHitableObject });
+                    .CreateInstance(Path.GetFileNameWithoutExtension(ambientHitableObjectType.CustomRendererAssembly));
             }
 
             ambientHitableObject.Init();

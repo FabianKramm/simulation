@@ -38,18 +38,14 @@ namespace Simulation.Game.Serialization.Objects
             {
                 livingEntity.CustomController = (GameObjectController)SerializationUtils
                     .GetAssembly(livingEntityType.CustomControllerAssembly)
-                    .GetType(Path.GetFileNameWithoutExtension(livingEntityType.CustomControllerAssembly))
-                    .GetMethod("Create")
-                    .Invoke(null, new object[] { livingEntity });
+                    .CreateInstance(Path.GetFileNameWithoutExtension(livingEntityType.CustomControllerAssembly));
             }
 
             if (livingEntityType.CustomRendererAssembly != null)
             {
                 livingEntity.CustomRenderer = (GameObjectRenderer)SerializationUtils
                     .GetAssembly(livingEntityType.CustomRendererAssembly)
-                    .GetType(Path.GetFileNameWithoutExtension(livingEntityType.CustomRendererAssembly))
-                    .GetMethod("Create")
-                    .Invoke(null, new object[] { livingEntity });
+                    .CreateInstance(Path.GetFileNameWithoutExtension(livingEntityType.CustomRendererAssembly));
             }
         }
 

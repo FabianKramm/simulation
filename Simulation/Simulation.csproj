@@ -77,8 +77,6 @@
     <Compile Include="Game\Generator\GeneratorUtils.cs" />
     <Compile Include="Game\Hud\ConsoleFunctions.cs" />
     <Compile Include="Game\Hud\WorldBuilder\WorldBuilder.cs" />
-    <Compile Include="Game\MetaData\AI\AIMetaData.cs" />
-    <Compile Include="Game\MetaData\AI\WanderAIMetaData.cs" />
     <Compile Include="Game\MetaData\AmbientHitableObjectType.cs" />
     <Compile Include="Game\MetaData\AmbientObjectType.cs" />
     <Compile Include="Game\MetaData\BlockType.cs" />

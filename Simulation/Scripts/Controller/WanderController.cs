@@ -5,8 +5,10 @@ using System;
 
 class WanderController: GameObjectController
 {
-    public GameObjectController Create(GameObject gameObject)
+    public static GameObjectController Create(GameObject gameObject)
     {
+
+
         return new WanderController();
     }
 

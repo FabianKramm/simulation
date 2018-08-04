@@ -4,8 +4,7 @@ namespace Simulation.Game.Objects.Interfaces
 {
     public interface GameObjectController
     {
-        GameObjectController Create(GameObject gameObject);
-        
+        void Init(GameObject gameObject);
         void Update(GameTime gameTime);
     }
 }

@@ -64,9 +64,6 @@ namespace Simulation.Game.MetaData
                     new SlashSkillMetaData(),
                     new FireballSkillMetaData()
                 },
-                AIMetaData=new WanderAIMetaData() {
-                    BlockRadius=10
-                },
                 SpritePath=@"Characters\Geralt",
                 DownAnimation=new Point[]
                 {
@@ -98,7 +95,6 @@ namespace Simulation.Game.MetaData
         public float Velocity = 0.08f;
 
         public SkillMetaData[] Skills = null;
-        public AIMetaData AIMetaData = null;
         
         public Rect RelativeHitBoxBounds = new Rect(-14, -38, 28, 48);
         public Rect RelativeBlockingBounds = new Rect(-8, -10, 16, 20);
@@ -172,18 +168,14 @@ namespace Simulation.Game.MetaData
             {
                 livingEntity.CustomController = (GameObjectController)SerializationUtils
                     .GetAssembly(livingEntityType.CustomControllerAssembly)
-                    .GetType(Path.GetFileNameWithoutExtension(livingEntityType.CustomControllerAssembly))
-                    .GetMethod("Create")
-                    .Invoke(null, new object[] { livingEntity });
+                    .CreateInstance(Path.GetFileNameWithoutExtension(livingEntityType.CustomControllerAssembly));
             }
 
             if (livingEntityType.CustomRendererAssembly != null)
             {
                 livingEntity.CustomRenderer = (GameObjectRenderer)SerializationUtils
                     .GetAssembly(livingEntityType.CustomRendererAssembly)
-                    .GetType(Path.GetFileNameWithoutExtension(livingEntityType.CustomRendererAssembly))
-                    .GetMethod("Create")
-                    .Invoke(null, new object[] { livingEntity });
+                    .CreateInstance(Path.GetFileNameWithoutExtension(livingEntityType.CustomRendererAssembly));
             }
 
             livingEntity.Init();
