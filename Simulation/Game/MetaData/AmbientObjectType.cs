@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Linq;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Interfaces;
 using Simulation.Game.Serialization;
@@ -43,12 +44,14 @@ namespace Simulation.Game.MetaData
 
         public string CustomRendererScript = null;
         public string CustomControllerScript = null;
+        public JObject CustomProperties = null;
 
         public static AmbientObject Create(WorldPosition worldPosition, AmbientObjectType ambientObjectType)
         {
             var ambientObject = new AmbientObject(worldPosition)
             {
-                AmbientObjectType = ambientObjectType.ID
+                AmbientObjectType = ambientObjectType.ID,
+                CustomProperties = ambientObjectType.CustomProperties != null ? (JObject)ambientObjectType.CustomProperties.DeepClone() : null
             };
 
             if (ambientObjectType.CustomControllerScript != null)

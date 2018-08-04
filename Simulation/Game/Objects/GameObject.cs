@@ -13,7 +13,7 @@ namespace Simulation.Game.Objects
         public GameObjectController CustomController;
 
         [Serialize]
-        private JObject customInformation;
+        public JObject CustomProperties;
 
         [Serialize]
         public string ID
@@ -75,37 +75,37 @@ namespace Simulation.Game.Objects
 
         public T GetCustomProperty<T>(string key)
         {
-            if (customInformation == null)
+            if (CustomProperties == null)
             {
                 return default(T);
             }
 
-            return SerializationUtils.GetFromObject<T>(customInformation, key);
+            return SerializationUtils.GetFromObject<T>(CustomProperties, key);
         }
 
         public T GetOrAddCustomProperty<T>(string key, object value)
         {
-            if (customInformation == null)
+            if (CustomProperties == null)
             {
-                customInformation = new JObject();
+                CustomProperties = new JObject();
             }
 
-            if (customInformation.GetValue(key) == null)
+            if (CustomProperties.GetValue(key) == null)
             {
-                SerializationUtils.AddToObject(customInformation, key, value);
+                SerializationUtils.AddToObject(CustomProperties, key, value);
             }
 
-            return SerializationUtils.GetFromObject<T>(customInformation, key);
+            return SerializationUtils.GetFromObject<T>(CustomProperties, key);
         }
 
         public void SetCustomProperty(string key, object value)
         {
-            if (customInformation == null)
+            if (CustomProperties == null)
             {
-                customInformation = new JObject();
+                CustomProperties = new JObject();
             }
 
-            SerializationUtils.AddToObject(customInformation, key, value);
+            SerializationUtils.AddToObject(CustomProperties, key, value);
         }
 
         public virtual void Update(GameTime gameTime)

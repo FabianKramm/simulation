@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Linq;
 using Simulation.Game.Enums;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Interfaces;
@@ -45,6 +46,7 @@ namespace Simulation.Game.MetaData
 
         public string CustomRendererScript = null;
         public string CustomControllerScript = null;
+        public JObject CustomProperties = null;
 
         public static AmbientHitableObject Create(WorldPosition worldPosition, AmbientHitableObjectType ambientHitableObjectType)
         {
@@ -52,7 +54,8 @@ namespace Simulation.Game.MetaData
             {
                 AmbientHitableObjectType = ambientHitableObjectType.ID,
                 BlockingType=ambientHitableObjectType.BlockingType,
-                IsHitable=ambientHitableObjectType.IsHitable
+                IsHitable=ambientHitableObjectType.IsHitable,
+                CustomProperties= ambientHitableObjectType.CustomProperties != null ? (JObject)ambientHitableObjectType.CustomProperties.DeepClone() : null
             };
 
             if (ambientHitableObjectType.CustomControllerScript != null)

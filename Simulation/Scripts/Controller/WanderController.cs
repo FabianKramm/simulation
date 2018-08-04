@@ -14,7 +14,9 @@ class WanderController: GameObjectController
 
     public void Init(GameObject gameObject)
     {
-        wanderAI = new WanderAI((MovingEntity)gameObject, gameObject.GetOrAddCustomProperty<WorldPosition>("BlockStartPosition", gameObject.Position.ToBlockPosition()), 10);
+        wanderAI = new WanderAI((MovingEntity)gameObject, 
+            gameObject.GetOrAddCustomProperty<WorldPosition>("BlockStartPosition", gameObject.Position.ToBlockPosition()),
+            gameObject.GetOrAddCustomProperty<int>("BlockRadius", 10));
     }
 
     public void Update(GameTime gameTime)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json.Linq;
 using Simulation.Game.Enums;
 using Simulation.Game.MetaData.Skills;
 using Simulation.Game.Objects.Entities;
@@ -65,6 +66,9 @@ namespace Simulation.Game.MetaData
                 },
                 SpritePath=@"Characters\Geralt",
                 CustomControllerScript=@"Controller\WanderController.cs",
+                CustomProperties=new JObject(){
+                    {"BlockRadius", 4}
+                },
                 DownAnimation=new Point[]
                 {
                     new Point(1, 0), new Point(0, 0), new Point(1, 0), new Point(2, 0)
@@ -118,6 +122,7 @@ namespace Simulation.Game.MetaData
 
         public string CustomRendererScript = null;
         public string CustomControllerScript = null;
+        public JObject CustomProperties = null;
 
         public static LivingEntity Create(WorldPosition worldPosition, LivingEntityType livingEntityType)
         {
@@ -163,6 +168,7 @@ namespace Simulation.Game.MetaData
             }
             
             livingEntity.BlockingType = livingEntityType.BlockingType;
+            livingEntity.CustomProperties = livingEntityType.CustomProperties != null ? (JObject)livingEntityType.CustomProperties.DeepClone() : null;
 
             if (livingEntityType.CustomControllerScript != null)
             {
