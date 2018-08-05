@@ -9,6 +9,8 @@ namespace Simulation.Util.Geometry
 
         public static Rect Union(Rect rect1, Rect rect2)
         {
+            // Maybe use ShapeCollision.ConvertPolyToRect idea to implement this?
+
             // Doesn't have to be efficient so we just use the XNA one
             return new Rect(Rectangle.Union(rect1.ToXnaRectangle(), rect2.ToXnaRectangle()));
         }
@@ -60,6 +62,15 @@ namespace Simulation.Util.Geometry
             Height = rectangle.Height;
         }
 
+        public Rect(Point position, Point size)
+        {
+            X = position.X;
+            Y = position.Y;
+
+            Width = size.X;
+            Height = size.Y;
+        }
+
         public Rect(int x, int y, int width, int height)
         {
             X = x;
@@ -67,6 +78,26 @@ namespace Simulation.Util.Geometry
 
             Width = width;
             Height = height;
+        }
+
+        public Point GetPosition()
+        {
+            return new Point(X, Y);
+        }
+
+        public Vector2 GetPositionVector()
+        {
+            return new Vector2(X, Y);
+        }
+
+        public Point GetSize()
+        {
+            return new Point(Width, Height);
+        }
+
+        public Vector2 GetSizeVector()
+        {
+            return new Vector2(Width, Height);
         }
 
         public bool Intersects(Rect rect)

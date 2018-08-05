@@ -10,20 +10,24 @@ namespace Simulation.Util.UI.Elements
 
         private Vector2 stringBounds;
         private Point padding;
-        private string text;
+        
         private Primitive primitiveDrawer;
         private float depth;
 
         public bool ShowBorder = true;
         public Color TextColor = Color.White;
         public Color HoverColor = Color.Orange;
+        public string Text
+        {
+            get; private set;
+        }
 
         public Button(string text, Point position, Point? btnPadding = null, float depth = 1.0f)
         {
-            this.text = text;
+            this.Text = text;
             this.depth = depth;
 
-            padding = btnPadding ?? new Point(10, 10);
+            padding = btnPadding ?? new Point(10, 5);
             stringBounds = ButtonFont.MeasureString(text);
 
             ClickBounds = new Geometry.Rect(position.X, position.Y, (int)stringBounds.X + 2 * padding.X, (int)stringBounds.Y + 2 * padding.Y);
@@ -48,7 +52,7 @@ namespace Simulation.Util.UI.Elements
             if(ShowBorder)
                 primitiveDrawer.Rectangle(ClickBounds.ToXnaRectangle(), IsHover ? HoverColor : TextColor);
 
-            spriteBatch.DrawString(ButtonFont, text, textPosition, IsHover ? HoverColor : TextColor);
+            spriteBatch.DrawString(ButtonFont, Text, textPosition, IsHover ? HoverColor : TextColor);
         }
     }
 }

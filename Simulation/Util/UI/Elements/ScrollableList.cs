@@ -12,6 +12,14 @@ namespace Simulation.Util.UI.Elements
         private List<UIElement> elements = new List<UIElement>();
         private int relativeTop = 0;
         private int previousScrollWheelValue = 0;
+        private Action<Point, UIElement> handleSelectElement;
+
+        public UIElement SelectedElement
+        {
+            get; private set;
+        }
+
+        public bool IsScrollable = true;
 
         public ScrollableList(Rect listBounds)
         {
@@ -20,10 +28,33 @@ namespace Simulation.Util.UI.Elements
             previousScrollWheelValue = Mouse.GetState().ScrollWheelValue;
         }
 
+        public void Clear()
+        {
+            elements.Clear();
+        }
+
+        public void OnSelect(Action<Point, UIElement> callback)
+        {
+            this.handleSelectElement = callback;
+        }
+
+        private void handleElementClick(Point position, UIElement element)
+        {
+            SelectedElement = element;
+
+            handleSelectElement?.Invoke(position, element);
+        }
+
         public void AddElement(UIElement element)
         {
-            element.ClickBounds.Y = 0;
-            element.ClickBounds.X = ClickBounds.X + element.ClickBounds.X;
+            element.ClickBounds.Y = ClickBounds.Y;
+            element.ClickBounds.X = ClickBounds.X;
+            element.ClickBounds.Width = ClickBounds.Width;
+
+            element.OnClick((Point position) =>
+            {
+                handleElementClick(position, element);
+            });
 
             elements.Add(element);
         }
@@ -32,20 +63,23 @@ namespace Simulation.Util.UI.Elements
         {
             base.Update(gameTime);
 
-            var newScrollWheelValue = SimulationGame.MouseState.ScrollWheelValue;
-
-            if(newScrollWheelValue < previousScrollWheelValue)
+            if(IsScrollable)
             {
-                relativeTop = Math.Max(0, relativeTop - 2);
-            }
-            else if(newScrollWheelValue > previousScrollWheelValue)
-            {
-                relativeTop = relativeTop + 2;
+                var newScrollWheelValue = SimulationGame.MouseState.ScrollWheelValue;
+
+                if (newScrollWheelValue < previousScrollWheelValue)
+                {
+                    relativeTop = Math.Max(0, relativeTop - 5);
+                }
+                else if (newScrollWheelValue > previousScrollWheelValue)
+                {
+                    relativeTop = relativeTop + 5;
+                }
+
+                previousScrollWheelValue = newScrollWheelValue;
             }
 
-            previousScrollWheelValue = newScrollWheelValue;
-
-            int top = relativeTop;
+            int top = ClickBounds.Y + relativeTop;
 
             foreach(var element in elements)
             {
@@ -61,6 +95,12 @@ namespace Simulation.Util.UI.Elements
             foreach (var element in elements)
                 if (ClickBounds.Contains(element.ClickBounds.X, element.ClickBounds.Y))
                     element.Draw(spriteBatch, gameTime);
+
+            if(SelectedElement != null)
+                if(ClickBounds.Contains(SelectedElement.ClickBounds.X, SelectedElement.ClickBounds.Y))
+                {
+                    SimulationGame.PrimitiveDrawer.Rectangle(SelectedElement.ClickBounds.ToXnaRectangle(), Color.Orange);
+                }
         }
     }
 }
