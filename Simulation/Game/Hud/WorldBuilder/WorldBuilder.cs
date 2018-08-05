@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Simulation.Game.Generator;
 using Simulation.Game.MetaData;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
@@ -13,6 +14,7 @@ using Simulation.Util.Dialog;
 using Simulation.Util.Geometry;
 using Simulation.Util.UI;
 using Simulation.Util.UI.Elements;
+using System;
 
 namespace Simulation.Game.Hud.WorldBuilder
 {
@@ -54,10 +56,11 @@ namespace Simulation.Game.Hud.WorldBuilder
         private Button createFromJsonBtn;
 
         // WorldPart
-        private Button changePersistency;
-        private Button createWorldLink;
-        private Button changeInteriorDimensions;
-        private Button removeInterior;
+        private Button changePersistencyBtn;
+        private Button createWorldLinkBtn;
+        private Button createInteriorBtn;
+        private Button changeInteriorDimensionsBtn;
+        private Button removeInteriorBtn;
 
         // Inspect
         private Button editInstanceBtn;
@@ -74,6 +77,7 @@ namespace Simulation.Game.Hud.WorldBuilder
         private BaseUI placeView;
         private InspectView inspectView;
         private TextView selectedObjectDetailTextView;
+        private TextView worldPartDetailsTextView;
 
         private TileSetSelectionView tileSetSelectionView;
         private ScrollableList tilesetSelectionList;
@@ -102,6 +106,8 @@ namespace Simulation.Game.Hud.WorldBuilder
             };
 
             selectedObjectDetailTextView = new TextView(tilesetSelectionArea, "");
+            worldPartDetailsTextView = new TextView(tilesetSelectionArea, "");
+
             inspectView = new InspectView(new Rect(0, 0, SimulationGame.Resolution.Width * 2 / 3, SimulationGame.Resolution.Height));
             inspectView.OnSelect(handleInspectGameObjectSelection, handleInspectBlockSelection, handleInspectWorldLinkSelection);
 
@@ -152,6 +158,13 @@ namespace Simulation.Game.Hud.WorldBuilder
                 handleManageBtnClick();
             });
 
+            // World Part Details Button
+            worldPartBtn = new Button("World Details", new Point(livingEntityTypeBtn.Bounds.Right + 10, Bounds.Y + 10));
+            worldPartBtn.OnClick(() => {
+                placementType = PlacementType.WorldPartDetails;
+                placementMode = PlacementMode.NoPlacement;
+            });
+
             // Manage Button
             manageBtn = new Button("Manage", new Point(Bounds.X, blockTypeBtn.Bounds.Bottom + 10));
             manageBtn.OnClick(handleManageBtnClick);
@@ -188,10 +201,156 @@ namespace Simulation.Game.Hud.WorldBuilder
             showInstanceTypeBtn = new Button("Show Type", new Point(removeInstanceBtn.Bounds.Right + 10, manageBtn.Bounds.Bottom + 10));
             showInstanceTypeBtn.OnClick(handleShowInstanceTypeBtnClick);
 
+            // Change Persistency Btn
+            changePersistencyBtn = new Button("Change Persistency", new Point(Bounds.X, worldPartBtn.Bounds.Bottom + 10));
+            changePersistencyBtn.OnClick(handleChangePersistencyBtn);
+
+            // Create WorldLink Btn
+            createWorldLinkBtn = new Button("Create Worldlink", new Point(changePersistencyBtn.Bounds.Right + 10, worldPartBtn.Bounds.Bottom + 10));
+            createWorldLinkBtn.OnClick(handleCreateWorldLinkBtn);
+
+            // Create Interior Btn
+            createInteriorBtn = new Button("Create Interior", new Point(createWorldLinkBtn.Bounds.Right + 10, worldPartBtn.Bounds.Bottom + 10));
+            createInteriorBtn.OnClick(handleCreateInteriorBtn);
+
+            // Change Interior Dimensions Btn
+            changeInteriorDimensionsBtn = new Button("Change Dimensions", new Point(Bounds.X, manageBtn.Bounds.Bottom + 10));
+            changeInteriorDimensionsBtn.OnClick(hanleChangeInteriorDimensionsBtn);
+
+            // Delete Interior Btn
+            removeInteriorBtn = new Button("Remove Interior", new Point(changeInteriorDimensionsBtn.Bounds.Right + 10, manageBtn.Bounds.Bottom + 10));
+            removeInteriorBtn.OnClick(handleRemoveInteriorBtn);
+
             AddElement(blockTypeBtn);
             AddElement(ambientObjectTypeBtn);
             AddElement(ambientHitableObjectTypeBtn);
             AddElement(livingEntityTypeBtn);
+            AddElement(worldPartBtn);
+        }
+
+        private void hanleChangeInteriorDimensionsBtn()
+        {
+            var newInteriorDimensions = new Point(20, 20);
+            var dialog = new InputDialog("New Interior Dimensions", JToken.FromObject(newInteriorDimensions, SerializationUtils.Serializer).ToString(Formatting.Indented));
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                newInteriorDimensions = SerializationUtils.Serializer.Deserialize<Point>(new JTokenReader(JToken.Parse(dialog.ResultText)));
+
+                SimulationGame.World.InteriorManager.Get(SimulationGame.Player.InteriorID).ChangeDimensions(newInteriorDimensions);
+            }
+        }
+
+        private void handleRemoveInteriorBtn()
+        {
+            var confirmResult = System.Windows.Forms.MessageBox.Show("Are you sure to delete the interior?", "Confirm Delete!", System.Windows.Forms.MessageBoxButtons.YesNo);
+
+            if (confirmResult == System.Windows.Forms.DialogResult.Yes)
+            {
+                Interior interior = SimulationGame.World.InteriorManager.Get(SimulationGame.Player.InteriorID);
+
+                if(interior.WorldLinks == null || interior.WorldLinks.Count == 0)
+                {
+                    SimulationGame.Player.UpdatePosition(new WorldPosition(0, 0, Interior.Outside));
+                }
+
+                // Check if durable entities are inside besides player
+                if(interior.ContainedObjects != null) 
+                    foreach(var containedObject in interior.ContainedObjects) 
+                        if(containedObject is DurableEntity && containedObject is Player == false)
+                        {
+                            System.Windows.Forms.MessageBox.Show("Cannot delete interior because a durable entity is inside");
+                            return;
+                        }
+
+                // Delete all WorldLinks
+                if(interior.WorldLinks != null)
+                {
+                    bool playerTeleported = false;
+
+                    WorldLink[] wordLinks = new WorldLink[interior.WorldLinks.Count];
+                    interior.WorldLinks.Values.CopyTo(wordLinks, 0);
+
+                    foreach (var worldLink in wordLinks)
+                    {
+                        if(playerTeleported == false)
+                        {
+                            SimulationGame.Player.UpdatePosition(worldLink.ToRealWorldPositionTo());
+                            playerTeleported = true;
+                        }
+
+                        try
+                        {
+                            SimulationGame.World.UpdateWorldLink(worldLink);
+                        }
+                        catch(Exception e)
+                        {
+                            System.Windows.Forms.MessageBox.Show("Couldn't delete WorldLink: " + e.Message);
+                        }
+                    }
+                }
+
+                // Unload and Erase File
+                SimulationGame.World.InteriorManager.RemoveChunk(interior.ID);
+                WorldLoader.EraseInterior(interior);
+            }
+        }
+
+        private void handleChangePersistencyBtn()
+        {
+            var player = SimulationGame.Player;
+            WorldPart currentWorldPart = player.InteriorID == Interior.Outside ? (WorldPart)SimulationGame.World.GetFromRealPoint((int)player.Position.X, (int)player.Position.Y) : SimulationGame.World.InteriorManager.Get(player.InteriorID);
+
+            currentWorldPart.IsPersistent = !currentWorldPart.IsPersistent;
+        }
+
+        private void handleCreateInteriorBtn()
+        {
+            var interiorDimensions = new Point(20, 20);
+            var player = SimulationGame.Player;
+            var currentWorldPart = player.InteriorID == Interior.Outside ? (WorldPart)SimulationGame.World.GetFromRealPoint((int)player.Position.X, (int)player.Position.Y) : SimulationGame.World.InteriorManager.Get(player.InteriorID);
+            var dialog = new InputDialog("Interior Dimensions", JToken.FromObject(interiorDimensions, SerializationUtils.Serializer).ToString(Formatting.Indented));
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                interiorDimensions = SerializationUtils.Serializer.Deserialize<Point>(new JTokenReader(JToken.Parse(dialog.ResultText)));
+                
+                var newInterior = new Interior(interiorDimensions);
+
+                newInterior.IsPersistent = true;
+
+                for (int i = 0; i < interiorDimensions.X; i++)
+                    for (int j = 0; j < interiorDimensions.Y; j++)
+                        newInterior.SetBlockType(i, j, 1);
+
+                var interiorWorldLink = new WorldLink(new WorldPosition(0, 0, newInterior.ID), player.Position.ToBlockPosition());
+
+                newInterior.AddWorldLink(interiorWorldLink);
+
+                WorldLoader.SaveInterior(newInterior);
+
+                currentWorldPart.IsPersistent = true;
+                currentWorldPart.AddWorldLink(interiorWorldLink.SwapFromTo());
+            }
+        }
+
+        private void handleCreateWorldLinkBtn()
+        {
+            var newWorldLink = new WorldLink()
+            {
+                FromBlock=SimulationGame.Player.BlockPosition,
+                FromInteriorID=SimulationGame.Player.InteriorID,
+                ToBlock=Point.Zero,
+                ToInteriorID=Interior.Outside
+            };
+
+            var dialog = new InputDialog("Create WorldLink", JToken.FromObject(newWorldLink, SerializationUtils.Serializer).ToString(Formatting.Indented));
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                newWorldLink = SerializationUtils.Serializer.Deserialize<WorldLink>(new JTokenReader(JToken.Parse(dialog.ResultText)));
+                SimulationGame.World.UpdateWorldLink(null, newWorldLink);
+            }
         }
 
         private void handleInspectWorldLinkSelection(WorldLink worldLink)
@@ -583,7 +742,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             {
                 base.Update(gameTime);
 
-                if (placementType != PlacementType.NoType && placementType != PlacementType.Inspect)
+                if (placementType != PlacementType.NoType && placementType != PlacementType.Inspect && placementType != PlacementType.WorldPartDetails)
                 {
                     switch (placementMode)
                     {
@@ -613,6 +772,29 @@ namespace Simulation.Game.Hud.WorldBuilder
                     if (placementType != PlacementType.LivingEntityPlacement)
                         createFromTilesetBtn.Update(gameTime);
                 }
+                else if (placementType == PlacementType.WorldPartDetails)
+                {
+                    changePersistencyBtn.Update(gameTime);
+                    createWorldLinkBtn.Update(gameTime);
+                    createInteriorBtn.Update(gameTime);
+
+                    if (SimulationGame.Player.InteriorID != Interior.Outside)
+                    {
+                        changeInteriorDimensionsBtn.Update(gameTime);
+                        removeInteriorBtn.Update(gameTime);
+                    }
+
+                    var player = SimulationGame.Player;
+                    WorldPart currentWorldPart = player.InteriorID == Interior.Outside ? (WorldPart)SimulationGame.World.GetFromRealPoint((int)player.Position.X, (int)player.Position.Y) : SimulationGame.World.InteriorManager.Get(player.InteriorID);
+
+                    worldPartDetailsTextView.SetText(
+                        "CurrentBlock: " + player.BlockPosition.X + "," + player.BlockPosition.Y + "\n" +
+                        "IsPersistent: " + currentWorldPart.IsPersistent + "\n" + 
+                        "InteriorID: " + player.InteriorID + "\n" +
+                        (player.InteriorID != Interior.Outside ? ("Dimensions: " + ((Interior)currentWorldPart).Dimensions + "\n") : "")
+                    );
+                    worldPartDetailsTextView.Update(gameTime);
+                }
                 else if (placementType == PlacementType.Inspect)
                 {
                     if(inspectView.SelectedGameObject != null)
@@ -634,7 +816,6 @@ namespace Simulation.Game.Hud.WorldBuilder
                     selectedObjectDetailTextView.Update(gameTime);
                 }
 
-
                 if (placementMode == PlacementMode.Manage && manageObjectList.SelectedElement != null)
                 {
                     placeView.Update(gameTime);
@@ -653,7 +834,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                 spriteBatch.Draw(backgroundOverlay, new Rectangle(0, 0, SimulationGame.Resolution.Width, SimulationGame.Resolution.Height), backgroundColor);
                 base.Draw(spriteBatch, gameTime);
 
-                if(placementType != PlacementType.NoType && placementType != PlacementType.Inspect)
+                if(placementType != PlacementType.NoType && placementType != PlacementType.Inspect && placementType != PlacementType.WorldPartDetails)
                 {
                     switch (placementMode)
                     {
@@ -682,6 +863,20 @@ namespace Simulation.Game.Hud.WorldBuilder
 
                     if(placementType != PlacementType.LivingEntityPlacement)
                         createFromTilesetBtn.Draw(spriteBatch, gameTime);
+                }
+                else if(placementType == PlacementType.WorldPartDetails)
+                {
+                    changePersistencyBtn.Draw(spriteBatch, gameTime);
+                    createWorldLinkBtn.Draw(spriteBatch, gameTime);
+                    createInteriorBtn.Draw(spriteBatch, gameTime);
+
+                    if(SimulationGame.Player.InteriorID != Interior.Outside)
+                    {
+                        changeInteriorDimensionsBtn.Draw(spriteBatch, gameTime);
+                        removeInteriorBtn.Draw(spriteBatch, gameTime);
+                    }
+
+                    worldPartDetailsTextView.Draw(spriteBatch, gameTime);
                 }
                 else if (placementType == PlacementType.Inspect)
                 {

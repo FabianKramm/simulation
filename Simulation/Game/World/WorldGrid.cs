@@ -12,7 +12,6 @@ using Simulation.Util.Geometry;
 using Simulation.Game.Effects;
 using System.Linq;
 using Simulation.Game.Enums;
-using Simulation.Game.MetaData;
 
 namespace Simulation.Game.World
 {
@@ -32,14 +31,30 @@ namespace Simulation.Game.World
 
         public void UpdateWorldLink(WorldLink oldWorldLink, WorldLink newWorldLink = null)
         {
-            WorldLink oldWorldLinkFrom = GetWorldLinkFromRealPosition(oldWorldLink.ToRealWorldPositionFrom());
-            WorldLink oldWorldLinkTo = GetWorldLinkFromRealPosition(oldWorldLink.ToRealWorldPositionTo());
+            if(oldWorldLink != null)
+            {
+                try
+                {
+                    WorldLink oldWorldLinkFrom = GetWorldLinkFromRealPosition(oldWorldLink.ToRealWorldPositionFrom());
+                    WorldPart oldWorldPartFrom = (oldWorldLink.FromInteriorID == Interior.Outside) ? SimulationGame.World.GetFromRealPoint(oldWorldLink.FromBlock.X * BlockSize.X, oldWorldLink.FromBlock.Y * BlockSize.Y) : (WorldPart)SimulationGame.World.InteriorManager.Get(oldWorldLink.FromInteriorID);
+                    oldWorldPartFrom.RemoveWorldLink(oldWorldLinkFrom);
+                }
+                catch(Exception e)
+                {
+                    System.Windows.Forms.MessageBox.Show("Couldn't remove oldWorldLinkFrom: " + e.Message);
+                }
 
-            WorldPart oldWorldPartFrom = (oldWorldLink.FromInteriorID == Interior.Outside) ? SimulationGame.World.GetFromRealPoint(oldWorldLink.FromBlock.X * BlockSize.X, oldWorldLink.FromBlock.Y * BlockSize.Y) : (WorldPart)SimulationGame.World.InteriorManager.Get(oldWorldLink.FromInteriorID);
-            WorldPart oldWorldPartTo = (oldWorldLink.ToInteriorID == Interior.Outside) ? SimulationGame.World.GetFromRealPoint(oldWorldLink.ToBlock.X * BlockSize.X, oldWorldLink.ToBlock.Y * BlockSize.Y) : (WorldPart)SimulationGame.World.InteriorManager.Get(oldWorldLink.ToInteriorID);
-
-            oldWorldPartFrom.RemoveWorldLink(oldWorldLinkFrom);
-            oldWorldPartTo.RemoveWorldLink(oldWorldLinkTo);
+                try
+                {
+                    WorldLink oldWorldLinkTo = GetWorldLinkFromRealPosition(oldWorldLink.ToRealWorldPositionTo());
+                    WorldPart oldWorldPartTo = (oldWorldLink.ToInteriorID == Interior.Outside) ? SimulationGame.World.GetFromRealPoint(oldWorldLink.ToBlock.X * BlockSize.X, oldWorldLink.ToBlock.Y * BlockSize.Y) : (WorldPart)SimulationGame.World.InteriorManager.Get(oldWorldLink.ToInteriorID);
+                    oldWorldPartTo.RemoveWorldLink(oldWorldLinkTo);
+                }
+                catch (Exception e)
+                {
+                    System.Windows.Forms.MessageBox.Show("Couldn't remove oldWorldLinkTo: " + e.Message);
+                }
+            }
 
             if(newWorldLink != null)
             {

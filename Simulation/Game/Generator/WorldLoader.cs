@@ -85,6 +85,25 @@ namespace Simulation.Game.Generator
             }
         }
 
+        public static void EraseInterior(Interior interior)
+        {
+            var chunkPathPersistent = Path.Combine(Util.Util.GetInteriorSavePath(), persistentIdentifier + interior.ID);
+            var chunkPath = Path.Combine(Util.Util.GetInteriorSavePath(), interior.ID);
+
+            fileLocks.Enter(chunkPath);
+
+            try
+            {
+                var savePath = interior.IsPersistent ? chunkPathPersistent : chunkPath;
+
+                File.Delete(savePath);
+            }
+            finally
+            {
+                fileLocks.Exit(chunkPath);
+            }
+        }
+
         public static Interior LoadInterior(string ID)
         {
             Debug.Assert(ID != Interior.Outside, "Cannot load outside interior!");

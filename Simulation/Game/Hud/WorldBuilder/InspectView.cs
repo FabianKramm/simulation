@@ -135,57 +135,60 @@ namespace Simulation.Game.Hud.WorldBuilder
             SortedList<float, GameObject> sortedList = new SortedList<float, GameObject>();
             WorldPart worldPart = (SimulationGame.Player.InteriorID == Interior.Outside) ? SimulationGame.World.GetFromRealPoint((int)SimulationGame.RealWorldMousePosition.X, (int)SimulationGame.RealWorldMousePosition.Y) : (WorldPart)SimulationGame.World.InteriorManager.Get(SimulationGame.Player.InteriorID);
 
-            foreach (var worldLinkItem in worldPart.WorldLinks)
-            {
-                Rect renderPosition = new Rect(worldLinkItem.Value.FromBlock.X * WorldGrid.BlockSize.X, worldLinkItem.Value.FromBlock.Y * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-
-                if (renderPosition.Contains(SimulationGame.RealWorldMousePosition))
+            if (worldPart.WorldLinks != null)
+                foreach (var worldLinkItem in worldPart.WorldLinks)
                 {
-                    SelectedWorldLink = worldLinkItem.Value;
-                    worldLinkSelection?.Invoke(SelectedWorldLink);
+                    Rect renderPosition = new Rect(worldLinkItem.Value.FromBlock.X * WorldGrid.BlockSize.X, worldLinkItem.Value.FromBlock.Y * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
 
-                    return;
-                }
-            }
+                    if (renderPosition.Contains(SimulationGame.RealWorldMousePosition))
+                    {
+                        SelectedWorldLink = worldLinkItem.Value;
+                        worldLinkSelection?.Invoke(SelectedWorldLink);
 
-            foreach (var ambientObject in worldPart.AmbientObjects)
-            {
-                var ambientObjectType = AmbientObjectType.lookup[ambientObject.AmbientObjectType];
-                var renderPosition = new Rect((int)(ambientObject.Position.X - ambientObjectType.SpriteOrigin.X), (int)(ambientObject.Position.Y - ambientObjectType.SpriteOrigin.Y), ambientObjectType.SpriteBounds.X, ambientObjectType.SpriteBounds.Y);
-
-                if (renderPosition.Contains(SimulationGame.RealWorldMousePosition))
-                {
-                    sortedList.Add(ambientObjectType.HasDepth ? GeometryUtils.GetLayerDepthFromPosition(ambientObject.Position.X, ambientObject.Position.Y) : GeometryUtils.GetLayerDepthFromReservedLayer(ReservedDepthLayers.BlockDecoration), ambientObject);
-                }
-            }
-
-            foreach (var hitableObject in worldPart.ContainedObjects)
-            {
-                if (hitableObject is Player)
-                    continue;
-
-                Rect renderPosition = Rect.Empty;
-
-                if (hitableObject is LivingEntity)
-                {
-                    var livingEntity = (LivingEntity)hitableObject;
-                    var livingEntityType = LivingEntityType.lookup[livingEntity.LivingEntityType];
-
-                    renderPosition = new Rect((int)(livingEntity.Position.X - livingEntityType.SpriteOrigin.X), (int)(livingEntity.Position.Y - livingEntityType.SpriteOrigin.Y), livingEntityType.SpriteBounds.X, livingEntityType.SpriteBounds.Y);
-                }
-                else if(hitableObject is AmbientHitableObject)
-                {
-                    var ambientHitableObject = (AmbientHitableObject)hitableObject;
-                    var ambientHitableObjectType = AmbientHitableObjectType.lookup[ambientHitableObject.AmbientHitableObjectType];
-
-                    renderPosition = new Rect((int)(ambientHitableObject.Position.X - ambientHitableObjectType.SpriteOrigin.X), (int)(ambientHitableObject.Position.Y - ambientHitableObjectType.SpriteOrigin.Y), ambientHitableObjectType.SpriteBounds.X, ambientHitableObjectType.SpriteBounds.Y);
+                        return;
+                    }
                 }
 
-                if (renderPosition.Contains(SimulationGame.RealWorldMousePosition))
+            if(worldPart.AmbientObjects != null)
+                foreach (var ambientObject in worldPart.AmbientObjects)
                 {
-                    sortedList.Add(GeometryUtils.GetLayerDepthFromPosition(hitableObject.Position.X, hitableObject.Position.Y), hitableObject);
+                    var ambientObjectType = AmbientObjectType.lookup[ambientObject.AmbientObjectType];
+                    var renderPosition = new Rect((int)(ambientObject.Position.X - ambientObjectType.SpriteOrigin.X), (int)(ambientObject.Position.Y - ambientObjectType.SpriteOrigin.Y), ambientObjectType.SpriteBounds.X, ambientObjectType.SpriteBounds.Y);
+
+                    if (renderPosition.Contains(SimulationGame.RealWorldMousePosition))
+                    {
+                        sortedList.Add(ambientObjectType.HasDepth ? GeometryUtils.GetLayerDepthFromPosition(ambientObject.Position.X, ambientObject.Position.Y) : GeometryUtils.GetLayerDepthFromReservedLayer(ReservedDepthLayers.BlockDecoration), ambientObject);
+                    }
                 }
-            }
+
+            if (worldPart.ContainedObjects != null)
+                foreach (var hitableObject in worldPart.ContainedObjects)
+                {
+                    if (hitableObject is Player)
+                        continue;
+
+                    Rect renderPosition = Rect.Empty;
+
+                    if (hitableObject is LivingEntity)
+                    {
+                        var livingEntity = (LivingEntity)hitableObject;
+                        var livingEntityType = LivingEntityType.lookup[livingEntity.LivingEntityType];
+
+                        renderPosition = new Rect((int)(livingEntity.Position.X - livingEntityType.SpriteOrigin.X), (int)(livingEntity.Position.Y - livingEntityType.SpriteOrigin.Y), livingEntityType.SpriteBounds.X, livingEntityType.SpriteBounds.Y);
+                    }
+                    else if(hitableObject is AmbientHitableObject)
+                    {
+                        var ambientHitableObject = (AmbientHitableObject)hitableObject;
+                        var ambientHitableObjectType = AmbientHitableObjectType.lookup[ambientHitableObject.AmbientHitableObjectType];
+
+                        renderPosition = new Rect((int)(ambientHitableObject.Position.X - ambientHitableObjectType.SpriteOrigin.X), (int)(ambientHitableObject.Position.Y - ambientHitableObjectType.SpriteOrigin.Y), ambientHitableObjectType.SpriteBounds.X, ambientHitableObjectType.SpriteBounds.Y);
+                    }
+
+                    if (renderPosition.Contains(SimulationGame.RealWorldMousePosition))
+                    {
+                        sortedList.Add(GeometryUtils.GetLayerDepthFromPosition(hitableObject.Position.X, hitableObject.Position.Y), hitableObject);
+                    }
+                }
 
             if (worldPart is WorldGridChunk)
             {

@@ -49,10 +49,13 @@ namespace Simulation.Util.UI.Elements
 
         public void SetText(string text)
         {
-            Text = text;
-            stringSize = TextViewFont.MeasureString(text);
-            Bounds = new Rect(Bounds.GetPosition(), new Point((int)stringSize.X, (int)stringSize.Y));
-            calculateDisplayText();
+            if(text != Text)
+            {
+                Text = text;
+                stringSize = TextViewFont.MeasureString(text);
+                Bounds = new Rect(Bounds.GetPosition(), new Point((int)stringSize.X, (int)stringSize.Y));
+                calculateDisplayText();
+            }
         }
 
         private void calculateDisplayText()

@@ -14,10 +14,7 @@ namespace Simulation.Game.World
     public abstract class WorldPart
     {
         [Serialize]
-        public bool IsPersistent
-        {
-            get; protected set;
-        }
+        public bool IsPersistent;
 
         [Serialize]
         public Point Dimensions

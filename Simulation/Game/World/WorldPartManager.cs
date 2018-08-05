@@ -119,6 +119,26 @@ namespace Simulation.Game.World
             return couldRemove;
         }
 
+        public bool RemoveChunk(KEY key)
+        {
+            ThreadingUtils.assertMainThread();
+
+            PART removedPart;
+            bool couldRemove = loadedParts.TryRemove(key, out removedPart);
+
+            if (couldRemove)
+            {
+                unloadPart(key, removedPart);
+
+                if (partsCurrentlyLoading.ContainsKey(key))
+                {
+                    partsCurrentlyLoading.Remove(key);
+                }
+            }
+
+            return couldRemove;
+        }
+
         private void garbageCollect()
         {
             ThreadingUtils.assertMainThread();
