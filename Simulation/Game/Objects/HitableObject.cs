@@ -150,7 +150,7 @@ namespace Simulation.Game.Objects
             }
         }
 
-        protected override void UpdatePosition(WorldPosition newPosition)
+        public override void UpdatePosition(WorldPosition newPosition)
         {
             if(InteriorID == Interior.Outside && newPosition.InteriorID == Interior.Outside)
             {

@@ -21,7 +21,7 @@ namespace Simulation.Game.Objects.Entities
 
         public Player(WorldPosition worldPosition): base(worldPosition) { }
 
-        protected override void UpdatePosition(WorldPosition newPosition)
+        public override void UpdatePosition(WorldPosition newPosition)
         {
             base.UpdatePosition(newPosition);
 

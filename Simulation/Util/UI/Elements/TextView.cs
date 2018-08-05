@@ -34,7 +34,7 @@ namespace Simulation.Util.UI.Elements
             OnClick(handleOnClick);
         }
 
-        private void handleOnClick(Point position)
+        private void handleOnClick()
         {
             if(IsEditable)
             {

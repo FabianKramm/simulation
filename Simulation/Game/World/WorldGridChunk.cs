@@ -34,8 +34,6 @@ namespace Simulation.Game.World
 
         public override void SetBlockType(int blockX, int blockY, int blockType)
         {
-            Debug.Assert(Connected == false, "Cannot set block type, when already connected to world!");
-
             var projectedPosition = GeometryUtils.GetPositionWithinChunk(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
 
             blockingGrid[projectedPosition.X, projectedPosition.Y] = blockType;

@@ -59,7 +59,7 @@ namespace Simulation.Game.Objects
             CustomRenderer?.Init(this);
         }
 
-        protected virtual void UpdatePosition(WorldPosition newPosition)
+        public virtual void UpdatePosition(WorldPosition newPosition)
         {
             ThreadingUtils.assertMainThread();
 

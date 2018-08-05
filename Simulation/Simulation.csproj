@@ -88,6 +88,7 @@
     <Compile Include="Game\MetaData\AmbientObjectType.cs" />
     <Compile Include="Game\MetaData\BlockType.cs" />
     <Compile Include="Game\MetaData\LivingEntityType.cs" />
+    <Compile Include="Game\MetaData\MetaDataType.cs" />
     <Compile Include="Game\MetaData\Skills\FireballSkillMetaData.cs" />
     <Compile Include="Game\MetaData\Skills\SkillMetaData.cs" />
     <Compile Include="Game\MetaData\Skills\SlashSkillMetaData.cs" />

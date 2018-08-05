@@ -19,7 +19,7 @@ namespace Simulation.Util.UI
         private List<KeyHoldHandler> keyHoldHandler = new List<KeyHoldHandler>();
 
         private bool leftMouseButtonDown = false;
-        private Action<Point> onClickHandler;
+        private Action onClickHandler;
         private Action<MouseMoveEvent> onMouseMoveHandler;
         private Point lastMousePosition;
 
@@ -45,9 +45,14 @@ namespace Simulation.Util.UI
             onMouseMoveHandler = callback;
         }
 
-        public void OnClick(Action<Point> callback)
+        public void OnClick(Action callback)
         {
             onClickHandler = callback;
+        }
+
+        public void OffClick()
+        {
+            onClickHandler = null;
         }
 
         public virtual void Update(GameTime gameTime)
@@ -60,7 +65,7 @@ namespace Simulation.Util.UI
             {
                 if(leftMouseButtonDown == false && IsHover)
                 {
-                    onClickHandler?.Invoke(mouseState.Position);
+                    onClickHandler?.Invoke();
                 }
 
                 leftMouseButtonDown = true;

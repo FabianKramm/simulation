@@ -110,12 +110,6 @@ namespace Simulation.Game.Objects.Entities
             }
         }
 
-        protected override void UpdatePosition(WorldPosition newPosition)
-        {
-            // TODO: Check if we are moving into unloaded area and we aren't a durable entity => if yes then we load the tile and unload us
-            base.UpdatePosition(newPosition);
-        }
-
         private void loadWalkpath(GameTime gameTime)
         {
             if (DestBlockPosition != null && walkPath == null && findPathTask == null)

@@ -36,8 +36,6 @@ namespace Simulation.Game.World
 
         public override void SetBlockType(int blockX, int blockY, int blockType)
         {
-            Debug.Assert(Connected == false, "Cannot set block type, when already connected to world!");
-
             blockingGrid[blockX, blockY] = blockType;
         }
 

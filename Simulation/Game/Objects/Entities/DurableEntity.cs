@@ -63,7 +63,7 @@ namespace Simulation.Game.Objects.Entities
             base.Init();
         }
 
-        protected override void UpdatePosition(WorldPosition newPosition)
+        public override void UpdatePosition(WorldPosition newPosition)
         {
             base.UpdatePosition(newPosition);
 

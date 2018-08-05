@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Simulation.Game.MetaData;
@@ -61,6 +62,8 @@ namespace Simulation.Game.Hud.WorldBuilder
         // CreateFromTileset
         private Button createBtn;
 
+        private BaseUI placeView;
+
         private InspectView inspectView;
         private TextView selectedObjectDetailTextView;
 
@@ -85,36 +88,18 @@ namespace Simulation.Game.Hud.WorldBuilder
             backgroundOverlay = new Texture2D(SimulationGame.Graphics.GraphicsDevice, 1, 1);
             backgroundOverlay.SetData(new Color[] { Color.White });
 
+            placeView = new BaseUI()
+            {
+                Bounds = new Rect(0, 0, SimulationGame.Resolution.Width * 2 / 3, SimulationGame.Resolution.Height)
+            };
+
             selectedObjectDetailTextView = new TextView(tilesetSelectionArea, "");
             inspectView = new InspectView(new Rect(0, 0, SimulationGame.Resolution.Width * 2 / 3, SimulationGame.Resolution.Height));
-            inspectView.OnSelect((GameObject gameObject) =>
-            {
-                placementType = PlacementType.Inspect;
-                placementMode = PlacementMode.NoPlacement;
-            }, (BlockType blockType) => 
-            {
-                placementType = PlacementType.BlockPlacement;
-                placementMode = PlacementMode.Manage;
-                manageObjectList.Clear();
-
-                UIElement selectedItem = null;
-
-                foreach (var item in BlockType.lookup)
-                {
-                    var newItem = new BlockListItem(item.Value);
-
-                    if (item.Value == blockType)
-                        selectedItem = newItem;
-
-                    manageObjectList.AddElement(newItem);
-                }
-
-                manageObjectList.SelectElement(selectedItem);
-            });
+            inspectView.OnSelect(handleInspectGameObjectSelection, handleInspectBlockSelection);
 
             tileSetSelectionView = new TileSetSelectionView(tilesetSelectionArea);
             tilesetSelectionList = new ScrollableList(tilesetSelectionArea);
-            tilesetSelectionList.OnSelect((Point position, UIElement selectedElement) =>
+            tilesetSelectionList.OnSelect((UIElement selectedElement) =>
             {
                 placementMode = PlacementMode.CreateFromTileset;
                 tileSetSelectionView.SetTileSet(((Button)selectedElement).Text);
@@ -133,30 +118,30 @@ namespace Simulation.Game.Hud.WorldBuilder
 
             // Block Type Button
             blockTypeBtn = new Button("Blocks", new Point(Bounds.X, Bounds.Y + 10));
-            blockTypeBtn.OnClick((Point position) => {
+            blockTypeBtn.OnClick(() => {
                 placementType = PlacementType.BlockPlacement;
-                handleManageBtnClick(Point.Zero);
+                handleManageBtnClick();
             });
 
             // Ambient Object Type Button
             ambientObjectTypeBtn = new Button("Ambient Objects", new Point(blockTypeBtn.Bounds.Right + 10, Bounds.Y + 10));
-            ambientObjectTypeBtn.OnClick((Point position) => {
+            ambientObjectTypeBtn.OnClick(() => {
                 placementType = PlacementType.AmbientObjectPlacement;
-                handleManageBtnClick(Point.Zero);
+                handleManageBtnClick();
             });
 
             // Ambient Hitable Object Type Button
             ambientHitableObjectTypeBtn = new Button("Hitable Objects", new Point(ambientObjectTypeBtn.Bounds.Right + 10, Bounds.Y + 10));
-            ambientHitableObjectTypeBtn.OnClick((Point position) => {
+            ambientHitableObjectTypeBtn.OnClick(() => {
                 placementType = PlacementType.AmbientHitableObjectPlacement;
-                handleManageBtnClick(Point.Zero);
+                handleManageBtnClick();
             });
 
             // Ambient Hitable Object Type Button
             livingEntityTypeBtn = new Button("Living Entities", new Point(ambientHitableObjectTypeBtn.Bounds.Right + 10, Bounds.Y + 10));
-            livingEntityTypeBtn.OnClick((Point position) => {
+            livingEntityTypeBtn.OnClick(() => {
                 placementType = PlacementType.LivingEntityPlacement;
-                handleManageBtnClick(Point.Zero);
+                handleManageBtnClick();
             });
 
             // Manage Button
@@ -169,7 +154,7 @@ namespace Simulation.Game.Hud.WorldBuilder
 
             // Create From Tileset
             createFromTilesetBtn = new Button("Create From Tileset", new Point(createFromJsonBtn.Bounds.Right + 10, blockTypeBtn.Bounds.Bottom + 10));
-            createFromTilesetBtn.OnClick((Point position) => placementMode = PlacementMode.ChooseTileset);
+            createFromTilesetBtn.OnClick(() => placementMode = PlacementMode.ChooseTileset);
 
             // Edit Btn
             editBtn = new Button("Edit", new Point(Bounds.X, manageBtn.Bounds.Bottom + 10));
@@ -200,8 +185,59 @@ namespace Simulation.Game.Hud.WorldBuilder
             AddElement(ambientHitableObjectTypeBtn);
             AddElement(livingEntityTypeBtn);
         }
+
+        private void handleInspectGameObjectSelection(GameObject gameObject)
+        {
+            if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+            {
+                handleShowInstanceTypeBtnClick();
+
+                placeView.OnClick(() =>
+                {
+                    placeView.OnClick(() => WorldBuilderUtils.CreateObjectAtMousePosition(manageObjectList.SelectedElement));
+                });
+            }
+            else
+            {
+                placementType = PlacementType.Inspect;
+                placementMode = PlacementMode.NoPlacement;
+            }
+        }
+
+        private void handleInspectBlockSelection(BlockType blockType)
+        {
+            placementType = PlacementType.BlockPlacement;
+            placementMode = PlacementMode.Manage;
+            manageObjectList.Clear();
+
+            UIElement selectedItem = null;
+
+            foreach (var item in BlockType.lookup)
+            {
+                var newItem = new BlockListItem(item.Value);
+
+                if (item.Value == blockType)
+                    selectedItem = newItem;
+
+                manageObjectList.AddElement(newItem);
+            }
+
+            if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+            {
+                manageObjectList.SelectElement(selectedItem);
+
+                placeView.OnClick(() =>
+                {
+                    placeView.OnClick(() => WorldBuilderUtils.CreateObjectAtMousePosition(manageObjectList.SelectedElement));
+                });
+            }
+            else
+            {
+                manageObjectList.ScrollToElement(selectedItem);
+            }
+        }
         
-        private void handleShowInstanceTypeBtnClick(Point position)
+        private void handleShowInstanceTypeBtnClick()
         {
             var selectedObject = inspectView.SelectedGameObject;
             
@@ -259,7 +295,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             manageObjectList.SelectElement(selectedItem);
         }
 
-        private void handleRemoveInstanceBtnClick(Point position)
+        private void handleRemoveInstanceBtnClick()
         {
             var selectedObject = inspectView.SelectedGameObject;
             var confirmResult = System.Windows.Forms.MessageBox.Show("Are you sure to delete this object?", "Confirm Delete!", System.Windows.Forms.MessageBoxButtons.YesNo);
@@ -272,7 +308,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
         }
 
-        private void handleEditInstanceBtnClick(Point position)
+        private void handleEditInstanceBtnClick()
         {
             var selectedObject = inspectView.SelectedGameObject;
             var dialog = new InputDialog("Edit Object", WorldObjectSerializer.Serialize(selectedObject).ToString(Formatting.Indented));
@@ -289,7 +325,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
         }
 
-        private void handleManageBtnClick(Point position)
+        private void handleManageBtnClick()
         {
             placementMode = PlacementMode.Manage;
             manageObjectList.Clear();
@@ -315,7 +351,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
         }
 
-        private void removeObject(Point position)
+        private void removeObject()
         {
             var confirmResult = System.Windows.Forms.MessageBox.Show("Are you sure to delete this item?", "Confirm Delete!", System.Windows.Forms.MessageBoxButtons.YesNo);
 
@@ -343,7 +379,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
         }
 
-        private void editObject(Point position)
+        private void editObject()
         {
             var selectedElement = manageObjectList.SelectedElement;
             object selectedObject = null;
@@ -372,7 +408,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
         }
 
-        private void createNewObject(Point position)
+        private void createNewObject()
         {
             string spritePath = null;
             Point spritePosition = Point.Zero;
@@ -547,7 +583,15 @@ namespace Simulation.Game.Hud.WorldBuilder
                     selectedObjectDetailTextView.Update(gameTime);
                 }
 
-                inspectView.Update(gameTime);
+
+                if (placementMode == PlacementMode.Manage && manageObjectList.SelectedElement != null)
+                {
+                    placeView.Update(gameTime);
+                }
+                else
+                {
+                    inspectView.Update(gameTime);
+                }
             }
         }
 
@@ -599,7 +643,14 @@ namespace Simulation.Game.Hud.WorldBuilder
                     }
                 }
 
-                inspectView.Draw(spriteBatch, gameTime);
+                if(placementMode == PlacementMode.Manage && manageObjectList.SelectedElement != null)
+                {
+                    placeView.Draw(spriteBatch, gameTime);
+                }
+                else
+                {
+                    inspectView.Draw(spriteBatch, gameTime);
+                }
             }
         }
     }

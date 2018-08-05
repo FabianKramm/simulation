@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 namespace Simulation.Game.MetaData
 {
-    public class LivingEntityType
+    public class LivingEntityType: MetaDataType
     {
         public static readonly int Player = 0;
         public static Dictionary<int, LivingEntityType> lookup = new Dictionary<int, LivingEntityType>()

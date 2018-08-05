@@ -30,6 +30,19 @@ namespace Simulation.Game.World
 
         public WorldGrid(): base(TimeSpan.FromSeconds(20)) { }
 
+        public void SetBlockType(int blockX, int blockY, string InteriorID, int blockType)
+        {
+            if (InteriorID == Interior.Outside)
+            {
+                GetFromBlockPoint(blockX, blockY).SetBlockType(blockX, blockY, blockType);
+                WalkableGrid.RefreshBlock(blockX, blockY);
+            }
+            else
+            {
+                InteriorManager.Get(InteriorID).SetBlockType(blockX, blockY, blockType);
+            }
+        }
+
         public int GetBlockType(int blockX, int blockY, string InteriorID)
         {
             if(InteriorID == Interior.Outside)

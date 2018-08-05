@@ -30,6 +30,51 @@ namespace Simulation.Game.Hud.WorldBuilder
 
             OnClick(handleOnClick);
             OnKeyPress(Keys.Escape, Deselect);
+
+            OnKeyHold(Keys.Left, handleKeyLeft, TimeSpan.FromMilliseconds(200));
+            OnKeyHold(Keys.Right, handleKeyRight, TimeSpan.FromMilliseconds(200));
+            OnKeyHold(Keys.Up, handleKeyUp, TimeSpan.FromMilliseconds(200));
+            OnKeyHold(Keys.Down, handleKeyDown, TimeSpan.FromMilliseconds(200));
+        }
+
+        private void handleKeyLeft()
+        {
+            if(SelectedGameObject != null)
+            {
+                SelectedGameObject.DisconnectFromWorld();
+                SelectedGameObject.UpdatePosition(new WorldPosition(SelectedGameObject.Position.X - 1, SelectedGameObject.Position.Y, SelectedGameObject.InteriorID));
+                SelectedGameObject.ConnectToWorld();
+            }
+        }
+
+        private void handleKeyRight()
+        {
+            if (SelectedGameObject != null)
+            {
+                SelectedGameObject.DisconnectFromWorld();
+                SelectedGameObject.UpdatePosition(new WorldPosition(SelectedGameObject.Position.X + 1, SelectedGameObject.Position.Y, SelectedGameObject.InteriorID));
+                SelectedGameObject.ConnectToWorld();
+            }
+        }
+
+        private void handleKeyUp()
+        {
+            if (SelectedGameObject != null)
+            {
+                SelectedGameObject.DisconnectFromWorld();
+                SelectedGameObject.UpdatePosition(new WorldPosition(SelectedGameObject.Position.X, SelectedGameObject.Position.Y - 1, SelectedGameObject.InteriorID));
+                SelectedGameObject.ConnectToWorld();
+            }
+        }
+
+        private void handleKeyDown()
+        {
+            if (SelectedGameObject != null)
+            {
+                SelectedGameObject.DisconnectFromWorld();
+                SelectedGameObject.UpdatePosition(new WorldPosition(SelectedGameObject.Position.X, SelectedGameObject.Position.Y + 1, SelectedGameObject.InteriorID));
+                SelectedGameObject.ConnectToWorld();
+            }
         }
 
         public void OnSelect(Action<GameObject> gameObjectSelection, Action<BlockType> blockSelection)
@@ -38,7 +83,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             this.blockSelection = blockSelection;
         }
 
-        private void handleOnClick(Point position)
+        private void handleOnClick()
         {
             SelectedBlockPosition = Point.Zero;
             SelectedBlockType = null;
@@ -60,6 +105,9 @@ namespace Simulation.Game.Hud.WorldBuilder
 
             foreach (var hitableObject in worldPart.ContainedObjects)
             {
+                if (hitableObject is Player)
+                    continue;
+
                 Rect renderPosition = Rect.Empty;
 
                 if (hitableObject is LivingEntity)
@@ -90,6 +138,9 @@ namespace Simulation.Game.Hud.WorldBuilder
                 if(worldGridChunk.OverlappingObjects != null)
                     foreach (var hitableObject in worldGridChunk.OverlappingObjects)
                     {
+                        if (hitableObject is Player)
+                            continue;
+
                         Rect renderPosition = Rect.Empty;
 
                         if (hitableObject is LivingEntity)

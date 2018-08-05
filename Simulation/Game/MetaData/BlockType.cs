@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Simulation.Game.MetaData
 {
-    public class BlockType
+    public class BlockType: MetaDataType
     {
         public static readonly int None = 0;
         public static Dictionary<int, BlockType> lookup = new Dictionary<int, BlockType>()

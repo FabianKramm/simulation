@@ -76,6 +76,35 @@ namespace Simulation.Game.World
                 }
         }
 
+        public void RefreshBlock(int blockX, int blockY)
+        {
+            Point walkableGridChunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
+
+            if (IsLoaded(GeometryUtils.ConvertPointToLong(walkableGridChunkPos.X, walkableGridChunkPos.Y)))
+            {
+                Point worldGridChunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
+                WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(worldGridChunkPos.X, worldGridChunkPos.Y);
+                int blockType = worldGridChunk.GetBlockType(blockX, blockY);
+
+                if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
+                {
+                    setBlockNotWalkable(blockX, blockY, true);
+                    return;
+                }
+                
+                var found = false;
+
+                foreach (HitableObject interactiveObject in worldGridChunk.OverlappingObjects)
+                    if (interactiveObject.BlockingType == BlockingType.BLOCKING && interactiveObject.BlockingBounds.Intersects(new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
+                    {
+                        found = true;
+                        break;
+                    }
+
+                setBlockNotWalkable(blockX, blockY, !found);
+            }
+        }
+
         public void UnblockRect(Rect blockingBounds)
         {
             Point blockTopLeft = GeometryUtils.GetChunkPosition(blockingBounds.Left, blockingBounds.Top, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);

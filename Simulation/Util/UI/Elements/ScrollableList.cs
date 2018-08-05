@@ -12,7 +12,7 @@ namespace Simulation.Util.UI.Elements
         private List<UIElement> elements = new List<UIElement>();
         private int relativeTop = 0;
         private int previousScrollWheelValue = 0;
-        private Action<Point, UIElement> handleSelectElement;
+        private Action<UIElement> handleSelectElement;
 
         public UIElement SelectedElement
         {
@@ -106,16 +106,16 @@ namespace Simulation.Util.UI.Elements
             return elements.ToArray();
         }
 
-        public void OnSelect(Action<Point, UIElement> callback)
+        public void OnSelect(Action<UIElement> callback)
         {
             this.handleSelectElement = callback;
         }
 
-        private void handleElementClick(Point position, UIElement element)
+        private void handleElementClick(UIElement element)
         {
             SelectedElement = element;
 
-            handleSelectElement?.Invoke(position, element);
+            handleSelectElement?.Invoke(element);
         }
 
         public void AddElement(UIElement element)
@@ -124,9 +124,9 @@ namespace Simulation.Util.UI.Elements
             element.Bounds.X = Bounds.X;
             element.Bounds.Width = Bounds.Width;
 
-            element.OnClick((Point position) =>
+            element.OnClick(() =>
             {
-                handleElementClick(position, element);
+                handleElementClick(element);
             });
 
             elements.Add(element);

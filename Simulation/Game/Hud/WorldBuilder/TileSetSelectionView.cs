@@ -111,8 +111,9 @@ namespace Simulation.Game.Hud.WorldBuilder
             SelectedSpritePath = tileSet;
         }
 
-        private void handleOnClick(Point mousePosition)
+        private void handleOnClick()
         {
+            var mousePosition = SimulationGame.MouseState.Position;
             var relativeMousePosition = new Point(mousePosition.X - Bounds.X + scrollOffset.X, mousePosition.Y - Bounds.Y + scrollOffset.Y);
 
             if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))

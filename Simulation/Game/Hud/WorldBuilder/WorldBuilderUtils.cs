@@ -1,16 +1,56 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json;
 using Simulation.Game.MetaData;
+using Simulation.Game.Objects;
 using Simulation.Game.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Simulation.Game.World;
+using Simulation.Util.Geometry;
+using Simulation.Util.UI;
 
 namespace Simulation.Game.Hud.WorldBuilder
 {
     public static class WorldBuilderUtils
     {
+        public static void CreateObjectAtMousePosition(UIElement listItem)
+        {
+            var realPosition = SimulationGame.RealWorldMousePosition;
+            
+            if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+            {
+                var blockPosition = GeometryUtils.GetBlockFromReal((int)realPosition.X, (int)realPosition.Y);
+
+                realPosition = new Vector2(blockPosition.X * WorldGrid.BlockSize.X, blockPosition.Y * WorldGrid.BlockSize.Y);
+            }
+
+            if (listItem is BlockListItem)
+            {
+                var blockPosition = GeometryUtils.GetBlockFromReal((int)realPosition.X, (int)realPosition.Y);
+
+                SimulationGame.World.SetBlockType(blockPosition.X, blockPosition.Y, SimulationGame.Player.InteriorID, ((BlockListItem)listItem).BlockType.ID);
+            }
+            else
+            {
+                var newWorldPosition = new World.WorldPosition(realPosition.X, realPosition.Y, SimulationGame.Player.InteriorID);
+                GameObject gameObject = null;
+
+                if (listItem is AmbientObjectListItem)
+                {
+                    gameObject = AmbientObjectType.Create(newWorldPosition, ((AmbientObjectListItem)listItem).AmbientObjectType);
+                }
+                else if (listItem is AmbientHitableObjectListItem)
+                {
+                    gameObject = AmbientHitableObjectType.Create(newWorldPosition, ((AmbientHitableObjectListItem)listItem).AmbientHitableObjectType);
+                }
+                else if (listItem is LivingEntityListItem)
+                {
+                    gameObject = LivingEntityType.Create(newWorldPosition, ((LivingEntityListItem)listItem).LivingEntityType);
+                }
+
+                gameObject.ConnectToWorld();
+            }
+        } 
+
         public static int GenerateNewId(WorldBuilder.PlacementType placementType)
         {
             int highestNumber = int.MinValue;

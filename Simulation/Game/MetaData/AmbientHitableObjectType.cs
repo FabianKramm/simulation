@@ -11,7 +11,7 @@ using System.IO;
 
 namespace Simulation.Game.MetaData
 {
-    public class AmbientHitableObjectType
+    public class AmbientHitableObjectType: MetaDataType
     {
         public static Dictionary<int, AmbientHitableObjectType> lookup = new Dictionary<int, AmbientHitableObjectType>()
         {
