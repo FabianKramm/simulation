@@ -1,0 +1,54 @@
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+
+namespace Simulation.Util.UI.Elements
+{
+    public class Button: UIElement
+    {
+        public static SpriteFont ButtonFont;
+
+        private Vector2 stringBounds;
+        private Point padding;
+        private string text;
+        private Primitive primitiveDrawer;
+        private float depth;
+
+        public bool ShowBorder = true;
+        public Color TextColor = Color.White;
+        public Color HoverColor = Color.Orange;
+
+        public Button(string text, Point position, Point? btnPadding = null, float depth = 1.0f)
+        {
+            this.text = text;
+            this.depth = depth;
+
+            padding = btnPadding ?? new Point(10, 10);
+            stringBounds = ButtonFont.MeasureString(text);
+
+            ClickBounds = new Geometry.Rect(position.X, position.Y, (int)stringBounds.X + 2 * padding.X, (int)stringBounds.Y + 2 * padding.Y);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            if(primitiveDrawer == null)
+            {
+                if(depth != 1.0f)
+                {
+                    primitiveDrawer = new Primitive(SimulationGame.Graphics.GraphicsDevice, spriteBatch);
+                }
+                else
+                {
+                    primitiveDrawer = SimulationGame.PrimitiveDrawer;
+                }
+            }
+
+            var textPosition = new Vector2(ClickBounds.X + padding.X, ClickBounds.Y + padding.Y);
+
+            if(ShowBorder)
+                primitiveDrawer.Rectangle(ClickBounds.ToXnaRectangle(), IsHover ? HoverColor : TextColor);
+
+            spriteBatch.DrawString(ButtonFont, text, textPosition, IsHover ? HoverColor : TextColor);
+        }
+    }
+}

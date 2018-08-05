@@ -58,6 +58,16 @@ namespace Simulation
             get; private set;
         }
 
+        public static MouseState MouseState
+        {
+            get; private set;
+        }
+
+        public static KeyboardState KeyboardState
+        {
+            get; private set;
+        }
+
         public static bool IsPaused
         {
             get; private set;
@@ -151,14 +161,13 @@ namespace Simulation
 
             ContentManager = Content;
 
-            World = new WorldGrid();
-            Hud = new Hud();
-
             VisibleArea = Rect.Empty;
             
             IsDebug = false;
 
             Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
+
+            World = new WorldGrid();
 
             I = this;
         }
@@ -229,13 +238,17 @@ namespace Simulation
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            Util.UI.Elements.Button.ButtonFont = ContentManager.Load<SpriteFont>("Arial");
+
             PrimitiveDrawer = new Primitive(Graphics.GraphicsDevice, spriteBatch);
             PrimitiveDrawer.Depth = 1.0f;
 
+            Hud = new Hud();
+
             Camera.LoadContent();
             Hud.LoadContent();
-            MovingEntityRenderer.LoadContent();
 
+            MovingEntityRenderer.LoadContent();
             GameRenderer.LoadContent();
 
             World.AddHitableObjectToWorld(Player);
@@ -308,11 +321,14 @@ namespace Simulation
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
-        {            
+        {
+            KeyboardState = Keyboard.GetState();
+            MouseState = Mouse.GetState();
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 SaveAndExit();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.F1))
+            if (KeyboardState.IsKeyDown(Keys.F1))
             {
                 if (!debugKeyDown)
                 {
@@ -325,7 +341,7 @@ namespace Simulation
                 debugKeyDown = false;
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.F2))
+            if (KeyboardState.IsKeyDown(Keys.F2))
             {
                 if (!worldBuilderKeyDown)
                 {
@@ -338,7 +354,7 @@ namespace Simulation
                 worldBuilderKeyDown = false;
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.F3))
+            if (KeyboardState.IsKeyDown(Keys.F3))
             {
                 if (!pauseKeyDown)
                 {
@@ -351,7 +367,7 @@ namespace Simulation
                 pauseKeyDown = false;
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.F4))
+            if (KeyboardState.IsKeyDown(Keys.F4))
             {
                 if (!consoleKeyDown)
                 {

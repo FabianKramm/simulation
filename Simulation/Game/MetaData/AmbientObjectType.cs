@@ -5,7 +5,6 @@ using Simulation.Game.Objects.Interfaces;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Simulation.Game.MetaData
 {

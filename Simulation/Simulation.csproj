@@ -76,6 +76,7 @@
     <Compile Include="Game\Fractions\FractionRelations.cs" />
     <Compile Include="Game\Generator\GeneratorUtils.cs" />
     <Compile Include="Game\Hud\ConsoleFunctions.cs" />
+    <Compile Include="Game\Hud\WorldBuilder\TileSetSelectionView.cs" />
     <Compile Include="Game\Hud\WorldBuilder\WorldBuilder.cs" />
     <Compile Include="Game\MetaData\AmbientHitableObjectType.cs" />
     <Compile Include="Game\MetaData\AmbientObjectType.cs" />
@@ -145,6 +146,10 @@
       <DependentUpon>InputDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Util\FastNoise.cs" />
+    <Compile Include="Util\UI\BaseUI.cs" />
+    <Compile Include="Util\UI\Elements\Button.cs" />
+    <Compile Include="Util\UI\Elements\ScrollableList.cs" />
+    <Compile Include="Util\UI\KeyPressHandler.cs" />
     <Compile Include="Util\MovementUtils.cs" />
     <Compile Include="Game\Objects\Entities\Player.cs" />
     <Compile Include="Game\Skills\FireballSkill.cs" />
@@ -187,6 +192,7 @@
     <Compile Include="Util\IPrimitive.cs" />
     <Compile Include="Util\Primitive.cs" />
     <Compile Include="Util\TimeUtils.cs" />
+    <Compile Include="Util\UI\UIElement.cs" />
     <Compile Include="Util\Util.cs" />
   </ItemGroup>
   <ItemGroup>
