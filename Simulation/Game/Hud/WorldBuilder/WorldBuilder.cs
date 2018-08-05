@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Simulation.Game.MetaData;
 using Simulation.Game.Objects;
+using Simulation.Game.Objects.Entities;
 using Simulation.Game.Serialization;
 using Simulation.Game.Serialization.Objects;
 using Simulation.Util.Dialog;
@@ -48,9 +49,17 @@ namespace Simulation.Game.Hud.WorldBuilder
         private Button createFromTilesetBtn;
         private Button createFromJsonBtn;
 
+        // Inspect
+        private Button editInstanceBtn;
+        private Button removeInstanceBtn;
+        private Button showInstanceTypeBtn;
+
+        // Manage
         private Button editBtn;
-        private Button createBtn;
         private Button removeBtn;
+
+        // CreateFromTileset
+        private Button createBtn;
 
         private InspectView inspectView;
         private TextView selectedObjectDetailTextView;
@@ -82,8 +91,6 @@ namespace Simulation.Game.Hud.WorldBuilder
             {
                 placementType = PlacementType.Inspect;
                 placementMode = PlacementMode.NoPlacement;
-
-                selectedObjectDetailTextView.SetText(WorldObjectSerializer.Serialize(gameObject).ToString(Formatting.Indented));
             }, (BlockType blockType) => 
             {
                 placementType = PlacementType.BlockPlacement;
@@ -125,7 +132,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
 
             // Block Type Button
-            blockTypeBtn = new Button("Blocks", new Point(Bounds.X + 10, Bounds.Y + 10));
+            blockTypeBtn = new Button("Blocks", new Point(Bounds.X, Bounds.Y + 10));
             blockTypeBtn.OnClick((Point position) => {
                 placementType = PlacementType.BlockPlacement;
                 handleManageBtnClick(Point.Zero);
@@ -175,11 +182,111 @@ namespace Simulation.Game.Hud.WorldBuilder
             // Create Btn
             createBtn = new Button("Create", new Point(Bounds.X, manageBtn.Bounds.Bottom + 10));
             createBtn.OnClick(createNewObject);
-            
+
+            // Edit Instance Btn
+            editInstanceBtn = new Button("Edit", new Point(Bounds.X, manageBtn.Bounds.Bottom + 10));
+            editInstanceBtn.OnClick(handleEditInstanceBtnClick);
+
+            // Remove Instance Btn
+            removeInstanceBtn = new Button("Remove", new Point(editInstanceBtn.Bounds.Right + 10, manageBtn.Bounds.Bottom + 10));
+            removeInstanceBtn.OnClick(handleRemoveInstanceBtnClick);
+
+            // Show Instance Type Btn
+            showInstanceTypeBtn = new Button("Show Type", new Point(removeInstanceBtn.Bounds.Right + 10, manageBtn.Bounds.Bottom + 10));
+            showInstanceTypeBtn.OnClick(handleShowInstanceTypeBtnClick);
+
             AddElement(blockTypeBtn);
             AddElement(ambientObjectTypeBtn);
             AddElement(ambientHitableObjectTypeBtn);
             AddElement(livingEntityTypeBtn);
+        }
+        
+        private void handleShowInstanceTypeBtnClick(Point position)
+        {
+            var selectedObject = inspectView.SelectedGameObject;
+            
+            placementMode = PlacementMode.Manage;
+            manageObjectList.Clear();
+
+            UIElement selectedItem = null;
+
+            if(selectedObject is AmbientObject)
+            {
+                placementType = PlacementType.AmbientObjectPlacement;
+                var selectedObjectType = ((AmbientObject)selectedObject).GetObjectType();
+
+                foreach (var item in AmbientObjectType.lookup)
+                {
+                    var newItem = new AmbientObjectListItem(item.Value);
+
+                    if (item.Value == selectedObjectType)
+                        selectedItem = newItem;
+
+                    manageObjectList.AddElement(newItem);
+                }
+            }
+            else if(selectedObject is AmbientHitableObject)
+            {
+                placementType = PlacementType.AmbientHitableObjectPlacement;
+                var selectedObjectType = ((AmbientHitableObject)selectedObject).GetObjectType();
+
+                foreach (var item in AmbientHitableObjectType.lookup)
+                {
+                    var newItem = new AmbientHitableObjectListItem(item.Value);
+
+                    if (item.Value == selectedObjectType)
+                        selectedItem = newItem;
+
+                    manageObjectList.AddElement(newItem);
+                }
+            }
+            else if(selectedObject is LivingEntity)
+            {
+                placementType = PlacementType.LivingEntityPlacement;
+                var selectedObjectType = ((LivingEntity)selectedObject).GetObjectType();
+
+                foreach (var item in LivingEntityType.lookup)
+                {
+                    var newItem = new LivingEntityListItem(item.Value);
+
+                    if (item.Value == selectedObjectType)
+                        selectedItem = newItem;
+
+                    manageObjectList.AddElement(newItem);
+                }
+            }
+
+            manageObjectList.SelectElement(selectedItem);
+        }
+
+        private void handleRemoveInstanceBtnClick(Point position)
+        {
+            var selectedObject = inspectView.SelectedGameObject;
+            var confirmResult = System.Windows.Forms.MessageBox.Show("Are you sure to delete this object?", "Confirm Delete!", System.Windows.Forms.MessageBoxButtons.YesNo);
+
+            if (confirmResult == System.Windows.Forms.DialogResult.Yes)
+            {
+                inspectView.Deselect();
+
+                selectedObject.DisconnectFromWorld();
+            }
+        }
+
+        private void handleEditInstanceBtnClick(Point position)
+        {
+            var selectedObject = inspectView.SelectedGameObject;
+            var dialog = new InputDialog("Edit Object", WorldObjectSerializer.Serialize(selectedObject).ToString(Formatting.Indented));
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                inspectView.Deselect();
+                selectedObject.DisconnectFromWorld();
+
+                var newObject = WorldObjectSerializer.Deserialize(JObject.Parse(dialog.ResultText));
+
+                newObject.ConnectToWorld();
+                inspectView.SelectGameObject(newObject);
+            }
         }
 
         private void handleManageBtnClick(Point position)
@@ -428,6 +535,15 @@ namespace Simulation.Game.Hud.WorldBuilder
                 }
                 else if (placementType == PlacementType.Inspect)
                 {
+                    if(inspectView.SelectedGameObject != null)
+                    {
+                        selectedObjectDetailTextView.SetText(WorldObjectSerializer.Serialize(inspectView.SelectedGameObject).ToString(Formatting.Indented));
+
+                        editInstanceBtn.Update(gameTime);
+                        removeInstanceBtn.Update(gameTime);
+                        showInstanceTypeBtn.Update(gameTime);
+                    }
+
                     selectedObjectDetailTextView.Update(gameTime);
                 }
 
@@ -474,6 +590,13 @@ namespace Simulation.Game.Hud.WorldBuilder
                 }
                 else if (placementType == PlacementType.Inspect)
                 {
+                    if (inspectView.SelectedGameObject != null)
+                    {
+                        editInstanceBtn.Draw(spriteBatch, gameTime);
+                        removeInstanceBtn.Draw(spriteBatch, gameTime);
+                        showInstanceTypeBtn.Draw(spriteBatch, gameTime);
+                    }
+
                     selectedObjectDetailTextView.Draw(spriteBatch, gameTime);
                 }
 

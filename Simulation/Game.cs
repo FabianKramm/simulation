@@ -331,7 +331,7 @@ namespace Simulation
             KeyboardState = Keyboard.GetState();
             MouseState = Mouse.GetState();
 
-            if (KeyboardState.IsKeyDown(Keys.Escape))
+            if (KeyboardState.IsKeyDown(Keys.Escape) && (KeyboardState.IsKeyDown(Keys.LeftShift) || KeyboardState.IsKeyDown(Keys.RightShift)))
                 SaveAndExit();
 
             if (KeyboardState.IsKeyDown(Keys.F1))

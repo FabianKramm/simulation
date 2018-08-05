@@ -1,6 +1,8 @@
-﻿using Simulation.Game.MetaData;
+﻿using Microsoft.Xna.Framework;
+using Simulation.Game.MetaData;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
+using Simulation.Util.Geometry;
 
 namespace Simulation.Game.Objects
 {
@@ -17,6 +19,41 @@ namespace Simulation.Game.Objects
         public AmbientObjectType GetObjectType()
         {
             return MetaData.AmbientObjectType.lookup[AmbientObjectType];
+        }
+
+        public override void ConnectToWorld()
+        {
+            if (InteriorID == Interior.Outside)
+            {
+                // Add as contained object to main chunk
+                Point positionChunk = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+
+                // if (SimulationGame.World.isWorldGridChunkLoaded(positionChunk.X, positionChunk.Y) || forceLoadGridChunk)
+                // We load it here 
+                SimulationGame.World.GetFromChunkPoint(positionChunk.X, positionChunk.Y).AddAmbientObject(this);
+            }
+            else
+            {
+                SimulationGame.World.InteriorManager.Get(InteriorID).AddAmbientObject(this);
+            }
+        }
+
+        public override void DisconnectFromWorld()
+        {
+            if (InteriorID == Interior.Outside)
+            {
+                // Remove contained object from main chunk
+                Point positionChunk = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                var chunkPos = GeometryUtils.ConvertPointToLong(positionChunk.X, positionChunk.Y);
+                var chunk = SimulationGame.World.Get(chunkPos, false);
+
+                if (chunk != null)
+                    chunk.RemoveAmbientObject(this);
+            }
+            else
+            {
+                SimulationGame.World.InteriorManager.Get(InteriorID).RemoveAmbientObject(this);
+            }
         }
     }
 }

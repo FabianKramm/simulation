@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Simulation.Game.MetaData;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
@@ -28,6 +29,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             Bounds = bounds;
 
             OnClick(handleOnClick);
+            OnKeyPress(Keys.Escape, Deselect);
         }
 
         public void OnSelect(Action<GameObject> gameObjectSelection, Action<BlockType> blockSelection)
@@ -126,6 +128,13 @@ namespace Simulation.Game.Hud.WorldBuilder
 
                 gameObjectSelection?.Invoke(SelectedGameObject);
             }
+        }
+
+        public void SelectGameObject(GameObject gameObject)
+        {
+            SelectedBlockPosition = Point.Zero;
+            SelectedBlockType = null;
+            SelectedGameObject = gameObject;
         }
 
         public void Deselect()

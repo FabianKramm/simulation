@@ -111,7 +111,7 @@ namespace Simulation.Game.Objects
                 SimulationGame.World.WalkableGrid.UnblockRect(BlockingBounds);
         }
 
-        public virtual void ConnectToWorld()
+        public override void ConnectToWorld()
         {
             if (InteriorID == Interior.Outside)
             {
@@ -130,11 +130,11 @@ namespace Simulation.Game.Objects
             }
         }
 
-        public virtual void DisconnectFromWorld()
+        public override void DisconnectFromWorld()
         {
             if (InteriorID == Interior.Outside)
             {
-                // Add as contained object to main chunk
+                // Remove contained object from main chunk
                 Point positionChunk = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
                 var chunkPos = GeometryUtils.ConvertPointToLong(positionChunk.X, positionChunk.Y);
                 var chunk = SimulationGame.World.Get(chunkPos, false);

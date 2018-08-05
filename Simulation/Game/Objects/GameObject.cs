@@ -111,5 +111,8 @@ namespace Simulation.Game.Objects
         {
             CustomController?.Update(gameTime);
         }
+
+        public abstract void ConnectToWorld();
+        public abstract void DisconnectFromWorld();
     }
 }

@@ -1,10 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.AI;
-using Simulation.Game.Enums;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.PathFinding;
-using Simulation.Util;
 using Simulation.Util.Geometry;
 using System;
 using System.Collections.Generic;
