@@ -7,16 +7,19 @@ using System;
 
 namespace Simulation.Game.Hud.WorldBuilder
 {
-    public class TileSetSelectionView: UIElement
+    public class TileSetSelectionView : UIElement
     {
         public static readonly Point TileSize = new Point(32, 32);
 
-        private string selectedTileset;
-        private Point selectedTilesetOffset = Point.Zero;
-        private Point? selectedTile = null;
-        private Point selectedTileSize = TileSize;
+        public string SelectedSpritePath
+        {
+            get; private set;
+        }
 
-        private Action<string, Rect> tileSetSelected;
+        public Point? SelectedSpritePosition = null;
+        public Point SelectedSpriteBounds = TileSize;
+
+        private Point scrollOffset = Point.Zero;
 
         public TileSetSelectionView(Rect clickBounds)
         {
@@ -25,63 +28,161 @@ namespace Simulation.Game.Hud.WorldBuilder
             OnMouseMove(handleOnMouseMove);
             OnClick(handleOnClick);
 
-            OnKeyPress(Keys.Left, () => selectedTilesetOffset.X = Math.Max(0, selectedTilesetOffset.X + 5));
-            OnKeyPress(Keys.Right, () => selectedTilesetOffset.X = Math.Max(0, selectedTilesetOffset.X - 5));
-            OnKeyPress(Keys.Up, () => selectedTilesetOffset.Y = Math.Max(0, selectedTilesetOffset.Y + 5));
-            OnKeyPress(Keys.Down, () => selectedTilesetOffset.Y = Math.Max(0, selectedTilesetOffset.Y - 5));
+            OnKeyHold(Keys.Left, handleLeftKeyDown);
+            OnKeyHold(Keys.Right, handleRightKeyDown);
+            OnKeyHold(Keys.Up, handleUpKeyDown);
+            OnKeyHold(Keys.Down, handleDownKeyDown);
         }
 
-        public void SetTileSet(string tileSet, Action<string, Rect> tileSetSelected)
+        private void handleDownKeyDown()
         {
-            this.selectedTileset = tileSet;
-            this.tileSetSelected = tileSetSelected;   
+            if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftShift) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightShift))
+            {
+                var selectedSpritePositionPoint = SelectedSpritePosition ?? Point.Zero;
+
+                SelectedSpritePosition = new Point(selectedSpritePositionPoint.X, selectedSpritePositionPoint.Y + 1);
+            }
+            else if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+            {
+                SelectedSpriteBounds.Y = SelectedSpriteBounds.Y + 1;
+            }
+            else
+            {
+                scrollOffset.Y = Math.Max(0, scrollOffset.Y - 5);
+            }
+        }
+
+        private void handleUpKeyDown()
+        {
+            if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftShift) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightShift))
+            {
+                var selectedSpritePositionPoint = SelectedSpritePosition ?? Point.Zero;
+
+                SelectedSpritePosition = new Point(selectedSpritePositionPoint.X, Math.Max(0, selectedSpritePositionPoint.Y - 1));
+            }
+            else if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+            {
+                SelectedSpriteBounds.Y = Math.Max(0, SelectedSpriteBounds.Y - 1);
+            }
+            else
+            {
+                scrollOffset.Y = scrollOffset.Y + 5;
+            }
+        }
+
+        private void handleRightKeyDown()
+        {
+            if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftShift) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightShift))
+            {
+                var selectedSpritePositionPoint = SelectedSpritePosition ?? Point.Zero;
+
+                SelectedSpritePosition = new Point(selectedSpritePositionPoint.X + 1, selectedSpritePositionPoint.Y);
+            }
+            else if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+            {
+                SelectedSpriteBounds.X = SelectedSpriteBounds.X + 1;
+            }
+            else
+            {
+                scrollOffset.X = Math.Max(0, scrollOffset.X - 5);
+            }
+        }
+
+        private void handleLeftKeyDown()
+        {
+            if(SimulationGame.KeyboardState.IsKeyDown(Keys.LeftShift) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightShift))
+            {
+                var selectedSpritePositionPoint = SelectedSpritePosition ?? Point.Zero;
+
+                SelectedSpritePosition = new Point(Math.Max(0, selectedSpritePositionPoint.X - 1), selectedSpritePositionPoint.Y);
+            }
+            else if(SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+            {
+                SelectedSpriteBounds.X = Math.Max(0, SelectedSpriteBounds.X - 1);
+            }
+            else
+            {
+                scrollOffset.X = scrollOffset.X + 5;
+            }
+        }
+
+        public void SetTileSet(string tileSet)
+        {
+            SelectedSpritePath = tileSet;
         }
 
         private void handleOnClick(Point mousePosition)
         {
-            var relativeMousePosition = new Point(mousePosition.X - ClickBounds.X + selectedTilesetOffset.X, mousePosition.Y - ClickBounds.Y + selectedTilesetOffset.Y);
+            var relativeMousePosition = new Point(mousePosition.X - ClickBounds.X + scrollOffset.X, mousePosition.Y - ClickBounds.Y + scrollOffset.Y);
 
-            selectedTile = GeometryUtils.GetChunkPosition(relativeMousePosition.X, relativeMousePosition.Y, TileSize.X, TileSize.Y);
-            selectedTileSize = TileSize;
+            if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+            {
+                SelectedSpritePosition = new Point(relativeMousePosition.X, relativeMousePosition.Y);
+                SelectedSpriteBounds = TileSize;
+            }
+            else
+            {
+                var tilePosition = GeometryUtils.GetChunkPosition(relativeMousePosition.X, relativeMousePosition.Y, TileSize.X, TileSize.Y);
+
+                SelectedSpritePosition = new Point(tilePosition.X * TileSize.X, tilePosition.Y * TileSize.Y);
+                SelectedSpriteBounds = TileSize;
+            }
         }
 
         private void handleOnMouseMove(MouseMoveEvent mouseMoveEvent)
         {
             if (mouseMoveEvent.LeftButtonDown)
             {
-                var selectedTilePoint = selectedTile ?? Point.Zero;
-                var relativeMousePosition = new Point(mouseMoveEvent.MousePosition.X - ClickBounds.X + selectedTilesetOffset.X, mouseMoveEvent.MousePosition.Y - ClickBounds.Y + selectedTilesetOffset.Y);
-                var relativeMousePositionBlock = GeometryUtils.GetChunkPosition(relativeMousePosition.X, relativeMousePosition.Y, TileSize.X, TileSize.Y);
-
-                if (relativeMousePositionBlock.X >= selectedTilePoint.X && relativeMousePositionBlock.Y >= selectedTilePoint.Y)
+                if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
                 {
-                    selectedTileSize = new Point(TileSize.X + TileSize.X * (relativeMousePositionBlock.X - selectedTilePoint.X), TileSize.Y + TileSize.Y * (relativeMousePositionBlock.Y - selectedTilePoint.Y));
+                    var selectedTilePoint = SelectedSpritePosition ?? Point.Zero;
+                    var relativeMousePosition = new Point(mouseMoveEvent.MousePosition.X - ClickBounds.X + scrollOffset.X, mouseMoveEvent.MousePosition.Y - ClickBounds.Y + scrollOffset.Y);
+
+                    if (relativeMousePosition.X >= selectedTilePoint.X && relativeMousePosition.Y >= selectedTilePoint.Y)
+                    {
+                        SelectedSpriteBounds = new Point(relativeMousePosition.X - selectedTilePoint.X, relativeMousePosition.Y - selectedTilePoint.Y);
+                    }
+                }
+                else
+                {
+                    var selectedTilePoint = SelectedSpritePosition ?? Point.Zero;
+                    var relativeMousePosition = new Point(mouseMoveEvent.MousePosition.X - ClickBounds.X + scrollOffset.X, mouseMoveEvent.MousePosition.Y - ClickBounds.Y + scrollOffset.Y);
+                    
+                    if (relativeMousePosition.X >= selectedTilePoint.X && relativeMousePosition.Y >= selectedTilePoint.Y)
+                    {
+                        var newWidth = relativeMousePosition.X - selectedTilePoint.X;
+                        var newHeight = relativeMousePosition.Y - selectedTilePoint.Y;
+
+                        var moduloX = newWidth % TileSize.X != 0 ? TileSize.X - newWidth % TileSize.X : 0;
+                        var moduloY = newHeight % TileSize.Y != 0 ? TileSize.Y - newHeight % TileSize.Y : 0;
+
+                        SelectedSpriteBounds = new Point(newWidth + moduloX, newHeight + moduloY);
+                    }
                 }
             }
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if(selectedTileset != null)
+            if(SelectedSpritePath != null)
             {
-                var texture = SimulationGame.ContentManager.Load<Texture2D>(selectedTileset);
-                var width = Math.Max(0, Math.Min(SimulationGame.Resolution.Width / 3, texture.Width - selectedTilesetOffset.X));
-                var height = Math.Max(0, Math.Min(SimulationGame.Resolution.Height, texture.Height - selectedTilesetOffset.Y));
-                var spritePosition = new Rectangle(selectedTilesetOffset.X, selectedTilesetOffset.Y, width, height);
+                var texture = SimulationGame.ContentManager.Load<Texture2D>(SelectedSpritePath);
+                var width = Math.Max(ClickBounds.X, Math.Min(ClickBounds.Width, texture.Width - scrollOffset.X));
+                var height = Math.Max(ClickBounds.Y, Math.Min(ClickBounds.Height, texture.Height - scrollOffset.Y));
+                var spritePosition = new Rectangle(scrollOffset.X, scrollOffset.Y, width, height);
 
                 if (spritePosition.Width > 0 && spritePosition.Height > 0)
                 {
                     spriteBatch.Draw(texture,
                     new Vector2(ClickBounds.X, ClickBounds.Y), spritePosition, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
 
-                    if (selectedTile != null)
+                    if (SelectedSpritePosition != null)
                     {
-                        Point selectedTilePoint = selectedTile ?? Point.Zero;
-                        Point realTilePosition = new Point(selectedTilePoint.X * TileSize.X, selectedTilePoint.Y * TileSize.Y);
-
-                        if (spritePosition.Contains(realTilePosition))
+                        Point selectedTilePoint = SelectedSpritePosition ?? Point.Zero;
+                        
+                        if (spritePosition.Contains(selectedTilePoint))
                         {
-                            SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle(ClickBounds.X + realTilePosition.X - selectedTilesetOffset.X, ClickBounds.Y + realTilePosition.Y - selectedTilesetOffset.Y, selectedTileSize.X, selectedTileSize.Y), Color.Red);
+                            SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle(ClickBounds.X + selectedTilePoint.X - scrollOffset.X, ClickBounds.Y + selectedTilePoint.Y - scrollOffset.Y, SelectedSpriteBounds.X, SelectedSpriteBounds.Y), Color.Red);
                         }
                     }
                 }

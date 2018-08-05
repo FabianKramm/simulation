@@ -36,14 +36,14 @@ namespace Simulation.Game.MetaData
         };
 
         public int ID;
-        public string Name;
+        public string Name = null;
 
         public BlockingType BlockingType = BlockingType.NOT_BLOCKING;
         public HitBoxType HitBoxType = HitBoxType.NO_HITBOX;
 
         // Render
-        public string SpritePath;
-        public Point SpritePostion;
+        public string SpritePath = null;
+        public Point SpritePostion = Point.Zero;
         public Point SpriteBounds = new Point(WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
     }
 }

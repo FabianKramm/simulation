@@ -12,9 +12,11 @@ namespace Simulation.Game.Serialization
     {
         private static readonly Dictionary<string, Assembly> loadedAssemblies = new Dictionary<string, Assembly>();
 
-        public static readonly JsonSerializer Serializer = JsonSerializer.Create(new JsonSerializerSettings {
+        public static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
+        {
             TypeNameHandling = TypeNameHandling.All
-        });
+        };
+        public static readonly JsonSerializer Serializer = JsonSerializer.Create(SerializerSettings);
 
         public static void SerializeType(Type type, ref JObject jObject) => jObject.Add("type", type.FullName);
         public static object GetObjectFromToken(Type type, JToken jToken) => Serializer.Deserialize(new JTokenReader(jToken), type);

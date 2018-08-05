@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Simulation.Game.MetaData;
 using Simulation.Game.Serialization;
@@ -47,6 +48,10 @@ namespace Simulation.Game.Hud.WorldBuilder
         private Button createFromTilesetBtn;
         private Button createFromJsonBtn;
 
+        private Button editBtn;
+        private Button createBtn;
+        private Button removeBtn;
+
         private TileSetSelectionView tileSetSelectionView;
         private ScrollableList tilesetSelectionList;
 
@@ -63,7 +68,7 @@ namespace Simulation.Game.Hud.WorldBuilder
         public void LoadContent()
         {
             ClickBounds = new Rect(SimulationGame.Resolution.Width * 2 / 3, 0, SimulationGame.Resolution.Width / 3, SimulationGame.Resolution.Height);
-            tilesetSelectionArea = new Rect(ClickBounds.X, ClickBounds.Y + 100, ClickBounds.Width - 50, ClickBounds.Height);
+            tilesetSelectionArea = new Rect(ClickBounds.X, ClickBounds.Y + 120, ClickBounds.Width - 50, ClickBounds.Height);
 
             backgroundOverlay = new Texture2D(SimulationGame.Graphics.GraphicsDevice, 1, 1);
             backgroundOverlay.SetData(new Color[] { Color.White });
@@ -73,7 +78,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             tilesetSelectionList.OnSelect((Point position, UIElement selectedElement) =>
             {
                 placementMode = PlacementMode.CreateFromTileset;
-                tileSetSelectionView.SetTileSet(((Button)selectedElement).Text, OnTileSetSelected);
+                tileSetSelectionView.SetTileSet(((Button)selectedElement).Text);
             });
 
             manageObjectList = new ScrollableList(tilesetSelectionArea);
@@ -87,61 +92,151 @@ namespace Simulation.Game.Hud.WorldBuilder
                 tilesetSelectionList.AddElement(button);
             }
 
-            OnKeyPress(Keys.Back, () =>
-            {
-                if(placementMode == PlacementMode.CreateFromTileset)
-                {
-                    placementMode = PlacementMode.ChooseTileset;
-                }
-            });
-
             // Block Type Button
             blockTypeBtn = new Button("Blocks", new Point(ClickBounds.X + 10, ClickBounds.Y + 10));
             blockTypeBtn.OnClick((Point position) => {
                 if(placementType != PlacementType.BlockPlacement)
                 {
                     placementType = PlacementType.BlockPlacement;
-                    manageObjectList.Clear();
-
-                    foreach (var blockTypeItem in BlockType.lookup)
-                        manageObjectList.AddElement(new BlockListItem(blockTypeItem.Value));
                 }
             });
 
             // Manage Button
             manageBtn = new Button("Manage", new Point(ClickBounds.X + 10, blockTypeBtn.ClickBounds.Bottom + 10));
-            manageBtn.OnClick((Point position) => placementMode = PlacementMode.Manage);
+            manageBtn.OnClick((Point position) => {
+                placementMode = PlacementMode.Manage;
+                manageObjectList.Clear();
+
+                switch(placementType)
+                {
+                    case PlacementType.BlockPlacement:
+                        foreach (var blockTypeItem in BlockType.lookup)
+                            manageObjectList.AddElement(new BlockListItem(blockTypeItem.Value));
+                        break;
+                }
+            });
 
             // Create From Json
             createFromJsonBtn = new Button("Create From Json", new Point(manageBtn.ClickBounds.Right + 10, blockTypeBtn.ClickBounds.Bottom + 10));
-            createFromJsonBtn.OnClick((Point position) => createNewObject());
+            createFromJsonBtn.OnClick(createNewObject);
 
             // Create From Tileset
             createFromTilesetBtn = new Button("Create From Tileset", new Point(createFromJsonBtn.ClickBounds.Right + 10, blockTypeBtn.ClickBounds.Bottom + 10));
             createFromTilesetBtn.OnClick((Point position) => placementMode = PlacementMode.ChooseTileset);
 
+            // Edit Btn
+            editBtn = new Button("Edit", new Point(ClickBounds.X + 10, manageBtn.ClickBounds.Bottom + 10));
+            editBtn.OnClick(editObject);
+
+            // Remove Btn
+            removeBtn = new Button("Remove", new Point(editBtn.ClickBounds.Right + 10, manageBtn.ClickBounds.Bottom + 10));
+            removeBtn.OnClick(removeObject);
+
+            // Create Btn
+            createBtn = new Button("Create", new Point(ClickBounds.X + 10, manageBtn.ClickBounds.Bottom + 10));
+            createBtn.OnClick(createNewObject);
+
             AddElement(blockTypeBtn);
         }
 
-        private void createNewObject()
+        private void removeObject(Point position)
         {
+            var confirmResult = System.Windows.Forms.MessageBox.Show("Are you sure to delete this item?", "Confirm Delete!", System.Windows.Forms.MessageBoxButtons.YesNo);
 
+            if (confirmResult == System.Windows.Forms.DialogResult.Yes)
+            {
+                switch(placementType)
+                {
+                    case PlacementType.BlockPlacement:
+                        BlockType.lookup.Remove(((BlockListItem)manageObjectList.SelectedElement).BlockType.ID);
+                        manageObjectList.RemoveElement(manageObjectList.SelectedElement);
+                        break;
+                }
+            }
         }
 
-        public void OnTileSetSelected(string tileset, Rect spriteBounds)
+        private void editObject(Point position)
         {
-            // Create bois
-            // Place block
-            var dialog = new InputDialog("Title", JToken.FromObject(BlockType.lookup[0], SerializationUtils.Serializer).ToString(Newtonsoft.Json.Formatting.Indented));
+            var selectedElement = manageObjectList.SelectedElement;
+            object selectedObject = null;
+
+            switch(placementType)
+            {
+                case PlacementType.BlockPlacement:
+                    selectedObject = ((BlockListItem)selectedElement).BlockType;
+                    break;
+            }
+
+            var dialog = new InputDialog("Edit Object", JToken.FromObject(selectedObject, SerializationUtils.Serializer).ToString(Newtonsoft.Json.Formatting.Indented));
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                string result_text = dialog.ResultText;
-                // use result_text...
+                replaceTypeFromString(dialog.ResultText);
             }
-            else
+        }
+
+        private void replaceTypeFromString(string objectText)
+        {
+            switch (placementType)
             {
-                // user cancelled out, do something...
+                case PlacementType.BlockPlacement:
+                    BlockType newBlockType = JsonConvert.DeserializeObject<BlockType>(objectText, SerializationUtils.SerializerSettings);
+                    BlockType.lookup[newBlockType.ID] = newBlockType;
+                    break;
+            }
+        }
+
+        private int generateNewId()
+        {
+            int highestNumber = int.MinValue;
+
+            switch (placementType)
+            {
+                case PlacementType.BlockPlacement:
+                    foreach(var blockTypeItem in BlockType.lookup)
+                        if (blockTypeItem.Value.ID > highestNumber)
+                            highestNumber = blockTypeItem.Value.ID;
+                    break;
+            }
+
+            return highestNumber + 1;
+        }
+
+        private void createNewObject(Point position)
+        {
+            string spritePath = null;
+            Point spritePosition = Point.Zero;
+            Point spriteBounds = Point.Zero;
+
+            if(placementMode == PlacementMode.CreateFromTileset)
+            {
+                spritePath = tileSetSelectionView.SelectedSpritePath;
+                spritePosition = tileSetSelectionView.SelectedSpritePosition ?? Point.Zero;
+                spriteBounds = tileSetSelectionView.SelectedSpriteBounds;
+            }
+
+            object selectedObject = null;
+            int newId = generateNewId();
+
+            switch (placementType)
+            {
+                case PlacementType.BlockPlacement:
+                    selectedObject = new BlockType()
+                    {
+                        ID=newId,
+                        Name="Block"+newId,
+                        SpritePath =spritePath,
+                        SpritePostion=spritePosition,
+                        SpriteBounds=spriteBounds,
+                    };
+                    break;
+            }
+
+            var dialog = new InputDialog("Create Object", JToken.FromObject(selectedObject, SerializationUtils.Serializer).ToString(Formatting.Indented));
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                replaceTypeFromString(dialog.ResultText);
             }
         }
 
@@ -157,12 +252,21 @@ namespace Simulation.Game.Hud.WorldBuilder
                     {
                         case PlacementMode.Manage:
                             manageObjectList.Update(gameTime);
+
+                            if (manageObjectList.SelectedElement != null)
+                            {
+                                editBtn.Update(gameTime);
+                                removeBtn.Update(gameTime);
+                            }
                             break;
                         case PlacementMode.ChooseTileset:
                             tilesetSelectionList.Update(gameTime);
                             break;
                         case PlacementMode.CreateFromTileset:
                             tileSetSelectionView.Update(gameTime);
+
+                            if (tileSetSelectionView.SelectedSpritePosition != null)
+                                createBtn.Update(gameTime);
                             break;
                     }
 
@@ -188,12 +292,21 @@ namespace Simulation.Game.Hud.WorldBuilder
                     {
                         case PlacementMode.Manage:
                             manageObjectList.Draw(spriteBatch, gameTime);
+
+                            if (manageObjectList.SelectedElement != null)
+                            {
+                                editBtn.Draw(spriteBatch, gameTime);
+                                removeBtn.Draw(spriteBatch, gameTime);
+                            }   
                             break;
                         case PlacementMode.ChooseTileset:
                             tilesetSelectionList.Draw(spriteBatch, gameTime);
                             break;
                         case PlacementMode.CreateFromTileset:
                             tileSetSelectionView.Draw(spriteBatch, gameTime);
+
+                            if (tileSetSelectionView.SelectedSpritePosition != null)
+                                createBtn.Draw(spriteBatch, gameTime);
                             break;
                     }
 

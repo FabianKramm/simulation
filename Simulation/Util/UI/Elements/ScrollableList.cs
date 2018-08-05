@@ -59,6 +59,14 @@ namespace Simulation.Util.UI.Elements
             elements.Add(element);
         }
 
+        public void RemoveElement(UIElement element)
+        {
+            if (element == SelectedElement)
+                SelectedElement = null;
+
+            elements.Remove(element);
+        }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -69,11 +77,11 @@ namespace Simulation.Util.UI.Elements
 
                 if (newScrollWheelValue < previousScrollWheelValue)
                 {
-                    relativeTop = Math.Max(0, relativeTop - 5);
+                    relativeTop = relativeTop - 5;
                 }
                 else if (newScrollWheelValue > previousScrollWheelValue)
                 {
-                    relativeTop = relativeTop + 5;
+                    relativeTop = Math.Min(0, relativeTop + 5);
                 }
 
                 previousScrollWheelValue = newScrollWheelValue;

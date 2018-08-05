@@ -16,6 +16,8 @@ namespace Simulation.Util.UI
     public abstract class UIElement
     {
         private List<KeyPressHandler> keyPressHandler = new List<KeyPressHandler>();
+        private List<KeyHoldHandler> keyHoldHandler = new List<KeyHoldHandler>();
+
         private bool leftMouseButtonDown = false;
         private Action<Point> onClickHandler;
         private Action<MouseMoveEvent> onMouseMoveHandler;
@@ -27,6 +29,11 @@ namespace Simulation.Util.UI
         }
 
         public Rect ClickBounds;
+
+        public void OnKeyHold(Keys key, Action callback, TimeSpan? tickTimeout = null)
+        {
+            keyHoldHandler.Add(new KeyHoldHandler(key, callback, tickTimeout));
+        }
 
         public void OnKeyPress(Keys key, Action callback)
         {
@@ -66,7 +73,10 @@ namespace Simulation.Util.UI
             foreach (var handler in keyPressHandler)
                 handler.Update(gameTime);
 
-            if(onMouseMoveHandler != null)
+            foreach (var handler in keyHoldHandler)
+                handler.Update(gameTime);
+
+            if (onMouseMoveHandler != null)
             {
                 if(lastMousePosition != mouseState.Position && ClickBounds.Contains(mouseState.Position))
                 {

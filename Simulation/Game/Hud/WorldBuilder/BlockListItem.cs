@@ -9,13 +9,17 @@ namespace Simulation.Game.Hud.WorldBuilder
 {
     public class BlockListItem: UIElement
     {
-        private BlockType blockType;
+        public BlockType BlockType
+        {
+            get; private set;
+        }
+
         private string displayString;
         private Vector2 stringBounds;
 
         public BlockListItem(BlockType blockType)
         {
-            this.blockType = blockType;
+            this.BlockType = blockType;
             this.displayString = blockType.Name + " (" + blockType.ID + ")";
             this.stringBounds = Button.ButtonFont.MeasureString(displayString);
 
@@ -24,11 +28,11 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if(blockType.SpritePath != null)
-                spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(blockType.SpritePath),
-                    ClickBounds.GetPositionVector(), new Rectangle(blockType.SpritePostion, blockType.SpriteBounds), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
+            if(BlockType.SpritePath != null)
+                spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(BlockType.SpritePath),
+                    ClickBounds.GetPositionVector(), new Rectangle(BlockType.SpritePostion, BlockType.SpriteBounds), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
 
-            spriteBatch.DrawString(Button.ButtonFont, displayString, new Vector2(ClickBounds.X + blockType.SpriteBounds.X + 20, ClickBounds.Y + blockType.SpriteBounds.Y / 2 - stringBounds.Y / 2), Color.White);
+            spriteBatch.DrawString(Button.ButtonFont, displayString, new Vector2(ClickBounds.X + BlockType.SpriteBounds.X + 20, ClickBounds.Y + BlockType.SpriteBounds.Y / 2 - stringBounds.Y / 2), Color.White);
         }
     }
 }

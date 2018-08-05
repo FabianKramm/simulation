@@ -150,6 +150,7 @@
     <Compile Include="Util\UI\BaseUI.cs" />
     <Compile Include="Util\UI\Elements\Button.cs" />
     <Compile Include="Util\UI\Elements\ScrollableList.cs" />
+    <Compile Include="Util\UI\KeyHoldHandler.cs" />
     <Compile Include="Util\UI\KeyPressHandler.cs" />
     <Compile Include="Util\MovementUtils.cs" />
     <Compile Include="Game\Objects\Entities\Player.cs" />
