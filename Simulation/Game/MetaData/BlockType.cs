@@ -22,7 +22,7 @@ namespace Simulation.Game.MetaData
                 ID=1,
                 Name="Grass_01",
                 SpritePath=@"terrain_atlas",
-                SpritePostion=new Point(672, 160)
+                SpritePosition=new Point(672, 160)
             }},
             {2, new BlockType()
             {
@@ -31,7 +31,7 @@ namespace Simulation.Game.MetaData
                 SpritePath=@"terrain_atlas",
                 BlockingType=BlockingType.BLOCKING,
                 HitBoxType=HitBoxType.HITABLE_BLOCK,
-                SpritePostion=new Point(192, 288)
+                SpritePosition=new Point(192, 288)
             }}
         };
 
@@ -43,7 +43,7 @@ namespace Simulation.Game.MetaData
 
         // Render
         public string SpritePath = null;
-        public Point SpritePostion = Point.Zero;
+        public Point SpritePosition = Point.Zero;
         public Point SpriteBounds = new Point(WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
     }
 }

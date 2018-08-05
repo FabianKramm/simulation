@@ -22,7 +22,7 @@ namespace Simulation.Game.Renderer
             }
 
             spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(blockType.SpritePath), 
-                new Vector2(realX, realY), new Rectangle(blockType.SpritePostion, blockType.SpriteBounds), color, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
+                new Vector2(realX, realY), new Rectangle(blockType.SpritePosition, blockType.SpriteBounds), color, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
         }
     }
 }

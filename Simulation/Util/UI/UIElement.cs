@@ -28,7 +28,7 @@ namespace Simulation.Util.UI
             get; private set;
         }
 
-        public Rect ClickBounds;
+        public Rect Bounds;
 
         public void OnKeyHold(Keys key, Action callback, TimeSpan? tickTimeout = null)
         {
@@ -54,7 +54,7 @@ namespace Simulation.Util.UI
         {
             var mouseState = SimulationGame.MouseState;
 
-            IsHover = ClickBounds.Contains(mouseState.Position);
+            IsHover = Bounds.Contains(mouseState.Position);
 
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
@@ -78,13 +78,15 @@ namespace Simulation.Util.UI
 
             if (onMouseMoveHandler != null)
             {
-                if(lastMousePosition != mouseState.Position && ClickBounds.Contains(mouseState.Position))
+                if(lastMousePosition != mouseState.Position && Bounds.Contains(mouseState.Position))
                 {
                     onMouseMoveHandler(new MouseMoveEvent
                     {
                         MousePosition = mouseState.Position,
                         LeftButtonDown = mouseState.LeftButton == ButtonState.Pressed
                     });
+
+                    lastMousePosition = mouseState.Position;
                 }
             }
         }

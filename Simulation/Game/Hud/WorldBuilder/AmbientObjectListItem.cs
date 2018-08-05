@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Simulation.Game.MetaData;
+using Simulation.Util.Geometry;
+using Simulation.Util.UI;
+using Simulation.Util.UI.Elements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +12,32 @@ using System.Threading.Tasks;
 
 namespace Simulation.Game.Hud.WorldBuilder
 {
-    class AmbientObjectListItem
+    public class AmbientObjectListItem: UIElement
     {
+        public AmbientObjectType AmbientObjectType
+        {
+            get; private set;
+        }
+
+        private string displayString;
+        private Vector2 stringBounds;
+
+        public AmbientObjectListItem(AmbientObjectType ambientObjectType)
+        {
+            this.AmbientObjectType = ambientObjectType;
+            this.displayString = ambientObjectType.Name + " (" + ambientObjectType.ID + ")";
+            this.stringBounds = Button.ButtonFont.MeasureString(displayString);
+
+            Bounds = new Rect(Point.Zero, ambientObjectType.SpriteBounds);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            if (AmbientObjectType.SpritePath != null)
+                spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(AmbientObjectType.SpritePath),
+                    Bounds.GetPositionVector(), new Rectangle(AmbientObjectType.SpritePositions[0], AmbientObjectType.SpriteBounds), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
+
+            spriteBatch.DrawString(Button.ButtonFont, displayString, new Vector2(Bounds.X + AmbientObjectType.SpriteBounds.X + 20, Bounds.Y + AmbientObjectType.SpriteBounds.Y / 2 - stringBounds.Y / 2), Color.White);
+        }
     }
 }

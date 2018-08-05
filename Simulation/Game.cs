@@ -126,7 +126,7 @@ namespace Simulation
         
         public static Rect VisibleArea;
 
-        public static Vector2 MousePosition
+        public static Vector2 RealWorldMousePosition
         {
             get; private set;
         }
@@ -310,9 +310,14 @@ namespace Simulation
 
         private void updateMousePosition()
         {
-            var _mousePosition = Mouse.GetState().Position;
+            var _mousePosition = MouseState.Position;
 
-            MousePosition = new Vector2((SimulationGame.Camera.Position.X - Resolution.Width * 0.5f) + _mousePosition.X, (SimulationGame.Camera.Position.Y - Resolution.Height * 0.5f) + _mousePosition.Y);
+            RealWorldMousePosition = new Vector2((Camera.Position.X - Resolution.Width * 0.5f) + _mousePosition.X, (Camera.Position.Y - Resolution.Height * 0.5f) + _mousePosition.Y);
+        }
+
+        public static Vector2 ConvertWorldPositionToUIPosition(float worldPositionX, float worldPositionY)
+        {
+            return new Vector2(worldPositionX - (Camera.Position.X - Resolution.Width * 0.5f), worldPositionY - (Camera.Position.Y - Resolution.Height * 0.5f));
         }
 
         /// <summary>

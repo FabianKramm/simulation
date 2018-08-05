@@ -2,6 +2,7 @@
 using Simulation.Game.AI;
 using Simulation.Game.Enums;
 using Simulation.Game.Fractions;
+using Simulation.Game.MetaData;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.Serialization;
 using Simulation.Game.Skills;
@@ -89,6 +90,11 @@ namespace Simulation.Game.Objects.Entities
 
                 DisconnectFromWorld();
             }
+        }
+
+        public LivingEntityType GetObjectType()
+        {
+            return MetaData.LivingEntityType.lookup[LivingEntityType];
         }
 
         public override void Update(GameTime gameTime)

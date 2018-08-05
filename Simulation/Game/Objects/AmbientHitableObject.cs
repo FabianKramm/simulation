@@ -1,5 +1,6 @@
 ﻿using Simulation.Game.World;
 using Simulation.Game.Serialization;
+using Simulation.Game.MetaData;
 
 namespace Simulation.Game.Objects
 {
@@ -19,6 +20,11 @@ namespace Simulation.Game.Objects
             relativeHitBoxBounds = MetaData.AmbientHitableObjectType.lookup[((AmbientHitableObject)this).AmbientHitableObjectType].RelativeHitboxRectangle;
 
             base.Init();
+        }
+
+        public AmbientHitableObjectType GetObjectType()
+        {
+            return MetaData.AmbientHitableObjectType.lookup[AmbientHitableObjectType];
         }
     }
 }

@@ -23,16 +23,16 @@ namespace Simulation.Game.Hud.WorldBuilder
             this.displayString = blockType.Name + " (" + blockType.ID + ")";
             this.stringBounds = Button.ButtonFont.MeasureString(displayString);
 
-            ClickBounds = new Rect(Point.Zero, blockType.SpriteBounds);
+            Bounds = new Rect(Point.Zero, blockType.SpriteBounds);
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if(BlockType.SpritePath != null)
                 spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(BlockType.SpritePath),
-                    ClickBounds.GetPositionVector(), new Rectangle(BlockType.SpritePostion, BlockType.SpriteBounds), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
+                    Bounds.GetPositionVector(), new Rectangle(BlockType.SpritePosition, BlockType.SpriteBounds), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
 
-            spriteBatch.DrawString(Button.ButtonFont, displayString, new Vector2(ClickBounds.X + BlockType.SpriteBounds.X + 20, ClickBounds.Y + BlockType.SpriteBounds.Y / 2 - stringBounds.Y / 2), Color.White);
+            spriteBatch.DrawString(Button.ButtonFont, displayString, new Vector2(Bounds.X + BlockType.SpriteBounds.X + 20, Bounds.Y + BlockType.SpriteBounds.Y / 2 - stringBounds.Y / 2), Color.White);
         }
     }
 }

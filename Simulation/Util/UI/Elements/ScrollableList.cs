@@ -23,12 +23,12 @@ namespace Simulation.Util.UI.Elements
 
         public ScrollableList(Rect listBounds)
         {
-            ClickBounds = listBounds;
+            Bounds = listBounds;
 
             previousScrollWheelValue = Mouse.GetState().ScrollWheelValue;
             
-            OnKeyHold(Keys.Up, handleKeyUp, TimeSpan.FromMilliseconds(300));
-            OnKeyHold(Keys.Down, handleKeyDown, TimeSpan.FromMilliseconds(300));
+            OnKeyHold(Keys.Up, handleKeyUp, TimeSpan.FromMilliseconds(150));
+            OnKeyHold(Keys.Down, handleKeyDown, TimeSpan.FromMilliseconds(150));
         }
 
         private void handleKeyUp()
@@ -55,7 +55,48 @@ namespace Simulation.Util.UI.Elements
 
         public void Clear()
         {
+            SelectedElement = null;
+
             elements.Clear();
+        }
+
+        public void ScrollToElement(UIElement element)
+        {
+            var index = elements.IndexOf(element);
+
+            if (index >= 0)
+            {
+                int top = 0;
+
+                foreach (var _element in elements)
+                {
+                    if (_element == element)
+                    {
+                        relativeTop = -top;
+                    }
+
+                    top += _element.Bounds.Height;
+                }
+            }
+        }
+
+        public void SelectElement(UIElement element)
+        {
+            if (element == null)
+                return;
+
+            var index = elements.IndexOf(element);
+
+            if(index >= 0)
+            {
+                SelectedElement = element;
+                ScrollToElement(element);
+            }
+        }
+
+        public UIElement[] GetElements()
+        {
+            return elements.ToArray();
         }
 
         public void OnSelect(Action<Point, UIElement> callback)
@@ -72,9 +113,9 @@ namespace Simulation.Util.UI.Elements
 
         public void AddElement(UIElement element)
         {
-            element.ClickBounds.Y = ClickBounds.Y;
-            element.ClickBounds.X = ClickBounds.X;
-            element.ClickBounds.Width = ClickBounds.Width;
+            element.Bounds.Y = Bounds.Y;
+            element.Bounds.X = Bounds.X;
+            element.Bounds.Width = Bounds.Width;
 
             element.OnClick((Point position) =>
             {
@@ -112,12 +153,12 @@ namespace Simulation.Util.UI.Elements
                 previousScrollWheelValue = newScrollWheelValue;
             }
 
-            int top = ClickBounds.Y + relativeTop;
+            int top = Bounds.Y + relativeTop;
 
             foreach(var element in elements)
             {
-                element.ClickBounds.Y = top;
-                top += element.ClickBounds.Height;
+                element.Bounds.Y = top;
+                top += element.Bounds.Height;
 
                 element.Update(gameTime);
             }
@@ -126,13 +167,13 @@ namespace Simulation.Util.UI.Elements
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             foreach (var element in elements)
-                if (ClickBounds.Contains(element.ClickBounds.X, element.ClickBounds.Y))
+                if (Bounds.Contains(element.Bounds.X, element.Bounds.Y))
                     element.Draw(spriteBatch, gameTime);
 
             if(SelectedElement != null)
-                if(ClickBounds.Contains(SelectedElement.ClickBounds.X, SelectedElement.ClickBounds.Y))
+                if(Bounds.Contains(SelectedElement.Bounds.X, SelectedElement.Bounds.Y))
                 {
-                    SimulationGame.PrimitiveDrawer.Rectangle(SelectedElement.ClickBounds.ToXnaRectangle(), Color.Orange);
+                    SimulationGame.PrimitiveDrawer.Rectangle(SelectedElement.Bounds.ToXnaRectangle(), Color.Orange);
                 }
         }
     }

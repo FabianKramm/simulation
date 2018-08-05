@@ -59,7 +59,7 @@ namespace Simulation.Game.Objects.Entities
 
                 if (state.IsKeyDown(Keys.D1))
                 {
-                    Skills[1].Use(SimulationGame.MousePosition);
+                    Skills[1].Use(SimulationGame.RealWorldMousePosition);
                 }
 
                 if(!SimulationGame.IsWorldBuilderOpen)

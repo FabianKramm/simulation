@@ -30,7 +30,7 @@ namespace Simulation.Util.UI.Elements
             padding = btnPadding ?? new Point(10, 5);
             stringBounds = ButtonFont.MeasureString(text);
 
-            ClickBounds = new Geometry.Rect(position.X, position.Y, (int)stringBounds.X + 2 * padding.X, (int)stringBounds.Y + 2 * padding.Y);
+            Bounds = new Geometry.Rect(position.X, position.Y, (int)stringBounds.X + 2 * padding.X, (int)stringBounds.Y + 2 * padding.Y);
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -47,10 +47,10 @@ namespace Simulation.Util.UI.Elements
                 }
             }
 
-            var textPosition = new Vector2(ClickBounds.X + padding.X, ClickBounds.Y + padding.Y);
+            var textPosition = new Vector2(Bounds.X + padding.X, Bounds.Y + padding.Y);
 
             if(ShowBorder)
-                primitiveDrawer.Rectangle(ClickBounds.ToXnaRectangle(), IsHover ? HoverColor : TextColor);
+                primitiveDrawer.Rectangle(Bounds.ToXnaRectangle(), IsHover ? HoverColor : TextColor);
 
             spriteBatch.DrawString(ButtonFont, Text, textPosition, IsHover ? HoverColor : TextColor);
         }

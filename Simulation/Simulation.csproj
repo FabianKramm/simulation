@@ -79,9 +79,11 @@
     <Compile Include="Game\Hud\WorldBuilder\AmbientHitableObjectListItem.cs" />
     <Compile Include="Game\Hud\WorldBuilder\AmbientObjectListItem.cs" />
     <Compile Include="Game\Hud\WorldBuilder\BlockListItem.cs" />
+    <Compile Include="Game\Hud\WorldBuilder\InspectView.cs" />
     <Compile Include="Game\Hud\WorldBuilder\LivingEntityListItem.cs" />
     <Compile Include="Game\Hud\WorldBuilder\TileSetSelectionView.cs" />
     <Compile Include="Game\Hud\WorldBuilder\WorldBuilder.cs" />
+    <Compile Include="Game\Hud\WorldBuilder\WorldBuilderUtils.cs" />
     <Compile Include="Game\MetaData\AmbientHitableObjectType.cs" />
     <Compile Include="Game\MetaData\AmbientObjectType.cs" />
     <Compile Include="Game\MetaData\BlockType.cs" />

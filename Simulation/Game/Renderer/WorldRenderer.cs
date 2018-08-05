@@ -32,12 +32,12 @@ namespace Simulation.Game.Renderer
             for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                 for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
                 {
+                    WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkX, chunkY);
+
                     if (SimulationGame.IsDebug)
                     {
-                        SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle(chunkX * WorldGrid.WorldChunkPixelSize.X, chunkY * WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y), Color.Red);
+                        SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle(chunkX * WorldGrid.WorldChunkPixelSize.X, chunkY * WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y), worldGridChunk.IsPersistent ? Color.Blue : Color.Red);
                     }
-
-                    WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkX, chunkY);
 
                     if (worldGridChunk.AmbientObjects != null)
                         foreach (AmbientObject ambientObject in worldGridChunk.AmbientObjects)

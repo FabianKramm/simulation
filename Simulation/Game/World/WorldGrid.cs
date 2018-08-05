@@ -12,6 +12,7 @@ using Simulation.Util.Geometry;
 using Simulation.Game.Effects;
 using System.Linq;
 using Simulation.Game.Enums;
+using Simulation.Game.MetaData;
 
 namespace Simulation.Game.World
 {
@@ -29,6 +30,18 @@ namespace Simulation.Game.World
 
         public WorldGrid(): base(TimeSpan.FromSeconds(20)) { }
 
+        public int GetBlockType(int blockX, int blockY, string InteriorID)
+        {
+            if(InteriorID == Interior.Outside)
+            {
+                return GetFromBlockPoint(blockX, blockY).GetBlockType(blockX, blockY);
+            }
+            else
+            {
+                return InteriorManager.Get(InteriorID).GetBlockType(blockX, blockY);
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public WorldGridChunk GetFromChunkPoint(int chunkX, int chunkY)
         {
@@ -39,6 +52,14 @@ namespace Simulation.Game.World
         public WorldGridChunk GetFromRealPoint(int realX, int realY)
         {
             Point positionChunk = GeometryUtils.GetChunkPosition(realX, realY, WorldChunkPixelSize.X, WorldChunkPixelSize.Y);
+
+            return Get(GeometryUtils.ConvertPointToLong(positionChunk.X, positionChunk.Y));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public WorldGridChunk GetFromBlockPoint(int blockX, int blockY)
+        {
+            Point positionChunk = GeometryUtils.GetChunkPosition(blockX, blockY, WorldChunkBlockSize.X, WorldChunkBlockSize.Y);
 
             return Get(GeometryUtils.ConvertPointToLong(positionChunk.X, positionChunk.Y));
         }

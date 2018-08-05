@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Simulation.Game.MetaData;
@@ -9,22 +8,22 @@ using Simulation.Util.Dialog;
 using Simulation.Util.Geometry;
 using Simulation.Util.UI;
 using Simulation.Util.UI.Elements;
-using System;
 
 namespace Simulation.Game.Hud.WorldBuilder
 {
     public class WorldBuilder: BaseUI
     {
-        private enum PlacementType
+        public enum PlacementType
         {
             NoType,
+            Inspect,
             BlockPlacement,
             AmbientObjectPlacement,
             AmbientHitableObjectPlacement,
             LivingEntityPlacement
         }
 
-        private enum PlacementMode
+        public enum PlacementMode
         {
             NoPlacement,
             Manage,
@@ -38,7 +37,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             @"Tiles\Exterior01"
         };
 
-        private Button changeWorldMapBtn;
+        private Button inspectBtn;
         private Button blockTypeBtn;
         private Button ambientObjectTypeBtn;
         private Button ambientHitableObjectTypeBtn;
@@ -52,6 +51,7 @@ namespace Simulation.Game.Hud.WorldBuilder
         private Button createBtn;
         private Button removeBtn;
 
+        private InspectView inspectView;
         private TileSetSelectionView tileSetSelectionView;
         private ScrollableList tilesetSelectionList;
 
@@ -67,11 +67,13 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         public void LoadContent()
         {
-            ClickBounds = new Rect(SimulationGame.Resolution.Width * 2 / 3, 0, SimulationGame.Resolution.Width / 3, SimulationGame.Resolution.Height);
-            tilesetSelectionArea = new Rect(ClickBounds.X, ClickBounds.Y + 120, ClickBounds.Width - 50, ClickBounds.Height);
+            Bounds = new Rect(SimulationGame.Resolution.Width * 2 / 3, 0, SimulationGame.Resolution.Width / 3, SimulationGame.Resolution.Height);
+            tilesetSelectionArea = new Rect(Bounds.X, Bounds.Y + 120, Bounds.Width - 50, Bounds.Height);
 
             backgroundOverlay = new Texture2D(SimulationGame.Graphics.GraphicsDevice, 1, 1);
             backgroundOverlay.SetData(new Color[] { Color.White });
+
+            inspectView = new InspectView(new Rect(0, 0, SimulationGame.Resolution.Width * 2 / 3, SimulationGame.Resolution.Height));
 
             tileSetSelectionView = new TileSetSelectionView(tilesetSelectionArea);
             tilesetSelectionList = new ScrollableList(tilesetSelectionArea);
@@ -92,51 +94,97 @@ namespace Simulation.Game.Hud.WorldBuilder
                 tilesetSelectionList.AddElement(button);
             }
 
+            // Inspect Button
+            inspectBtn = new Button("Inspect", new Point(Bounds.X + 10, Bounds.Y + 10));
+            inspectBtn.OnClick((Point position) =>
+            {
+                placementType = PlacementType.Inspect;
+                placementMode = PlacementMode.NoPlacement;
+            });
+
             // Block Type Button
-            blockTypeBtn = new Button("Blocks", new Point(ClickBounds.X + 10, ClickBounds.Y + 10));
+            blockTypeBtn = new Button("Blocks", new Point(inspectBtn.Bounds.Right + 10, Bounds.Y + 10));
             blockTypeBtn.OnClick((Point position) => {
-                if(placementType != PlacementType.BlockPlacement)
-                {
-                    placementType = PlacementType.BlockPlacement;
-                }
+                placementType = PlacementType.BlockPlacement;
+                handleManageBtnClick(Point.Zero);
+            });
+
+            // Ambient Object Type Button
+            ambientObjectTypeBtn = new Button("Ambient Objects", new Point(blockTypeBtn.Bounds.Right + 10, Bounds.Y + 10));
+            ambientObjectTypeBtn.OnClick((Point position) => {
+                placementType = PlacementType.AmbientObjectPlacement;
+                handleManageBtnClick(Point.Zero);
+            });
+
+            // Ambient Hitable Object Type Button
+            ambientHitableObjectTypeBtn = new Button("Hitable Objects", new Point(ambientObjectTypeBtn.Bounds.Right + 10, Bounds.Y + 10));
+            ambientHitableObjectTypeBtn.OnClick((Point position) => {
+                placementType = PlacementType.AmbientHitableObjectPlacement;
+                handleManageBtnClick(Point.Zero);
+            });
+
+            // Ambient Hitable Object Type Button
+            livingEntityTypeBtn = new Button("Living Entities", new Point(ambientHitableObjectTypeBtn.Bounds.Right + 10, Bounds.Y + 10));
+            livingEntityTypeBtn.OnClick((Point position) => {
+                placementType = PlacementType.LivingEntityPlacement;
+                handleManageBtnClick(Point.Zero);
             });
 
             // Manage Button
-            manageBtn = new Button("Manage", new Point(ClickBounds.X + 10, blockTypeBtn.ClickBounds.Bottom + 10));
-            manageBtn.OnClick((Point position) => {
-                placementMode = PlacementMode.Manage;
-                manageObjectList.Clear();
-
-                switch(placementType)
-                {
-                    case PlacementType.BlockPlacement:
-                        foreach (var blockTypeItem in BlockType.lookup)
-                            manageObjectList.AddElement(new BlockListItem(blockTypeItem.Value));
-                        break;
-                }
-            });
+            manageBtn = new Button("Manage", new Point(Bounds.X + 10, blockTypeBtn.Bounds.Bottom + 10));
+            manageBtn.OnClick(handleManageBtnClick);
 
             // Create From Json
-            createFromJsonBtn = new Button("Create From Json", new Point(manageBtn.ClickBounds.Right + 10, blockTypeBtn.ClickBounds.Bottom + 10));
+            createFromJsonBtn = new Button("Create From Json", new Point(manageBtn.Bounds.Right + 10, blockTypeBtn.Bounds.Bottom + 10));
             createFromJsonBtn.OnClick(createNewObject);
 
             // Create From Tileset
-            createFromTilesetBtn = new Button("Create From Tileset", new Point(createFromJsonBtn.ClickBounds.Right + 10, blockTypeBtn.ClickBounds.Bottom + 10));
+            createFromTilesetBtn = new Button("Create From Tileset", new Point(createFromJsonBtn.Bounds.Right + 10, blockTypeBtn.Bounds.Bottom + 10));
             createFromTilesetBtn.OnClick((Point position) => placementMode = PlacementMode.ChooseTileset);
 
             // Edit Btn
-            editBtn = new Button("Edit", new Point(ClickBounds.X + 10, manageBtn.ClickBounds.Bottom + 10));
+            editBtn = new Button("Edit", new Point(Bounds.X + 10, manageBtn.Bounds.Bottom + 10));
             editBtn.OnClick(editObject);
 
             // Remove Btn
-            removeBtn = new Button("Remove", new Point(editBtn.ClickBounds.Right + 10, manageBtn.ClickBounds.Bottom + 10));
+            removeBtn = new Button("Remove", new Point(editBtn.Bounds.Right + 10, manageBtn.Bounds.Bottom + 10));
             removeBtn.OnClick(removeObject);
 
             // Create Btn
-            createBtn = new Button("Create", new Point(ClickBounds.X + 10, manageBtn.ClickBounds.Bottom + 10));
+            createBtn = new Button("Create", new Point(Bounds.X + 10, manageBtn.Bounds.Bottom + 10));
             createBtn.OnClick(createNewObject);
 
+            AddElement(inspectBtn);
             AddElement(blockTypeBtn);
+            AddElement(ambientObjectTypeBtn);
+            AddElement(ambientHitableObjectTypeBtn);
+            AddElement(livingEntityTypeBtn);
+        }
+
+        private void handleManageBtnClick(Point position)
+        {
+            placementMode = PlacementMode.Manage;
+            manageObjectList.Clear();
+
+            switch (placementType)
+            {
+                case PlacementType.BlockPlacement:
+                    foreach (var blockTypeItem in BlockType.lookup)
+                        manageObjectList.AddElement(new BlockListItem(blockTypeItem.Value));
+                    break;
+                case PlacementType.AmbientObjectPlacement:
+                    foreach (var item in AmbientObjectType.lookup)
+                        manageObjectList.AddElement(new AmbientObjectListItem(item.Value));
+                    break;
+                case PlacementType.AmbientHitableObjectPlacement:
+                    foreach (var item in AmbientHitableObjectType.lookup)
+                        manageObjectList.AddElement(new AmbientHitableObjectListItem(item.Value));
+                    break;
+                case PlacementType.LivingEntityPlacement:
+                    foreach (var item in LivingEntityType.lookup)
+                        manageObjectList.AddElement(new LivingEntityListItem(item.Value));
+                    break;
+            }
         }
 
         private void removeObject(Point position)
@@ -149,6 +197,18 @@ namespace Simulation.Game.Hud.WorldBuilder
                 {
                     case PlacementType.BlockPlacement:
                         BlockType.lookup.Remove(((BlockListItem)manageObjectList.SelectedElement).BlockType.ID);
+                        manageObjectList.RemoveElement(manageObjectList.SelectedElement);
+                        break;
+                    case PlacementType.AmbientObjectPlacement:
+                        AmbientObjectType.lookup.Remove(((AmbientObjectListItem)manageObjectList.SelectedElement).AmbientObjectType.ID);
+                        manageObjectList.RemoveElement(manageObjectList.SelectedElement);
+                        break;
+                    case PlacementType.AmbientHitableObjectPlacement:
+                        AmbientHitableObjectType.lookup.Remove(((AmbientHitableObjectListItem)manageObjectList.SelectedElement).AmbientHitableObjectType.ID);
+                        manageObjectList.RemoveElement(manageObjectList.SelectedElement);
+                        break;
+                    case PlacementType.LivingEntityPlacement:
+                        LivingEntityType.lookup.Remove(((LivingEntityListItem)manageObjectList.SelectedElement).LivingEntityType.ID);
                         manageObjectList.RemoveElement(manageObjectList.SelectedElement);
                         break;
                 }
@@ -165,68 +225,23 @@ namespace Simulation.Game.Hud.WorldBuilder
                 case PlacementType.BlockPlacement:
                     selectedObject = ((BlockListItem)selectedElement).BlockType;
                     break;
+                case PlacementType.AmbientObjectPlacement:
+                    selectedObject = ((AmbientObjectListItem)selectedElement).AmbientObjectType;
+                    break;
+                case PlacementType.AmbientHitableObjectPlacement:
+                    selectedObject = ((AmbientHitableObjectListItem)selectedElement).AmbientHitableObjectType;
+                    break;
+                case PlacementType.LivingEntityPlacement:
+                    selectedObject = ((LivingEntityListItem)selectedElement).LivingEntityType;
+                    break;
             }
 
-            var dialog = new InputDialog("Edit Object", JToken.FromObject(selectedObject, SerializationUtils.Serializer).ToString(Newtonsoft.Json.Formatting.Indented));
+            var dialog = new InputDialog("Edit Object", JToken.FromObject(selectedObject, SerializationUtils.Serializer).ToString(Formatting.Indented));
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                replaceTypeFromString(dialog.ResultText);
+                WorldBuilderUtils.ReplaceTypeFromString(placementType, dialog.ResultText);
             }
-        }
-
-        private void replaceTypeFromString(string objectText)
-        {
-            switch (placementType)
-            {
-                case PlacementType.BlockPlacement:
-                    BlockType newBlockType = JsonConvert.DeserializeObject<BlockType>(objectText, SerializationUtils.SerializerSettings);
-                    BlockType.lookup[newBlockType.ID] = newBlockType;
-                    break;
-                case PlacementType.AmbientObjectPlacement:
-                    AmbientObjectType newAmbientObjectType = JsonConvert.DeserializeObject<AmbientObjectType>(objectText, SerializationUtils.SerializerSettings);
-                    AmbientObjectType.lookup[newAmbientObjectType.ID] = newAmbientObjectType;
-                    break;
-                case PlacementType.AmbientHitableObjectPlacement:
-                    AmbientHitableObjectType newAmbientHitableObjectType = JsonConvert.DeserializeObject<AmbientHitableObjectType>(objectText, SerializationUtils.SerializerSettings);
-                    AmbientHitableObjectType.lookup[newAmbientHitableObjectType.ID] = newAmbientHitableObjectType;
-                    break;
-                case PlacementType.LivingEntityPlacement:
-                    LivingEntityType newLivingEntityType = JsonConvert.DeserializeObject<LivingEntityType>(objectText, SerializationUtils.SerializerSettings);
-                    LivingEntityType.lookup[newLivingEntityType.ID] = newLivingEntityType;
-                    break;
-            }
-        }
-
-        private int generateNewId()
-        {
-            int highestNumber = int.MinValue;
-
-            switch (placementType)
-            {
-                case PlacementType.BlockPlacement:
-                    foreach(var blockTypeItem in BlockType.lookup)
-                        if (blockTypeItem.Value.ID > highestNumber)
-                            highestNumber = blockTypeItem.Value.ID;
-                    break;
-                case PlacementType.AmbientObjectPlacement:
-                    foreach (var ambientObjectType in AmbientObjectType.lookup)
-                        if (ambientObjectType.Value.ID > highestNumber)
-                            highestNumber = ambientObjectType.Value.ID;
-                    break;
-                case PlacementType.AmbientHitableObjectPlacement:
-                    foreach (var ambientHitableObjectType in AmbientHitableObjectType.lookup)
-                        if (ambientHitableObjectType.Value.ID > highestNumber)
-                            highestNumber = ambientHitableObjectType.Value.ID;
-                    break;
-                case PlacementType.LivingEntityPlacement:
-                    foreach (var livingEntityType in LivingEntityType.lookup)
-                        if (livingEntityType.Value.ID > highestNumber)
-                            highestNumber = livingEntityType.Value.ID;
-                    break;
-            }
-
-            return highestNumber + 1;
         }
 
         private void createNewObject(Point position)
@@ -243,7 +258,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
 
             object selectedObject = null;
-            int newId = generateNewId();
+            int newId = WorldBuilderUtils.GenerateNewId(placementType);
 
             switch (placementType)
             {
@@ -253,8 +268,35 @@ namespace Simulation.Game.Hud.WorldBuilder
                         ID=newId,
                         Name="Block"+newId,
                         SpritePath=spritePath,
-                        SpritePostion=spritePosition,
+                        SpritePosition=spritePosition,
                         SpriteBounds=spriteBounds,
+                    };
+                    break;
+                case PlacementType.AmbientObjectPlacement:
+                    selectedObject = new AmbientObjectType()
+                    {
+                        ID = newId,
+                        Name = "AmbientObj" + newId,
+                        SpritePath = spritePath,
+                        SpritePositions = new Point[] { spritePosition },
+                        SpriteBounds = spriteBounds,
+                    };
+                    break;
+                case PlacementType.AmbientHitableObjectPlacement:
+                    selectedObject = new AmbientHitableObjectType()
+                    {
+                        ID = newId,
+                        Name = "HitableObj" + newId,
+                        SpritePath = spritePath,
+                        SpritePositions = new Point[] { spritePosition },
+                        SpriteBounds = spriteBounds,
+                    };
+                    break;
+                case PlacementType.LivingEntityPlacement:
+                    selectedObject = new LivingEntityType()
+                    {
+                        ID = newId,
+                        Name = "LivingEntity" + newId
                     };
                     break;
             }
@@ -263,7 +305,67 @@ namespace Simulation.Game.Hud.WorldBuilder
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                replaceTypeFromString(dialog.ResultText);
+                WorldBuilderUtils.ReplaceTypeFromString(placementType, dialog.ResultText);
+
+                if (placementMode == PlacementMode.CreateFromTileset)
+                {
+                    placementMode = PlacementMode.Manage;
+                    manageObjectList.Clear();
+
+                    UIElement selectedItem = null;
+
+                    switch (placementType)
+                    {
+                        case PlacementType.BlockPlacement:
+                            foreach (var item in BlockType.lookup)
+                            {
+                                var newItem = new BlockListItem(item.Value);
+
+                                if (item.Value.ID == newId)
+                                    selectedItem = newItem;
+
+                                manageObjectList.AddElement(newItem);
+                            }
+                                
+                            break;
+                        case PlacementType.AmbientObjectPlacement:
+                            foreach (var item in AmbientObjectType.lookup)
+                            {
+                                var newItem = new AmbientObjectListItem(item.Value);
+
+                                if (item.Value.ID == newId)
+                                    selectedItem = newItem;
+
+                                manageObjectList.AddElement(newItem);
+                            }
+
+                            break;
+                        case PlacementType.AmbientHitableObjectPlacement:
+                            foreach (var item in AmbientHitableObjectType.lookup)
+                            {
+                                var newItem = new AmbientHitableObjectListItem(item.Value);
+
+                                if (item.Value.ID == newId)
+                                    selectedItem = newItem;
+
+                                manageObjectList.AddElement(newItem);
+                            }
+                            break;
+                        case PlacementType.LivingEntityPlacement:
+                            foreach (var item in LivingEntityType.lookup)
+                            {
+                                var newItem = new LivingEntityListItem(item.Value);
+
+                                if (item.Value.ID == newId)
+                                    selectedItem = newItem;
+
+                                manageObjectList.AddElement(newItem);
+                            }
+                            break;
+                    }
+
+                    manageObjectList.SelectElement(selectedItem);
+                }
             }
         }
 
@@ -273,7 +375,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             {
                 base.Update(gameTime);
 
-                if (placementType != PlacementType.NoType)
+                if (placementType != PlacementType.NoType && placementType != PlacementType.Inspect)
                 {
                     switch (placementMode)
                     {
@@ -303,6 +405,10 @@ namespace Simulation.Game.Hud.WorldBuilder
                     if (placementType != PlacementType.LivingEntityPlacement)
                         createFromTilesetBtn.Update(gameTime);
                 }
+                else if (placementType == PlacementType.Inspect)
+                {
+                    inspectView.Update(gameTime);
+                }
             }
         }
 
@@ -313,7 +419,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                 spriteBatch.Draw(backgroundOverlay, new Rectangle(0, 0, SimulationGame.Resolution.Width, SimulationGame.Resolution.Height), backgroundColor);
                 base.Draw(spriteBatch, gameTime);
 
-                if(placementType != PlacementType.NoType)
+                if(placementType != PlacementType.NoType && placementType != PlacementType.Inspect)
                 {
                     switch (placementMode)
                     {
@@ -342,6 +448,10 @@ namespace Simulation.Game.Hud.WorldBuilder
 
                     if(placementType != PlacementType.LivingEntityPlacement)
                         createFromTilesetBtn.Draw(spriteBatch, gameTime);
+                }
+                else if (placementType == PlacementType.Inspect)
+                {
+                    inspectView.Draw(spriteBatch, gameTime);
                 }
             }
         }

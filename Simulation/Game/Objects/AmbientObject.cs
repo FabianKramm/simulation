@@ -1,4 +1,5 @@
-﻿using Simulation.Game.Serialization;
+﻿using Simulation.Game.MetaData;
+using Simulation.Game.Serialization;
 using Simulation.Game.World;
 
 namespace Simulation.Game.Objects
@@ -12,5 +13,10 @@ namespace Simulation.Game.Objects
         protected AmbientObject(): base() { }
 
         public AmbientObject(WorldPosition worldPosition): base(worldPosition) { }
+
+        public AmbientObjectType GetObjectType()
+        {
+            return MetaData.AmbientObjectType.lookup[AmbientObjectType];
+        }
     }
 }

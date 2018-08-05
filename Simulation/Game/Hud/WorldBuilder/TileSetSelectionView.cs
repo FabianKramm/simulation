@@ -23,7 +23,7 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         public TileSetSelectionView(Rect clickBounds)
         {
-            ClickBounds = clickBounds;
+            Bounds = clickBounds;
 
             OnMouseMove(handleOnMouseMove);
             OnClick(handleOnClick);
@@ -113,7 +113,7 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         private void handleOnClick(Point mousePosition)
         {
-            var relativeMousePosition = new Point(mousePosition.X - ClickBounds.X + scrollOffset.X, mousePosition.Y - ClickBounds.Y + scrollOffset.Y);
+            var relativeMousePosition = new Point(mousePosition.X - Bounds.X + scrollOffset.X, mousePosition.Y - Bounds.Y + scrollOffset.Y);
 
             if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
             {
@@ -136,7 +136,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                 if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
                 {
                     var selectedTilePoint = SelectedSpritePosition ?? Point.Zero;
-                    var relativeMousePosition = new Point(mouseMoveEvent.MousePosition.X - ClickBounds.X + scrollOffset.X, mouseMoveEvent.MousePosition.Y - ClickBounds.Y + scrollOffset.Y);
+                    var relativeMousePosition = new Point(mouseMoveEvent.MousePosition.X - Bounds.X + scrollOffset.X, mouseMoveEvent.MousePosition.Y - Bounds.Y + scrollOffset.Y);
 
                     if (relativeMousePosition.X >= selectedTilePoint.X && relativeMousePosition.Y >= selectedTilePoint.Y)
                     {
@@ -146,7 +146,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                 else
                 {
                     var selectedTilePoint = SelectedSpritePosition ?? Point.Zero;
-                    var relativeMousePosition = new Point(mouseMoveEvent.MousePosition.X - ClickBounds.X + scrollOffset.X, mouseMoveEvent.MousePosition.Y - ClickBounds.Y + scrollOffset.Y);
+                    var relativeMousePosition = new Point(mouseMoveEvent.MousePosition.X - Bounds.X + scrollOffset.X, mouseMoveEvent.MousePosition.Y - Bounds.Y + scrollOffset.Y);
                     
                     if (relativeMousePosition.X >= selectedTilePoint.X && relativeMousePosition.Y >= selectedTilePoint.Y)
                     {
@@ -167,14 +167,14 @@ namespace Simulation.Game.Hud.WorldBuilder
             if(SelectedSpritePath != null)
             {
                 var texture = SimulationGame.ContentManager.Load<Texture2D>(SelectedSpritePath);
-                var width = Math.Max(ClickBounds.X, Math.Min(ClickBounds.Width, texture.Width - scrollOffset.X));
-                var height = Math.Max(ClickBounds.Y, Math.Min(ClickBounds.Height, texture.Height - scrollOffset.Y));
+                var width = Math.Max(Bounds.X, Math.Min(Bounds.Width, texture.Width - scrollOffset.X));
+                var height = Math.Max(Bounds.Y, Math.Min(Bounds.Height, texture.Height - scrollOffset.Y));
                 var spritePosition = new Rectangle(scrollOffset.X, scrollOffset.Y, width, height);
 
                 if (spritePosition.Width > 0 && spritePosition.Height > 0)
                 {
                     spriteBatch.Draw(texture,
-                    new Vector2(ClickBounds.X, ClickBounds.Y), spritePosition, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
+                    new Vector2(Bounds.X, Bounds.Y), spritePosition, Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
 
                     if (SelectedSpritePosition != null)
                     {
@@ -182,7 +182,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                         
                         if (spritePosition.Contains(selectedTilePoint))
                         {
-                            SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle(ClickBounds.X + selectedTilePoint.X - scrollOffset.X, ClickBounds.Y + selectedTilePoint.Y - scrollOffset.Y, SelectedSpriteBounds.X, SelectedSpriteBounds.Y), Color.Red);
+                            SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle(Bounds.X + selectedTilePoint.X - scrollOffset.X, Bounds.Y + selectedTilePoint.Y - scrollOffset.Y, SelectedSpriteBounds.X, SelectedSpriteBounds.Y), Color.Red);
                         }
                     }
                 }
