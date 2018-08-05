@@ -13,7 +13,7 @@ namespace Simulation.Game.Renderer
     {
         private static Effect nightEffect;
 
-        private static Color dayColor = new Color(255, 240, 240, 255); //
+        private static Color dayColor = new Color(255, 255, 255, 255); //
 
         private static Color startNightColor = new Color(100, 100, 200, 255); // 20 - 5 o'Clock
         private static Color midNightColor = new Color(80, 80, 180, 255); // 20 - 5 o'Clock
@@ -26,9 +26,9 @@ namespace Simulation.Game.Renderer
             (0 * SimulationGame.TicksPerHour, new Color(80, 80, 180, 255)),
             (5 * SimulationGame.TicksPerHour, new Color(100, 100, 200, 255)),
             (7 * SimulationGame.TicksPerHour, new Color(220, 130, 130, 255)),
-            (9 * SimulationGame.TicksPerHour, new Color(235, 220, 220, 255)),
-            (14 * SimulationGame.TicksPerHour, new Color(255, 240, 240, 255)),
-            (18 * SimulationGame.TicksPerHour, new Color(235, 220, 220, 255)),
+            (9 * SimulationGame.TicksPerHour, new Color(235, 235, 235, 255)),
+            (14 * SimulationGame.TicksPerHour, dayColor),
+            (18 * SimulationGame.TicksPerHour, new Color(235, 235, 235, 255)),
             (20 * SimulationGame.TicksPerHour, new Color(220, 130, 130, 255)),
             (22 * SimulationGame.TicksPerHour, new Color(100, 100, 200, 255))
         };

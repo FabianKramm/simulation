@@ -104,6 +104,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             {
                 Bounds = new Rect(0, 0, SimulationGame.Resolution.Width * 2 / 3, SimulationGame.Resolution.Height)
             };
+            placeView.OnClick(() => WorldBuilderUtils.CreateObjectAtMousePosition(manageObjectList.SelectedElement));
 
             selectedObjectDetailTextView = new TextView(tilesetSelectionArea, "");
             worldPartDetailsTextView = new TextView(tilesetSelectionArea, "");
@@ -220,6 +221,8 @@ namespace Simulation.Game.Hud.WorldBuilder
             // Delete Interior Btn
             removeInteriorBtn = new Button("Remove Interior", new Point(changeInteriorDimensionsBtn.Bounds.Right + 10, manageBtn.Bounds.Bottom + 10));
             removeInteriorBtn.OnClick(handleRemoveInteriorBtn);
+
+            OnKeyPress(Keys.Delete, handleRemoveInstanceBtnClick);
 
             AddElement(blockTypeBtn);
             AddElement(ambientObjectTypeBtn);
@@ -736,11 +739,41 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
         }
 
+        private void setSelectedButtonColor()
+        {
+            blockTypeBtn.TextColor = Color.White;
+            ambientObjectTypeBtn.TextColor = Color.White;
+            ambientHitableObjectTypeBtn.TextColor = Color.White;
+            livingEntityTypeBtn.TextColor = Color.White;
+            worldPartBtn.TextColor = Color.White;
+
+            switch (placementType)
+            {
+                case PlacementType.BlockPlacement:
+                    blockTypeBtn.TextColor = Color.IndianRed;
+                    break;
+                case PlacementType.AmbientObjectPlacement:
+                    ambientObjectTypeBtn.TextColor = Color.IndianRed;
+                    break;
+                case PlacementType.AmbientHitableObjectPlacement:
+                    ambientHitableObjectTypeBtn.TextColor = Color.IndianRed;
+                    break;
+                case PlacementType.LivingEntityPlacement:
+                    livingEntityTypeBtn.TextColor = Color.IndianRed;
+                    break;
+                case PlacementType.WorldPartDetails:
+                    worldPartBtn.TextColor = Color.IndianRed;
+                    break;
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             if(SimulationGame.IsWorldBuilderOpen)
             {
                 base.Update(gameTime);
+
+                setSelectedButtonColor();
 
                 if (placementType != PlacementType.NoType && placementType != PlacementType.Inspect && placementType != PlacementType.WorldPartDetails)
                 {
@@ -899,6 +932,8 @@ namespace Simulation.Game.Hud.WorldBuilder
                 if(placementMode == PlacementMode.Manage && manageObjectList.SelectedElement != null)
                 {
                     placeView.Draw(spriteBatch, gameTime);
+
+                    // TODO: Preview of object
                 }
                 else
                 {

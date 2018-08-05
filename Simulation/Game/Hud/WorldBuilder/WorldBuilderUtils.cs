@@ -15,13 +15,6 @@ namespace Simulation.Game.Hud.WorldBuilder
         public static void CreateObjectAtMousePosition(UIElement listItem)
         {
             var realPosition = SimulationGame.RealWorldMousePosition;
-            
-            if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
-            {
-                var blockPosition = GeometryUtils.GetBlockFromReal((int)realPosition.X, (int)realPosition.Y);
-
-                realPosition = new Vector2(blockPosition.X * WorldGrid.BlockSize.X, blockPosition.Y * WorldGrid.BlockSize.Y);
-            }
 
             if (listItem is BlockListItem)
             {
@@ -31,7 +24,14 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
             else
             {
-                var newWorldPosition = new World.WorldPosition(realPosition.X, realPosition.Y, SimulationGame.Player.InteriorID);
+                if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+                {
+                    var blockPosition = GeometryUtils.GetBlockFromReal((int)realPosition.X, (int)realPosition.Y);
+
+                    realPosition = new Vector2(blockPosition.X * WorldGrid.BlockSize.X, blockPosition.Y * WorldGrid.BlockSize.Y);
+                }
+
+                var newWorldPosition = new WorldPosition(realPosition.X, realPosition.Y, SimulationGame.Player.InteriorID);
                 GameObject gameObject = null;
 
                 if (listItem is AmbientObjectListItem)

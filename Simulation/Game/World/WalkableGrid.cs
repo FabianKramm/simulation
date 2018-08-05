@@ -94,6 +94,14 @@ namespace Simulation.Game.World
                 
                 var found = false;
 
+                if (worldGridChunk.ContainedObjects != null)
+                    foreach (HitableObject interactiveObject in worldGridChunk.ContainedObjects)
+                        if (interactiveObject.BlockingType == BlockingType.BLOCKING && interactiveObject.BlockingBounds.Intersects(new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
+                        {
+                            found = true;
+                            break;
+                        }
+
                 if (worldGridChunk.OverlappingObjects != null)
                     foreach (HitableObject interactiveObject in worldGridChunk.OverlappingObjects)
                         if (interactiveObject.BlockingType == BlockingType.BLOCKING && interactiveObject.BlockingBounds.Intersects(new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
@@ -102,7 +110,7 @@ namespace Simulation.Game.World
                             break;
                         }
 
-                setBlockNotWalkable(blockX, blockY, !found);
+                setBlockNotWalkable(blockX, blockY, found);
             }
         }
 
@@ -127,7 +135,15 @@ namespace Simulation.Game.World
 
                         var found = false;
 
-                        if(worldGridChunk.OverlappingObjects != null)
+                        if (worldGridChunk.ContainedObjects != null)
+                            foreach (HitableObject interactiveObject in worldGridChunk.ContainedObjects)
+                                if (interactiveObject.BlockingType == BlockingType.BLOCKING && interactiveObject.BlockingBounds.Intersects(new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
+                                {
+                                    found = true;
+                                    break;
+                                }
+
+                        if (worldGridChunk.OverlappingObjects != null)
                             foreach (HitableObject interactiveObject in worldGridChunk.OverlappingObjects)
                                 if (interactiveObject.BlockingType == BlockingType.BLOCKING && interactiveObject.BlockingBounds.Intersects(new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
                                 {
