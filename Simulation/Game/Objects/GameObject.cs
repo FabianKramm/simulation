@@ -26,8 +26,7 @@ namespace Simulation.Game.Objects
         {
             get; private set;
         }
-
-        [Serialize]
+        
         public Point BlockPosition
         {
             get; private set;

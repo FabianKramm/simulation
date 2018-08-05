@@ -12,13 +12,11 @@ namespace Simulation.Game.Objects.Entities
         [Serialize]
         public int PreloadedSurroundingWorldGridChunkRadius = 1;
 
-        [Serialize]
         public Rect PreloadedWorldGridChunkBounds
         {
             get; private set;
         }
-
-        [Serialize]
+        
         public Rect PreloadedWorldGridChunkPixelBounds
         {
             get; private set;

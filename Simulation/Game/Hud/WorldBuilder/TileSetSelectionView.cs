@@ -167,8 +167,8 @@ namespace Simulation.Game.Hud.WorldBuilder
             if(SelectedSpritePath != null)
             {
                 var texture = SimulationGame.ContentManager.Load<Texture2D>(SelectedSpritePath);
-                var width = Math.Max(Bounds.X, Math.Min(Bounds.Width, texture.Width - scrollOffset.X));
-                var height = Math.Max(Bounds.Y, Math.Min(Bounds.Height, texture.Height - scrollOffset.Y));
+                var width = Math.Max(0, Math.Min(texture.Width, texture.Width - scrollOffset.X));
+                var height = Math.Max(0, Math.Min(texture.Height, texture.Height - scrollOffset.Y));
                 var spritePosition = new Rectangle(scrollOffset.X, scrollOffset.Y, width, height);
 
                 if (spritePosition.Width > 0 && spritePosition.Height > 0)

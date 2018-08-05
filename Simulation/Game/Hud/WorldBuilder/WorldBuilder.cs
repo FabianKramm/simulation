@@ -3,7 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Simulation.Game.MetaData;
+using Simulation.Game.Objects;
 using Simulation.Game.Serialization;
+using Simulation.Game.Serialization.Objects;
 using Simulation.Util.Dialog;
 using Simulation.Util.Geometry;
 using Simulation.Util.UI;
@@ -36,8 +38,7 @@ namespace Simulation.Game.Hud.WorldBuilder
         {
             @"Tiles\Exterior01"
         };
-
-        private Button inspectBtn;
+        
         private Button blockTypeBtn;
         private Button ambientObjectTypeBtn;
         private Button ambientHitableObjectTypeBtn;
@@ -52,6 +53,8 @@ namespace Simulation.Game.Hud.WorldBuilder
         private Button removeBtn;
 
         private InspectView inspectView;
+        private TextView selectedObjectDetailTextView;
+
         private TileSetSelectionView tileSetSelectionView;
         private ScrollableList tilesetSelectionList;
 
@@ -62,7 +65,7 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         private Rect tilesetSelectionArea;
 
-        private PlacementType placementType = PlacementType.NoType;
+        private PlacementType placementType = PlacementType.Inspect;
         private PlacementMode placementMode = PlacementMode.NoPlacement;
 
         public void LoadContent()
@@ -73,7 +76,34 @@ namespace Simulation.Game.Hud.WorldBuilder
             backgroundOverlay = new Texture2D(SimulationGame.Graphics.GraphicsDevice, 1, 1);
             backgroundOverlay.SetData(new Color[] { Color.White });
 
+            selectedObjectDetailTextView = new TextView(tilesetSelectionArea, "");
             inspectView = new InspectView(new Rect(0, 0, SimulationGame.Resolution.Width * 2 / 3, SimulationGame.Resolution.Height));
+            inspectView.OnSelect((GameObject gameObject) =>
+            {
+                placementType = PlacementType.Inspect;
+                placementMode = PlacementMode.NoPlacement;
+
+                selectedObjectDetailTextView.SetText(WorldObjectSerializer.Serialize(gameObject).ToString(Formatting.Indented));
+            }, (BlockType blockType) => 
+            {
+                placementType = PlacementType.BlockPlacement;
+                placementMode = PlacementMode.Manage;
+                manageObjectList.Clear();
+
+                UIElement selectedItem = null;
+
+                foreach (var item in BlockType.lookup)
+                {
+                    var newItem = new BlockListItem(item.Value);
+
+                    if (item.Value == blockType)
+                        selectedItem = newItem;
+
+                    manageObjectList.AddElement(newItem);
+                }
+
+                manageObjectList.SelectElement(selectedItem);
+            });
 
             tileSetSelectionView = new TileSetSelectionView(tilesetSelectionArea);
             tilesetSelectionList = new ScrollableList(tilesetSelectionArea);
@@ -94,16 +124,8 @@ namespace Simulation.Game.Hud.WorldBuilder
                 tilesetSelectionList.AddElement(button);
             }
 
-            // Inspect Button
-            inspectBtn = new Button("Inspect", new Point(Bounds.X + 10, Bounds.Y + 10));
-            inspectBtn.OnClick((Point position) =>
-            {
-                placementType = PlacementType.Inspect;
-                placementMode = PlacementMode.NoPlacement;
-            });
-
             // Block Type Button
-            blockTypeBtn = new Button("Blocks", new Point(inspectBtn.Bounds.Right + 10, Bounds.Y + 10));
+            blockTypeBtn = new Button("Blocks", new Point(Bounds.X + 10, Bounds.Y + 10));
             blockTypeBtn.OnClick((Point position) => {
                 placementType = PlacementType.BlockPlacement;
                 handleManageBtnClick(Point.Zero);
@@ -131,7 +153,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             });
 
             // Manage Button
-            manageBtn = new Button("Manage", new Point(Bounds.X + 10, blockTypeBtn.Bounds.Bottom + 10));
+            manageBtn = new Button("Manage", new Point(Bounds.X, blockTypeBtn.Bounds.Bottom + 10));
             manageBtn.OnClick(handleManageBtnClick);
 
             // Create From Json
@@ -143,7 +165,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             createFromTilesetBtn.OnClick((Point position) => placementMode = PlacementMode.ChooseTileset);
 
             // Edit Btn
-            editBtn = new Button("Edit", new Point(Bounds.X + 10, manageBtn.Bounds.Bottom + 10));
+            editBtn = new Button("Edit", new Point(Bounds.X, manageBtn.Bounds.Bottom + 10));
             editBtn.OnClick(editObject);
 
             // Remove Btn
@@ -151,10 +173,9 @@ namespace Simulation.Game.Hud.WorldBuilder
             removeBtn.OnClick(removeObject);
 
             // Create Btn
-            createBtn = new Button("Create", new Point(Bounds.X + 10, manageBtn.Bounds.Bottom + 10));
+            createBtn = new Button("Create", new Point(Bounds.X, manageBtn.Bounds.Bottom + 10));
             createBtn.OnClick(createNewObject);
-
-            AddElement(inspectBtn);
+            
             AddElement(blockTypeBtn);
             AddElement(ambientObjectTypeBtn);
             AddElement(ambientHitableObjectTypeBtn);
@@ -407,8 +428,10 @@ namespace Simulation.Game.Hud.WorldBuilder
                 }
                 else if (placementType == PlacementType.Inspect)
                 {
-                    inspectView.Update(gameTime);
+                    selectedObjectDetailTextView.Update(gameTime);
                 }
+
+                inspectView.Update(gameTime);
             }
         }
 
@@ -451,8 +474,10 @@ namespace Simulation.Game.Hud.WorldBuilder
                 }
                 else if (placementType == PlacementType.Inspect)
                 {
-                    inspectView.Draw(spriteBatch, gameTime);
+                    selectedObjectDetailTextView.Draw(spriteBatch, gameTime);
                 }
+
+                inspectView.Draw(spriteBatch, gameTime);
             }
         }
     }

@@ -25,10 +25,10 @@ namespace Simulation.Util.UI.Elements
         {
             Bounds = listBounds;
 
-            previousScrollWheelValue = Mouse.GetState().ScrollWheelValue;
+            previousScrollWheelValue = SimulationGame.MouseState.ScrollWheelValue;
             
-            OnKeyHold(Keys.Up, handleKeyUp, TimeSpan.FromMilliseconds(150));
-            OnKeyHold(Keys.Down, handleKeyDown, TimeSpan.FromMilliseconds(150));
+            OnKeyHold(Keys.Up, handleKeyUp, TimeSpan.FromMilliseconds(200));
+            OnKeyHold(Keys.Down, handleKeyDown, TimeSpan.FromMilliseconds(200));
         }
 
         private void handleKeyUp()

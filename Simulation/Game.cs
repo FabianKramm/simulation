@@ -239,6 +239,7 @@ namespace Simulation
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Util.UI.Elements.Button.ButtonFont = ContentManager.Load<SpriteFont>("Arial");
+            Util.UI.Elements.TextView.TextViewFont = ContentManager.Load<SpriteFont>("ArialSmall");
 
             PrimitiveDrawer = new Primitive(Graphics.GraphicsDevice, spriteBatch);
             PrimitiveDrawer.Depth = 1.0f;
@@ -330,7 +331,7 @@ namespace Simulation
             KeyboardState = Keyboard.GetState();
             MouseState = Mouse.GetState();
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (KeyboardState.IsKeyDown(Keys.Escape))
                 SaveAndExit();
 
             if (KeyboardState.IsKeyDown(Keys.F1))
