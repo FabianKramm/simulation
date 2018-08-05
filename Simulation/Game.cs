@@ -401,10 +401,12 @@ namespace Simulation
                     if(IsGodMode)
                     {
                         Player.ConnectToWorld();
+                        Player.Velocity -= 0.3f;
                     }
                     else if(!IsGodMode)
                     {
                         Player.DisconnectFromWorld();
+                        Player.Velocity += 0.3f;
                     }
 
                     IsGodMode = !IsGodMode;

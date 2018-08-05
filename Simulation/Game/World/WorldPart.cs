@@ -29,7 +29,7 @@ namespace Simulation.Game.World
         protected int[,] blockingGrid;
         
         [Serialize] // These objects link to the interiors
-        public volatile Dictionary<ulong, WorldLink> WorldLinks;
+        public Dictionary<ulong, WorldLink> WorldLinks;
 
         public bool Connected = false;
 
@@ -69,31 +69,27 @@ namespace Simulation.Game.World
 
         public virtual void AddWorldLink(WorldLink worldLink)
         {
-            if(Connected)
-            {
-                throw new Exception("Cannot add world link, when already connected to world");
-            }
-
             if (WorldLinks == null)
                 WorldLinks = new Dictionary<ulong, WorldLink>();
 
-            WorldLinks[GeometryUtils.ConvertPointToLong(worldLink.FromBlock.X, worldLink.FromBlock.Y)] = worldLink;
+            lock(WorldLinks)
+            {
+                WorldLinks[GeometryUtils.ConvertPointToLong(worldLink.FromBlock.X, worldLink.FromBlock.Y)] = worldLink;
+            }
         }
 
         public virtual void RemoveWorldLink(WorldLink worldLink)
         {
-            if (Connected)
-            {
-                throw new Exception("Cannot remove world link, when already connected to world");
-            }
-
             if (WorldLinks != null)
             {
-                WorldLinks.Remove(GeometryUtils.ConvertPointToLong(worldLink.FromBlock.X, worldLink.FromBlock.Y));
-
-                if (WorldLinks.Count == 0)
+                lock (WorldLinks)
                 {
-                    WorldLinks = null;
+                    WorldLinks.Remove(GeometryUtils.ConvertPointToLong(worldLink.FromBlock.X, worldLink.FromBlock.Y));
+
+                    if (WorldLinks.Count == 0)
+                    {
+                        WorldLinks = null;
+                    }
                 }
             }
         }

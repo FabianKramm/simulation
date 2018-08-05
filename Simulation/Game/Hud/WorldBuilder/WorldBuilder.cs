@@ -8,6 +8,7 @@ using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Serialization;
 using Simulation.Game.Serialization.Objects;
+using Simulation.Game.World;
 using Simulation.Util.Dialog;
 using Simulation.Util.Geometry;
 using Simulation.Util.UI;
@@ -24,7 +25,8 @@ namespace Simulation.Game.Hud.WorldBuilder
             BlockPlacement,
             AmbientObjectPlacement,
             AmbientHitableObjectPlacement,
-            LivingEntityPlacement
+            LivingEntityPlacement,
+            WorldPartDetails
         }
 
         public enum PlacementMode
@@ -45,10 +47,17 @@ namespace Simulation.Game.Hud.WorldBuilder
         private Button ambientObjectTypeBtn;
         private Button ambientHitableObjectTypeBtn;
         private Button livingEntityTypeBtn;
+        private Button worldPartBtn;
 
         private Button manageBtn;
         private Button createFromTilesetBtn;
         private Button createFromJsonBtn;
+
+        // WorldPart
+        private Button changePersistency;
+        private Button createWorldLink;
+        private Button changeInteriorDimensions;
+        private Button removeInterior;
 
         // Inspect
         private Button editInstanceBtn;
@@ -63,7 +72,6 @@ namespace Simulation.Game.Hud.WorldBuilder
         private Button createBtn;
 
         private BaseUI placeView;
-
         private InspectView inspectView;
         private TextView selectedObjectDetailTextView;
 
@@ -95,7 +103,7 @@ namespace Simulation.Game.Hud.WorldBuilder
 
             selectedObjectDetailTextView = new TextView(tilesetSelectionArea, "");
             inspectView = new InspectView(new Rect(0, 0, SimulationGame.Resolution.Width * 2 / 3, SimulationGame.Resolution.Height));
-            inspectView.OnSelect(handleInspectGameObjectSelection, handleInspectBlockSelection);
+            inspectView.OnSelect(handleInspectGameObjectSelection, handleInspectBlockSelection, handleInspectWorldLinkSelection);
 
             tileSetSelectionView = new TileSetSelectionView(tilesetSelectionArea);
             tilesetSelectionList = new ScrollableList(tilesetSelectionArea);
@@ -184,6 +192,12 @@ namespace Simulation.Game.Hud.WorldBuilder
             AddElement(ambientObjectTypeBtn);
             AddElement(ambientHitableObjectTypeBtn);
             AddElement(livingEntityTypeBtn);
+        }
+
+        private void handleInspectWorldLinkSelection(WorldLink worldLink)
+        {
+            placementType = PlacementType.Inspect;
+            placementMode = PlacementMode.NoPlacement;
         }
 
         private void handleInspectGameObjectSelection(GameObject gameObject)
@@ -297,31 +311,61 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         private void handleRemoveInstanceBtnClick()
         {
-            var selectedObject = inspectView.SelectedGameObject;
-            var confirmResult = System.Windows.Forms.MessageBox.Show("Are you sure to delete this object?", "Confirm Delete!", System.Windows.Forms.MessageBoxButtons.YesNo);
-
-            if (confirmResult == System.Windows.Forms.DialogResult.Yes)
+            if(inspectView.SelectedGameObject != null)
             {
-                inspectView.Deselect();
+                var selectedObject = inspectView.SelectedGameObject;
+                var confirmResult = System.Windows.Forms.MessageBox.Show("Are you sure to delete this object?", "Confirm Delete!", System.Windows.Forms.MessageBoxButtons.YesNo);
 
-                selectedObject.DisconnectFromWorld();
+                if (confirmResult == System.Windows.Forms.DialogResult.Yes)
+                {
+                    inspectView.Deselect();
+
+                    selectedObject.DisconnectFromWorld();
+                }
+            }
+            else if(inspectView.SelectedWorldLink != null)
+            {
+                var SelectedWorldLink = inspectView.SelectedWorldLink;
+                var confirmResult = System.Windows.Forms.MessageBox.Show("Are you sure to delete this object?", "Confirm Delete!", System.Windows.Forms.MessageBoxButtons.YesNo);
+
+                if (confirmResult == System.Windows.Forms.DialogResult.Yes)
+                {
+                    inspectView.Deselect();
+                    SimulationGame.World.UpdateWorldLink(SelectedWorldLink);
+                }
             }
         }
 
         private void handleEditInstanceBtnClick()
         {
-            var selectedObject = inspectView.SelectedGameObject;
-            var dialog = new InputDialog("Edit Object", WorldObjectSerializer.Serialize(selectedObject).ToString(Formatting.Indented));
-
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (inspectView.SelectedGameObject != null)
             {
-                inspectView.Deselect();
-                selectedObject.DisconnectFromWorld();
+                var selectedObject = inspectView.SelectedGameObject;
+                var dialog = new InputDialog("Edit Object", WorldObjectSerializer.Serialize(selectedObject).ToString(Formatting.Indented));
 
-                var newObject = WorldObjectSerializer.Deserialize(JObject.Parse(dialog.ResultText));
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    inspectView.Deselect();
+                    selectedObject.DisconnectFromWorld();
 
-                newObject.ConnectToWorld();
-                inspectView.SelectGameObject(newObject);
+                    var newObject = WorldObjectSerializer.Deserialize(JObject.Parse(dialog.ResultText));
+
+                    newObject.ConnectToWorld();
+                    inspectView.SelectGameObject(newObject);
+                }
+            }
+            else if (inspectView.SelectedWorldLink != null)
+            {
+                var SelectedWorldLink = inspectView.SelectedWorldLink;
+                var dialog = new InputDialog("Edit Object", JToken.FromObject(SelectedWorldLink, SerializationUtils.Serializer).ToString(Formatting.Indented));
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    inspectView.Deselect();
+
+                    var newWorldLink = SerializationUtils.Serializer.Deserialize<WorldLink>(new JTokenReader(JToken.Parse(dialog.ResultText)));
+                    SimulationGame.World.UpdateWorldLink(SelectedWorldLink, newWorldLink);
+                }
             }
         }
 
@@ -579,6 +623,13 @@ namespace Simulation.Game.Hud.WorldBuilder
                         removeInstanceBtn.Update(gameTime);
                         showInstanceTypeBtn.Update(gameTime);
                     }
+                    else if(inspectView.SelectedWorldLink != null)
+                    {
+                        selectedObjectDetailTextView.SetText(JToken.FromObject(inspectView.SelectedWorldLink, SerializationUtils.Serializer).ToString(Formatting.Indented));
+
+                        editInstanceBtn.Update(gameTime);
+                        removeInstanceBtn.Update(gameTime);
+                    }
 
                     selectedObjectDetailTextView.Update(gameTime);
                 }
@@ -639,6 +690,13 @@ namespace Simulation.Game.Hud.WorldBuilder
                         editInstanceBtn.Draw(spriteBatch, gameTime);
                         removeInstanceBtn.Draw(spriteBatch, gameTime);
                         showInstanceTypeBtn.Draw(spriteBatch, gameTime);
+                        selectedObjectDetailTextView.Draw(spriteBatch, gameTime);
+                    }
+                    else if (inspectView.SelectedWorldLink != null)
+                    {
+                        editInstanceBtn.Draw(spriteBatch, gameTime);
+                        removeInstanceBtn.Draw(spriteBatch, gameTime);
+
                         selectedObjectDetailTextView.Draw(spriteBatch, gameTime);
                     }
                 }

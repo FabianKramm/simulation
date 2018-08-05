@@ -30,6 +30,27 @@ namespace Simulation.Game.World
 
         public WorldGrid(): base(TimeSpan.FromSeconds(20)) { }
 
+        public void UpdateWorldLink(WorldLink oldWorldLink, WorldLink newWorldLink = null)
+        {
+            WorldLink oldWorldLinkFrom = GetWorldLinkFromRealPosition(oldWorldLink.ToRealWorldPositionFrom());
+            WorldLink oldWorldLinkTo = GetWorldLinkFromRealPosition(oldWorldLink.ToRealWorldPositionTo());
+
+            WorldPart oldWorldPartFrom = (oldWorldLink.FromInteriorID == Interior.Outside) ? SimulationGame.World.GetFromRealPoint(oldWorldLink.FromBlock.X * BlockSize.X, oldWorldLink.FromBlock.Y * BlockSize.Y) : (WorldPart)SimulationGame.World.InteriorManager.Get(oldWorldLink.FromInteriorID);
+            WorldPart oldWorldPartTo = (oldWorldLink.ToInteriorID == Interior.Outside) ? SimulationGame.World.GetFromRealPoint(oldWorldLink.ToBlock.X * BlockSize.X, oldWorldLink.ToBlock.Y * BlockSize.Y) : (WorldPart)SimulationGame.World.InteriorManager.Get(oldWorldLink.ToInteriorID);
+
+            oldWorldPartFrom.RemoveWorldLink(oldWorldLinkFrom);
+            oldWorldPartTo.RemoveWorldLink(oldWorldLinkTo);
+
+            if(newWorldLink != null)
+            {
+                WorldPart newWorldPartFrom = (newWorldLink.FromInteriorID == Interior.Outside) ? SimulationGame.World.GetFromRealPoint(newWorldLink.FromBlock.X * BlockSize.X, newWorldLink.FromBlock.Y * BlockSize.Y) : (WorldPart)SimulationGame.World.InteriorManager.Get(newWorldLink.FromInteriorID);
+                WorldPart newWorldPartTo = (newWorldLink.ToInteriorID == Interior.Outside) ? SimulationGame.World.GetFromRealPoint(newWorldLink.ToBlock.X * BlockSize.X, newWorldLink.ToBlock.Y * BlockSize.Y) : (WorldPart)SimulationGame.World.InteriorManager.Get(newWorldLink.ToInteriorID);
+
+                newWorldPartFrom.AddWorldLink(newWorldLink);
+                newWorldPartTo.AddWorldLink(newWorldLink.SwapFromTo());
+            }
+        }
+
         public void SetBlockType(int blockX, int blockY, string InteriorID, int blockType)
         {
             if (InteriorID == Interior.Outside)
@@ -100,7 +121,7 @@ namespace Simulation.Game.World
             }
         }
 
-        public WorldLink GetWorldLinkFromPosition(WorldPosition realPosition)
+        public WorldLink GetWorldLinkFromRealPosition(WorldPosition realPosition)
         {
             var worldBlockPosition = realPosition.ToBlockPositionPoint();
             WorldLink worldLink = null;

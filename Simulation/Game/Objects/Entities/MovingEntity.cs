@@ -44,8 +44,8 @@ namespace Simulation.Game.Objects.Entities
 
         private bool executeWorldLink(WorldPosition newPosition = null)
         {
-            WorldLink oldWorldLink = SimulationGame.World.GetWorldLinkFromPosition(Position);
-            WorldLink newWorldLink = newPosition != null ? SimulationGame.World.GetWorldLinkFromPosition(newPosition) : null;
+            WorldLink oldWorldLink = SimulationGame.World.GetWorldLinkFromRealPosition(Position);
+            WorldLink newWorldLink = newPosition != null ? SimulationGame.World.GetWorldLinkFromRealPosition(newPosition) : null;
 
             if (oldWorldLink == null && newWorldLink != null)
             {
@@ -180,7 +180,7 @@ namespace Simulation.Game.Objects.Entities
                         StopWalking();
 
                         // We call this because we now want to check if we are on a world link
-                        WorldLink newWorldLink = SimulationGame.World.GetWorldLinkFromPosition(Position);
+                        WorldLink newWorldLink = SimulationGame.World.GetWorldLinkFromRealPosition(Position);
 
                         if(newWorldLink != null)
                         {
@@ -223,7 +223,7 @@ namespace Simulation.Game.Objects.Entities
                     StopWalking();
 
                     // We call this because we now want to check if we are on a world link
-                    WorldLink newWorldLink = SimulationGame.World.GetWorldLinkFromPosition(Position);
+                    WorldLink newWorldLink = SimulationGame.World.GetWorldLinkFromRealPosition(Position);
 
                     if (newWorldLink != null)
                     {

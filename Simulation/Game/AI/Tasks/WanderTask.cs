@@ -43,7 +43,7 @@ namespace Simulation.Game.AI.Tasks
 
                     var realPosition = new WorldPosition(randomPoint.X * WorldGrid.BlockSize.X, randomPoint.Y * WorldGrid.BlockSize.Y, interiorID);
                     var isBlockWalkable = CollisionUtils.IsRealPositionWalkable(realPosition);
-                    var worldLink = SimulationGame.World.GetWorldLinkFromPosition(realPosition);
+                    var worldLink = SimulationGame.World.GetWorldLinkFromRealPosition(realPosition);
 
                     if (isBlockWalkable && worldLink == null)
                         return randomPoint;

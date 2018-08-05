@@ -94,12 +94,13 @@ namespace Simulation.Game.World
                 
                 var found = false;
 
-                foreach (HitableObject interactiveObject in worldGridChunk.OverlappingObjects)
-                    if (interactiveObject.BlockingType == BlockingType.BLOCKING && interactiveObject.BlockingBounds.Intersects(new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
-                    {
-                        found = true;
-                        break;
-                    }
+                if (worldGridChunk.OverlappingObjects != null)
+                    foreach (HitableObject interactiveObject in worldGridChunk.OverlappingObjects)
+                        if (interactiveObject.BlockingType == BlockingType.BLOCKING && interactiveObject.BlockingBounds.Intersects(new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
+                        {
+                            found = true;
+                            break;
+                        }
 
                 setBlockNotWalkable(blockX, blockY, !found);
             }
