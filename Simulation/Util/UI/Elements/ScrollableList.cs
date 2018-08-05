@@ -26,6 +26,31 @@ namespace Simulation.Util.UI.Elements
             ClickBounds = listBounds;
 
             previousScrollWheelValue = Mouse.GetState().ScrollWheelValue;
+            
+            OnKeyHold(Keys.Up, handleKeyUp, TimeSpan.FromMilliseconds(300));
+            OnKeyHold(Keys.Down, handleKeyDown, TimeSpan.FromMilliseconds(300));
+        }
+
+        private void handleKeyUp()
+        {
+            var currentIndex = 0;
+
+            if (SelectedElement != null)
+                currentIndex = elements.IndexOf(SelectedElement);
+
+            currentIndex = Math.Max(0, currentIndex - 1);
+            SelectedElement = elements[currentIndex];
+        }
+
+        private void handleKeyDown()
+        {
+            var currentIndex = 0;
+
+            if (SelectedElement != null)
+                currentIndex = elements.IndexOf(SelectedElement);
+
+            currentIndex = Math.Min(elements.Count - 1, currentIndex + 1);
+            SelectedElement = elements[currentIndex];
         }
 
         public void Clear()

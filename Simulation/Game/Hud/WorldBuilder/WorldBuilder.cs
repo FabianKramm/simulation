@@ -183,6 +183,18 @@ namespace Simulation.Game.Hud.WorldBuilder
                     BlockType newBlockType = JsonConvert.DeserializeObject<BlockType>(objectText, SerializationUtils.SerializerSettings);
                     BlockType.lookup[newBlockType.ID] = newBlockType;
                     break;
+                case PlacementType.AmbientObjectPlacement:
+                    AmbientObjectType newAmbientObjectType = JsonConvert.DeserializeObject<AmbientObjectType>(objectText, SerializationUtils.SerializerSettings);
+                    AmbientObjectType.lookup[newAmbientObjectType.ID] = newAmbientObjectType;
+                    break;
+                case PlacementType.AmbientHitableObjectPlacement:
+                    AmbientHitableObjectType newAmbientHitableObjectType = JsonConvert.DeserializeObject<AmbientHitableObjectType>(objectText, SerializationUtils.SerializerSettings);
+                    AmbientHitableObjectType.lookup[newAmbientHitableObjectType.ID] = newAmbientHitableObjectType;
+                    break;
+                case PlacementType.LivingEntityPlacement:
+                    LivingEntityType newLivingEntityType = JsonConvert.DeserializeObject<LivingEntityType>(objectText, SerializationUtils.SerializerSettings);
+                    LivingEntityType.lookup[newLivingEntityType.ID] = newLivingEntityType;
+                    break;
             }
         }
 
@@ -196,6 +208,21 @@ namespace Simulation.Game.Hud.WorldBuilder
                     foreach(var blockTypeItem in BlockType.lookup)
                         if (blockTypeItem.Value.ID > highestNumber)
                             highestNumber = blockTypeItem.Value.ID;
+                    break;
+                case PlacementType.AmbientObjectPlacement:
+                    foreach (var ambientObjectType in AmbientObjectType.lookup)
+                        if (ambientObjectType.Value.ID > highestNumber)
+                            highestNumber = ambientObjectType.Value.ID;
+                    break;
+                case PlacementType.AmbientHitableObjectPlacement:
+                    foreach (var ambientHitableObjectType in AmbientHitableObjectType.lookup)
+                        if (ambientHitableObjectType.Value.ID > highestNumber)
+                            highestNumber = ambientHitableObjectType.Value.ID;
+                    break;
+                case PlacementType.LivingEntityPlacement:
+                    foreach (var livingEntityType in LivingEntityType.lookup)
+                        if (livingEntityType.Value.ID > highestNumber)
+                            highestNumber = livingEntityType.Value.ID;
                     break;
             }
 
@@ -225,7 +252,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                     {
                         ID=newId,
                         Name="Block"+newId,
-                        SpritePath =spritePath,
+                        SpritePath=spritePath,
                         SpritePostion=spritePosition,
                         SpriteBounds=spriteBounds,
                     };

@@ -25,10 +25,10 @@ namespace Simulation.Util.UI
 
         public void Update(GameTime gameTime)
         {
-            if(SimulationGame.KeyboardState.IsKeyDown(key))
-            {
-                callbackTimeout += gameTime.ElapsedGameTime;
+            callbackTimeout += gameTime.ElapsedGameTime;
 
+            if (SimulationGame.KeyboardState.IsKeyDown(key))
+            {
                 if(callbackTimeout > timeout)
                 {
                     callback();
