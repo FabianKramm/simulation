@@ -84,6 +84,11 @@ namespace Simulation
             get; private set;
         } = false;
 
+        public static bool IsGodMode
+        {
+            get; private set;
+        } = false;
+
         public static float Ticks
         {
             get; private set;
@@ -145,6 +150,7 @@ namespace Simulation
         private float zoom = 1.0f;
 
         private bool pauseKeyDown = false;
+        private bool godModeKeyDown = false;
         private bool debugKeyDown = false;
         private bool consoleKeyDown = false;
         private bool worldBuilderKeyDown = false;
@@ -384,6 +390,29 @@ namespace Simulation
             else
             {
                 consoleKeyDown = false;
+            }
+
+            if (KeyboardState.IsKeyDown(Keys.F5))
+            {
+                if (!godModeKeyDown)
+                {
+                    godModeKeyDown = true;
+
+                    if(IsGodMode)
+                    {
+                        Player.ConnectToWorld();
+                    }
+                    else if(!IsGodMode)
+                    {
+                        Player.DisconnectFromWorld();
+                    }
+
+                    IsGodMode = !IsGodMode;
+                }
+            }
+            else
+            {
+                godModeKeyDown = false;
             }
 
             Hud.Update(gameTime);

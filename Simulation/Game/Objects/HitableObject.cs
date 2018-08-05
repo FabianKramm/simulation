@@ -152,7 +152,14 @@ namespace Simulation.Game.Objects
 
         public override void UpdatePosition(WorldPosition newPosition)
         {
-            if(InteriorID == Interior.Outside && newPosition.InteriorID == Interior.Outside)
+            if(this is Player && SimulationGame.IsGodMode)
+            {
+                base.UpdatePosition(newPosition);
+                updateHitableBounds(Position);
+                return;
+            }
+            
+            if (InteriorID == Interior.Outside && newPosition.InteriorID == Interior.Outside)
             {
                 Point oldWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
                 Point newWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)newPosition.X, (int)newPosition.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
@@ -171,11 +178,11 @@ namespace Simulation.Game.Objects
                     if (newPosition.InteriorID == Interior.Outside && newChunk != null)
                         newChunk.AddContainedObject(this);
                 }
-            } 
-            else if(InteriorID != newPosition.InteriorID)
+            }
+            else if (InteriorID != newPosition.InteriorID)
             {
                 // Remove from old part
-                if(InteriorID == Interior.Outside)
+                if (InteriorID == Interior.Outside)
                 {
                     Point oldWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
                     var oldChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(oldWorldGridChunkPoint.X, oldWorldGridChunkPoint.Y), false);
@@ -188,7 +195,7 @@ namespace Simulation.Game.Objects
                 {
                     Interior interior = SimulationGame.World.InteriorManager.Get(InteriorID, false);
 
-                    if(interior != null)
+                    if (interior != null)
                     {
                         interior.RemoveContainedObject(this);
                     }

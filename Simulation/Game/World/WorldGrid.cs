@@ -273,6 +273,11 @@ namespace Simulation.Game.World
 
             WalkableGrid.Update(gameTime);
             InteriorManager.Update(gameTime);
+
+            if (SimulationGame.IsGodMode)
+            {
+                SimulationGame.Player.Update(gameTime);
+            }
         }
     }
 }

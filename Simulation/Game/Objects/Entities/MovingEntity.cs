@@ -240,7 +240,7 @@ namespace Simulation.Game.Objects.Entities
                     float newPosY = Position.Y + Direction.Y * Velocity * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                     var newPos = new WorldPosition(newPosX, newPosY, InteriorID);
 
-                    if (CanWalk && canMove(newPos))
+                    if (SimulationGame.IsGodMode || (CanWalk && canMove(newPos)))
                     {
                         var executedWorldLink = executeWorldLink(newPos);
 

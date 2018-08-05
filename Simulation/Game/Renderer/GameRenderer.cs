@@ -100,6 +100,11 @@ namespace Simulation.Game.Renderer
 
             WorldRenderer.Draw(spriteBatch, gameTime);
 
+            if (SimulationGame.IsGodMode)
+            {
+               MovingEntityRenderer.Draw(spriteBatch, gameTime, SimulationGame.Player);
+            }
+
             spriteBatch.End();
 
             // Hud
