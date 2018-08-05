@@ -29,6 +29,7 @@ namespace Simulation.Util.UI.Elements
             
             OnKeyHold(Keys.Up, handleKeyUp, TimeSpan.FromMilliseconds(200));
             OnKeyHold(Keys.Down, handleKeyDown, TimeSpan.FromMilliseconds(200));
+            OnKeyPress(Keys.Escape, Deselect);
         }
 
         private void handleKeyUp()
@@ -56,6 +57,7 @@ namespace Simulation.Util.UI.Elements
         public void Clear()
         {
             SelectedElement = null;
+            relativeTop = 0;
 
             elements.Clear();
         }
@@ -92,6 +94,11 @@ namespace Simulation.Util.UI.Elements
                 SelectedElement = element;
                 ScrollToElement(element);
             }
+        }
+
+        public void Deselect()
+        {
+            SelectedElement = null;
         }
 
         public UIElement[] GetElements()
@@ -157,7 +164,15 @@ namespace Simulation.Util.UI.Elements
 
             foreach(var element in elements)
             {
-                element.Bounds.Y = top;
+                if(Bounds.Contains(new Point(Bounds.X, top)))
+                {
+                    element.Bounds.Y = top;
+                }
+                else
+                {
+                    element.Bounds.Y = int.MinValue;
+                }
+                
                 top += element.Bounds.Height;
 
                 element.Update(gameTime);

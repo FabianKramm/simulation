@@ -386,12 +386,13 @@ namespace Simulation
                 consoleKeyDown = false;
             }
 
+            Hud.Update(gameTime);
+
             if (IsPaused == false)
             {
                 Ticks += (float)gameTime.ElapsedGameTime.TotalMilliseconds / (float)MilliSecondsPerTick;
 
                 Camera.Update(gameTime);
-                Hud.Update(gameTime);
                 World.Update(gameTime);
             }
 

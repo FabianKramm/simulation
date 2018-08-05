@@ -595,9 +595,8 @@ namespace Simulation.Game.Hud.WorldBuilder
                         editInstanceBtn.Draw(spriteBatch, gameTime);
                         removeInstanceBtn.Draw(spriteBatch, gameTime);
                         showInstanceTypeBtn.Draw(spriteBatch, gameTime);
+                        selectedObjectDetailTextView.Draw(spriteBatch, gameTime);
                     }
-
-                    selectedObjectDetailTextView.Draw(spriteBatch, gameTime);
                 }
 
                 inspectView.Draw(spriteBatch, gameTime);
