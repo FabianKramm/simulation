@@ -1,11 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
-using Simulation.Game.MetaData;
 using Simulation.Game.Objects.Entities;
-using Simulation.Game.Objects.Interfaces;
-using Simulation.Game.Serialization.Skills;
-using Simulation.Game.Skills;
 using System;
-using System.IO;
 
 namespace Simulation.Game.Serialization.Objects
 {
@@ -19,30 +14,6 @@ namespace Simulation.Game.Serialization.Objects
             HitableObjectSerializer.Deserialize(ref jObject, livingEntity);
 
             SerializationUtils.SetFromObject(jObject, livingEntity, type, serializeableProperties);
-
-            if(jObject.GetValue("Skills") != null)
-            {
-                // Deserialize Skills
-                JArray skills = (JArray)jObject.GetValue("Skills");
-                Skill[] skillObjects = new Skill[skills.Count];
-
-                for (int i=0;i<skills.Count;i++)
-                    skillObjects[i] = ((Skill)BaseSkillSerializer.Deserialize((JObject)skills[i], livingEntity));
-
-                livingEntity.Skills = skillObjects;
-            }
-
-            var livingEntityType = LivingEntityType.lookup[livingEntity.LivingEntityType];
-
-            if(livingEntityType.CustomControllerScript != null)
-            {
-                livingEntity.CustomController = (GameObjectController)SerializationUtils.CreateInstance(livingEntityType.CustomControllerScript);
-            }
-
-            if (livingEntityType.CustomRendererScript != null)
-            {
-                livingEntity.CustomRenderer = (GameObjectRenderer)SerializationUtils.CreateInstance(livingEntityType.CustomRendererScript);
-            }
         }
 
         protected static void Serialize(LivingEntity livingEntity, ref JObject jObject)
@@ -50,17 +21,6 @@ namespace Simulation.Game.Serialization.Objects
             HitableObjectSerializer.Serialize(livingEntity, ref jObject);
 
             SerializationUtils.AddToObject(jObject, livingEntity, type, serializeableProperties);
-
-            // Serialize skills
-            if(livingEntity.Skills != null)
-            {
-                JArray skills = new JArray();
-                
-                foreach (var skill in livingEntity.Skills)
-                    skills.Add(BaseSkillSerializer.Serialize(skill));
-
-                jObject.Add("Skills", skills);
-            }
         }
     }
 }

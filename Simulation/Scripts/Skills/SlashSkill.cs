@@ -4,31 +4,29 @@ using Simulation.Game.Effects;
 using Simulation.Game.Hud;
 using Simulation.Game.World;
 using Simulation.Game.Serialization;
+using Newtonsoft.Json.Linq;
+using Simulation.Game.Skills;
+using Simulation;
 
-namespace Simulation.Game.Skills
+namespace Scripts.Skills
 {
     public class SlashSkill : Skill
     {
         public static readonly int Range = WorldGrid.BlockSize.X * 2;
-
-        [Serialize]
         public float DamagePerHit
         {
             get; private set;
         }
 
-        [Serialize]
         private Vector2 relativeOriginPosition;
         private bool flipped;
 
-        // Serialization
-        protected SlashSkill(LivingEntity owner): base(owner) { }
-
-        public SlashSkill(LivingEntity owner, float damagePerHit, Vector2? relativeOriginPosition = null): 
-            base(owner, 200)
+        public override void Init(LivingEntity owner, JObject parameters)
         {
-            this.relativeOriginPosition = relativeOriginPosition ?? Vector2.Zero;
-            this.DamagePerHit = damagePerHit;
+            base.Init(owner, parameters);
+
+            this.relativeOriginPosition = SerializationUtils.GetFromObject<Vector2>(parameters, "relativeOriginPosition", Vector2.Zero);
+            this.DamagePerHit = SerializationUtils.GetFromObject<int>(parameters, "damagePerHit", 10);
         }
 
         protected override void trigger(Vector2 targetPosition)

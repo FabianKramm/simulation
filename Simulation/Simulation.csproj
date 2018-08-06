@@ -90,9 +90,7 @@
     <Compile Include="Game\MetaData\BlockType.cs" />
     <Compile Include="Game\MetaData\LivingEntityType.cs" />
     <Compile Include="Game\MetaData\MetaDataType.cs" />
-    <Compile Include="Game\MetaData\Skills\FireballSkillMetaData.cs" />
-    <Compile Include="Game\MetaData\Skills\SkillMetaData.cs" />
-    <Compile Include="Game\MetaData\Skills\SlashSkillMetaData.cs" />
+    <Compile Include="Game\MetaData\SkillType.cs" />
     <Compile Include="Game\Objects\Entities\DurableEntity.cs" />
     <Compile Include="Game\Objects\Entities\LivingEntity.cs" />
     <Compile Include="Game\Objects\GameObject.cs" />
@@ -133,15 +131,11 @@
     <Compile Include="Game\Serialization\SerializationUtils.cs" />
     <Compile Include="Game\Serialization\Objects\AmbientHitableObjectSerializer.cs" />
     <Compile Include="Game\Serialization\SerializeAttribute.cs" />
-    <Compile Include="Game\Serialization\Skills\BaseSkillSerializer.cs" />
-    <Compile Include="Game\Serialization\Skills\FireballSkillSerializer.cs" />
-    <Compile Include="Game\Serialization\Skills\SkillSerializer.cs" />
-    <Compile Include="Game\Serialization\Skills\SlashSkillSerializer.cs" />
     <Compile Include="Game\Serialization\WorldGridChunkSerializer.cs" />
     <Compile Include="Game\Serialization\Objects\WorldObjectSerializer.cs" />
     <Compile Include="Game\Serialization\WorldPartSerialization.cs" />
     <Compile Include="Game\Skills\Skill.cs" />
-    <Compile Include="Game\Skills\SlashSkill.cs" />
+    <Compile Include="Scripts\Skills\SlashSkill.cs" />
     <Compile Include="Scripts\Controller\WanderController.cs" />
     <Compile Include="Util\Collision\ShapeCollision.cs" />
     <Compile Include="Game\World\WorldPart.cs" />
@@ -162,7 +156,7 @@
     <Compile Include="Util\UI\KeyPressHandler.cs" />
     <Compile Include="Util\MovementUtils.cs" />
     <Compile Include="Game\Objects\Entities\Player.cs" />
-    <Compile Include="Game\Skills\FireballSkill.cs" />
+    <Compile Include="Scripts\Skills\FireballSkill.cs" />
     <Compile Include="Game\Generator\WorldLoader.cs" />
     <Compile Include="Game\World\Interior.cs" />
     <Compile Include="Game\World\InteriorManager.cs" />

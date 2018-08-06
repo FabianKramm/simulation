@@ -1,6 +1,7 @@
 ﻿using Simulation.Game.World;
 using Simulation.Game.Serialization;
 using Simulation.Game.MetaData;
+using Simulation.Game.Objects.Interfaces;
 
 namespace Simulation.Game.Objects
 {
@@ -20,6 +21,17 @@ namespace Simulation.Game.Objects
             relativeHitBoxBounds = MetaData.AmbientHitableObjectType.lookup[((AmbientHitableObject)this).AmbientHitableObjectType].RelativeHitboxRectangle;
 
             base.Init();
+
+            var ambientHitableObjectType = GetObjectType();
+
+            if (ambientHitableObjectType.CustomControllerScript != null)
+                CustomController = (GameObjectController)SerializationUtils.CreateInstance(ambientHitableObjectType.CustomControllerScript);
+
+            if (ambientHitableObjectType.CustomRendererScript != null)
+                CustomRenderer = (GameObjectRenderer)SerializationUtils.CreateInstance(ambientHitableObjectType.CustomRendererScript);
+
+            CustomController?.Init(this);
+            CustomRenderer?.Init(this);
         }
 
         public AmbientHitableObjectType GetObjectType()

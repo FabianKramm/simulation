@@ -3,6 +3,7 @@ using Simulation.Game.AI;
 using Simulation.Game.Enums;
 using Simulation.Game.Fractions;
 using Simulation.Game.MetaData;
+using Simulation.Game.Objects.Interfaces;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.Serialization;
 using Simulation.Game.Skills;
@@ -54,6 +55,25 @@ namespace Simulation.Game.Objects.Entities
             relativeHitBoxBounds = MetaData.LivingEntityType.lookup[((LivingEntity)this).LivingEntityType].RelativeHitBoxBounds;
 
             base.Init();
+
+            // Init skills
+            var livingEntityType = GetObjectType();
+
+            Skills = new Skill[livingEntityType.Skills == null ? 0 : livingEntityType.Skills.Length];
+
+            if(livingEntityType.Skills != null)
+                for (int i=0;i<livingEntityType.Skills.Length;i++)
+                    Skills[i] = SkillType.Create(this, livingEntityType.Skills[i]);
+      
+            // Init 
+            if (livingEntityType.CustomControllerScript != null)
+                CustomController = (GameObjectController)SerializationUtils.CreateInstance(livingEntityType.CustomControllerScript);
+
+            if (livingEntityType.CustomRendererScript != null)
+                CustomRenderer = (GameObjectRenderer)SerializationUtils.CreateInstance(livingEntityType.CustomRendererScript);
+
+            CustomController?.Init(this);
+            CustomRenderer?.Init(this);
         }
 
         public int GetAggroTowardsEntity(LivingEntity otherEntity)

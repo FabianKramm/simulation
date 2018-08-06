@@ -477,14 +477,8 @@ namespace Simulation.Game.Hud.WorldBuilder
             if(inspectView.SelectedGameObject != null)
             {
                 var selectedObject = inspectView.SelectedGameObject;
-                var confirmResult = System.Windows.Forms.MessageBox.Show("Are you sure to delete this object?", "Confirm Delete!", System.Windows.Forms.MessageBoxButtons.YesNo);
-
-                if (confirmResult == System.Windows.Forms.DialogResult.Yes)
-                {
-                    inspectView.Deselect();
-
-                    selectedObject.DisconnectFromWorld();
-                }
+                inspectView.Deselect();
+                selectedObject.DisconnectFromWorld();
             }
             else if(inspectView.SelectedWorldLink != null)
             {

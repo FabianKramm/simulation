@@ -54,9 +54,6 @@ namespace Simulation.Game.Objects
         public virtual void Init()
         {
             BlockPosition = Position.ToBlockPositionPoint();
-
-            CustomController?.Init(this);
-            CustomRenderer?.Init(this);
         }
 
         public virtual void UpdatePosition(WorldPosition newPosition)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Linq;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Serialization;
 using System;
@@ -7,21 +8,18 @@ namespace Simulation.Game.Skills
 {
     public abstract class Skill
     {
-        [Serialize]
-        public int Cooldown;
+        public int Cooldown
+        {
+            get; protected set;
+        }
 
         protected LivingEntity owner;
         protected TimeSpan cooldownLeft = TimeSpan.Zero;
 
-        protected Skill(LivingEntity owner)
+        public virtual void Init(LivingEntity owner, JObject parameters)
         {
             this.owner = owner;
-        }
-
-        public Skill(LivingEntity owner, int cooldown = 0)
-        {
-            this.owner = owner;
-            this.Cooldown = cooldown;
+            this.Cooldown = SerializationUtils.GetFromObject<int>(parameters, "cooldown", 100);
         }
 
         public virtual bool IsReady()

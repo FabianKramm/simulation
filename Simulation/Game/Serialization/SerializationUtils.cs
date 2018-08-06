@@ -79,8 +79,13 @@ namespace Simulation.Game.Serialization
             }
         }
 
-        public static T GetFromObject<T>(JObject jObject, string key)
+        public static T GetFromObject<T>(JObject jObject, string key, T defaultValue = default(T))
         {
+            if (jObject.GetValue(key) == null)
+            {
+                return defaultValue;
+            }
+
             return (T)Serializer.Deserialize(new JTokenReader(jObject.GetValue(key)), typeof(T));
         }
 

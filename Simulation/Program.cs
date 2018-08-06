@@ -38,7 +38,7 @@ namespace Simulation
         static void Main()
         {
             // Console.WriteLine(Util.Util.GetCustomControllerBasePath());
-            // WorldLoader.ResetWorld();
+            WorldLoader.ResetWorld();
 
             using (var game = new SimulationGame())
                game.Run(); 

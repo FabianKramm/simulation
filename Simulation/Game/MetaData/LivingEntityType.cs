@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json.Linq;
 using Simulation.Game.Enums;
-using Simulation.Game.MetaData.Skills;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Objects.Interfaces;
 using Simulation.Game.Renderer.Entities;
@@ -28,10 +27,20 @@ namespace Simulation.Game.MetaData
                 Fraction=FractionType.PLAYER,
                 PreloadedSurroundingWorldGridChunkRadius=3,
                 Velocity=0.2f,
-                Skills=new SkillMetaData[]
+                Skills=new SkillType[]
                 {
-                    new SlashSkillMetaData(),
-                    new FireballSkillMetaData()
+                    new SkillType()
+                    {
+                        SkillClass="Scripts.Skills.SlashSkill"
+                    },
+                    new SkillType()
+                    {
+                        SkillClass="Scripts.Skills.FireballSkill",
+                        SkillParameter=new JObject()
+                        {
+                            {"cooldown", 500}
+                        }
+                    }
                 },
                 SpritePath=@"Characters\Player",
                 DownAnimation=new Point[]
@@ -58,10 +67,16 @@ namespace Simulation.Game.MetaData
                 CurrentLife=100,
                 Fraction=FractionType.NPC,
                 IsDurableEntity=true,
-                Skills=new SkillMetaData[]
+                Skills=new SkillType[]
                 {
-                    new SlashSkillMetaData(),
-                    new FireballSkillMetaData()
+                    new SkillType()
+                    {
+                        SkillClass="Scripts.Skills.SlashSkill"
+                    },
+                    new SkillType()
+                    {
+                        SkillClass="Scripts.Skills.FireballSkill"
+                    }
                 },
                 SpritePath=@"Characters\Geralt",
                 CustomControllerScript=@"Scripts.Controller.WanderController",
@@ -97,7 +112,7 @@ namespace Simulation.Game.MetaData
         public int AttentionBlockRadius = 10;
         public float Velocity = 0.08f;
 
-        public SkillMetaData[] Skills = null;
+        public SkillType[] Skills = null;
         
         public Rect RelativeHitBoxBounds = new Rect(-14, -38, 28, 48);
         public Rect RelativeBlockingBounds = new Rect(-8, -10, 16, 20);
@@ -153,18 +168,6 @@ namespace Simulation.Game.MetaData
             livingEntity.LifeRegeneration = livingEntityType.LifeRegeneration;
             livingEntity.Fraction = livingEntityType.Fraction;
             livingEntity.Velocity = livingEntityType.Velocity;
-
-            if(livingEntityType.Skills.Length > 0)
-            {
-                livingEntity.Skills = new Skill[livingEntityType.Skills.Length];
-
-                for (int i = 0; i < livingEntityType.Skills.Length; i++)
-                {
-                    var skill = livingEntityType.Skills[i];
-
-                    livingEntity.Skills[i] = SkillMetaData.Create(livingEntity, skill);
-                }
-            }
             
             livingEntity.BlockingType = livingEntityType.BlockingType;
             livingEntity.CustomProperties = livingEntityType.CustomProperties != null ? (JObject)livingEntityType.CustomProperties.DeepClone() : null;
@@ -178,7 +181,7 @@ namespace Simulation.Game.MetaData
             {
                 livingEntity.CustomRenderer = (GameObjectRenderer)SerializationUtils.CreateInstance(livingEntityType.CustomRendererScript);
             }
-
+            
             livingEntity.Init();
 
             return livingEntity;

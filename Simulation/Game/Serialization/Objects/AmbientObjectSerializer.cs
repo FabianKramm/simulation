@@ -38,18 +38,6 @@ namespace Simulation.Game.Serialization.Objects
 
             SerializationUtils.SetFromObject(jObject, ambientObject, type, serializeableProperties);
 
-            var ambientObjectType = AmbientObjectType.lookup[ambientObject.AmbientObjectType];
-
-            if (ambientObjectType.CustomControllerScript != null)
-            {
-                ambientObject.CustomController = (GameObjectController)SerializationUtils.CreateInstance(ambientObjectType.CustomControllerScript);
-            }
-
-            if (ambientObjectType.CustomRendererScript != null)
-            {
-                ambientObject.CustomRenderer = (GameObjectRenderer)SerializationUtils.CreateInstance(ambientObjectType.CustomRendererScript);
-            }
-
             ambientObject.Init();
         }
 

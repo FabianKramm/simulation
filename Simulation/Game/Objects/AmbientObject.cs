@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.MetaData;
+using Simulation.Game.Objects.Interfaces;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;
@@ -19,6 +20,22 @@ namespace Simulation.Game.Objects
         public AmbientObjectType GetObjectType()
         {
             return MetaData.AmbientObjectType.lookup[AmbientObjectType];
+        }
+
+        public override void Init()
+        {
+            base.Init();
+
+            var ambientObjectType = GetObjectType();
+
+            if (ambientObjectType.CustomControllerScript != null)
+                CustomController = (GameObjectController)SerializationUtils.CreateInstance(ambientObjectType.CustomControllerScript);
+
+            if (ambientObjectType.CustomRendererScript != null)
+                CustomRenderer = (GameObjectRenderer)SerializationUtils.CreateInstance(ambientObjectType.CustomRendererScript);
+
+            CustomController?.Init(this);
+            CustomRenderer?.Init(this);
         }
 
         public override void ConnectToWorld()
