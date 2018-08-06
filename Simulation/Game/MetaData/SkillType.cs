@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
+using Scripts.Base;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Serialization;
-using Simulation.Game.Skills;
 
 namespace Simulation.Game.MetaData
 {

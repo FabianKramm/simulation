@@ -1,9 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Simulation.Game.AI;
-using Simulation.Game.Enums;
-using Simulation.Game.MetaData;
+﻿using Simulation.Game.MetaData;
 using Simulation.Game.Objects.Entities;
-using Simulation.Game.Skills;
 using Simulation.Game.World;
 
 namespace Simulation.Game.Generator.Factories

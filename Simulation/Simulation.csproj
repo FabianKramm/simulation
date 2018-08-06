@@ -104,8 +104,8 @@
     <Compile Include="Game\Generator\Factories\DurableEntityFactory.cs" />
     <Compile Include="Game\Generator\InteriorGeneration\InteriorGenerator.cs" />
     <Compile Include="Game\Hud\DebugHud.cs" />
-    <Compile Include="Game\Objects\Interfaces\GameObjectController.cs" />
-    <Compile Include="Game\Objects\Interfaces\GameObjectRenderer.cs" />
+    <Compile Include="Scripts\Base\GameObjectController.cs" />
+    <Compile Include="Scripts\Base\GameObjectRenderer.cs" />
     <Compile Include="Game\Renderer\Effects\EffectRenderer.cs" />
     <Compile Include="Game\Renderer\Effects\EffectRendererInformation.cs" />
     <Compile Include="Game\Renderer\Effects\SlashRenderer.cs" />
@@ -134,7 +134,7 @@
     <Compile Include="Game\Serialization\WorldGridChunkSerializer.cs" />
     <Compile Include="Game\Serialization\Objects\WorldObjectSerializer.cs" />
     <Compile Include="Game\Serialization\WorldPartSerialization.cs" />
-    <Compile Include="Game\Skills\Skill.cs" />
+    <Compile Include="Scripts\Base\Skill.cs" />
     <Compile Include="Scripts\Skills\SlashSkill.cs" />
     <Compile Include="Scripts\Controller\WanderController.cs" />
     <Compile Include="Util\Collision\ShapeCollision.cs" />

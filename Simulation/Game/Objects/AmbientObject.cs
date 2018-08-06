@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Scripts.Base;
 using Simulation.Game.MetaData;
-using Simulation.Game.Objects.Interfaces;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;

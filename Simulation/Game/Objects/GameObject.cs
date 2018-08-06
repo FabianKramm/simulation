@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json.Linq;
-using Simulation.Game.Objects.Interfaces;
+using Scripts.Base;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Util;

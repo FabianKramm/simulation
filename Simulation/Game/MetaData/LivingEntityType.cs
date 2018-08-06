@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json.Linq;
+using Scripts.Base;
 using Simulation.Game.Enums;
 using Simulation.Game.Objects.Entities;
-using Simulation.Game.Objects.Interfaces;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.Serialization;
-using Simulation.Game.Skills;
 using Simulation.Game.World;
 using Simulation.Spritesheet;
 using Simulation.Util.Geometry;

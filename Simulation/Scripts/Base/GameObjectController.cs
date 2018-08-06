@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.Objects;
 
-namespace Simulation.Game.Objects.Interfaces
+namespace Scripts.Base
 {
     public interface GameObjectController
     {

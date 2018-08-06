@@ -1,7 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Simulation.Game.Objects;
 
-namespace Simulation.Game.Objects.Interfaces
+namespace Scripts.Base
 {
     public interface GameObjectRenderer
     {

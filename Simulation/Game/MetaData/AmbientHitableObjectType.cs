@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json.Linq;
+using Scripts.Base;
 using Simulation.Game.Enums;
 using Simulation.Game.Objects;
-using Simulation.Game.Objects.Interfaces;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Simulation.Game.MetaData
 {

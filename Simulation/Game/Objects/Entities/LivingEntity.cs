@@ -1,12 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.AI;
+using Scripts.Base;
 using Simulation.Game.Enums;
 using Simulation.Game.Fractions;
 using Simulation.Game.MetaData;
-using Simulation.Game.Objects.Interfaces;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.Serialization;
-using Simulation.Game.Skills;
 using Simulation.Game.World;
 using System;
 using System.Collections.Generic;

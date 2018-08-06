@@ -1,10 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
-using Simulation.Game.MetaData;
 using Simulation.Game.Objects;
-using Simulation.Game.Objects.Interfaces;
 using Simulation.Util;
 using System;
-using System.IO;
 
 namespace Simulation.Game.Serialization.Objects
 {

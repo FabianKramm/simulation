@@ -5,8 +5,8 @@ using Simulation.Game.Hud;
 using Simulation.Game.World;
 using Simulation.Game.Serialization;
 using Newtonsoft.Json.Linq;
-using Simulation.Game.Skills;
 using Simulation;
+using Scripts.Base;
 
 namespace Scripts.Skills
 {
@@ -25,8 +25,8 @@ namespace Scripts.Skills
         {
             base.Init(owner, parameters);
 
-            this.relativeOriginPosition = SerializationUtils.GetFromObject<Vector2>(parameters, "relativeOriginPosition", Vector2.Zero);
-            this.DamagePerHit = SerializationUtils.GetFromObject<int>(parameters, "damagePerHit", 10);
+            this.relativeOriginPosition = SerializationUtils.GetFromObject(parameters, "relativeOriginPosition", Vector2.Zero);
+            this.DamagePerHit = SerializationUtils.GetFromObject(parameters, "damagePerHit", 10);
         }
 
         protected override void trigger(Vector2 targetPosition)

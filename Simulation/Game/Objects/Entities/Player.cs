@@ -1,14 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Simulation.Game.Skills;
 using Simulation.Game.World;
-using Simulation.Game.Enums;
-using Simulation.Util.Geometry;
-using Simulation.Util.Collision;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Simulation.Game.Hud;
-using System;
 
 namespace Simulation.Game.Objects.Entities
 {

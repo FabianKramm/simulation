@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Scripts.Base;
 using Simulation.Game.AI;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
-using Simulation.Game.Objects.Interfaces;
 using Simulation.Game.World;
 
 namespace Scripts.Controller {
