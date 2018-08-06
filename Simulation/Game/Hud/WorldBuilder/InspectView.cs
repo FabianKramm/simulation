@@ -157,7 +157,10 @@ namespace Simulation.Game.Hud.WorldBuilder
 
                     if (renderPosition.Contains(SimulationGame.RealWorldMousePosition))
                     {
-                        sortedList.Add(ambientObjectType.HasDepth ? GeometryUtils.GetLayerDepthFromPosition(ambientObject.Position.X, ambientObject.Position.Y) : GeometryUtils.GetLayerDepthFromReservedLayer(ReservedDepthLayers.BlockDecoration), ambientObject);
+                        var key = ambientObjectType.HasDepth ? GeometryUtils.GetLayerDepthFromPosition(ambientObject.Position.X, ambientObject.Position.Y) : GeometryUtils.GetLayerDepthFromReservedLayer(ReservedDepthLayers.BlockDecoration);
+
+                        if(sortedList.ContainsKey(key) == false)
+                            sortedList.Add(key, ambientObject);
                     }
                 }
 
@@ -186,7 +189,10 @@ namespace Simulation.Game.Hud.WorldBuilder
 
                     if (renderPosition.Contains(SimulationGame.RealWorldMousePosition))
                     {
-                        sortedList.Add(GeometryUtils.GetLayerDepthFromPosition(hitableObject.Position.X, hitableObject.Position.Y), hitableObject);
+                        var key = GeometryUtils.GetLayerDepthFromPosition(hitableObject.Position.X, hitableObject.Position.Y);
+
+                        if(sortedList.ContainsKey(key) == false)
+                            sortedList.Add(key, hitableObject);
                     }
                 }
 
@@ -219,7 +225,10 @@ namespace Simulation.Game.Hud.WorldBuilder
 
                         if (renderPosition.Contains(SimulationGame.RealWorldMousePosition))
                         {
-                            sortedList.Add(GeometryUtils.GetLayerDepthFromPosition(hitableObject.Position.X, hitableObject.Position.Y), hitableObject);
+                            var key = GeometryUtils.GetLayerDepthFromPosition(hitableObject.Position.X, hitableObject.Position.Y);
+
+                            if(sortedList.ContainsKey(key) == false)
+                                sortedList.Add(key, hitableObject);
                         }
                     }
             }
