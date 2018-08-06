@@ -1,18 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
+using Simulation.Game.Hud.WorldBuilder.ObjectListItems;
 using Simulation.Game.MetaData;
 using Simulation.Game.Objects;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;
-using Simulation.Util.UI;
 
 namespace Simulation.Game.Hud.WorldBuilder
 {
     public static class WorldBuilderUtils
     {
-        public static void CreateObjectAtMousePosition(UIElement listItem)
+        public static void CreateObjectAtMousePosition(ObjectListItem listItem)
         {
             var realPosition = SimulationGame.RealWorldMousePosition;
 
@@ -24,7 +25,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
             else
             {
-                if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+                if (!SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) && !SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
                 {
                     var blockPosition = GeometryUtils.GetBlockFromReal((int)realPosition.X, (int)realPosition.Y);
 

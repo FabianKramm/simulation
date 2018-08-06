@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Simulation.Game.Generator;
+using Simulation.Game.Hud.WorldBuilder.ObjectListItems;
 using Simulation.Game.MetaData;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
@@ -104,7 +105,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             {
                 Bounds = new Rect(0, 0, SimulationGame.Resolution.Width * 2 / 3, SimulationGame.Resolution.Height)
             };
-            placeView.OnClick(() => WorldBuilderUtils.CreateObjectAtMousePosition(manageObjectList.SelectedElement));
+            placeView.OnClick(() => WorldBuilderUtils.CreateObjectAtMousePosition((ObjectListItem)manageObjectList.SelectedElement));
 
             selectedObjectDetailTextView = new TextView(tilesetSelectionArea, "");
             worldPartDetailsTextView = new TextView(tilesetSelectionArea, "");
@@ -370,7 +371,7 @@ namespace Simulation.Game.Hud.WorldBuilder
 
                 placeView.OnClick(() =>
                 {
-                    placeView.OnClick(() => WorldBuilderUtils.CreateObjectAtMousePosition(manageObjectList.SelectedElement));
+                    placeView.OnClick(() => WorldBuilderUtils.CreateObjectAtMousePosition((ObjectListItem)manageObjectList.SelectedElement));
                 });
             }
             else
@@ -404,7 +405,7 @@ namespace Simulation.Game.Hud.WorldBuilder
 
                 placeView.OnClick(() =>
                 {
-                    placeView.OnClick(() => WorldBuilderUtils.CreateObjectAtMousePosition(manageObjectList.SelectedElement));
+                    placeView.OnClick(() => WorldBuilderUtils.CreateObjectAtMousePosition((ObjectListItem)manageObjectList.SelectedElement));
                 });
             }
             else
@@ -933,7 +934,19 @@ namespace Simulation.Game.Hud.WorldBuilder
                 {
                     placeView.Draw(spriteBatch, gameTime);
 
-                    // TODO: Preview of object
+                    if (placeView.Bounds.Contains(SimulationGame.MouseState.Position))
+                    {
+                        if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+                        {
+                            ((ObjectListItem)manageObjectList.SelectedElement).DrawPreview(spriteBatch, SimulationGame.MouseState.Position.ToVector2());
+                        }
+                        else
+                        {
+                            var worldBlockPosition = GeometryUtils.GetBlockFromReal((int)SimulationGame.RealWorldMousePosition.X, (int)SimulationGame.RealWorldMousePosition.Y);
+
+                            ((ObjectListItem)manageObjectList.SelectedElement).DrawPreview(spriteBatch, SimulationGame.ConvertWorldPositionToUIPosition(worldBlockPosition.X * WorldGrid.BlockSize.X, worldBlockPosition.Y * WorldGrid.BlockSize.Y));
+                        }
+                    }
                 }
                 else
                 {

@@ -5,9 +5,9 @@ using Simulation.Util.Geometry;
 using Simulation.Util.UI;
 using Simulation.Util.UI.Elements;
 
-namespace Simulation.Game.Hud.WorldBuilder
+namespace Simulation.Game.Hud.WorldBuilder.ObjectListItems
 {
-    public class BlockListItem: UIElement
+    public class BlockListItem: ObjectListItem
     {
         public BlockType BlockType
         {
@@ -33,6 +33,14 @@ namespace Simulation.Game.Hud.WorldBuilder
                     Bounds.GetPositionVector(), new Rectangle(BlockType.SpritePosition, BlockType.SpriteBounds), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
 
             spriteBatch.DrawString(Button.ButtonFont, displayString, new Vector2(Bounds.X + BlockType.SpriteBounds.X + 20, Bounds.Y + BlockType.SpriteBounds.Y / 2 - stringBounds.Y / 2), Color.White);
+        }
+
+        public override void DrawPreview(SpriteBatch spriteBatch, Vector2 position)
+        {
+            if (BlockType.SpritePath != null)
+                spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(BlockType.SpritePath),
+                    position, new Rectangle(BlockType.SpritePosition, BlockType.SpriteBounds), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
+
         }
     }
 }
