@@ -5,6 +5,7 @@ using Simulation.Game.MetaData;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
+using Simulation.Util.Collision;
 using Simulation.Util.Geometry;
 using Simulation.Util.UI;
 using System;
@@ -14,7 +15,7 @@ namespace Simulation.Game.Hud.WorldBuilder
 {
     public class InspectView: UIElement
     {
-        private Action<GameObject> gameObjectSelection;
+        private Action<List<GameObject>> gameObjectSelection;
         private Action<BlockType> blockSelection;
         private Action<WorldLink> worldLinkSelection;
 
@@ -23,13 +24,15 @@ namespace Simulation.Game.Hud.WorldBuilder
         public Point SelectedBlockPosition = Point.Zero;
         public BlockType SelectedBlockType = null;
         public WorldLink SelectedWorldLink = null;
-        public GameObject SelectedGameObject = null;
+        public List<GameObject> SelectedGameObjects = new List<GameObject>();
+
+        private Point? startDragPosition = null;
 
         public InspectView(Rect bounds)
         {
             Bounds = bounds;
 
-            OnClick(handleOnClick);
+            OnMouseMove(handleOnMouseMove);
             OnKeyPress(Keys.Escape, Deselect);
 
             OnKeyHold(Keys.Left, handleKeyLeft, TimeSpan.FromMilliseconds(200));
@@ -40,11 +43,26 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         private void handleKeyLeft()
         {
-            if(SelectedGameObject != null)
+            if(SelectedGameObjects.Count > 0)
             {
-                SelectedGameObject.DisconnectFromWorld();
-                SelectedGameObject.UpdatePosition(new WorldPosition(SelectedGameObject.Position.X - 1, SelectedGameObject.Position.Y, SelectedGameObject.InteriorID));
-                SelectedGameObject.ConnectToWorld();
+                foreach(var gameObject in SelectedGameObjects)
+                {
+                    gameObject.DisconnectFromWorld();
+
+                    WorldPosition newPosition;
+
+                    if(SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+                    {
+                        newPosition = new WorldPosition(gameObject.Position.X - 1, gameObject.Position.Y, gameObject.InteriorID);
+                    }
+                    else
+                    {
+                        newPosition = new WorldPosition(gameObject.BlockPosition.X - 1, gameObject.BlockPosition.Y, gameObject.InteriorID).ToRealPosition();
+                    }
+
+                    gameObject.UpdatePosition(newPosition);
+                    gameObject.ConnectToWorld();
+                }
             }
 
             if(SelectedWorldLink != null)
@@ -60,11 +78,26 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         private void handleKeyRight()
         {
-            if (SelectedGameObject != null)
+            if (SelectedGameObjects.Count > 0)
             {
-                SelectedGameObject.DisconnectFromWorld();
-                SelectedGameObject.UpdatePosition(new WorldPosition(SelectedGameObject.Position.X + 1, SelectedGameObject.Position.Y, SelectedGameObject.InteriorID));
-                SelectedGameObject.ConnectToWorld();
+                foreach (var gameObject in SelectedGameObjects)
+                {
+                    gameObject.DisconnectFromWorld();
+
+                    WorldPosition newPosition;
+
+                    if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+                    {
+                        newPosition = new WorldPosition(gameObject.Position.X + 1, gameObject.Position.Y, gameObject.InteriorID);
+                    }
+                    else
+                    {
+                        newPosition = new WorldPosition(gameObject.BlockPosition.X + 1, gameObject.BlockPosition.Y, gameObject.InteriorID).ToRealPosition();
+                    }
+
+                    gameObject.UpdatePosition(newPosition);
+                    gameObject.ConnectToWorld();
+                }
             }
 
             if (SelectedWorldLink != null)
@@ -80,11 +113,26 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         private void handleKeyUp()
         {
-            if (SelectedGameObject != null)
+            if (SelectedGameObjects.Count > 0)
             {
-                SelectedGameObject.DisconnectFromWorld();
-                SelectedGameObject.UpdatePosition(new WorldPosition(SelectedGameObject.Position.X, SelectedGameObject.Position.Y - 1, SelectedGameObject.InteriorID));
-                SelectedGameObject.ConnectToWorld();
+                foreach (var gameObject in SelectedGameObjects)
+                {
+                    gameObject.DisconnectFromWorld();
+
+                    WorldPosition newPosition;
+
+                    if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+                    {
+                        newPosition = new WorldPosition(gameObject.Position.X, gameObject.Position.Y - 1, gameObject.InteriorID);
+                    }
+                    else
+                    {
+                        newPosition = new WorldPosition(gameObject.BlockPosition.X, gameObject.BlockPosition.Y - 1, gameObject.InteriorID).ToRealPosition();
+                    }
+
+                    gameObject.UpdatePosition(newPosition);
+                    gameObject.ConnectToWorld();
+                }
             }
 
             if (SelectedWorldLink != null)
@@ -100,11 +148,26 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         private void handleKeyDown()
         {
-            if (SelectedGameObject != null)
+            if (SelectedGameObjects.Count > 0)
             {
-                SelectedGameObject.DisconnectFromWorld();
-                SelectedGameObject.UpdatePosition(new WorldPosition(SelectedGameObject.Position.X, SelectedGameObject.Position.Y + 1, SelectedGameObject.InteriorID));
-                SelectedGameObject.ConnectToWorld();
+                foreach (var gameObject in SelectedGameObjects)
+                {
+                    gameObject.DisconnectFromWorld();
+
+                    WorldPosition newPosition;
+
+                    if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
+                    {
+                        newPosition = new WorldPosition(gameObject.Position.X, gameObject.Position.Y + 1, gameObject.InteriorID);
+                    }
+                    else
+                    {
+                        newPosition = new WorldPosition(gameObject.BlockPosition.X, gameObject.BlockPosition.Y + 1, gameObject.InteriorID).ToRealPosition();
+                    }
+
+                    gameObject.UpdatePosition(newPosition);
+                    gameObject.ConnectToWorld();
+                }
             }
 
             if (SelectedWorldLink != null)
@@ -118,49 +181,45 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
         }
 
-        public void OnSelect(Action<GameObject> gameObjectSelection, Action<BlockType> blockSelection, Action<WorldLink> worldLinkSelection)
+        public void OnSelect(Action<List<GameObject>> gameObjectSelection, Action<BlockType> blockSelection, Action<WorldLink> worldLinkSelection)
         {
             this.gameObjectSelection = gameObjectSelection;
             this.blockSelection = blockSelection;
             this.worldLinkSelection = worldLinkSelection;
         }
 
-        private void handleOnClick()
+        private void handleOnMouseMove(MouseMoveEvent mouseMoveEvent)
         {
-            SelectedBlockPosition = Point.Zero;
-            SelectedBlockType = null;
-            SelectedWorldLink = null;
-            SelectedGameObject = null;
+            if(mouseMoveEvent.LeftButtonDown && startDragPosition == null)
+            {
+                startDragPosition = SimulationGame.RealWorldMousePosition.ToPoint();
+            }
 
-            SortedList<float, GameObject> sortedList = new SortedList<float, GameObject>();
-            WorldPart worldPart = (SimulationGame.Player.InteriorID == Interior.Outside) ? SimulationGame.World.GetFromRealPoint((int)SimulationGame.RealWorldMousePosition.X, (int)SimulationGame.RealWorldMousePosition.Y) : (WorldPart)SimulationGame.World.InteriorManager.Get(SimulationGame.Player.InteriorID);
+            if(mouseMoveEvent.LeftButtonDown == false && startDragPosition != null)
+            {
+                selectGameObjects(ShapeCollision.ConvertLineToRect(startDragPosition ?? Point.Zero, SimulationGame.RealWorldMousePosition.ToPoint()));
+                startDragPosition = null;
+            }
+        }
 
-            if (worldPart.WorldLinks != null)
-                foreach (var worldLinkItem in worldPart.WorldLinks)
-                {
-                    Rect renderPosition = new Rect(worldLinkItem.Value.FromBlock.X * WorldGrid.BlockSize.X, worldLinkItem.Value.FromBlock.Y * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
-
-                    if (renderPosition.Contains(SimulationGame.RealWorldMousePosition))
-                    {
-                        SelectedWorldLink = worldLinkItem.Value;
-                        worldLinkSelection?.Invoke(SelectedWorldLink);
-
-                        return;
-                    }
-                }
-
-            if(worldPart.AmbientObjects != null)
+        private void addSelectedObjectsFromWorldPart(Rect selectionRect, WorldPart worldPart, bool deselect = false)
+        {
+            if (worldPart.AmbientObjects != null)
                 foreach (var ambientObject in worldPart.AmbientObjects)
                 {
                     var ambientObjectType = AmbientObjectType.lookup[ambientObject.AmbientObjectType];
                     var renderPosition = new Rect((int)(ambientObject.Position.X - ambientObjectType.SpriteOrigin.X), (int)(ambientObject.Position.Y - ambientObjectType.SpriteOrigin.Y), ambientObjectType.SpriteBounds.X, ambientObjectType.SpriteBounds.Y);
 
-                    if (renderPosition.Contains(SimulationGame.RealWorldMousePosition))
+                    if (renderPosition.Intersects(selectionRect))
                     {
-                        var key = ambientObjectType.HasDepth ? GeometryUtils.GetLayerDepthFromPosition(ambientObject.Position.X, ambientObject.Position.Y) : GeometryUtils.GetLayerDepthFromReservedLayer(ReservedDepthLayers.BlockDecoration);
-
-                        if(sortedList.ContainsKey(key) == false)
-                            sortedList.Add(key, ambientObject);
+                        if(deselect)
+                        {
+                            SelectedGameObjects.Remove(ambientObject);
+                        }
+                        else
+                        {
+                            SelectedGameObjects.Add(ambientObject);
+                        }
                     }
                 }
 
@@ -179,7 +238,7 @@ namespace Simulation.Game.Hud.WorldBuilder
 
                         renderPosition = new Rect((int)(livingEntity.Position.X - livingEntityType.SpriteOrigin.X), (int)(livingEntity.Position.Y - livingEntityType.SpriteOrigin.Y), livingEntityType.SpriteBounds.X, livingEntityType.SpriteBounds.Y);
                     }
-                    else if(hitableObject is AmbientHitableObject)
+                    else if (hitableObject is AmbientHitableObject)
                     {
                         var ambientHitableObject = (AmbientHitableObject)hitableObject;
                         var ambientHitableObjectType = AmbientHitableObjectType.lookup[ambientHitableObject.AmbientHitableObjectType];
@@ -187,12 +246,16 @@ namespace Simulation.Game.Hud.WorldBuilder
                         renderPosition = new Rect((int)(ambientHitableObject.Position.X - ambientHitableObjectType.SpriteOrigin.X), (int)(ambientHitableObject.Position.Y - ambientHitableObjectType.SpriteOrigin.Y), ambientHitableObjectType.SpriteBounds.X, ambientHitableObjectType.SpriteBounds.Y);
                     }
 
-                    if (renderPosition.Contains(SimulationGame.RealWorldMousePosition))
+                    if (renderPosition.Intersects(selectionRect))
                     {
-                        var key = GeometryUtils.GetLayerDepthFromPosition(hitableObject.Position.X, hitableObject.Position.Y);
-
-                        if(sortedList.ContainsKey(key) == false)
-                            sortedList.Add(key, hitableObject);
+                        if (deselect)
+                        {
+                            SelectedGameObjects.Remove(hitableObject);
+                        }
+                        else
+                        {
+                            SelectedGameObjects.Add(hitableObject);
+                        }
                     }
                 }
 
@@ -200,7 +263,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             {
                 var worldGridChunk = ((WorldGridChunk)worldPart);
 
-                if(worldGridChunk.OverlappingObjects != null)
+                if (worldGridChunk.OverlappingObjects != null)
                     foreach (var hitableObject in worldGridChunk.OverlappingObjects)
                     {
                         if (hitableObject is Player)
@@ -223,29 +286,102 @@ namespace Simulation.Game.Hud.WorldBuilder
                             renderPosition = new Rect((int)(ambientHitableObject.Position.X - ambientHitableObjectType.SpriteOrigin.X), (int)(ambientHitableObject.Position.Y - ambientHitableObjectType.SpriteOrigin.Y), ambientHitableObjectType.SpriteBounds.X, ambientHitableObjectType.SpriteBounds.Y);
                         }
 
-                        if (renderPosition.Contains(SimulationGame.RealWorldMousePosition))
+                        if (renderPosition.Intersects(selectionRect)) 
                         {
-                            var key = GeometryUtils.GetLayerDepthFromPosition(hitableObject.Position.X, hitableObject.Position.Y);
-
-                            if(sortedList.ContainsKey(key) == false)
-                                sortedList.Add(key, hitableObject);
+                            if (deselect)
+                            {
+                                SelectedGameObjects.Remove(hitableObject);
+                            }
+                            else if(SelectedGameObjects.Contains(hitableObject) == false)
+                            {
+                                SelectedGameObjects.Add(hitableObject);
+                            }
                         }
                     }
             }
+        }
 
-            if(sortedList.Count == 0)
+        private void selectGameObjects(Rect selectionRect)
+        {
+            // Is Deselection Mode?
+            if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftShift) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightShift))
             {
-                // We get the block
-                SelectedBlockPosition = GeometryUtils.GetBlockFromReal((int)SimulationGame.RealWorldMousePosition.X, (int)SimulationGame.RealWorldMousePosition.Y);
-                SelectedBlockType = BlockType.lookup[SimulationGame.World.GetBlockType(SelectedBlockPosition.X, SelectedBlockPosition.Y, SimulationGame.Player.InteriorID)];
+                if (SimulationGame.Player.InteriorID == Interior.Outside)
+                {
+                    // Check collision with interactive && contained objects
+                    Point chunkTopLeft = GeometryUtils.GetChunkPosition(selectionRect.Left, selectionRect.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                    Point chunkBottomRight = GeometryUtils.GetChunkPosition(selectionRect.Right, selectionRect.Bottom, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 
-                blockSelection?.Invoke(SelectedBlockType);
+                    for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
+                        for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
+                        {
+                            WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkX, chunkY);
+
+                            addSelectedObjectsFromWorldPart(selectionRect, worldGridChunk, true);
+                        }
+                }
+                else
+                {
+                    addSelectedObjectsFromWorldPart(selectionRect, SimulationGame.World.InteriorManager.Get(SimulationGame.Player.InteriorID), true);
+                }
+
+                if (SelectedGameObjects.Count > 0)
+                    gameObjectSelection?.Invoke(SelectedGameObjects);
             }
             else
             {
-                SelectedGameObject = sortedList.Values[sortedList.Count - 1];
+                SelectedBlockPosition = Point.Zero;
+                SelectedBlockType = null;
+                SelectedWorldLink = null;
+                SelectedGameObjects.Clear();
 
-                gameObjectSelection?.Invoke(SelectedGameObject);
+                if (SimulationGame.Player.InteriorID == Interior.Outside)
+                {
+                    // Check collision with interactive && contained objects
+                    Point chunkTopLeft = GeometryUtils.GetChunkPosition(selectionRect.Left, selectionRect.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+                    Point chunkBottomRight = GeometryUtils.GetChunkPosition(selectionRect.Right, selectionRect.Bottom, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+
+                    for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
+                        for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
+                        {
+                            WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkX, chunkY);
+
+                            addSelectedObjectsFromWorldPart(selectionRect, worldGridChunk);
+                        }
+                }
+                else
+                {
+                    addSelectedObjectsFromWorldPart(selectionRect, SimulationGame.World.InteriorManager.Get(SimulationGame.Player.InteriorID));
+                }
+
+                if (SelectedGameObjects.Count == 0)
+                {
+                    WorldPart worldPart = (SimulationGame.Player.InteriorID == Interior.Outside) ? SimulationGame.World.GetFromRealPoint((int)selectionRect.X, (int)selectionRect.Y) : (WorldPart)SimulationGame.World.InteriorManager.Get(SimulationGame.Player.InteriorID);
+
+                    if (worldPart.WorldLinks != null)
+                        foreach (var worldLinkItem in worldPart.WorldLinks)
+                        {
+                            Rect renderPosition = new Rect(worldLinkItem.Value.FromBlock.X * WorldGrid.BlockSize.X, worldLinkItem.Value.FromBlock.Y * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y);
+
+                            if (renderPosition.Contains(selectionRect.GetPosition()))
+                            {
+                                SelectedWorldLink = worldLinkItem.Value;
+                                worldLinkSelection?.Invoke(SelectedWorldLink);
+
+                                return;
+                            }
+                        }
+
+                    // We get the block
+                    SelectedBlockPosition = GeometryUtils.GetBlockFromReal((int)SimulationGame.RealWorldMousePosition.X, (int)SimulationGame.RealWorldMousePosition.Y);
+                    SelectedBlockType = BlockType.lookup[SimulationGame.World.GetBlockType(SelectedBlockPosition.X, SelectedBlockPosition.Y, SimulationGame.Player.InteriorID)];
+
+                    blockSelection?.Invoke(SelectedBlockType);
+                }
+                else
+                {
+                    gameObjectSelection?.Invoke(SelectedGameObjects);
+                }
             }
         }
 
@@ -253,7 +389,7 @@ namespace Simulation.Game.Hud.WorldBuilder
         {
             SelectedBlockPosition = Point.Zero;
             SelectedBlockType = null;
-            SelectedGameObject = gameObject;
+            SelectedGameObjects.Add(gameObject);
             SelectedWorldLink = null;
         }
 
@@ -261,40 +397,41 @@ namespace Simulation.Game.Hud.WorldBuilder
         {
             SelectedBlockPosition = Point.Zero;
             SelectedBlockType = null;
-            SelectedGameObject = null;
+            SelectedGameObjects.Clear();
             SelectedWorldLink = null;
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if(SelectedGameObject != null)
+            if(SelectedGameObjects.Count > 0)
             {
-                if(SimulationGame.VisibleArea.Contains(SelectedGameObject.Position))
-                {
-                    var worldDrawPosition = Rectangle.Empty;
-
-                    if(SelectedGameObject is AmbientObject)
+                foreach(var selectedGameObject in SelectedGameObjects)
+                    if(SimulationGame.VisibleArea.Contains(selectedGameObject.Position))
                     {
-                        var gameObject = (AmbientObject)SelectedGameObject;
+                        var worldDrawPosition = Rectangle.Empty;
 
-                        worldDrawPosition = new Rectangle((int)(gameObject.Position.X - gameObject.GetObjectType().SpriteOrigin.X), (int)(gameObject.Position.Y - gameObject.GetObjectType().SpriteOrigin.Y), gameObject.GetObjectType().SpriteBounds.X, gameObject.GetObjectType().SpriteBounds.Y);
+                        if(selectedGameObject is AmbientObject)
+                        {
+                            var gameObject = (AmbientObject)selectedGameObject;
+
+                            worldDrawPosition = new Rectangle((int)(gameObject.Position.X - gameObject.GetObjectType().SpriteOrigin.X), (int)(gameObject.Position.Y - gameObject.GetObjectType().SpriteOrigin.Y), gameObject.GetObjectType().SpriteBounds.X, gameObject.GetObjectType().SpriteBounds.Y);
+                        }
+                        else if(selectedGameObject is AmbientHitableObject)
+                        {
+                            var gameObject = (AmbientHitableObject)selectedGameObject;
+
+                            worldDrawPosition = new Rectangle((int)(gameObject.Position.X - gameObject.GetObjectType().SpriteOrigin.X), (int)(gameObject.Position.Y - gameObject.GetObjectType().SpriteOrigin.Y), gameObject.GetObjectType().SpriteBounds.X, gameObject.GetObjectType().SpriteBounds.Y);
+                        }
+                        else if(selectedGameObject is LivingEntity)
+                        {
+                            var gameObject = (LivingEntity)selectedGameObject;
+
+                            worldDrawPosition = new Rectangle((int)(gameObject.Position.X - gameObject.GetObjectType().SpriteOrigin.X), (int)(gameObject.Position.Y - gameObject.GetObjectType().SpriteOrigin.Y), gameObject.GetObjectType().SpriteBounds.X, gameObject.GetObjectType().SpriteBounds.Y);
+                        }
+
+                        var uiPosition = SimulationGame.ConvertWorldPositionToUIPosition(worldDrawPosition.X, worldDrawPosition.Y);
+                        SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle((int)uiPosition.X, (int)uiPosition.Y, worldDrawPosition.Width, worldDrawPosition.Height), Color.Yellow);
                     }
-                    else if(SelectedGameObject is AmbientHitableObject)
-                    {
-                        var gameObject = (AmbientHitableObject)SelectedGameObject;
-
-                        worldDrawPosition = new Rectangle((int)(gameObject.Position.X - gameObject.GetObjectType().SpriteOrigin.X), (int)(gameObject.Position.Y - gameObject.GetObjectType().SpriteOrigin.Y), gameObject.GetObjectType().SpriteBounds.X, gameObject.GetObjectType().SpriteBounds.Y);
-                    }
-                    else if(SelectedGameObject is LivingEntity)
-                    {
-                        var gameObject = (LivingEntity)SelectedGameObject;
-
-                        worldDrawPosition = new Rectangle((int)(gameObject.Position.X - gameObject.GetObjectType().SpriteOrigin.X), (int)(gameObject.Position.Y - gameObject.GetObjectType().SpriteOrigin.Y), gameObject.GetObjectType().SpriteBounds.X, gameObject.GetObjectType().SpriteBounds.Y);
-                    }
-
-                    var uiPosition = SimulationGame.ConvertWorldPositionToUIPosition(worldDrawPosition.X, worldDrawPosition.Y);
-                    SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle((int)uiPosition.X, (int)uiPosition.Y, worldDrawPosition.Width, worldDrawPosition.Height), Color.Yellow);
-                }
             }
             else if(SelectedBlockType != null)
             {
@@ -307,6 +444,16 @@ namespace Simulation.Game.Hud.WorldBuilder
                 var uiPosition = SimulationGame.ConvertWorldPositionToUIPosition(SelectedWorldLink.FromBlock.X * WorldGrid.BlockSize.X, SelectedWorldLink.FromBlock.Y * WorldGrid.BlockSize.Y);
 
                 SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle((int)uiPosition.X, (int)uiPosition.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y), Color.Orange);
+            }
+
+            if(startDragPosition != null)
+            {
+                var _startDragPosition = startDragPosition ?? Point.Zero;
+                var uiStartDragPosition = SimulationGame.ConvertWorldPositionToUIPosition(_startDragPosition.X, _startDragPosition.Y).ToPoint();
+                var selectionRect = ShapeCollision.ConvertLineToRect(uiStartDragPosition, SimulationGame.MouseState.Position);
+
+                if (selectionRect.Width > 20 || selectionRect.Height > 20)
+                    SimulationGame.PrimitiveDrawer.Rectangle(selectionRect.ToXnaRectangle(), Color.White);
             }
         }
     }

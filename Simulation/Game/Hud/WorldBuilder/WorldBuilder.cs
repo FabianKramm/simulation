@@ -16,6 +16,7 @@ using Simulation.Util.Geometry;
 using Simulation.Util.UI;
 using Simulation.Util.UI.Elements;
 using System;
+using System.Collections.Generic;
 
 namespace Simulation.Game.Hud.WorldBuilder
 {
@@ -363,7 +364,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             placementMode = PlacementMode.NoPlacement;
         }
 
-        private void handleInspectGameObjectSelection(GameObject gameObject)
+        private void handleInspectGameObjectSelection(List<GameObject> gameObject)
         {
             if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
             {
@@ -416,7 +417,7 @@ namespace Simulation.Game.Hud.WorldBuilder
         
         private void handleShowInstanceTypeBtnClick()
         {
-            var selectedObject = inspectView.SelectedGameObject;
+            var selectedObject = inspectView.SelectedGameObjects[0];
             
             placementMode = PlacementMode.Manage;
             manageObjectList.Clear();
@@ -474,11 +475,12 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         private void handleRemoveInstanceBtnClick()
         {
-            if(inspectView.SelectedGameObject != null)
+            if(inspectView.SelectedGameObjects.Count > 0)
             {
-                var selectedObject = inspectView.SelectedGameObject;
+                foreach(var selectedObject in inspectView.SelectedGameObjects)
+                    selectedObject.DisconnectFromWorld();
+
                 inspectView.Deselect();
-                selectedObject.DisconnectFromWorld();
             }
             else if(inspectView.SelectedWorldLink != null)
             {
@@ -495,9 +497,9 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         private void handleEditInstanceBtnClick()
         {
-            if (inspectView.SelectedGameObject != null)
+            if (inspectView.SelectedGameObjects.Count > 0)
             {
-                var selectedObject = inspectView.SelectedGameObject;
+                var selectedObject = inspectView.SelectedGameObjects[0];
                 var dialog = new InputDialog("Edit Object", WorldObjectSerializer.Serialize(selectedObject).ToString(Formatting.Indented));
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -825,9 +827,9 @@ namespace Simulation.Game.Hud.WorldBuilder
                 }
                 else if (placementType == PlacementType.Inspect)
                 {
-                    if(inspectView.SelectedGameObject != null)
+                    if (inspectView.SelectedGameObjects.Count > 0)
                     {
-                        selectedObjectDetailTextView.SetText(WorldObjectSerializer.Serialize(inspectView.SelectedGameObject).ToString(Formatting.Indented));
+                        selectedObjectDetailTextView.SetText(WorldObjectSerializer.Serialize(inspectView.SelectedGameObjects[0]).ToString(Formatting.Indented));
 
                         editInstanceBtn.Update(gameTime);
                         removeInstanceBtn.Update(gameTime);
@@ -908,7 +910,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                 }
                 else if (placementType == PlacementType.Inspect)
                 {
-                    if (inspectView.SelectedGameObject != null)
+                    if (inspectView.SelectedGameObjects.Count > 0)
                     {
                         editInstanceBtn.Draw(spriteBatch, gameTime);
                         removeInstanceBtn.Draw(spriteBatch, gameTime);

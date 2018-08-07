@@ -22,6 +22,7 @@ namespace Simulation.Util.UI
         private Action onClickHandler;
         private Action<MouseMoveEvent> onMouseMoveHandler;
         private Point lastMousePosition;
+        private bool lastButtonPressedState = false;
 
         public bool IsHover
         {
@@ -83,15 +84,18 @@ namespace Simulation.Util.UI
 
             if (onMouseMoveHandler != null)
             {
-                if(lastMousePosition != mouseState.Position && Bounds.Contains(mouseState.Position))
+                var newButtonPressedState = mouseState.LeftButton == ButtonState.Pressed;
+
+                if ((lastButtonPressedState != newButtonPressedState || lastMousePosition != mouseState.Position) && Bounds.Contains(mouseState.Position))
                 {
                     onMouseMoveHandler(new MouseMoveEvent
                     {
                         MousePosition = mouseState.Position,
-                        LeftButtonDown = mouseState.LeftButton == ButtonState.Pressed
+                        LeftButtonDown = newButtonPressedState
                     });
 
                     lastMousePosition = mouseState.Position;
+                    lastButtonPressedState = newButtonPressedState;
                 }
             }
         }
