@@ -4,10 +4,9 @@ using Simulation.Game.Effects;
 using Simulation.Game.Hud;
 using Simulation.Game.Serialization;
 using Newtonsoft.Json.Linq;
-using Simulation;
-using Scripts.Base;
+using Simulation.Scripts.Base;
 
-namespace Scripts.Skills
+namespace Simulation.Scripts.Skills
 {
     public class FireballSkill: Skill
     {

@@ -47,9 +47,11 @@
     <Compile Include="Game.cs" />
     <Compile Include="Game\AI\BehaviorTree\Nodes\ParentBaseNode.cs" />
     <Compile Include="Game\AI\AIExtensions.cs" />
+    <Compile Include="Game\AI\GuardAI.cs" />
     <Compile Include="Game\AI\Tasks\FightTask.cs" />
     <Compile Include="Game\AI\Tasks\FleeTask.cs" />
     <Compile Include="Game\AI\Tasks\FollowTask.cs" />
+    <Compile Include="Game\AI\Tasks\GoToTask.cs" />
     <Compile Include="Game\AI\Tasks\WaitTask.cs" />
     <Compile Include="Game\AI\Tasks\WanderTask.cs" />
     <Compile Include="Game\AI\BaseAI.cs" />
@@ -135,6 +137,7 @@
     <Compile Include="Game\Serialization\Objects\WorldObjectSerializer.cs" />
     <Compile Include="Game\Serialization\WorldPartSerialization.cs" />
     <Compile Include="Scripts\Base\Skill.cs" />
+    <Compile Include="Scripts\Controller\GuardController.cs" />
     <Compile Include="Scripts\Skills\SlashSkill.cs" />
     <Compile Include="Scripts\Controller\WanderController.cs" />
     <Compile Include="Util\Collision\ShapeCollision.cs" />

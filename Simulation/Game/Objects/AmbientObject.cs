@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Scripts.Base;
 using Simulation.Game.MetaData;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
+using Simulation.Scripts.Base;
 using Simulation.Util.Geometry;
 
 namespace Simulation.Game.Objects

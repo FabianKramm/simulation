@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json.Linq;
-using Scripts.Base;
 using Simulation.Game.Enums;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Renderer.Entities;
@@ -30,11 +29,11 @@ namespace Simulation.Game.MetaData
                 {
                     new SkillType()
                     {
-                        SkillClass="Scripts.Skills.SlashSkill"
+                        SkillClass="Simulation.Scripts.Skills.SlashSkill"
                     },
                     new SkillType()
                     {
-                        SkillClass="Scripts.Skills.FireballSkill",
+                        SkillClass="Simulation.Scripts.Skills.FireballSkill",
                         SkillParameter=new JObject()
                         {
                             {"cooldown", 500}
@@ -70,17 +69,17 @@ namespace Simulation.Game.MetaData
                 {
                     new SkillType()
                     {
-                        SkillClass="Scripts.Skills.SlashSkill"
+                        SkillClass="Simulation.Scripts.Skills.SlashSkill"
                     },
                     new SkillType()
                     {
-                        SkillClass="Scripts.Skills.FireballSkill"
+                        SkillClass="Simulation.Scripts.Skills.FireballSkill"
                     }
                 },
                 SpritePath=@"Characters\Geralt",
-                CustomControllerScript=@"Scripts.Controller.WanderController",
+                CustomControllerScript=@"Simulation.Scripts.Controller.GuardController",
                 CustomProperties=new JObject(){
-                    {"BlockRadius", 4}
+                    {"GuardBlockPosition", SerializationUtils.GetJTokenFromObject(new WorldPosition(5, 5, Interior.Outside))}
                 },
                 DownAnimation=new Point[]
                 {
@@ -170,16 +169,6 @@ namespace Simulation.Game.MetaData
             
             livingEntity.BlockingType = livingEntityType.BlockingType;
             livingEntity.CustomProperties = livingEntityType.CustomProperties != null ? (JObject)livingEntityType.CustomProperties.DeepClone() : null;
-
-            if (livingEntityType.CustomControllerScript != null)
-            {
-                livingEntity.CustomController = (GameObjectController)SerializationUtils.CreateInstance(livingEntityType.CustomControllerScript);
-            }
-
-            if (livingEntityType.CustomRendererScript != null)
-            {
-                livingEntity.CustomRenderer = (GameObjectRenderer)SerializationUtils.CreateInstance(livingEntityType.CustomRendererScript);
-            }
             
             livingEntity.Init();
 

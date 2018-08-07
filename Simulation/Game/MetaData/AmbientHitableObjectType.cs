@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json.Linq;
-using Scripts.Base;
 using Simulation.Game.Enums;
 using Simulation.Game.Objects;
 using Simulation.Game.Serialization;
@@ -56,16 +55,6 @@ namespace Simulation.Game.MetaData
                 IsHitable=ambientHitableObjectType.IsHitable,
                 CustomProperties= ambientHitableObjectType.CustomProperties != null ? (JObject)ambientHitableObjectType.CustomProperties.DeepClone() : null
             };
-
-            if (ambientHitableObjectType.CustomControllerScript != null)
-            {
-                ambientHitableObject.CustomController = (GameObjectController)SerializationUtils.CreateInstance(ambientHitableObjectType.CustomControllerScript);
-            }
-
-            if (ambientHitableObjectType.CustomRendererScript != null)
-            {
-                ambientHitableObject.CustomRenderer = (GameObjectRenderer)SerializationUtils.CreateInstance(ambientHitableObjectType.CustomRendererScript);
-            }
 
             ambientHitableObject.Init();
 

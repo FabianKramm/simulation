@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Scripts.Skills;
 using Simulation.Game.AI.BehaviorTree;
 using Simulation.Game.AI.Evaluation;
 using Simulation.Game.AI.Tasks;
@@ -8,6 +7,7 @@ using Simulation.Game.Enums;
 using Simulation.Game.MetaData;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
+using Simulation.Scripts.Skills;
 using Simulation.Util.Collision;
 using Simulation.Util.Geometry;
 

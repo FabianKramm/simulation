@@ -1,7 +1,7 @@
 ﻿using Simulation.Game.World;
 using Simulation.Game.Serialization;
 using Simulation.Game.MetaData;
-using Scripts.Base;
+using Simulation.Scripts.Base;
 
 namespace Simulation.Game.Objects
 {

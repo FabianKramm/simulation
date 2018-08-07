@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using Scripts.Base;
 using Simulation.Game.AI;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
+using Simulation.Scripts.Base;
 
-namespace Scripts.Controller {
-    class WanderController : GameObjectController
+namespace Simulation.Scripts.Controller {
+    public class WanderController : GameObjectController
     {
         private WanderAI wanderAI;
 

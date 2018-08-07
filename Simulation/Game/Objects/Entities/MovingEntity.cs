@@ -30,7 +30,7 @@ namespace Simulation.Game.Objects.Entities
         {
             get
             {
-                return DestBlockPosition != null || DestRealPosition != null || findPathTask != null || walkPath != null || Direction != Vector2.Zero;
+                return DestBlockPosition != null || DestRealPosition != null || findPathTask != null || walkPath != null || (this is Player && Direction != Vector2.Zero);
             }
         }
 

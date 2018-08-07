@@ -4,7 +4,7 @@ using Simulation.Game.Objects.Entities;
 using Simulation.Game.Serialization;
 using System;
 
-namespace Scripts.Base
+namespace Simulation.Scripts.Base
 {
     public abstract class Skill
     {
