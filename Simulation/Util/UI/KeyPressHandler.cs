@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Util.UI
 {
@@ -24,15 +20,15 @@ namespace Simulation.Util.UI
         {
             if (SimulationGame.KeyboardState.IsKeyDown(key))
             {
-                if(keyPressed == false)
-                {
-                    callback();
-                }
-
                 keyPressed = true;
             }
             else
             {
+                if (keyPressed == true)
+                {
+                    callback();
+                }
+
                 keyPressed = false;
             }
         }

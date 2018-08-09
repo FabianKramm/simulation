@@ -94,7 +94,15 @@ namespace Simulation.Game.Renderer
         public static void Draw(SpriteBatch spriteBatch, GameTime gameTime, SimulationGame simulationGame)
         {
             simulationGame.GraphicsDevice.Clear(Color.Black);
-            setBlendColor();
+
+            if (SimulationGame.IsSurroundingEffectsOff)
+            {
+                BlendColor = Color.White;
+            }
+            else
+            {
+                setBlendColor();
+            }
 
             spriteBatch.Begin(SimulationGame.Camera, SpriteSortMode.FrontToBack);
 

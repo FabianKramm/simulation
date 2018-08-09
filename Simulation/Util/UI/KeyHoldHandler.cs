@@ -18,7 +18,7 @@ namespace Simulation.Util.UI
 
         public KeyHoldHandler(Keys key, Action callback, TimeSpan? timeout = null)
         {
-            this.timeout = timeout ?? TimeSpan.FromMilliseconds(100);
+            this.timeout = timeout ?? TimeSpan.FromMilliseconds(150);
             this.key = key;
             this.callback = callback;
         }

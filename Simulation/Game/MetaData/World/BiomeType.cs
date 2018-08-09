@@ -34,10 +34,9 @@ namespace Simulation.Game.MetaData.World
         public int ID;
 
         public float ElevationProbability = 0;
-        public float DoubleElevationProbability = 0;
-
-        public float NegativeElevationProbability = 0;
-        public float DoubleNegativeElevationProbability = 0;
+        public float ElevationHeights = 0;
+        public int ElevationInterpolation = 16;
+        public bool NegativeElevationAllowed = false;
 
         public EnclosedTile StreetTileIds = null;
         public EnclosedTile RiverTileIds = null;

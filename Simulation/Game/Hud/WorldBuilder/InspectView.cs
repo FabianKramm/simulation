@@ -313,8 +313,8 @@ namespace Simulation.Game.Hud.WorldBuilder
                     Point chunkTopLeft = GeometryUtils.GetChunkPosition(selectionRect.Left, selectionRect.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
                     Point chunkBottomRight = GeometryUtils.GetChunkPosition(selectionRect.Right, selectionRect.Bottom, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 
-                    for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
-                        for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
+                    for (int chunkX = chunkTopLeft.X - 1; chunkX <= chunkBottomRight.X + 1; chunkX++)
+                        for (int chunkY = chunkTopLeft.Y - 1; chunkY <= chunkBottomRight.Y + 1; chunkY++)
                         {
                             WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkX, chunkY);
 
@@ -342,8 +342,8 @@ namespace Simulation.Game.Hud.WorldBuilder
                     Point chunkTopLeft = GeometryUtils.GetChunkPosition(selectionRect.Left, selectionRect.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
                     Point chunkBottomRight = GeometryUtils.GetChunkPosition(selectionRect.Right, selectionRect.Bottom, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 
-                    for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
-                        for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
+                    for (int chunkX = chunkTopLeft.X - 1; chunkX <= chunkBottomRight.X + 1; chunkX++)
+                        for (int chunkY = chunkTopLeft.Y - 1; chunkY <= chunkBottomRight.Y + 1; chunkY++)
                         {
                             WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkX, chunkY);
 

@@ -37,8 +37,8 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
-            WorldLoader.ResetMetaData();
-            WorldLoader.ResetWorld();
+            // WorldLoader.ResetMetaData();
+            // WorldLoader.ResetWorld();
 
             using (var game = new SimulationGame())
                game.Run(); 

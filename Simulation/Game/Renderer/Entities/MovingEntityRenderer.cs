@@ -34,13 +34,15 @@ namespace Simulation.Game.Renderer.Entities
                 movingEntity.RendererInformation.currentAnimation.Reset();
             }
 
-            spriteBatch.Draw(movingEntity.RendererInformation.currentAnimation, new Vector2((int)movingEntity.Position.X, (int)movingEntity.Position.Y), color: GameRenderer.BlendColor, layerDepth: GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, movingEntity.Position.Y));
+            var adjustedYPosition = movingEntity.Position.Y + 15;
+
+            spriteBatch.Draw(movingEntity.RendererInformation.currentAnimation, new Vector2((int)movingEntity.Position.X, (int)movingEntity.Position.Y), color: GameRenderer.BlendColor, layerDepth: GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, adjustedYPosition));
 
             // Draw Speech Bubble
             if (movingEntity.RendererInformation.SpeechLine != null)
             {
-                var depth = GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, movingEntity.Position.Y);
-                var depth2 = GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X + 1, movingEntity.Position.Y);
+                var depth = GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, adjustedYPosition);
+                var depth2 = GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X + 1, adjustedYPosition);
 
                 var bubbleYOffset = (int)movingEntity.Position.Y - livingEntityType.SpriteBounds.Y - 20;
 
@@ -67,7 +69,7 @@ namespace Simulation.Game.Renderer.Entities
             if(movingEntity.CurrentLife < movingEntity.MaximumLife)
             {
                 spriteBatch.Draw(healthTexture, new Vector2(movingEntity.Position.X - livingEntityType.SpriteBounds.X / 2, movingEntity.Position.Y - livingEntityType.SpriteBounds.Y), 
-                    new Rectangle(0, 0, 1, 1), Color.Red, 0.0f, Vector2.Zero, new Vector2(((float)movingEntity.CurrentLife / (float)movingEntity.MaximumLife) * livingEntityType.SpriteBounds.X, 2.0f), SpriteEffects.None, GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, movingEntity.Position.Y));
+                    new Rectangle(0, 0, 1, 1), Color.Red, 0.0f, Vector2.Zero, new Vector2(((float)movingEntity.CurrentLife / (float)movingEntity.MaximumLife) * livingEntityType.SpriteBounds.X, 2.0f), SpriteEffects.None, GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, adjustedYPosition));
             }
 
             if (SimulationGame.IsDebug)

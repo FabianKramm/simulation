@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.Enums;
-using Simulation.Game.MetaData;
 using Simulation.Game.MetaData.World;
 using Simulation.Game.World;
-using System.Collections.Generic;
+using Simulation.Util.Collision;
 
 namespace Simulation.Game.Renderer
 {
@@ -12,12 +10,13 @@ namespace Simulation.Game.Renderer
     { 
         public static void Draw(SpriteBatch spriteBatch, int realX, int realY, int blockId)
         {
-            if (blockId == BlockType.None) return;
+            if (blockId == BlockType.None)
+                return;
 
             Color color = GameRenderer.BlendColor;
             var blockType = BlockType.lookup[blockId];
 
-            if(SimulationGame.IsDebug && SimulationGame.Player.InteriorID == Interior.Outside && !SimulationGame.World.WalkableGrid.IsPositionWalkable(realX, realY))
+            if(SimulationGame.IsDebug && SimulationGame.Player.InteriorID == Interior.Outside && (!SimulationGame.World.WalkableGrid.IsPositionWalkable(realX, realY) || CollisionUtils.GetBlockingTypeFromBlock(blockType.ID) == Enums.BlockingType.BLOCKING))
             {
                 color = Color.Red;
             }

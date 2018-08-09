@@ -23,6 +23,8 @@ namespace Simulation.Game.Hud.WorldBuilder
 {
     public class WorldBuilder: BaseUI
     {
+        public static readonly Point BlockSize = new Point(16, 16);
+
         public enum PlacementType
         {
             NoType,
@@ -45,7 +47,8 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         private string[] tilesets = new string[]
         {
-            @"Tiles\Exterior01"
+            @"Tiles\Exterior01",
+            @"Tiles\Exterior02",
         };
         
         private Button blockTypeBtn;
@@ -648,6 +651,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                         SpritePath = spritePath,
                         SpritePositions = new Point[] { spritePosition },
                         SpriteBounds = spriteBounds,
+                        SpriteOrigin = new Vector2(0, spriteBounds.Y)
                     };
                     break;
                 case PlacementType.AmbientHitableObjectPlacement:
@@ -658,24 +662,27 @@ namespace Simulation.Game.Hud.WorldBuilder
                         SpritePath = spritePath,
                         SpritePositions = new Point[] { spritePosition },
                         SpriteBounds = spriteBounds,
+                        SpriteOrigin = new Vector2(0, spriteBounds.Y)
                     };
                     break;
                 case PlacementType.LivingEntityPlacement:
                     selectedObject = new LivingEntityType()
                     {
                         ID = newId,
-                        Name = "LivingEntity" + newId
+                        Name = "LivingEntity" + newId,
+                        SpriteOrigin = new Point(0, spriteBounds.Y)
                     };
                     break;
             }
 
-            var dialog = new InputDialog("Create Object", JToken.FromObject(selectedObject, SerializationUtils.Serializer).ToString(Formatting.Indented));
+            //var dialog = new InputDialog("Create Object", JToken.FromObject(selectedObject, SerializationUtils.Serializer).ToString(Formatting.Indented));
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                WorldBuilderUtils.ReplaceTypeFromString(placementType, dialog.ResultText);
+            //if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            //{
+            //WorldBuilderUtils.ReplaceTypeFromString(placementType, dialog.ResultText);
+            WorldBuilderUtils.ReplaceTypeFromString(placementType, JToken.FromObject(selectedObject, SerializationUtils.Serializer).ToString());
 
-                if (placementMode == PlacementMode.CreateFromTileset)
+            if (placementMode == PlacementMode.CreateFromTileset)
                 {
                     placementMode = PlacementMode.Manage;
                     manageObjectList.Clear();
@@ -733,7 +740,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                     }
 
                     manageObjectList.SelectElement(selectedItem);
-                }
+                //}
             }
         }
 
@@ -939,9 +946,18 @@ namespace Simulation.Game.Hud.WorldBuilder
                         }
                         else
                         {
-                            var worldBlockPosition = GeometryUtils.GetBlockFromReal((int)SimulationGame.RealWorldMousePosition.X, (int)SimulationGame.RealWorldMousePosition.Y);
+                            if(((ObjectListItem)manageObjectList.SelectedElement) is BlockListItem)
+                            {
+                                var worldBlockPosition = GeometryUtils.GetBlockFromReal((int)SimulationGame.RealWorldMousePosition.X, (int)SimulationGame.RealWorldMousePosition.Y);
 
-                            ((ObjectListItem)manageObjectList.SelectedElement).DrawPreview(spriteBatch, SimulationGame.ConvertWorldPositionToUIPosition(worldBlockPosition.X * WorldGrid.BlockSize.X, worldBlockPosition.Y * WorldGrid.BlockSize.Y));
+                                ((ObjectListItem)manageObjectList.SelectedElement).DrawPreview(spriteBatch, SimulationGame.ConvertWorldPositionToUIPosition(worldBlockPosition.X * WorldGrid.BlockSize.X, worldBlockPosition.Y * WorldGrid.BlockSize.Y));
+                            }
+                            else
+                            {
+                                var worldBlockPosition = GeometryUtils.GetChunkPosition((int)SimulationGame.RealWorldMousePosition.X, (int)SimulationGame.RealWorldMousePosition.Y, 16, 16);
+
+                                ((ObjectListItem)manageObjectList.SelectedElement).DrawPreview(spriteBatch, SimulationGame.ConvertWorldPositionToUIPosition(worldBlockPosition.X * 16, worldBlockPosition.Y * 16));
+                            }
                         }
                     }
                 }

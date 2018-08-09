@@ -74,6 +74,10 @@ namespace Simulation
             get; private set;
         } = false;
 
+        public static bool IsSurroundingEffectsOff
+        {
+            get; private set;
+        } = false;
 
         public static bool IsConsoleOpen
         {
@@ -155,6 +159,7 @@ namespace Simulation
         private bool debugKeyDown = false;
         private bool consoleKeyDown = false;
         private bool worldBuilderKeyDown = false;
+        private bool surroundingEffectsKeyDown = false;
 
         public SimulationGame()
         {
@@ -434,6 +439,20 @@ namespace Simulation
             else
             {
                 godModeKeyDown = false;
+            }
+
+            if (KeyboardState.IsKeyDown(Keys.F6))
+            {
+                if (!surroundingEffectsKeyDown)
+                {
+                    surroundingEffectsKeyDown = true;
+
+                    IsSurroundingEffectsOff = !IsSurroundingEffectsOff;
+                }
+            }
+            else
+            {
+                surroundingEffectsKeyDown = false;
             }
 
             Hud.Update(gameTime);

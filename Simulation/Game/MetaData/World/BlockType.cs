@@ -24,15 +24,6 @@ namespace Simulation.Game.MetaData.World
                 SpritePath=@"terrain_atlas",
                 SpritePosition=new Point(672, 160)
             }},
-            {2, new BlockType()
-            {
-                ID=2,
-                Name="Grass_Waterhole",
-                SpritePath=@"terrain_atlas",
-                BlockingType=BlockingType.BLOCKING,
-                HitBoxType=HitBoxType.HITABLE_BLOCK,
-                SpritePosition=new Point(192, 288)
-            }}
         };
 
         public int ID;

@@ -64,15 +64,15 @@ namespace Simulation.Util.UI
 
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
-                if(leftMouseButtonDown == false && IsHover)
-                {
-                    onClickHandler?.Invoke();
-                }
-
                 leftMouseButtonDown = true;
             }
             else
             {
+                if (leftMouseButtonDown == true && IsHover)
+                {
+                    onClickHandler?.Invoke();
+                }
+
                 leftMouseButtonDown = false;
             }
 

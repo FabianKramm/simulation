@@ -10,7 +10,6 @@ namespace Simulation.Game.Generator
 {
     public class WorldSegmentPlanner
     {
-        public static readonly Point PerlinInterpolation = new Point(16, 16);
         public static readonly float PerlinRange = 1.5f;
 
         public static readonly Point WorldSegmentChunkSize = new Point(4, 4); // 4 * 4 WorldGridChunks
@@ -73,21 +72,15 @@ namespace Simulation.Game.Generator
 
         private void reservePoISpace()
         {
-
+            
         }
 
         private void planHeightMap()
         {
-            if (biome.DoubleNegativeElevationProbability == 0 && biome.NegativeElevationProbability == 0 && biome.ElevationProbability == 0 && biome.DoubleElevationProbability == 0)
+            /*if (biome.DoubleNegativeElevationProbability == 0 && biome.NegativeElevationProbability == 0 && biome.ElevationProbability == 0 && biome.DoubleElevationProbability == 0)
                 return;
 
-            var doubleNegativeElevationTreshold = -(PerlinRange/2) + biome.DoubleNegativeElevationProbability * PerlinRange/5;
-            var negativeElevationTreshold = doubleNegativeElevationTreshold + biome.NegativeElevationProbability * PerlinRange / 5;
-            var noElevationTreshold = PerlinRange + 0.01f - (biome.ElevationProbability * PerlinRange / 5 + biome.DoubleElevationProbability * PerlinRange / 5);
-            var elevationTreshold = noElevationTreshold + biome.ElevationProbability * PerlinRange / 5;
-            var doubleElevationTreshold = elevationTreshold + biome.DoubleElevationProbability * PerlinRange / 5;
-
-            var interpolationSize = PerlinInterpolation.X * PerlinInterpolation.Y;
+            
             
             for (int x = 0; x < WorldSegmentBlockSize.X; x++)
                 for (int y = 0; y < WorldSegmentBlockSize.Y; y++)
@@ -131,12 +124,17 @@ namespace Simulation.Game.Generator
                     {
                         blockInformation[x, y].IsNotElevated = true;
                     }
-                }
+                }*/
         }
 
-        public void interpolateHeightMap()
+        private void interpolateHeightMap()
         {
+            for (int y = WorldSegmentBlockSize.Y - 1; y >= 0; y--)
+                for (int x = WorldSegmentBlockSize.X - 1; x >= 0; x--)
+                {
+                    
 
+                }
         }
 
         public bool IsRectFree(Rect bounds)

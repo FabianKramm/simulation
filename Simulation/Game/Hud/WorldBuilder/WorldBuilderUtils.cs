@@ -8,6 +8,7 @@ using Simulation.Game.MetaData.World;
 using Simulation.Game.Objects;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
+using Simulation.Util.Collision;
 using Simulation.Util.Geometry;
 
 namespace Simulation.Game.Hud.WorldBuilder
@@ -21,16 +22,17 @@ namespace Simulation.Game.Hud.WorldBuilder
             if (listItem is BlockListItem)
             {
                 var blockPosition = GeometryUtils.GetBlockFromReal((int)realPosition.X, (int)realPosition.Y);
+                var blockType = ((BlockListItem)listItem).BlockType;
 
-                SimulationGame.World.SetBlockType(blockPosition.X, blockPosition.Y, SimulationGame.Player.InteriorID, ((BlockListItem)listItem).BlockType.ID);
+                SimulationGame.World.SetBlockType(blockPosition.X, blockPosition.Y, SimulationGame.Player.InteriorID, blockType.ID);
             }
             else
             {
                 if (!SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) && !SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
                 {
-                    var blockPosition = GeometryUtils.GetBlockFromReal((int)realPosition.X, (int)realPosition.Y);
+                    var blockPosition = GeometryUtils.GetChunkPosition((int)realPosition.X, (int)realPosition.Y, 16, 16);
 
-                    realPosition = new Vector2(blockPosition.X * WorldGrid.BlockSize.X, blockPosition.Y * WorldGrid.BlockSize.Y);
+                    realPosition = new Vector2(blockPosition.X * 16, blockPosition.Y * 16);
                 }
 
                 var newWorldPosition = new WorldPosition(realPosition.X, realPosition.Y, SimulationGame.Player.InteriorID);
@@ -55,7 +57,7 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         public static int GenerateNewId(WorldBuilder.PlacementType placementType)
         {
-            int highestNumber = int.MinValue;
+            int highestNumber = -1;
 
             switch (placementType)
             {

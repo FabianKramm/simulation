@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Linq;
 using Simulation.Game.Enums;
 using Simulation.Game.Objects;
-using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Util.Geometry;
 using System.Collections.Generic;
@@ -13,17 +12,7 @@ namespace Simulation.Game.MetaData
     {
         public static Dictionary<int, AmbientHitableObjectType> lookup = new Dictionary<int, AmbientHitableObjectType>()
         {
-            {0, new AmbientHitableObjectType()
-            {
-                ID=0,
-                Name="Tree_01",
-                RelativeBlockingRectangle=new Rect(6, -36, 67, 36),
-                RelativeHitboxRectangle=new Rect(6, -36, 67, 36),
-                SpritePath=@"Environment\Tree01",
-                SpritePositions=new Point[] {Point.Zero},
-                SpriteBounds=new Point(79, 91),
-                SpriteOrigin=new Vector2(0, 91)
-            }}
+            
         };
 
         // General

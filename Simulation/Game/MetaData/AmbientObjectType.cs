@@ -8,25 +8,9 @@ namespace Simulation.Game.MetaData
 {
     public class AmbientObjectType: MetaDataType
     {
-        public static Dictionary<int, AmbientObjectType> lookup = new Dictionary<int, AmbientObjectType>() {
-            { 0, new AmbientObjectType()
-            {
-                ID=0,
-                Name="SMALL_ROCK01",
-                SpritePath=@"Environment\Rock01",
-                SpriteOrigin=new Vector2(0, 20),
-                SpriteBounds=new Point(25, 20),
-                SpritePositions=new Point[] {new Point(0,0)}
-            }},
-            { 1, new AmbientObjectType()
-            {
-                ID=1,
-                Name="SMALL_ROCK02",
-                SpritePath=@"Environment\Rock02",
-                SpriteOrigin=new Vector2(0, 20),
-                SpriteBounds=new Point(25, 20),
-                SpritePositions=new Point[] {new Point(0,0)}
-            }}
+        public static Dictionary<int, AmbientObjectType> lookup = new Dictionary<int, AmbientObjectType>()
+        {
+            
         };
 
         public int ID;
@@ -37,7 +21,7 @@ namespace Simulation.Game.MetaData
         public Vector2 SpriteOrigin;
         public Point SpriteBounds;
         public Point[] SpritePositions;
-        public bool HasDepth = false;
+        public bool HasDepth = true;
 
         public string CustomRendererScript = null;
         public string CustomControllerScript = null;

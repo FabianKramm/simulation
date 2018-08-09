@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>D:/Programmieren/simulation/Simulation/Content/terrain_atlas.png</SourceFile>
-  <SourceTime>2012-11-12T19:56:25.8403631+01:00</SourceTime>
-  <DestFile>D:/Programmieren/simulation/Simulation/Content/bin/Windows/terrain_atlas.xnb</DestFile>
-  <DestTime>2018-08-09T17:27:47.1505383+02:00</DestTime>
+  <SourceFile>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior02.png</SourceFile>
+  <SourceTime>2015-06-19T08:14:08+02:00</SourceTime>
+  <DestFile>D:/Programmieren/simulation/Simulation/Content/bin/Windows/Tiles/Exterior02.xnb</DestFile>
+  <DestTime>2018-08-09T17:27:48.3949544+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2017-03-01T16:05:36+01:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
