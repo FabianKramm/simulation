@@ -3,7 +3,7 @@ using Simulation.Game.Enums;
 using Simulation.Game.World;
 using System.Collections.Generic;
 
-namespace Simulation.Game.MetaData
+namespace Simulation.Game.MetaData.World
 {
     public class BlockType: MetaDataType
     {

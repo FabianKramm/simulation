@@ -19,6 +19,7 @@ using Newtonsoft.Json.Linq;
 using Simulation.Game.Serialization;
 using System.Collections.Generic;
 using Simulation.Game.Renderer.Entities;
+using Simulation.Game.MetaData.World;
 
 /*
  * Open Issues:
@@ -222,6 +223,24 @@ namespace Simulation
                     JToken jToken = JToken.ReadFrom(reader);
 
                     LivingEntityType.lookup = (Dictionary<int, LivingEntityType>)SerializationUtils.Serializer.Deserialize(new JTokenReader(jToken), LivingEntityType.lookup.GetType());
+                }
+
+            if (File.Exists(Util.Util.GetBiomeTypesSavePath()))
+                using (var stream = new StreamReader(Util.Util.GetBiomeTypesSavePath()))
+                using (var reader = new JsonTextReader(stream))
+                {
+                    JToken jToken = JToken.ReadFrom(reader);
+
+                    BiomeType.lookup = (Dictionary<int, BiomeType>)SerializationUtils.Serializer.Deserialize(new JTokenReader(jToken), BiomeType.lookup.GetType());
+                }
+
+            if (File.Exists(Util.Util.GetPointOfInterestSavePath()))
+                using (var stream = new StreamReader(Util.Util.GetPointOfInterestSavePath()))
+                using (var reader = new JsonTextReader(stream))
+                {
+                    JToken jToken = JToken.ReadFrom(reader);
+
+                    PointOfInterestType.lookup = (Dictionary<int, PointOfInterestType>)SerializationUtils.Serializer.Deserialize(new JTokenReader(jToken), PointOfInterestType.lookup.GetType());
                 }
 
             WorldGenerator = new WorldGenerator(1);

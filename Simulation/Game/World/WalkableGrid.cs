@@ -15,7 +15,7 @@ namespace Simulation.Game.World
     // TODO: Cleanup and save unused chunks
     public class WalkableGrid: WorldPartManager<ulong, WalkableGridChunk>
     {
-        public static Point WalkableGridBlockChunkSize = new Point(32, 32);
+        public static Point WalkableGridBlockChunkSize = WorldGrid.WorldChunkBlockSize;
         public static Point WalkableGridPixelChunkSize = new Point(WalkableGridBlockChunkSize.X * WorldGrid.BlockSize.X, WalkableGridBlockChunkSize.Y * WorldGrid.BlockSize.Y);
 
         public static int WalkableGridArrayChunkCount = WalkableGridBlockChunkSize.X * WalkableGridBlockChunkSize.Y / 32;

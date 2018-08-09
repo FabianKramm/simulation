@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.MetaData;
+using Simulation.Game.MetaData.World;
 using Simulation.Util.Geometry;
 using Simulation.Util.UI;
 using Simulation.Util.UI.Elements;

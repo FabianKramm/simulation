@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using Simulation.Game.Generator;
 using Simulation.Game.Hud.WorldBuilder.ObjectListItems;
 using Simulation.Game.MetaData;
+using Simulation.Game.MetaData.World;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Serialization;

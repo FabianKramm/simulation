@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using Simulation.Game.Hud.WorldBuilder.ObjectListItems;
 using Simulation.Game.MetaData;
+using Simulation.Game.MetaData.World;
 using Simulation.Game.Objects;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Simulation.Game.MetaData;
+using Simulation.Game.MetaData.World;
 using Simulation.Game.Objects;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;

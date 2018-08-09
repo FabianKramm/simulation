@@ -12,6 +12,9 @@ namespace Simulation.Util
         private static string AmbientHitableObjectTypesSavePath = "ambientHitableObjectTypes.json";
         private static string LivingEntityTypesSavePath = "livingEntityTypes.json";
 
+        private static string BiomeTypesSavePath = "biomeTypes.json";
+        private static string PointOfInterestSavePath = "pointOfInterestTypes.json";
+
         private static string InteriorSavePath = @"World\Interior\";
         private static string WorldSavePath = @"World\WorldGrid\";
         private static string WalkableGridSavePath = @"World\WalkableGrid\";
@@ -32,6 +35,16 @@ namespace Simulation.Util
         public static string GetBlockTypesSavePath()
         {
             return Path.Combine(GetGameFolder(), MetaDataSavePath, BlockTypesSavePath);
+        }
+
+        public static string GetBiomeTypesSavePath()
+        {
+            return Path.Combine(GetGameFolder(), MetaDataSavePath, BiomeTypesSavePath);
+        }
+
+        public static string GetPointOfInterestSavePath()
+        {
+            return Path.Combine(GetGameFolder(), MetaDataSavePath, PointOfInterestSavePath);
         }
 
         public static string GetAmbientObjectTypesSavePath()

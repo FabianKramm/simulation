@@ -14,6 +14,29 @@ namespace Simulation.Game.Generator
         private static string persistentIdentifier = "persistent_";
         private static NamedLock<string> fileLocks = new NamedLock<string>();
 
+        public static void ResetMetaData()
+        {
+            Util.Util.CreateGameFolders();
+
+            if (File.Exists(Util.Util.GetBlockTypesSavePath()))
+                File.Delete(Util.Util.GetBlockTypesSavePath());
+
+            if (File.Exists(Util.Util.GetAmbientObjectTypesSavePath()))
+                File.Delete(Util.Util.GetAmbientObjectTypesSavePath());
+
+            if (File.Exists(Util.Util.GetAmbientHitableObjectTypesSavePath()))
+                File.Delete(Util.Util.GetAmbientHitableObjectTypesSavePath());
+
+            if (File.Exists(Util.Util.GetLivingEntityTypesSavePath()))
+                File.Delete(Util.Util.GetLivingEntityTypesSavePath());
+
+            if (File.Exists(Util.Util.GetBiomeTypesSavePath()))
+                File.Delete(Util.Util.GetBiomeTypesSavePath());
+
+            if (File.Exists(Util.Util.GetPointOfInterestSavePath()))
+                File.Delete(Util.Util.GetPointOfInterestSavePath());
+        }
+
         public static void ResetWorld()
         {
             Debug.Assert(SimulationGame.World == null, "Should only be called at startup!");
@@ -180,7 +203,7 @@ namespace Simulation.Game.Generator
                 var loadPath = chunkPathPersistentExists ? chunkPathPersistent : chunkPath;
                 var content = File.ReadAllBytes(loadPath);
 
-                return WalkableGridChunk.createChunkFrom(chunkX, chunkY, ref content);
+                return WalkableGridChunk.CreateChunkFrom(chunkX, chunkY, ref content);
             }
             finally
             {

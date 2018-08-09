@@ -6,9 +6,9 @@ namespace Simulation.Game.Generator.InteriorGeneration
 {
     public class InteriorGenerator
     {
-        public static Interior CreateInterior(out WorldLink entranceLink, Point fromBlock, string fromInteriorID = null)
+        public static Interior CreateInterior(WorldLink entranceLink, Point fromBlock, string fromInteriorID = null)
         {
-            int dimX = SimulationGame.WorldGenerator.random.Next(10, 40);
+            /*int dimX = SimulationGame.WorldGenerator.random.Next(10, 40);
             int dimY = SimulationGame.WorldGenerator.random.Next(10, 40);
 
             int linkX = SimulationGame.WorldGenerator.random.Next(1, dimX);
@@ -27,7 +27,9 @@ namespace Simulation.Game.Generator.InteriorGeneration
             entranceLink = new WorldLink(fromBlock, fromInteriorID, new Point(linkX, linkY), retInterior.ID);
             retInterior.AddWorldLink(new WorldLink(new Point(linkX, linkY), retInterior.ID, fromBlock, fromInteriorID));
 
-            return retInterior;
+            return retInterior;*/
+
+            return null;
         }
     }
 }

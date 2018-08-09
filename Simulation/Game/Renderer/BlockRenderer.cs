@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Enums;
 using Simulation.Game.MetaData;
+using Simulation.Game.MetaData.World;
 using Simulation.Game.World;
 using System.Collections.Generic;
 

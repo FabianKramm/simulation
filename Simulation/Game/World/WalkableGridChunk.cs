@@ -28,7 +28,7 @@ namespace Simulation.Game.World
             IsPersistent = persistent;
         }
 
-        public static WalkableGridChunk createEmpty(int chunkX, int chunkY)
+        public static WalkableGridChunk CreateEmpty(int chunkX, int chunkY)
         {
             WalkableGridChunk walkableGridChunk = new WalkableGridChunk(chunkX, chunkY);
 
@@ -37,7 +37,7 @@ namespace Simulation.Game.World
             return walkableGridChunk;
         }
 
-        public static WalkableGridChunk createChunkFrom(int chunkX, int chunkY, ref byte[] fromData)
+        public static WalkableGridChunk CreateChunkFrom(int chunkX, int chunkY, ref byte[] fromData)
         {
             WalkableGridChunk walkableGridChunk = new WalkableGridChunk(chunkX, chunkY);
 
@@ -65,7 +65,6 @@ namespace Simulation.Game.World
         public void SetWalkable(int blockX, int blockY, bool notWalkable)
         {
             var arrayPosition = GeometryUtils.GetIndexFromPoint(blockX, blockY, WalkableGrid.WalkableGridBlockChunkSize.X, WalkableGrid.WalkableGridBlockChunkSize.Y);
-
 
             setBit(ref chunkData[arrayPosition / 32], arrayPosition % 32, notWalkable);
         }

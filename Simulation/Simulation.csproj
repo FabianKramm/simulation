@@ -76,7 +76,9 @@
     <Compile Include="Game\Enums\FractionType.cs" />
     <Compile Include="Game\Enums\HitBoxType.cs" />
     <Compile Include="Game\Fractions\FractionRelations.cs" />
+    <Compile Include="Game\Generator\BlockInformation.cs" />
     <Compile Include="Game\Generator\GeneratorUtils.cs" />
+    <Compile Include="Game\Generator\WorldSegmentPlanner.cs" />
     <Compile Include="Game\Hud\ConsoleFunctions.cs" />
     <Compile Include="Game\Hud\WorldBuilder\ObjectListItems\AmbientHitableObjectListItem.cs" />
     <Compile Include="Game\Hud\WorldBuilder\ObjectListItems\AmbientObjectListItem.cs" />
@@ -89,10 +91,14 @@
     <Compile Include="Game\Hud\WorldBuilder\WorldBuilderUtils.cs" />
     <Compile Include="Game\MetaData\AmbientHitableObjectType.cs" />
     <Compile Include="Game\MetaData\AmbientObjectType.cs" />
-    <Compile Include="Game\MetaData\BlockType.cs" />
+    <Compile Include="Game\MetaData\World\BiomeType.cs" />
+    <Compile Include="Game\MetaData\World\BlockType.cs" />
     <Compile Include="Game\MetaData\LivingEntityType.cs" />
     <Compile Include="Game\MetaData\MetaDataType.cs" />
     <Compile Include="Game\MetaData\SkillType.cs" />
+    <Compile Include="Game\MetaData\World\ElevationTile.cs" />
+    <Compile Include="Game\MetaData\World\EnclosedTile.cs" />
+    <Compile Include="Game\MetaData\World\PointOfInterestType.cs" />
     <Compile Include="Game\Objects\Entities\DurableEntity.cs" />
     <Compile Include="Game\Objects\Entities\LivingEntity.cs" />
     <Compile Include="Game\Objects\GameObject.cs" />
@@ -234,6 +240,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Config\" />
+    <Folder Include="Scripts\Generator\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Util\Dialog\InputDialog.resx">

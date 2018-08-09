@@ -1,22 +1,46 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Objects;
-using Simulation.Game.Generator.Factories;
-using Simulation.Game.Generator.InteriorGeneration;
-using Simulation.Game.Hud;
-using Simulation.Game.World;
-using Simulation.Util;
 using System;
-using System.Collections.Generic;
-using Simulation.Util.Geometry;
-using Simulation.Game.Enums;
+using Simulation.Game.MetaData.World;
 
 namespace Simulation.Game.Generator
 {
+    /*
+     * Planner: 
+     *   - Biome
+     *   - Streets
+     *   - Rivers
+     *   - Decoration
+     *   - Decide Places for POI
+     *   - Animals / Base Population
+     *   
+     * Biome (MetaData):
+     *   - Biome
+     *   - NormalBlocks
+     *   - ElevationBlocks
+     *   - StreetBlocks
+     *   - RiverBlocks
+     *   - DecorationObjects
+     *   - LivingEntities 
+     * 
+     * Points of Interest (MetaData):
+     *   - Biome Occurances
+     *   - Size
+     *   - Probability
+     *   - Should Place Decoration Objects & Entities within Area
+     *   - Rivers & Streets allowed
+     *   
+     *  Order of Execution:
+     *   - Elevation
+     *   - Streets + Rivers
+     *   - Draw Blocks & Noise
+     *   - Reserve Space for persistent Blocks & POI
+     *   - Add Decoration Objects
+     *   - Add Living Entities
+     *   - Place POI
+     */
     public class WorldGenerator
     {
-        private static Point generatedChunkBlockSize = new Point(128, 128);
-
-        public Random random;
+        private Random random;
         private object generatorLock = new object();
 
         public WorldGenerator(int seed)
@@ -28,91 +52,21 @@ namespace Simulation.Game.Generator
         {
             lock(generatorLock)
             {
-                generateWorld(blockX, blockY);
+                generateWorldSegment(blockX, blockY);
             }
         }
 
-        private void generateWorld(int blockX, int blockY)
+        private void generateWorldSegment(int blockX, int blockY)
         {
-            Point chunkPosition = GeometryUtils.GetChunkPosition(blockX, blockY, generatedChunkBlockSize.X, generatedChunkBlockSize.Y);
-            
-            var newX = chunkPosition.X * generatedChunkBlockSize.X;
-            var newY = chunkPosition.Y * generatedChunkBlockSize.Y;
+            var worldSegment = new WorldSegmentPlanner(random.Next(0, 50000), new Point(blockX, blockY), BiomeType.Plain);
 
-            Point worldGridChunkPosition = GeometryUtils.GetChunkPosition(newX, newY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
-
-            if(WorldLoader.DoesWorldGridChunkExist(worldGridChunkPosition.X, worldGridChunkPosition.Y))
+            if(worldSegment.Init() == false)
             {
-                return;
+                return; // Segment does already exist
             }
 
-            Dictionary<(int, int), WorldGridChunk> worldGrid = new Dictionary<(int, int), WorldGridChunk>();
-            Dictionary<(int, int), WalkableGridChunk> walkableGrid = new Dictionary<(int, int), WalkableGridChunk>();
-
-            GameConsole.WriteLine("WorldGeneration", "Generate new Chunk at " + chunkPosition.X + "," + chunkPosition.Y);
-
-            // Loop over Blocks
-            for (int i = newX; i < (newX + generatedChunkBlockSize.X); i++)
-                for (int j = newY; j < (newY + generatedChunkBlockSize.Y); j++)
-                {
-                    Point worldGridChunk = GeometryUtils.GetChunkPosition(i, j, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
-                    Point walkableGridChunk = GeometryUtils.GetChunkPosition(i, j, WalkableGrid.WalkableGridBlockChunkSize.X, WalkableGrid.WalkableGridBlockChunkSize.Y);
-
-                    if(worldGrid.ContainsKey((worldGridChunk.X, worldGridChunk.Y)) == false)
-                    {
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)] = new WorldGridChunk(worldGridChunk.X * WorldGrid.WorldChunkPixelSize.X, worldGridChunk.Y * WorldGrid.WorldChunkPixelSize.Y);
-                    }
-
-                    if (walkableGrid.ContainsKey((walkableGridChunk.X, walkableGridChunk.Y)) == false)
-                    {
-                        walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)] = WalkableGridChunk.createEmpty(walkableGridChunk.X, walkableGridChunk.Y);
-                    }
-                    
-                    int Value = random.Next(0, 300);
-
-                    if (Value <= 2)
-                    {
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].SetBlockType(i, j, 2);
-
-                        walkableGrid[(walkableGridChunk.X, walkableGridChunk.Y)].SetWalkable(i, j, true);
-                    }
-                    else
-                    {
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].SetBlockType(i, j, 1);
-
-                        if(Value == 95)
-                        {
-                            WorldLink worldLink;
-
-                            WorldLoader.SaveInterior(InteriorGenerator.CreateInterior(out worldLink, new Point(i, j)));
-
-                            worldGrid[(worldGridChunk.X, worldGridChunk.Y)].AddWorldLink(worldLink);
-                        }
-                    }
-
-                    if (Value <= 10 && Value > 6)
-                    {
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].AddAmbientObject(AmbientObjectFactory.createSmallRocks(new WorldPosition(i * WorldGrid.BlockSize.X, j * WorldGrid.BlockSize.Y, Interior.Outside)));
-                    }
-                    else if (Value <= 6 && Value >= 4)
-                    {
-                        AmbientHitableObject tree = AmbientObjectFactory.createTree(new WorldPosition(i * WorldGrid.BlockSize.X, j * WorldGrid.BlockSize.Y, Interior.Outside));
-
-                        worldGrid[(worldGridChunk.X, worldGridChunk.Y)].AddContainedObject(tree);
-
-                        // TODO: add to walkable grid
-                    }
-                }
-
-            foreach(KeyValuePair<(int,int), WalkableGridChunk> walkableGridChunk in walkableGrid)
-            {
-                WorldLoader.SaveWalkableGridChunk(walkableGridChunk.Key.Item1, walkableGridChunk.Key.Item2, walkableGridChunk.Value);
-            }
-
-            foreach (KeyValuePair<(int, int), WorldGridChunk> worldGridChunk in worldGrid)
-            {
-                WorldLoader.SaveWorldGridChunk(worldGridChunk.Key.Item1, worldGridChunk.Key.Item2, worldGridChunk.Value);
-            }
+            worldSegment.Generate();
+            worldSegment.Build();
         }
     }
 }

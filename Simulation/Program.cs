@@ -37,11 +37,37 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
-            // Console.WriteLine(Util.Util.GetCustomControllerBasePath());
-            // WorldLoader.ResetWorld();
+            WorldLoader.ResetMetaData();
+            WorldLoader.ResetWorld();
 
             using (var game = new SimulationGame())
                game.Run(); 
+
+            /*var fastNoise = new FastNoise(12);
+
+            for (int i = 0; i < 128; i++)
+            {
+                for (int j = 0; j < 128; j++)
+                {
+                    float avg = 0.0f;
+
+                    for (int x = 0; x < 16; x++)
+                        for (int y = 0; y < 16; y++)
+                            avg += fastNoise.GetPerlin(i * 16 + x, j * 16 + y);
+
+                    Console.Write(Math.Round(avg / (16 * 16), 2) + " ");
+                }
+
+               Console.Write("\n");
+            }
+
+            Console.WriteLine("DONE!"); */
+
+            //Dictionary<string, int> abc = new Dictionary<string, int>();
+
+            //Console.WriteLine(abc["test"]);
+
+            // Console.WriteLine(Util.Util.GetCustomControllerBasePath());
 
             /* var rect1 = new Rect(0, 0, 10, 10);
             var rect2 = new Rect(0, 0, 10, 10);
