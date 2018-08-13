@@ -56,9 +56,15 @@ namespace Simulation.Game.Hud.WorldBuilder
                     {
                         newPosition = new WorldPosition(gameObject.Position.X - 1, gameObject.Position.Y, gameObject.InteriorID);
                     }
-                    else
+                    else if(SimulationGame.KeyboardState.IsKeyDown(Keys.LeftShift) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightShift))
                     {
                         newPosition = new WorldPosition(gameObject.BlockPosition.X - 1, gameObject.BlockPosition.Y, gameObject.InteriorID).ToRealPosition();
+                    }
+                    else
+                    {
+                        var halfBlockPosition = GeometryUtils.GetChunkPosition((int)gameObject.Position.X, (int)gameObject.Position.Y, 16, 16);
+
+                        newPosition = new WorldPosition((halfBlockPosition.X - 1) * 16, halfBlockPosition.Y * 16, gameObject.InteriorID);
                     }
 
                     gameObject.UpdatePosition(newPosition);
@@ -91,9 +97,15 @@ namespace Simulation.Game.Hud.WorldBuilder
                     {
                         newPosition = new WorldPosition(gameObject.Position.X + 1, gameObject.Position.Y, gameObject.InteriorID);
                     }
-                    else
+                    else if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftShift) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightShift))
                     {
                         newPosition = new WorldPosition(gameObject.BlockPosition.X + 1, gameObject.BlockPosition.Y, gameObject.InteriorID).ToRealPosition();
+                    }
+                    else
+                    {
+                        var halfBlockPosition = GeometryUtils.GetChunkPosition((int)gameObject.Position.X, (int)gameObject.Position.Y, 16, 16);
+
+                        newPosition = new WorldPosition((halfBlockPosition.X + 1) * 16, halfBlockPosition.Y * 16, gameObject.InteriorID);
                     }
 
                     gameObject.UpdatePosition(newPosition);
@@ -126,9 +138,15 @@ namespace Simulation.Game.Hud.WorldBuilder
                     {
                         newPosition = new WorldPosition(gameObject.Position.X, gameObject.Position.Y - 1, gameObject.InteriorID);
                     }
-                    else
+                    else if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftShift) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightShift))
                     {
                         newPosition = new WorldPosition(gameObject.BlockPosition.X, gameObject.BlockPosition.Y - 1, gameObject.InteriorID).ToRealPosition();
+                    }
+                    else
+                    {
+                        var halfBlockPosition = GeometryUtils.GetChunkPosition((int)gameObject.Position.X, (int)gameObject.Position.Y, 16, 16);
+
+                        newPosition = new WorldPosition((halfBlockPosition.X) * 16, (halfBlockPosition.Y - 1) * 16, gameObject.InteriorID);
                     }
 
                     gameObject.UpdatePosition(newPosition);
@@ -161,9 +179,15 @@ namespace Simulation.Game.Hud.WorldBuilder
                     {
                         newPosition = new WorldPosition(gameObject.Position.X, gameObject.Position.Y + 1, gameObject.InteriorID);
                     }
-                    else
+                    else if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftShift) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightShift))
                     {
                         newPosition = new WorldPosition(gameObject.BlockPosition.X, gameObject.BlockPosition.Y + 1, gameObject.InteriorID).ToRealPosition();
+                    }
+                    else
+                    {
+                        var halfBlockPosition = GeometryUtils.GetChunkPosition((int)gameObject.Position.X, (int)gameObject.Position.Y, 16, 16);
+
+                        newPosition = new WorldPosition((halfBlockPosition.X) * 16, (halfBlockPosition.Y + 1) * 16, gameObject.InteriorID);
                     }
 
                     gameObject.UpdatePosition(newPosition);

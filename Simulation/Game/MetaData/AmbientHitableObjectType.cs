@@ -34,7 +34,7 @@ namespace Simulation.Game.MetaData
         public string CustomControllerScript = null;
         public JObject CustomProperties = null;
 
-        public int FrameDuration = 120;
+        public int FrameDuration = 180;
 
         public static AmbientHitableObject Create(WorldPosition worldPosition, AmbientHitableObjectType ambientHitableObjectType)
         {
@@ -56,14 +56,10 @@ namespace Simulation.Game.MetaData
             var ambientHitableObjectType = lookup[ambientHitableObject.AmbientHitableObjectType];
 
             var texture = SimulationGame.ContentManager.Load<Texture2D>(ambientHitableObjectType.SpritePath);
-            var sheet = new Spritesheet.Spritesheet(texture);
-
-            sheet = sheet.WithCellOrigin(ambientHitableObjectType.SpriteOrigin.ToPoint()).WithFrameDuration(ambientHitableObjectType.FrameDuration);
-
-            Frame[] frames = new Frame[ambientHitableObjectType.SpritePositions.Length];
+            var frames = new Frame[ambientHitableObjectType.SpritePositions.Length];
 
             for (var i = 0; i < ambientHitableObjectType.SpritePositions.Length; i++)
-                frames[i] = sheet.CreateFrame(ambientHitableObjectType.SpritePositions[i].X, ambientHitableObjectType.SpritePositions[i].Y, sheet.FrameDefaultDuration, sheet.FrameDefaultEffects);
+                frames[i] = new Frame(texture, new Rectangle(ambientHitableObjectType.SpritePositions[i], ambientHitableObjectType.SpriteBounds), ambientHitableObjectType.SpriteOrigin.ToPoint(), ambientHitableObjectType.FrameDuration, SpriteEffects.None);
 
             return new Animation(frames);
         }

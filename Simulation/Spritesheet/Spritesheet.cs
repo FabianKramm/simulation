@@ -11,7 +11,7 @@
         private Spritesheet(Texture2D texture, Point? cellSize = null, Point? cellOffset = null, Point? cellOrigin = null, double frameDuration = 200.0f, SpriteEffects frameEffects = SpriteEffects.None)
         {
             this.Texture = texture;
-            this.CellSize = cellSize ?? new Point(32, 32);
+            this.CellSize = cellSize ?? new Point(0, 0);
             this.CellOffset = cellOffset ?? new Point(0, 0);
             this.CellOrigin = cellOrigin ?? new Point(0, 0);
             this.FrameDefaultDuration = frameDuration;

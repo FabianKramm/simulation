@@ -49,6 +49,20 @@ namespace Simulation.Game.Hud.WorldBuilder
         {
             @"Tiles\Exterior01",
             @"Tiles\Exterior02",
+            @"Tiles\Exterior03",
+            @"Tiles\Exterior04",
+            @"Tiles\Exterior05",
+            @"Tiles\Exterior06",
+            @"Tiles\Exterior07",
+            @"Tiles\Exterior08",
+
+            @"Tiles\Interior\Interior01",
+            @"Tiles\Interior\Interior02",
+            @"Tiles\Interior\Interior03",
+            @"Tiles\Interior\Interior04",
+
+            @"Tiles\Objects\torch",
+            @"Tiles\Objects\fountain",
         };
         
         private Button blockTypeBtn;

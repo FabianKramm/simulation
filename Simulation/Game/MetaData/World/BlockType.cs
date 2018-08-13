@@ -21,9 +21,9 @@ namespace Simulation.Game.MetaData.World
             {1, new BlockType()
             {
                 ID=1,
-                Name="Grass_01",
-                SpritePath=@"terrain_atlas",
-                SpritePosition=new Point(672, 160)
+                Name="Grass",
+                SpritePath=@"Tiles\Exterior01",
+                SpritePosition=new Point(0, 0)
             }},
         };
 

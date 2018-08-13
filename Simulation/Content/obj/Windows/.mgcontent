@@ -4,8 +4,6 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>D:/Programmieren/simulation/Simulation/Content/base_out_atlas.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/terrain_atlas.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Spells/Fireball/Lv1UFireballp.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Arial.spritefont</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Misc/cursorDefault.png</File>
@@ -25,5 +23,17 @@
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior01.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/ArialBig.spritefont</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior02.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior01.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior02.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior03.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior04.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Objects/fountain.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Objects/torch.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior03.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior04.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior05.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior06.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior07.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior08.png</File>
   </SourceFiles>
 </SourceFileCollection>

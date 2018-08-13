@@ -8,8 +8,6 @@ namespace Simulation.Game.Generator
         public static void GenerateHeightMap(WorldSegmentPlanner w)
         {
             var elevationCap = GeometryUtils.Clamp(w.Biome.ElevationProbability, 0, 1) * 0.6f;
-            var deelevationCap = 0.2f;
-            var completeDeelevationCap = 0.2f;
 
             if (elevationCap == 0.0f)
                 return;
