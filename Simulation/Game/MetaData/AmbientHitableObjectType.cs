@@ -10,10 +10,7 @@ namespace Simulation.Game.MetaData
 {
     public class AmbientHitableObjectType: MetaDataType
     {
-        public static Dictionary<int, AmbientHitableObjectType> lookup = new Dictionary<int, AmbientHitableObjectType>()
-        {
-            
-        };
+        public static Dictionary<int, AmbientHitableObjectType> lookup = new Dictionary<int, AmbientHitableObjectType>();
 
         // General
         public int ID;

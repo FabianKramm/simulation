@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using Simulation.Game.World;
 
 namespace Simulation.Util.Geometry
@@ -21,6 +22,7 @@ namespace Simulation.Util.Geometry
         public int Width;
         public int Height;
 
+        [JsonIgnore]
         public int Left
         {
             get
@@ -29,6 +31,7 @@ namespace Simulation.Util.Geometry
             }
         }
 
+        [JsonIgnore]
         public int Top
         {
             get
@@ -37,6 +40,7 @@ namespace Simulation.Util.Geometry
             }
         }
 
+        [JsonIgnore]
         public int Right
         {
             get
@@ -45,6 +49,7 @@ namespace Simulation.Util.Geometry
             }
         }
 
+        [JsonIgnore]
         public int Bottom
         {
             get

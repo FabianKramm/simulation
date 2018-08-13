@@ -639,17 +639,20 @@ namespace Simulation.Game.Hud.WorldBuilder
             {
                 int newId = WorldBuilderUtils.CreateObject(placementType, placementMode, tileSetSelectionView);
 
-                switch (placementType)
+                if(newId >= 0)
                 {
-                    case PlacementType.BlockPlacement:
-                        tileSetSelectionView.SelectedObject = BlockType.lookup[newId];
-                        break;
-                    case PlacementType.AmbientObjectPlacement:
-                        tileSetSelectionView.SelectedObject = AmbientObjectType.lookup[newId];
-                        break;
-                    case PlacementType.AmbientHitableObjectPlacement:
-                        tileSetSelectionView.SelectedObject = AmbientHitableObjectType.lookup[newId];
-                        break;
+                    switch (placementType)
+                    {
+                        case PlacementType.BlockPlacement:
+                            tileSetSelectionView.SelectedObject = BlockType.lookup[newId];
+                            break;
+                        case PlacementType.AmbientObjectPlacement:
+                            tileSetSelectionView.SelectedObject = AmbientObjectType.lookup[newId];
+                            break;
+                        case PlacementType.AmbientHitableObjectPlacement:
+                            tileSetSelectionView.SelectedObject = AmbientHitableObjectType.lookup[newId];
+                            break;
+                    }
                 }
             }
         }

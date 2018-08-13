@@ -3,13 +3,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Simulation.Game.Hud.WorldBuilder.ObjectListItems;
 using Simulation.Game.MetaData;
 using Simulation.Game.MetaData.World;
 using Simulation.Game.Objects;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
-using Simulation.Util.Collision;
+using Simulation.Util.Dialog;
 using Simulation.Util.Geometry;
 using static Simulation.Game.Hud.WorldBuilder.WorldBuilder;
 
@@ -102,7 +101,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
 
             object selectedObject = null;
-            int newId = WorldBuilderUtils.GenerateNewId(placementType);
+            int newId = GenerateNewId(placementType);
 
             switch (placementType)
             {
@@ -135,7 +134,9 @@ namespace Simulation.Game.Hud.WorldBuilder
                         SpritePath = spritePath,
                         SpritePositions = new Point[] { spritePosition },
                         SpriteBounds = spriteBounds,
-                        SpriteOrigin = new Vector2(0, spriteBounds.Y)
+                        SpriteOrigin = new Vector2(0, spriteBounds.Y),
+                        RelativeBlockingRectangle = new Rect(0, -spriteBounds.Y, spriteBounds.X, spriteBounds.Y),
+                        RelativeHitboxRectangle = new Rect(0, -spriteBounds.Y, spriteBounds.X, spriteBounds.Y)
                     };
                     break;
                 case PlacementType.LivingEntityPlacement:
@@ -148,7 +149,8 @@ namespace Simulation.Game.Hud.WorldBuilder
                     break;
             }
 
-            ReplaceTypeFromString(placementType, JToken.FromObject(selectedObject, SerializationUtils.Serializer).ToString());
+            if (ReplaceTypeFromString(placementType, JToken.FromObject(selectedObject, SerializationUtils.Serializer).ToString()) == false)
+                return -1;
 
             return newId;
         }
@@ -209,8 +211,10 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
         }
 
-        public static void ReplaceTypeFromString(WorldBuilder.PlacementType placementType, string objectText)
+        public static bool ReplaceTypeFromString(WorldBuilder.PlacementType placementType, string objectText)
         {
+            InputDialog dialog;
+
             switch (placementType)
             {
                 case WorldBuilder.PlacementType.BlockPlacement:
@@ -226,10 +230,20 @@ namespace Simulation.Game.Hud.WorldBuilder
                     AmbientHitableObjectType.lookup[newAmbientHitableObjectType.ID] = newAmbientHitableObjectType;
                     break;
                 case WorldBuilder.PlacementType.LivingEntityPlacement:
-                    LivingEntityType newLivingEntityType = JsonConvert.DeserializeObject<LivingEntityType>(objectText, SerializationUtils.SerializerSettings);
-                    LivingEntityType.lookup[newLivingEntityType.ID] = newLivingEntityType;
-                    break;
+                    dialog = new InputDialog("Create LivingEntity", objectText);
+
+                    if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        LivingEntityType newLivingEntityType = JsonConvert.DeserializeObject<LivingEntityType>(dialog.ResultText, SerializationUtils.SerializerSettings);
+                        LivingEntityType.lookup[newLivingEntityType.ID] = newLivingEntityType;
+
+                        return true;
+                    }
+
+                    return false;
             }
+
+            return true;
         }
     }
 }
