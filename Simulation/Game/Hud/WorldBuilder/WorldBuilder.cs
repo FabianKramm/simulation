@@ -102,7 +102,7 @@ namespace Simulation.Game.Hud.WorldBuilder
         public void LoadContent()
         {
             Bounds = new Rect(SimulationGame.Resolution.Width * 2 / 3, 0, SimulationGame.Resolution.Width / 3, SimulationGame.Resolution.Height);
-            tilesetSelectionArea = new Rect(Bounds.X, Bounds.Y + 120, Bounds.Width - 50, Bounds.Height);
+            tilesetSelectionArea = new Rect(Bounds.X, Bounds.Y + 120, Bounds.Width - 10, Bounds.Height);
 
             backgroundOverlay = new Texture2D(SimulationGame.Graphics.GraphicsDevice, 1, 1);
             backgroundOverlay.SetData(new Color[] { Color.White });
@@ -111,6 +111,13 @@ namespace Simulation.Game.Hud.WorldBuilder
             {
                 Bounds = new Rect(0, 0, SimulationGame.Resolution.Width * 2 / 3, SimulationGame.Resolution.Height)
             };
+            placeView.OnKeyPress(Keys.Escape, () =>
+            {
+                if(placementMode == PlacementMode.CreateFromTileset)
+                {
+                    tileSetSelectionView.Deselect();
+                }
+            });
             placeView.OnClick(placeObjectAtPosition);
 
             selectedObjectDetailTextView = new TextView(tilesetSelectionArea, "");
@@ -198,7 +205,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             createIfNotExistBtn.OnClick(createNewObjectIfNotExists);
 
             // Create Btn
-            createBtn = new Button("Create New", new Point(createBtn.Bounds.Right + 10, manageBtn.Bounds.Bottom + 10));
+            createBtn = new Button("Create New", new Point(createIfNotExistBtn.Bounds.Right + 10, manageBtn.Bounds.Bottom + 10));
             createBtn.OnClick(createNewObject);
 
             // Edit Instance Btn
@@ -375,7 +382,14 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         private void placeObjectAtPosition()
         {
-            WorldBuilderUtils.CreateObjectAtMousePosition(((ObjectListItem)manageObjectList.SelectedElement).GetObject());
+            if(placementMode == PlacementMode.Manage)
+            {
+                WorldBuilderUtils.CreateObjectAtMousePosition(((ObjectListItem)manageObjectList.SelectedElement).GetObject());
+            }
+            else if(placementMode == PlacementMode.CreateFromTileset && tileSetSelectionView.SelectedObject != null)
+            {
+                WorldBuilderUtils.CreateObjectAtMousePosition(tileSetSelectionView.SelectedObject);
+            }
         }
 
         private void handleInspectGameObjectSelection(List<GameObject> gameObject)
@@ -761,7 +775,11 @@ namespace Simulation.Game.Hud.WorldBuilder
                             tileSetSelectionView.Update(gameTime);
 
                             if (tileSetSelectionView.SelectedSpritePosition != null)
+                            {
                                 createBtn.Update(gameTime);
+                                createIfNotExistBtn.Update(gameTime);
+                            }
+                            
                             break;
                     }
 
@@ -854,7 +872,11 @@ namespace Simulation.Game.Hud.WorldBuilder
                             tileSetSelectionView.Draw(spriteBatch, gameTime);
 
                             if (tileSetSelectionView.SelectedSpritePosition != null)
+                            {
                                 createBtn.Draw(spriteBatch, gameTime);
+                                createIfNotExistBtn.Draw(spriteBatch, gameTime);
+                            }
+                                
                             break;
                     }
 

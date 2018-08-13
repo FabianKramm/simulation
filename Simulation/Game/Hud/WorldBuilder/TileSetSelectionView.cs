@@ -37,6 +37,13 @@ namespace Simulation.Game.Hud.WorldBuilder
             OnKeyHold(Keys.Down, handleDownKeyDown);
         }
 
+        public void Deselect()
+        {
+            SelectedObject = null;
+            SelectedSpriteBounds = InitialTileSize;
+            SelectedSpritePosition = null;
+        }
+
         private void handleDownKeyDown()
         {
             if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftShift) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightShift))
@@ -253,7 +260,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                         
                         if (spritePosition.Contains(selectedTilePoint))
                         {
-                            SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle(Bounds.X + selectedTilePoint.X - scrollOffset.X, Bounds.Y + selectedTilePoint.Y - scrollOffset.Y, SelectedSpriteBounds.X, SelectedSpriteBounds.Y), Color.Red);
+                            SimulationGame.PrimitiveDrawer.Rectangle(new Rectangle(Bounds.X + selectedTilePoint.X - scrollOffset.X, Bounds.Y + selectedTilePoint.Y - scrollOffset.Y, SelectedSpriteBounds.X, SelectedSpriteBounds.Y), SelectedObject != null ? Color.Orange : Color.Red);
                         }
                     }
                 }
