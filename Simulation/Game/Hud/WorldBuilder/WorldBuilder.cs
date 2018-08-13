@@ -45,7 +45,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             CreateFromJson
         }
 
-        private string[] tilesets = new string[]
+        private readonly string[] tilesets = new string[]
         {
             @"Tiles\Exterior01",
             @"Tiles\Exterior02",
@@ -55,14 +55,28 @@ namespace Simulation.Game.Hud.WorldBuilder
             @"Tiles\Exterior06",
             @"Tiles\Exterior07",
             @"Tiles\Exterior08",
+            @"Tiles\Exterior09",
+            @"Tiles\Exterior10",
+            @"Tiles\Exterior11",
+            @"Tiles\Exterior12",
+            @"Tiles\Exterior13",
+            @"Tiles\Exterior14",
 
             @"Tiles\Interior\Interior01",
             @"Tiles\Interior\Interior02",
             @"Tiles\Interior\Interior03",
             @"Tiles\Interior\Interior04",
+            @"Tiles\Interior\Interior05",
+            @"Tiles\Interior\Interior06",
+            @"Tiles\Interior\Interior07",
+            @"Tiles\Interior\Interior08",
+            @"Tiles\Interior\Interior09",
+            @"Tiles\Interior\Interior10",
+            @"Tiles\Interior\Interior11",
 
             @"Tiles\Objects\torch",
             @"Tiles\Objects\fountain",
+            @"Tiles\Objects\clutter01",
         };
         
         private Button blockTypeBtn;
@@ -255,6 +269,19 @@ namespace Simulation.Game.Hud.WorldBuilder
             removeInteriorBtn.OnClick(handleRemoveInteriorBtn);
 
             OnKeyPress(Keys.Delete, handleRemoveInstanceBtnClick);
+            OnRightClick(() =>
+            {
+                if (placementMode == PlacementMode.CreateFromTileset)
+                {
+                    placementMode = PlacementMode.ChooseTileset;
+                }
+            });
+            OnKeyPress(Keys.Back, () => {
+                if(placementMode == PlacementMode.CreateFromTileset)
+                {
+                    placementMode = PlacementMode.ChooseTileset;
+                }
+            });
 
             AddElement(blockTypeBtn);
             AddElement(ambientObjectTypeBtn);

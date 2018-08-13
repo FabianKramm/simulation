@@ -11,6 +11,7 @@ namespace Simulation.Util.UI
     {
         public Point MousePosition;
         public bool LeftButtonDown;
+        public bool RightButtonDown;
     }
 
     public abstract class UIElement
@@ -19,7 +20,10 @@ namespace Simulation.Util.UI
         private List<KeyHoldHandler> keyHoldHandler = new List<KeyHoldHandler>();
 
         private bool leftMouseButtonDown = false;
+        private bool rightMouseButtonDown = false;
+
         private Action onClickHandler;
+        private Action onRightClickHandler;
         private Action<MouseMoveEvent> onMouseMoveHandler;
         private Point lastMousePosition;
         private bool lastButtonPressedState = false;
@@ -51,6 +55,11 @@ namespace Simulation.Util.UI
             onClickHandler = callback;
         }
 
+        public void OnRightClick(Action callback)
+        {
+            onRightClickHandler = callback;
+        }
+
         public void OffClick()
         {
             onClickHandler = null;
@@ -61,6 +70,20 @@ namespace Simulation.Util.UI
             var mouseState = SimulationGame.MouseState;
 
             IsHover = Bounds.Contains(mouseState.Position);
+
+            if (mouseState.RightButton == ButtonState.Pressed)
+            {
+                rightMouseButtonDown = true;
+            }
+            else
+            {
+                if (rightMouseButtonDown == true && IsHover)
+                {
+                    onRightClickHandler?.Invoke();
+                }
+
+                rightMouseButtonDown = false;
+            }
 
             if (mouseState.LeftButton == ButtonState.Pressed)
             {
@@ -91,7 +114,8 @@ namespace Simulation.Util.UI
                     onMouseMoveHandler(new MouseMoveEvent
                     {
                         MousePosition = mouseState.Position,
-                        LeftButtonDown = newButtonPressedState
+                        LeftButtonDown = newButtonPressedState,
+                        RightButtonDown = mouseState.RightButton == ButtonState.Pressed
                     });
 
                     lastMousePosition = mouseState.Position;
