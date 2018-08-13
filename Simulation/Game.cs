@@ -306,24 +306,32 @@ namespace Simulation
             using (var stream = new StreamWriter(Util.Util.GetBlockTypesSavePath()))
             using (var writer = new JsonTextWriter(stream))
             {
+                writer.Formatting = Formatting.Indented;
+
                 JToken.FromObject(BlockType.lookup, SerializationUtils.Serializer).WriteTo(writer);
             }
 
             using (var stream = new StreamWriter(Util.Util.GetAmbientObjectTypesSavePath()))
             using (var writer = new JsonTextWriter(stream))
             {
+                writer.Formatting = Formatting.Indented;
+
                 JToken.FromObject(AmbientObjectType.lookup, SerializationUtils.Serializer).WriteTo(writer);
             }
 
             using (var stream = new StreamWriter(Util.Util.GetAmbientHitableObjectTypesSavePath()))
             using (var writer = new JsonTextWriter(stream))
             {
+                writer.Formatting = Formatting.Indented;
+
                 JToken.FromObject(AmbientHitableObjectType.lookup, SerializationUtils.Serializer).WriteTo(writer);
             }
 
             using (var stream = new StreamWriter(Util.Util.GetLivingEntityTypesSavePath()))
             using (var writer = new JsonTextWriter(stream))
             {
+                writer.Formatting = Formatting.Indented;
+
                 JToken.FromObject(LivingEntityType.lookup, SerializationUtils.Serializer).WriteTo(writer);
             }
 

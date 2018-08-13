@@ -27,6 +27,7 @@ namespace Simulation.Game.MetaData.World
                 {
                     1
                 },
+                ElevationProbability=1.0f,
             }}
         };
         public static readonly BiomeType Plain = lookup[0];
@@ -34,9 +35,7 @@ namespace Simulation.Game.MetaData.World
         public int ID;
 
         public float ElevationProbability = 0;
-        public float ElevationHeights = 0;
         public int ElevationInterpolation = 16;
-        public bool NegativeElevationAllowed = false;
 
         public EnclosedTile StreetTileIds = null;
         public EnclosedTile RiverTileIds = null;

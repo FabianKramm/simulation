@@ -5,6 +5,7 @@ using Simulation.Util;
 using Simulation.Util.Collision;
 using Simulation.Util.Geometry;
 using System;
+using System.Collections.Generic;
 
 namespace Simulation.Game.Generator
 {
@@ -18,17 +19,20 @@ namespace Simulation.Game.Generator
         private Point startBlockPosition;
         private Point startChunkPosition;
         
-        private FastNoise noiseGenerator;
-        private BiomeType biome;
-        private BlockInformation[,] blockInformation;
+        public FastNoise NoiseGenerator;
+        public Random Random;
+
+        public BiomeType Biome;
+        public BlockInformation[,] Blocks;
 
         public WorldSegmentPlanner(int seed, Point blockPosition, BiomeType biomeType)
         {
-            noiseGenerator = new FastNoise(seed);
-            blockInformation = new BlockInformation[WorldSegmentBlockSize.X, WorldSegmentBlockSize.Y];
+            Random = new Random(seed);
+            NoiseGenerator = new FastNoise(seed);
+            Blocks = new BlockInformation[WorldSegmentBlockSize.X, WorldSegmentBlockSize.Y];
             startChunkPosition = GeometryUtils.GetChunkPosition(blockPosition.X, blockPosition.Y, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
             startBlockPosition = blockPosition;
-            biome = biomeType;
+            Biome = biomeType;
         }
 
         public bool Init()
@@ -48,15 +52,15 @@ namespace Simulation.Game.Generator
 
                             if (worldGridChunkExists)
                             {
-                                blockInformation[blockPositionWithin.X, blockPositionWithin.Y] = null;
+                                Blocks[blockPositionWithin.X, blockPositionWithin.Y] = null;
                             }
                             else
                             {
                                 doesSegmentAlreadyExist = false;
 
-                                blockInformation[blockPositionWithin.X, blockPositionWithin.Y] = new BlockInformation()
+                                Blocks[blockPositionWithin.X, blockPositionWithin.Y] = new BlockInformation()
                                 {
-                                    BlockId = biome.MainTilesIds[0]
+                                    BlockId = Biome.MainTilesIds[0]
                                 };
                             }
                         }
@@ -67,7 +71,7 @@ namespace Simulation.Game.Generator
 
         public void Generate()
         {
-            planHeightMap();
+            ElevationGenerator.GenerateHeightMap(this);
         }
 
         private void reservePoISpace()
@@ -75,66 +79,43 @@ namespace Simulation.Game.Generator
             
         }
 
-        private void planHeightMap()
+        public bool BlockExists(int blockX, int blockY)
         {
-            /*if (biome.DoubleNegativeElevationProbability == 0 && biome.NegativeElevationProbability == 0 && biome.ElevationProbability == 0 && biome.DoubleElevationProbability == 0)
-                return;
+            if (blockX < 0 || blockX >= WorldSegmentBlockSize.X || blockY < 0 || blockY >= WorldSegmentBlockSize.Y || Blocks[blockX, blockY] == null)
+            {
+                return false;
+            }
 
-            
-            
-            for (int x = 0; x < WorldSegmentBlockSize.X; x++)
-                for (int y = 0; y < WorldSegmentBlockSize.Y; y++)
+            return true;
+        }
+         
+        // Return array indices looks like:
+        // 0 3 5
+        // 1 x 6
+        // 2 4 7
+        public BlockInformation[] GetNeighbors(int blockX, int blockY)
+        {
+            var neighbors = new List<BlockInformation>();
+
+            for (int i = -1; i <= 1; i++)
+                for (int j = -1; j <= 1; j++)
                 {
-                    if (blockInformation[x, y] == null)
+                    if (i == 0 && j == 0)
                         continue;
 
-                    float avg = 0.0f;
+                    int neighborX = blockX + i;
+                    int neighborY = blockY + j;
 
-                    for (int i = 0; x < PerlinInterpolation.X; x++)
-                        for (int j = 0; y < PerlinInterpolation.Y; y++)
-                            avg += noiseGenerator.GetPerlin(x * PerlinInterpolation.X + i, j * PerlinInterpolation.Y + y);
+                    if (neighborX < 0 || neighborX >= WorldSegmentBlockSize.X || neighborY < 0 || neighborY >= WorldSegmentBlockSize.Y || Blocks[neighborX, neighborY] == null)
+                    {
+                        neighbors.Add(BlockInformation.None);
+                        continue;
+                    }
 
-                    var noise = Math.Round(avg / interpolationSize, 2);
-
-                    if (noise < doubleNegativeElevationTreshold)
-                    {
-                        blockInformation[x, y].BlockId = biome.DoubleNegativeElevationTileIds[0].ElevatedCenter;
-                        blockInformation[x, y].IsDoubleNegativeElevated = true;
-                    }
-                    else if(noise < negativeElevationTreshold)
-                    {
-                        blockInformation[x, y].BlockId = biome.NegativeElevationTileIds[0].ElevatedCenter;
-                        blockInformation[x, y].IsNegativeElevated = true;
-                    }
-                    else if(noise < noElevationTreshold)
-                    {
-                        blockInformation[x, y].IsNotElevated = true;
-                    }
-                    else if (noise < elevationTreshold)
-                    {
-                        blockInformation[x, y].BlockId = biome.ElevationTileIds[0].ElevatedCenter;
-                        blockInformation[x, y].IsElevated = true;
-                    }
-                    else if (noise < doubleElevationTreshold)
-                    {
-                        blockInformation[x, y].BlockId = biome.DoubleElevationTileIds[0].ElevatedCenter;
-                        blockInformation[x, y].IsDoubleElevated = true;
-                    }
-                    else
-                    {
-                        blockInformation[x, y].IsNotElevated = true;
-                    }
-                }*/
-        }
-
-        private void interpolateHeightMap()
-        {
-            for (int y = WorldSegmentBlockSize.Y - 1; y >= 0; y--)
-                for (int x = WorldSegmentBlockSize.X - 1; x >= 0; x--)
-                {
-                    
-
+                    neighbors.Add(Blocks[neighborX, neighborY]);
                 }
+
+            return neighbors.ToArray();
         }
 
         public bool IsRectFree(Rect bounds)
@@ -144,7 +125,7 @@ namespace Simulation.Game.Generator
 
             for (int x = bounds.X; x < right; x++)
                 for (int y = bounds.Y; y < bottom; y++)
-                    if (blockInformation[x, y].IsReserved)
+                    if (Blocks[x, y].IsReserved)
                         return false;
 
             return true;
@@ -153,6 +134,8 @@ namespace Simulation.Game.Generator
         // Create WorldGridChunks
         public void Build()
         {
+            //ElevationGenerator.PrintHeightMap(this);
+
             for (int i = 0; i < WorldSegmentChunkSize.X; i++)
                 for (int j = 0; j < WorldSegmentChunkSize.Y; j++)
                 {
@@ -161,7 +144,7 @@ namespace Simulation.Game.Generator
                     if (worldGridChunkExists == true)
                         continue;
                     
-                    if (blockInformation[i * WorldGrid.WorldChunkBlockSize.X, j * WorldGrid.WorldChunkBlockSize.Y] == null)
+                    if (Blocks[i * WorldGrid.WorldChunkBlockSize.X, j * WorldGrid.WorldChunkBlockSize.Y].BlockId == BlockType.Invalid)
                         continue;
 
                     var chunkBlockPosition = new Point(startBlockPosition.X + i * WorldGrid.WorldChunkBlockSize.X, startBlockPosition.Y + j * WorldGrid.WorldChunkBlockSize.Y);
@@ -169,7 +152,7 @@ namespace Simulation.Game.Generator
                     WorldGridChunk worldGridChunk = new WorldGridChunk(WorldGrid.BlockSize.X * chunkBlockPosition.X, WorldGrid.BlockSize.Y * chunkBlockPosition.Y);
                     WalkableGridChunk walkableGridChunk = WalkableGridChunk.CreateEmpty(startChunkPosition.X + i, startChunkPosition.Y + j);
 
-                    worldGridChunk.SetBiomeType(biome);
+                    worldGridChunk.SetBiomeType(Biome);
 
                     for (int x = 0; x < WorldGrid.WorldChunkBlockSize.X; x++)
                         for (int y = 0; y < WorldGrid.WorldChunkBlockSize.Y; y++)
@@ -177,9 +160,9 @@ namespace Simulation.Game.Generator
                             var blockPosition = new Point(chunkBlockPosition.X + x, chunkBlockPosition.Y + y);
                             var worldSegmentPosition = new Point(i * WorldGrid.WorldChunkBlockSize.X + x, j * WorldGrid.WorldChunkBlockSize.Y + y);
 
-                            worldGridChunk.SetBlockType(blockPosition.X, blockPosition.Y, blockInformation[worldSegmentPosition.X, worldSegmentPosition.Y].BlockId);
+                            worldGridChunk.SetBlockType(blockPosition.X, blockPosition.Y, Blocks[worldSegmentPosition.X, worldSegmentPosition.Y].BlockId);
 
-                            if(CollisionUtils.GetBlockingTypeFromBlock(blockInformation[worldSegmentPosition.X, worldSegmentPosition.Y].BlockId) == Enums.BlockingType.BLOCKING)
+                            if(CollisionUtils.GetBlockingTypeFromBlock(Blocks[worldSegmentPosition.X, worldSegmentPosition.Y].BlockId) == Enums.BlockingType.BLOCKING)
                                 walkableGridChunk.SetWalkable(blockPosition.X, blockPosition.Y, false);
                         }
 

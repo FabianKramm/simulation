@@ -77,6 +77,7 @@
     <Compile Include="Game\Enums\HitBoxType.cs" />
     <Compile Include="Game\Fractions\FractionRelations.cs" />
     <Compile Include="Game\Generator\BlockInformation.cs" />
+    <Compile Include="Game\Generator\ElevationGenerator.cs" />
     <Compile Include="Game\Generator\GeneratorUtils.cs" />
     <Compile Include="Game\Generator\WorldSegmentPlanner.cs" />
     <Compile Include="Game\Hud\ConsoleFunctions.cs" />
@@ -236,6 +237,10 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
+    <None Include="Data\MetaData\ambientHitableObjectTypes.json" />
+    <None Include="Data\MetaData\ambientObjectTypes.json" />
+    <None Include="Data\MetaData\blockTypes.json" />
+    <None Include="Data\MetaData\livingEntityTypes.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

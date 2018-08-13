@@ -44,23 +44,9 @@ namespace Simulation.Game.Hud.WorldBuilder.ObjectListItems
             spriteBatch.DrawString(Button.ButtonFont, displayString, new Vector2(Bounds.X + LivingEntityType.SpriteBounds.X + 20, Bounds.Y + LivingEntityType.SpriteBounds.Y / 2 - stringBounds.Y / 2), Color.White);
         }
 
-        public override void DrawPreview(SpriteBatch spriteBatch, Vector2 position)
+        public override MetaDataType GetObject()
         {
-            if (LivingEntityType.SpritePath != null)
-            {
-                var realPosition = new Vector2(position.X - LivingEntityType.SpriteOrigin.X, position.Y - LivingEntityType.SpriteOrigin.Y);
-
-                if (LivingEntityType.WithGrid)
-                {
-                    spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(LivingEntityType.SpritePath),
-                        realPosition, new Rectangle(new Point(LivingEntityType.DownAnimation[0].X * LivingEntityType.SpriteBounds.X, LivingEntityType.DownAnimation[0].Y * LivingEntityType.SpriteBounds.Y), LivingEntityType.SpriteBounds), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
-                }
-                else
-                {
-                    spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(LivingEntityType.SpritePath),
-                        realPosition, new Rectangle(LivingEntityType.DownAnimation[0], LivingEntityType.SpriteBounds), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
-                }
-            }
+            return LivingEntityType;
         }
     }
 }

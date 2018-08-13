@@ -79,6 +79,7 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         // CreateFromTileset
         private Button createBtn;
+        private Button createIfNotExistBtn;
 
         private BaseUI placeView;
         private InspectView inspectView;
@@ -110,7 +111,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             {
                 Bounds = new Rect(0, 0, SimulationGame.Resolution.Width * 2 / 3, SimulationGame.Resolution.Height)
             };
-            placeView.OnClick(() => WorldBuilderUtils.CreateObjectAtMousePosition((ObjectListItem)manageObjectList.SelectedElement));
+            placeView.OnClick(placeObjectAtPosition);
 
             selectedObjectDetailTextView = new TextView(tilesetSelectionArea, "");
             worldPartDetailsTextView = new TextView(tilesetSelectionArea, "");
@@ -192,8 +193,12 @@ namespace Simulation.Game.Hud.WorldBuilder
             removeBtn = new Button("Remove", new Point(editBtn.Bounds.Right + 10, manageBtn.Bounds.Bottom + 10));
             removeBtn.OnClick(removeObject);
 
+            // Create If not exist Btn
+            createIfNotExistBtn = new Button("Create If Not Exist", new Point(Bounds.X, manageBtn.Bounds.Bottom + 10));
+            createIfNotExistBtn.OnClick(createNewObjectIfNotExists);
+
             // Create Btn
-            createBtn = new Button("Create", new Point(Bounds.X, manageBtn.Bounds.Bottom + 10));
+            createBtn = new Button("Create New", new Point(createBtn.Bounds.Right + 10, manageBtn.Bounds.Bottom + 10));
             createBtn.OnClick(createNewObject);
 
             // Edit Instance Btn
@@ -368,16 +373,18 @@ namespace Simulation.Game.Hud.WorldBuilder
             placementMode = PlacementMode.NoPlacement;
         }
 
+        private void placeObjectAtPosition()
+        {
+            WorldBuilderUtils.CreateObjectAtMousePosition(((ObjectListItem)manageObjectList.SelectedElement).GetObject());
+        }
+
         private void handleInspectGameObjectSelection(List<GameObject> gameObject)
         {
             if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
             {
                 handleShowInstanceTypeBtnClick();
 
-                placeView.OnClick(() =>
-                {
-                    placeView.OnClick(() => WorldBuilderUtils.CreateObjectAtMousePosition((ObjectListItem)manageObjectList.SelectedElement));
-                });
+                placeView.OnClick(placeObjectAtPosition);
             }
             else
             {
@@ -408,10 +415,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             {
                 manageObjectList.SelectElement(selectedItem);
 
-                placeView.OnClick(() =>
-                {
-                    placeView.OnClick(() => WorldBuilderUtils.CreateObjectAtMousePosition((ObjectListItem)manageObjectList.SelectedElement));
-                });
+                placeView.OnClick(placeObjectAtPosition);
             }
             else
             {
@@ -615,132 +619,89 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
         }
 
+        private void createNewObjectIfNotExists()
+        {
+            if (tileSetSelectionView.SelectedObject == null)
+            {
+                int newId = WorldBuilderUtils.CreateObject(placementType, placementMode, tileSetSelectionView);
+
+                switch (placementType)
+                {
+                    case PlacementType.BlockPlacement:
+                        tileSetSelectionView.SelectedObject = BlockType.lookup[newId];
+                        break;
+                    case PlacementType.AmbientObjectPlacement:
+                        tileSetSelectionView.SelectedObject = AmbientObjectType.lookup[newId];
+                        break;
+                    case PlacementType.AmbientHitableObjectPlacement:
+                        tileSetSelectionView.SelectedObject = AmbientHitableObjectType.lookup[newId];
+                        break;
+                }
+            }
+        }
+
         private void createNewObject()
         {
-            string spritePath = null;
-            Point spritePosition = Point.Zero;
-            Point spriteBounds = Point.Zero;
-
-            if(placementMode == PlacementMode.CreateFromTileset)
-            {
-                spritePath = tileSetSelectionView.SelectedSpritePath;
-                spritePosition = tileSetSelectionView.SelectedSpritePosition ?? Point.Zero;
-                spriteBounds = tileSetSelectionView.SelectedSpriteBounds;
-            }
-
-            object selectedObject = null;
-            int newId = WorldBuilderUtils.GenerateNewId(placementType);
-
-            switch (placementType)
-            {
-                case PlacementType.BlockPlacement:
-                    selectedObject = new BlockType()
-                    {
-                        ID=newId,
-                        Name="Block"+newId,
-                        SpritePath=spritePath,
-                        SpritePosition=spritePosition,
-                        SpriteBounds=spriteBounds,
-                    };
-                    break;
-                case PlacementType.AmbientObjectPlacement:
-                    selectedObject = new AmbientObjectType()
-                    {
-                        ID = newId,
-                        Name = "AmbientObj" + newId,
-                        SpritePath = spritePath,
-                        SpritePositions = new Point[] { spritePosition },
-                        SpriteBounds = spriteBounds,
-                        SpriteOrigin = new Vector2(0, spriteBounds.Y)
-                    };
-                    break;
-                case PlacementType.AmbientHitableObjectPlacement:
-                    selectedObject = new AmbientHitableObjectType()
-                    {
-                        ID = newId,
-                        Name = "HitableObj" + newId,
-                        SpritePath = spritePath,
-                        SpritePositions = new Point[] { spritePosition },
-                        SpriteBounds = spriteBounds,
-                        SpriteOrigin = new Vector2(0, spriteBounds.Y)
-                    };
-                    break;
-                case PlacementType.LivingEntityPlacement:
-                    selectedObject = new LivingEntityType()
-                    {
-                        ID = newId,
-                        Name = "LivingEntity" + newId,
-                        SpriteOrigin = new Point(0, spriteBounds.Y)
-                    };
-                    break;
-            }
-
-            //var dialog = new InputDialog("Create Object", JToken.FromObject(selectedObject, SerializationUtils.Serializer).ToString(Formatting.Indented));
-
-            //if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            //{
-            //WorldBuilderUtils.ReplaceTypeFromString(placementType, dialog.ResultText);
-            WorldBuilderUtils.ReplaceTypeFromString(placementType, JToken.FromObject(selectedObject, SerializationUtils.Serializer).ToString());
+            int newId = WorldBuilderUtils.CreateObject(placementType, placementMode, tileSetSelectionView);
 
             if (placementMode == PlacementMode.CreateFromTileset)
+            {
+                placementMode = PlacementMode.Manage;
+                manageObjectList.Clear();
+
+                UIElement selectedItem = null;
+
+                switch (placementType)
                 {
-                    placementMode = PlacementMode.Manage;
-                    manageObjectList.Clear();
+                    case PlacementType.BlockPlacement:
+                        foreach (var item in BlockType.lookup)
+                        {
+                            var newItem = new BlockListItem(item.Value);
 
-                    UIElement selectedItem = null;
+                            if (item.Value.ID == newId)
+                                selectedItem = newItem;
 
-                    switch (placementType)
-                    {
-                        case PlacementType.BlockPlacement:
-                            foreach (var item in BlockType.lookup)
-                            {
-                                var newItem = new BlockListItem(item.Value);
-
-                                if (item.Value.ID == newId)
-                                    selectedItem = newItem;
-
-                                manageObjectList.AddElement(newItem);
-                            }
+                            manageObjectList.AddElement(newItem);
+                        }
                                 
-                            break;
-                        case PlacementType.AmbientObjectPlacement:
-                            foreach (var item in AmbientObjectType.lookup)
-                            {
-                                var newItem = new AmbientObjectListItem(item.Value);
+                        break;
+                    case PlacementType.AmbientObjectPlacement:
+                        foreach (var item in AmbientObjectType.lookup)
+                        {
+                            var newItem = new AmbientObjectListItem(item.Value);
 
-                                if (item.Value.ID == newId)
-                                    selectedItem = newItem;
+                            if (item.Value.ID == newId)
+                                selectedItem = newItem;
 
-                                manageObjectList.AddElement(newItem);
-                            }
+                            manageObjectList.AddElement(newItem);
+                        }
 
-                            break;
-                        case PlacementType.AmbientHitableObjectPlacement:
-                            foreach (var item in AmbientHitableObjectType.lookup)
-                            {
-                                var newItem = new AmbientHitableObjectListItem(item.Value);
+                        break;
+                    case PlacementType.AmbientHitableObjectPlacement:
+                        foreach (var item in AmbientHitableObjectType.lookup)
+                        {
+                            var newItem = new AmbientHitableObjectListItem(item.Value);
 
-                                if (item.Value.ID == newId)
-                                    selectedItem = newItem;
+                            if (item.Value.ID == newId)
+                                selectedItem = newItem;
 
-                                manageObjectList.AddElement(newItem);
-                            }
-                            break;
-                        case PlacementType.LivingEntityPlacement:
-                            foreach (var item in LivingEntityType.lookup)
-                            {
-                                var newItem = new LivingEntityListItem(item.Value);
+                            manageObjectList.AddElement(newItem);
+                        }
+                        break;
+                    case PlacementType.LivingEntityPlacement:
+                        foreach (var item in LivingEntityType.lookup)
+                        {
+                            var newItem = new LivingEntityListItem(item.Value);
 
-                                if (item.Value.ID == newId)
-                                    selectedItem = newItem;
+                            if (item.Value.ID == newId)
+                                selectedItem = newItem;
 
-                                manageObjectList.AddElement(newItem);
-                            }
-                            break;
-                    }
+                            manageObjectList.AddElement(newItem);
+                        }
+                        break;
+                }
 
-                    manageObjectList.SelectElement(selectedItem);
-                //}
+                manageObjectList.SelectElement(selectedItem);
             }
         }
 
@@ -854,7 +815,8 @@ namespace Simulation.Game.Hud.WorldBuilder
                     selectedObjectDetailTextView.Update(gameTime);
                 }
 
-                if (placementMode == PlacementMode.Manage && manageObjectList.SelectedElement != null)
+                if ((placementMode == PlacementMode.Manage && manageObjectList.SelectedElement != null) || 
+                    (placementMode == PlacementMode.CreateFromTileset && tileSetSelectionView.SelectedObject != null))
                 {
                     placeView.Update(gameTime);
                 }
@@ -934,7 +896,8 @@ namespace Simulation.Game.Hud.WorldBuilder
                     }
                 }
 
-                if(placementMode == PlacementMode.Manage && manageObjectList.SelectedElement != null)
+                if((placementMode == PlacementMode.Manage && manageObjectList.SelectedElement != null) ||
+                    (placementMode == PlacementMode.CreateFromTileset && tileSetSelectionView.SelectedObject != null))
                 {
                     placeView.Draw(spriteBatch, gameTime);
 
@@ -942,21 +905,34 @@ namespace Simulation.Game.Hud.WorldBuilder
                     {
                         if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftControl) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightControl))
                         {
-                            ((ObjectListItem)manageObjectList.SelectedElement).DrawPreview(spriteBatch, SimulationGame.MouseState.Position.ToVector2());
+                            WorldBuilderUtils.DrawPreview(spriteBatch, SimulationGame.MouseState.Position.ToVector2(), (placementMode == PlacementMode.Manage) ? ((ObjectListItem)manageObjectList.SelectedElement).GetObject() : tileSetSelectionView.SelectedObject);
                         }
                         else
                         {
-                            if(((ObjectListItem)manageObjectList.SelectedElement) is BlockListItem)
+                            var isBlockSelected = false;
+
+                            if(placementMode == PlacementMode.Manage)
+                            {
+                                if(((ObjectListItem)manageObjectList.SelectedElement) is BlockListItem)
+                                    isBlockSelected = true;
+                            }
+                            else if(placementMode == PlacementMode.CreateFromTileset)
+                            {
+                                if (tileSetSelectionView.SelectedObject is BlockType)
+                                    isBlockSelected = true;
+                            }
+
+                            if(isBlockSelected)
                             {
                                 var worldBlockPosition = GeometryUtils.GetBlockFromReal((int)SimulationGame.RealWorldMousePosition.X, (int)SimulationGame.RealWorldMousePosition.Y);
 
-                                ((ObjectListItem)manageObjectList.SelectedElement).DrawPreview(spriteBatch, SimulationGame.ConvertWorldPositionToUIPosition(worldBlockPosition.X * WorldGrid.BlockSize.X, worldBlockPosition.Y * WorldGrid.BlockSize.Y));
+                                WorldBuilderUtils.DrawPreview(spriteBatch, SimulationGame.ConvertWorldPositionToUIPosition(worldBlockPosition.X * WorldGrid.BlockSize.X, worldBlockPosition.Y * WorldGrid.BlockSize.Y), (placementMode == PlacementMode.Manage) ? ((ObjectListItem)manageObjectList.SelectedElement).GetObject() : tileSetSelectionView.SelectedObject);
                             }
                             else
                             {
                                 var worldBlockPosition = GeometryUtils.GetChunkPosition((int)SimulationGame.RealWorldMousePosition.X, (int)SimulationGame.RealWorldMousePosition.Y, 16, 16);
 
-                                ((ObjectListItem)manageObjectList.SelectedElement).DrawPreview(spriteBatch, SimulationGame.ConvertWorldPositionToUIPosition(worldBlockPosition.X * 16, worldBlockPosition.Y * 16));
+                                WorldBuilderUtils.DrawPreview(spriteBatch, SimulationGame.ConvertWorldPositionToUIPosition(worldBlockPosition.X * 16, worldBlockPosition.Y * 16), (placementMode == PlacementMode.Manage) ? ((ObjectListItem)manageObjectList.SelectedElement).GetObject() : tileSetSelectionView.SelectedObject);
                             }
                         }
                     }

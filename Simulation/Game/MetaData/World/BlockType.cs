@@ -7,6 +7,7 @@ namespace Simulation.Game.MetaData.World
 {
     public class BlockType: MetaDataType
     {
+        public static readonly int Invalid = -1;
         public static readonly int None = 0;
         public static Dictionary<int, BlockType> lookup = new Dictionary<int, BlockType>()
         {

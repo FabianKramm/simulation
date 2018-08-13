@@ -35,15 +35,9 @@ namespace Simulation.Game.Hud.WorldBuilder.ObjectListItems
             spriteBatch.DrawString(Button.ButtonFont, displayString, new Vector2(Bounds.X + AmbientObjectType.SpriteBounds.X + 20, Bounds.Y + AmbientObjectType.SpriteBounds.Y / 2 - stringBounds.Y / 2), Color.White);
         }
 
-        public override void DrawPreview(SpriteBatch spriteBatch, Vector2 position)
+        public override MetaDataType GetObject()
         {
-            if (AmbientObjectType.SpritePath != null)
-            {
-                var realPosition = new Vector2(position.X - AmbientObjectType.SpriteOrigin.X, position.Y - AmbientObjectType.SpriteOrigin.Y);
-
-                spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(AmbientObjectType.SpritePath),
-                    realPosition, new Rectangle(AmbientObjectType.SpritePositions[0], AmbientObjectType.SpriteBounds), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
-            }
+            return AmbientObjectType;
         }
     }
 }

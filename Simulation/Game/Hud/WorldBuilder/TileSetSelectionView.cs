@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Simulation.Game.MetaData;
+using Simulation.Game.MetaData.World;
 using Simulation.Util.Geometry;
 using Simulation.Util.UI;
 using System;
@@ -19,9 +21,9 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         public Point? SelectedSpritePosition = null;
         public Point SelectedSpriteBounds = InitialTileSize;
+        public MetaDataType SelectedObject = null;
 
         private Point scrollOffset = Point.Zero;
-
         private bool mouseBtnPressed = false;
 
         public TileSetSelectionView(Rect clickBounds)
@@ -133,6 +135,10 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         public void SetTileSet(string tileSet)
         {
+            SelectedObject = null;
+            SelectedSpriteBounds = InitialTileSize;
+            SelectedSpritePosition = null;
+
             SelectedSpritePath = tileSet;
         }
 
@@ -140,7 +146,9 @@ namespace Simulation.Game.Hud.WorldBuilder
         {
             if (mouseMoveEvent.LeftButtonDown)
             {
-                if(!mouseBtnPressed)
+                SelectedObject = null;
+
+                if (!mouseBtnPressed)
                 {
                     var mousePosition = SimulationGame.MouseState.Position;
                     var relativeMousePosition = new Point(mousePosition.X - Bounds.X + scrollOffset.X, mousePosition.Y - Bounds.Y + scrollOffset.Y);
@@ -190,6 +198,37 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
             else
             {
+                if (mouseBtnPressed)
+                {
+                    string spritePath = SelectedSpritePath;
+                    Point spritePosition = SelectedSpritePosition ?? Point.Zero;
+                    Point spriteBounds = SelectedSpriteBounds;
+
+                    if (SelectedObject == null)
+                        foreach (var blockTypeItem in BlockType.lookup)
+                            if (blockTypeItem.Value.SpriteBounds == spriteBounds && blockTypeItem.Value.SpritePath == spritePath && blockTypeItem.Value.SpritePosition == spritePosition)
+                            {
+                                SelectedObject = blockTypeItem.Value;
+                                break;
+                            }
+
+                    if (SelectedObject == null)
+                        foreach (var ambientObjectTypeItem in AmbientObjectType.lookup)
+                            if (ambientObjectTypeItem.Value.SpriteBounds == spriteBounds && ambientObjectTypeItem.Value.SpritePath == spritePath && ambientObjectTypeItem.Value.SpritePositions != null && ambientObjectTypeItem.Value.SpritePositions[0] == spritePosition)
+                            {
+                                SelectedObject = ambientObjectTypeItem.Value;
+                                break;
+                            }
+
+                    if (SelectedObject == null)
+                        foreach (var ambientHitableObjectTypeItem in AmbientHitableObjectType.lookup)
+                            if (ambientHitableObjectTypeItem.Value.SpriteBounds == spriteBounds && ambientHitableObjectTypeItem.Value.SpritePath == spritePath && ambientHitableObjectTypeItem.Value.SpritePositions != null && ambientHitableObjectTypeItem.Value.SpritePositions[0] == spritePosition)
+                            {
+                                SelectedObject = ambientHitableObjectTypeItem.Value;
+                                break;
+                            }
+                }
+
                 mouseBtnPressed = false;
             }
         }

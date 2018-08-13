@@ -5,7 +5,7 @@ namespace Simulation.Util
 {
     public class Util
     {
-        private static string MetaDataSavePath = @"World\MetaData\";
+        private static string MetaDataSavePath = @"MetaData\";
 
         private static string BlockTypesSavePath = "blockTypes.json";
         private static string AmbientObjectTypesSavePath = "ambientObjectTypes.json";
@@ -19,7 +19,8 @@ namespace Simulation.Util
         private static string WorldSavePath = @"World\WorldGrid\";
         private static string WalkableGridSavePath = @"World\WalkableGrid\";
 
-        private static string ScriptBasePath = Path.Combine(Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName).FullName).FullName, "Scripts");
+        private static string BasePath = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName).FullName).FullName;
+        private static string ScriptBasePath = Path.Combine(BasePath, "Scripts");
         private static string CustomControllerBasePath = Path.Combine(ScriptBasePath, "Controller");
 
         public static string GetCustomControllerBasePath()
@@ -112,7 +113,7 @@ namespace Simulation.Util
 
         public static string GetGameFolder()
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SimulationGame");
+            return Path.Combine(BasePath, "Data");
         }
 
         public static string GetUUID()
