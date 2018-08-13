@@ -49,7 +49,7 @@ namespace Simulation.Game.Renderer
                                 }
                                 else
                                 {
-                                    AmbientObjectRenderer.Draw(spriteBatch, ambientObject);
+                                    AmbientObjectRenderer.Draw(spriteBatch, gameTime, ambientObject);
                                 }
                             }
 
@@ -67,9 +67,9 @@ namespace Simulation.Game.Renderer
                                     {
                                         LivingEntityRenderer.Draw(spriteBatch, gameTime, (LivingEntity)containedObject);
                                     }
-                                    else
+                                    else if(containedObject is AmbientHitableObject)
                                     {
-                                        AmbientHitableObjectRenderer.Draw(spriteBatch, containedObject);
+                                        AmbientHitableObjectRenderer.Draw(spriteBatch, gameTime, (AmbientHitableObject)containedObject);
                                     }
                                 }
                             }
@@ -112,7 +112,7 @@ namespace Simulation.Game.Renderer
                         }
                         else
                         {
-                            AmbientObjectRenderer.Draw(spriteBatch, ambientObject);
+                            AmbientObjectRenderer.Draw(spriteBatch, gameTime, ambientObject);
                         }
                     }
 
@@ -130,9 +130,9 @@ namespace Simulation.Game.Renderer
                             {
                                 LivingEntityRenderer.Draw(spriteBatch, gameTime, (LivingEntity)containedObject);
                             }
-                            else
+                            else if (containedObject is AmbientHitableObject)
                             {
-                                AmbientHitableObjectRenderer.Draw(spriteBatch, containedObject);
+                                AmbientHitableObjectRenderer.Draw(spriteBatch, gameTime, (AmbientHitableObject)containedObject);
                             }
                         }
                     }
