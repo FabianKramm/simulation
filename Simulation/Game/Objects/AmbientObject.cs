@@ -3,12 +3,15 @@ using Simulation.Game.MetaData;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Scripts.Base;
+using Simulation.Spritesheet;
 using Simulation.Util.Geometry;
 
 namespace Simulation.Game.Objects
 {
     public class AmbientObject: GameObject
     {
+        public Animation ObjectAnimation;
+
         [Serialize]
         public int AmbientObjectType;
 

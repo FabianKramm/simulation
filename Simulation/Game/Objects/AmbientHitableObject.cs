@@ -2,11 +2,14 @@
 using Simulation.Game.Serialization;
 using Simulation.Game.MetaData;
 using Simulation.Scripts.Base;
+using Simulation.Spritesheet;
 
 namespace Simulation.Game.Objects
 {
     public class AmbientHitableObject: HitableObject
     {
+        public Animation ObjectAnimation;
+
         [Serialize]
         public int AmbientHitableObjectType;
 
