@@ -47,19 +47,19 @@ namespace Simulation.Game.Generator
             string[] files = Directory.GetFiles(Util.Util.GetWalkableGridSavePath());
 
             foreach(var file in files)
-                if (file.StartsWith(persistentIdentifier) == false)
+                if (Path.GetFileName(file).StartsWith(persistentIdentifier) == false)
                     File.Delete(file);
 
             files = Directory.GetFiles(Util.Util.GetWorldSavePath());
 
             foreach (var file in files)
-                if (file.StartsWith(persistentIdentifier) == false)
+                if (Path.GetFileName(file).StartsWith(persistentIdentifier) == false)
                     File.Delete(file);
 
             files = Directory.GetFiles(Util.Util.GetInteriorSavePath());
 
             foreach (var file in files)
-                if (file.StartsWith(persistentIdentifier) == false)
+                if (Path.GetFileName(file).StartsWith(persistentIdentifier) == false)
                     File.Delete(file);
         }
 

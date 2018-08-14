@@ -155,16 +155,21 @@ namespace Simulation.Game.Hud
                 string currentPos = "Pos: " + SimulationGame.Camera.Position.X + ", " + SimulationGame.Camera.Position.Y;
                 string currentBlockText = "Block: " + currentBlock.X + ", " + currentBlock.Y;
                 string loadedChunks = "Chunks: " + SimulationGame.World.CountLoaded() + " World, " + SimulationGame.World.WalkableGrid.CountLoaded() + " Walk, " + SimulationGame.World.InteriorManager.CountLoaded() + " Ints";
-                string interiorID = "InteriorID: " + SimulationGame.Player.InteriorID;
+                string elapsedMillisDraw = "Draw took: " + SimulationGame.DrawElapsedMillis + "ms";
+                string elapsedMillisUpdate = "Update took: " + SimulationGame.UpdateElapsedMillis + "ms";
 
+                string interiorID = "InteriorID: " + SimulationGame.Player.InteriorID;
+                
                 spriteBatch.DrawString(font, time, new Vector2(SimulationGame.Resolution.Width - font.MeasureString(time).X - 20, 20), Color.White);
                 spriteBatch.DrawString(font, currentPos, new Vector2(SimulationGame.Resolution.Width - font.MeasureString(currentPos).X - 20, 40), Color.White);
                 spriteBatch.DrawString(font, currentBlockText, new Vector2(SimulationGame.Resolution.Width - font.MeasureString(currentBlockText).X - 20, 60), Color.White);
                 spriteBatch.DrawString(font, loadedChunks, new Vector2(SimulationGame.Resolution.Width - font.MeasureString(loadedChunks).X - 20, 80), Color.White);
+                spriteBatch.DrawString(font, elapsedMillisDraw, new Vector2(SimulationGame.Resolution.Width - font.MeasureString(elapsedMillisDraw).X - 20, 100), Color.White);
+                spriteBatch.DrawString(font, elapsedMillisUpdate, new Vector2(SimulationGame.Resolution.Width - font.MeasureString(elapsedMillisUpdate).X - 20, 120), Color.White);
 
-                if(SimulationGame.Player.InteriorID != Interior.Outside)
+                if (SimulationGame.Player.InteriorID != Interior.Outside)
                 {
-                    spriteBatch.DrawString(font, interiorID, new Vector2(SimulationGame.Resolution.Width - font.MeasureString(interiorID).X - 20, 100), Color.White);
+                    spriteBatch.DrawString(font, interiorID, new Vector2(SimulationGame.Resolution.Width - font.MeasureString(interiorID).X - 20, 140), Color.White);
                 }
             }
 

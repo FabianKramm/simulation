@@ -148,5 +148,17 @@ namespace Simulation.Game.World
 
             return true;
         }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (SimulationGame.Player.InteriorID == ID)
+            {
+                // Update Ambient Objects
+                for (int i = 0; AmbientObjects != null && i < AmbientObjects.Count; i++) // Avoid collection changed problem with updatePosition and disconnectWorld
+                    AmbientObjects[i].Update(gameTime);
+            }
+        }
     }
 }

@@ -82,5 +82,17 @@ namespace Simulation.Game.World
                 }
             }
         }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if(SimulationGame.Player.InteriorID == Interior.Outside && SimulationGame.VisibleArea.Intersects(RealChunkBounds))
+            {
+                // Update Ambient Objects
+                for (int i = 0; AmbientObjects != null && i < AmbientObjects.Count; i++) // Avoid collection changed problem with updatePosition and disconnectWorld
+                    AmbientObjects[i].Update(gameTime);
+            }
+        }
     }
 }

@@ -20,6 +20,7 @@ using Simulation.Game.Serialization;
 using System.Collections.Generic;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.MetaData.World;
+using System.Diagnostics;
 
 /*
  * Open Issues:
@@ -147,6 +148,16 @@ namespace Simulation
         }
 
         public static GraphicsDeviceManager Graphics
+        {
+            get; private set;
+        }
+
+        public static long DrawElapsedMillis
+        {
+            get; private set;
+        }
+
+        public static long UpdateElapsedMillis
         {
             get; private set;
         }
@@ -366,6 +377,8 @@ namespace Simulation
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            var stopwatch = Stopwatch.StartNew();
+
             KeyboardState = Keyboard.GetState();
             MouseState = Mouse.GetState();
 
@@ -474,6 +487,9 @@ namespace Simulation
             }
 
             base.Update(gameTime);
+
+            stopwatch.Stop();
+            UpdateElapsedMillis = stopwatch.ElapsedMilliseconds;
         }
 
         /// <summary>
@@ -482,12 +498,17 @@ namespace Simulation
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            var stopwatch = Stopwatch.StartNew();
+
             updateVisibleArea();
             updateMousePosition();
 
             GameRenderer.Draw(spriteBatch, gameTime, this);
 
             base.Draw(gameTime);
+
+            stopwatch.Stop();
+            DrawElapsedMillis = stopwatch.ElapsedMilliseconds;
         }
     }
 }

@@ -135,7 +135,7 @@ namespace Simulation.Game.World
             }
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             // Update Effects
             for (int index = 0; ContainedEffects != null && index < ContainedEffects.Count; index++) // Avoid collection changed problem 
@@ -149,10 +149,6 @@ namespace Simulation.Game.World
                     index--;
                 }
             }
-
-            // Update Ambient Objects
-            for (int i = 0; AmbientObjects != null && i < AmbientObjects.Count; i++) // Avoid collection changed problem with updatePosition and disconnectWorld
-                AmbientObjects[i].Update(gameTime);
 
             // Update Contained Objects
             for (int i = 0; ContainedObjects != null && i < ContainedObjects.Count; i++) // Avoid collection changed problem with updatePosition and disconnectWorld
