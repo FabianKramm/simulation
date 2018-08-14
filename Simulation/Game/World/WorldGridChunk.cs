@@ -47,14 +47,7 @@ namespace Simulation.Game.World
             blockingGrid[projectedPosition.X, projectedPosition.Y] = blockType;
         }
 
-        public void SetPersistent(bool persistent)
-        {
-            IsPersistent = persistent;
-
-            Point chunkPosition = GeometryUtils.GetChunkPosition(RealChunkBounds.X, RealChunkBounds.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-
-            SimulationGame.World.WalkableGrid.Get(GeometryUtils.ConvertPointToLong(chunkPosition.X, chunkPosition.Y)).SetPersistent(persistent);
-        }
+       
 
         public void SetBiomeType(BiomeType biomeType)
         {
@@ -81,6 +74,14 @@ namespace Simulation.Game.World
                     OverlappingObjects = null;
                 }
             }
+        }
+
+        public override void SetPersistent(bool persistent)
+        {
+            base.SetPersistent(persistent);
+
+            Point chunkPosition = GeometryUtils.GetChunkPosition(RealChunkBounds.X, RealChunkBounds.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+            SimulationGame.World.WalkableGrid.Get(GeometryUtils.ConvertPointToLong(chunkPosition.X, chunkPosition.Y)).SetPersistent(persistent);
         }
 
         public override void Update(GameTime gameTime)

@@ -14,7 +14,10 @@ namespace Simulation.Game.World
     public abstract class WorldPart
     {
         [Serialize]
-        public bool IsPersistent;
+        public bool IsPersistent
+        {
+            get; protected set;
+        }
 
         [Serialize]
         public Point Dimensions
@@ -133,6 +136,11 @@ namespace Simulation.Game.World
                     AmbientObjects = null;
                 }
             }
+        }
+
+        public virtual void SetPersistent(bool isPersistent)
+        {
+            IsPersistent = isPersistent;
         }
 
         public virtual void Update(GameTime gameTime)

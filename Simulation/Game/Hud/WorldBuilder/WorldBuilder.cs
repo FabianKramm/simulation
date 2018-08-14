@@ -363,7 +363,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             var player = SimulationGame.Player;
             WorldPart currentWorldPart = player.InteriorID == Interior.Outside ? (WorldPart)SimulationGame.World.GetFromRealPoint((int)player.Position.X, (int)player.Position.Y) : SimulationGame.World.InteriorManager.Get(player.InteriorID);
 
-            currentWorldPart.IsPersistent = !currentWorldPart.IsPersistent;
+            currentWorldPart.SetPersistent(!currentWorldPart.IsPersistent);
         }
 
         private void handleCreateInteriorBtn()
@@ -379,7 +379,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                 
                 var newInterior = new Interior(interiorDimensions);
 
-                newInterior.IsPersistent = true;
+                newInterior.SetPersistent(true);
 
                 for (int i = 0; i < interiorDimensions.X; i++)
                     for (int j = 0; j < interiorDimensions.Y; j++)
@@ -391,7 +391,7 @@ namespace Simulation.Game.Hud.WorldBuilder
 
                 WorldLoader.SaveInterior(newInterior);
 
-                currentWorldPart.IsPersistent = true;
+                currentWorldPart.SetPersistent(true);
                 currentWorldPart.AddWorldLink(interiorWorldLink.SwapFromTo());
             }
         }
