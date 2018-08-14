@@ -66,6 +66,7 @@ namespace Simulation.Game.MetaData
                 CurrentLife=100,
                 Fraction=FractionType.NPC,
                 IsDurableEntity=true,
+                Invincible=true,
                 Skills=new SkillType[]
                 {
                     new SkillType()
@@ -103,6 +104,8 @@ namespace Simulation.Game.MetaData
 
         public int MaximumLife;
         public int CurrentLife;
+        public bool Invincible = false;
+
         public float LifeRegeneration = 0;
         public FractionType Fraction;
         public int AttentionBlockRadius = 10;
@@ -112,7 +115,9 @@ namespace Simulation.Game.MetaData
         
         public Rect RelativeHitBoxBounds = new Rect(-14, -38, 28, 48);
         public Rect RelativeBlockingBounds = new Rect(-8, -10, 16, 20);
-        public BlockingType BlockingType = BlockingType.NOT_BLOCKING;
+
+        public bool IsHitable = true;
+        public bool IsBlocking = false;
 
         public bool IsDurableEntity = false;
         public int PreloadedSurroundingWorldGridChunkRadius = 1;
@@ -129,6 +134,7 @@ namespace Simulation.Game.MetaData
 
         public bool WithGrid = true;
         public int FrameDuration = 160;
+        public long LiveSpan = -1;
 
         public string CustomRendererScript = null;
         public string CustomControllerScript = null;
@@ -162,11 +168,17 @@ namespace Simulation.Game.MetaData
 
             livingEntity.MaximumLife = livingEntityType.MaximumLife;
             livingEntity.CurrentLife = livingEntityType.CurrentLife;
+            livingEntity.Invincible = livingEntityType.Invincible;
+
             livingEntity.LifeRegeneration = livingEntityType.LifeRegeneration;
             livingEntity.Fraction = livingEntityType.Fraction;
             livingEntity.Velocity = livingEntityType.Velocity;
-            
-            livingEntity.BlockingType = livingEntityType.BlockingType;
+
+            livingEntity.LiveSpan = livingEntityType.LiveSpan;
+
+            livingEntity.SetBlocking(livingEntityType.IsBlocking);
+            livingEntity.SetHitable(livingEntityType.IsHitable);
+
             livingEntity.CustomProperties = livingEntityType.CustomProperties != null ? (JObject)livingEntityType.CustomProperties.DeepClone() : null;
             
             livingEntity.Init();

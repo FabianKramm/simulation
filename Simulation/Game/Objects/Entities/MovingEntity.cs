@@ -160,6 +160,14 @@ namespace Simulation.Game.Objects.Entities
 
         public override void Update(GameTime gameTime)
         {
+            if(IsDead())
+            {
+                StopWalking();
+                base.Update(gameTime);
+
+                return;
+            }
+
             loadWalkpath(gameTime);
 
             if (walkPath != null)

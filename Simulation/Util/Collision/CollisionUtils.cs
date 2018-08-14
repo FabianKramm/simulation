@@ -97,7 +97,8 @@ namespace Simulation.Util.Collision
                         if (worldGridChunk.OverlappingObjects != null)
                             foreach (HitableObject hitableObject in worldGridChunk.OverlappingObjects)
                                 if (hitableObject is LivingEntity && 
-                                    hitableObject != origin && 
+                                    hitableObject != origin &&
+                                    hitableObject.IsHitable() && 
                                     ((LivingEntity)origin).GetAggroTowardsEntity((LivingEntity)hitableObject) <= maxAggro && 
                                     hitableObject.HitBoxBounds.Intersects(hitboxBounds))
                                 {
@@ -115,6 +116,7 @@ namespace Simulation.Util.Collision
                             foreach (var hitableObject in worldGridChunk.ContainedObjects)
                                 if (hitableObject is LivingEntity && 
                                     hitableObject != origin &&
+                                    hitableObject.IsHitable() &&
                                     ((LivingEntity)origin).GetAggroTowardsEntity((LivingEntity)hitableObject) <= maxAggro &&
                                     hitableObject.HitBoxBounds.Intersects(hitboxBounds))
                                 {
@@ -135,6 +137,7 @@ namespace Simulation.Util.Collision
                 foreach (var hitableObject in interior.ContainedObjects)
                     if (hitableObject is LivingEntity && 
                         hitableObject != origin &&
+                        hitableObject.IsHitable() &&
                         ((LivingEntity)origin).GetAggroTowardsEntity((LivingEntity)hitableObject) <= maxAggro &&
                         hitableObject.HitBoxBounds.Intersects(hitboxBounds))
                     {
@@ -219,13 +222,13 @@ namespace Simulation.Util.Collision
 
                         if (worldGridChunk.OverlappingObjects != null)
                             foreach (HitableObject hitableObject in worldGridChunk.OverlappingObjects)
-                                if (hitableObject is LivingEntity && hitableObject.IsHitable && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
+                                if (hitableObject is LivingEntity && hitableObject.IsHitable() && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
                                     if (hittedObjecs.Contains((LivingEntity)hitableObject) == false)
                                         hittedObjecs.Add((LivingEntity)hitableObject);
 
                         if (worldGridChunk.ContainedObjects != null)
                             foreach (var hitableObject in worldGridChunk.ContainedObjects)
-                                if (hitableObject is LivingEntity && hitableObject.IsHitable && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
+                                if (hitableObject is LivingEntity && hitableObject.IsHitable() && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
                                     if (hittedObjecs.Contains((LivingEntity)hitableObject) == false)
                                         hittedObjecs.Add((LivingEntity)hitableObject);
                     }
@@ -235,7 +238,7 @@ namespace Simulation.Util.Collision
                 Interior interior = SimulationGame.World.InteriorManager.Get(origin.InteriorID);
 
                 foreach (var hitableObject in interior.ContainedObjects)
-                    if (hitableObject is LivingEntity && hitableObject.IsHitable && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
+                    if (hitableObject is LivingEntity && hitableObject.IsHitable() && hitableObject != origin && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
                         if (hittedObjecs.Contains((LivingEntity)hitableObject) == false)
                             hittedObjecs.Add((LivingEntity)hitableObject);
             }
@@ -278,14 +281,14 @@ namespace Simulation.Util.Collision
 
                         if (worldGridChunk.OverlappingObjects != null)
                             foreach (HitableObject hitableObject in worldGridChunk.OverlappingObjects)
-                                if (hitableObject != origin && hitableObject.IsHitable && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
-                                    if (hittedObjecs.Contains(hitableObject) == false)
+                                if (hitableObject != origin && hitableObject.IsHitable() && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
+                                    if (hittedObjecs.Contains(hitableObject) == false && (hitableObject is LivingEntity == false || ((LivingEntity)hitableObject).IsDead() == false))
                                         hittedObjecs.Add(hitableObject);
 
                         if (worldGridChunk.ContainedObjects != null)
                             foreach (var hitableObject in worldGridChunk.ContainedObjects)
-                                if (hitableObject != origin && hitableObject.IsHitable && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
-                                    if (hittedObjecs.Contains(hitableObject) == false)
+                                if (hitableObject != origin && hitableObject.IsHitable() && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
+                                    if (hittedObjecs.Contains(hitableObject) == false && (hitableObject is LivingEntity == false || ((LivingEntity)hitableObject).IsDead() == false))
                                         hittedObjecs.Add(hitableObject);
                     }
             }
@@ -294,8 +297,8 @@ namespace Simulation.Util.Collision
                 Interior interior = SimulationGame.World.InteriorManager.Get(interiorId);
 
                 foreach (var hitableObject in interior.ContainedObjects)
-                    if (hitableObject != origin && hitableObject.IsHitable && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
-                        if (hittedObjecs.Contains(hitableObject) == false)
+                    if (hitableObject != origin && hitableObject.IsHitable() && hitableObject.HitBoxBounds.Intersects(hitboxBounds))
+                        if (hittedObjecs.Contains(hitableObject) == false && (hitableObject is LivingEntity == false || ((LivingEntity)hitableObject).IsDead() == false))
                             hittedObjecs.Add(hitableObject);
             }
 
@@ -385,7 +388,7 @@ namespace Simulation.Util.Collision
                     }
 
                 foreach (var hitableObject in interior.ContainedObjects)
-                    if (hitableObject.BlockingType == BlockingType.BLOCKING && hitableObject.IsHitable && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
+                    if (hitableObject.IsBlocking() && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
                         return true;
 
                 return false;
@@ -425,12 +428,12 @@ namespace Simulation.Util.Collision
 
                         if (worldGridChunk.OverlappingObjects != null)
                             foreach (HitableObject hitableObject in worldGridChunk.OverlappingObjects)
-                                if (hitableObject.BlockingType == BlockingType.BLOCKING && hitableObject.IsHitable && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
+                                if (hitableObject.IsBlocking() && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
                                     return true;
 
                         if (worldGridChunk.ContainedObjects != null)
                             foreach (var hitableObject in worldGridChunk.ContainedObjects)
-                                if (hitableObject.BlockingType == BlockingType.BLOCKING && hitableObject.IsHitable && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
+                                if (hitableObject.IsBlocking() && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
                                     return true;
                     }
 
@@ -454,12 +457,12 @@ namespace Simulation.Util.Collision
 
                         int blockType = interior.GetBlockType(blockX, blockY);
 
-                        if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
+                        if (GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
                             return true;
                     }
 
                 foreach (var hitableObject in interior.ContainedObjects)
-                    if (hitableObject.BlockingType == BlockingType.BLOCKING && hitableObject.IsHitable && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
+                    if (hitableObject.IsBlocking() && hitableObject != origin && hitableObject.BlockingBounds.Intersects(rect))
                         return true;
 
                 return false;

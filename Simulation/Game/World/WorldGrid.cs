@@ -212,7 +212,7 @@ namespace Simulation.Game.World
                                     part.AddOverlappingObject(overlappingObject);
 
                                     // Update walkable grid
-                                    if (overlappingObject.BlockingType == BlockingType.BLOCKING)
+                                    if (overlappingObject.IsBlocking())
                                     {
                                         SimulationGame.World.WalkableGrid.BlockRect(overlappingObject.BlockingBounds);
                                     }

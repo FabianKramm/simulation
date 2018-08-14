@@ -24,6 +24,7 @@ namespace Simulation.Game.MetaData
         public JObject CustomProperties = null;
 
         public int FrameDuration = 180;
+        public long LiveSpan = -1;
 
         public static AmbientObject Create(WorldPosition worldPosition, AmbientObjectType ambientObjectType)
         {
@@ -32,6 +33,7 @@ namespace Simulation.Game.MetaData
                 AmbientObjectType = ambientObjectType.ID,
                 CustomProperties = ambientObjectType.CustomProperties != null ? (JObject)ambientObjectType.CustomProperties.DeepClone() : null,
                 YPositionDepthOffset = ambientObjectType.YPositionDepthOffset,
+                LiveSpan = ambientObjectType.LiveSpan,
             };
 
             ambientObject.Init();

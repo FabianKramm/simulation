@@ -13,6 +13,7 @@ namespace Simulation.Game.Objects.Entities
 {
     public abstract class LivingEntity: HitableObject
     {
+        private static readonly TimeSpan resurrectionTimespan = TimeSpan.FromMilliseconds(10000);
         private static readonly TimeSpan lifeRegenInterval = TimeSpan.FromMilliseconds(500);
 
         public LivingEntityRendererInformation RendererInformation;
@@ -20,15 +21,23 @@ namespace Simulation.Game.Objects.Entities
 
         [Serialize]
         public int LivingEntityType;
+
         [Serialize]
         public int MaximumLife;
+
         [Serialize]
         public int CurrentLife;
+
         [Serialize]
         public float LifeRegeneration;
+
         [Serialize]
         public FractionType Fraction;
 
+        [Serialize]
+        public bool Invincible;
+
+        private TimeSpan timeToResurrect;
         private Dictionary<string, int> aggroLookup = new Dictionary<string, int>();
         private TimeSpan timeTillLifeRegen = TimeSpan.Zero;
 
@@ -98,15 +107,35 @@ namespace Simulation.Game.Objects.Entities
             }
         }
 
-        public void ModifyHealth(int modifier)
+        public void ModifyHealth(int modifier, LivingEntity from)
         {
+            if (IsDead())
+                return;
+
             CurrentLife = Math.Max(0, Math.Min(MaximumLife, CurrentLife + modifier));
 
             if(CurrentLife <= 0)
             {
-                // Add die effect
+                if(Invincible == false)
+                {
+                    // Add die effect
 
-                DisconnectFromWorld();
+                    DisconnectFromWorld();
+                }
+                else
+                {
+                    CurrentLife = 0;
+                    timeToResurrect = resurrectionTimespan;
+                }
+            }
+
+            // Change Attitude towards other person
+            if(from != null && modifier < 0)
+            {
+                if(GetAggroTowardsEntity(from) < (int)FractionRelationType.ALLIED)
+                {
+                    aggroLookup[from.ID] = GetAggroTowardsEntity(from) + modifier;
+                }
             }
         }
 
@@ -115,20 +144,42 @@ namespace Simulation.Game.Objects.Entities
             return MetaData.LivingEntityType.lookup[LivingEntityType];
         }
 
+        public override bool IsBlocking()
+        {
+            return IsDead() == false && blockingType == BlockingType.BLOCKING;
+        }
+
+        public override bool IsHitable()
+        {
+            return IsDead() == false && isHitable;
+        }
+
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-
-            if (Skills != null)
-                foreach (var skill in Skills)
-                    skill.Update(gameTime);
-
-            timeTillLifeRegen += gameTime.ElapsedGameTime;
-
-            if(timeTillLifeRegen >= lifeRegenInterval)
+            if (IsDead())
             {
-                ModifyHealth((int)(LifeRegeneration * timeTillLifeRegen.TotalMilliseconds));
-                timeTillLifeRegen = TimeSpan.Zero;
+                timeToResurrect -= gameTime.ElapsedGameTime;
+
+                if(timeToResurrect.TotalMilliseconds <= 0)
+                {
+                    CurrentLife = (int)(MaximumLife * 0.25f);
+                }
+            }
+            else
+            {
+                base.Update(gameTime);
+
+                if (Skills != null)
+                    foreach (var skill in Skills)
+                        skill.Update(gameTime);
+
+                timeTillLifeRegen += gameTime.ElapsedGameTime;
+
+                if (timeTillLifeRegen >= lifeRegenInterval)
+                {
+                    ModifyHealth((int)(LifeRegeneration * timeTillLifeRegen.TotalMilliseconds), null);
+                    timeTillLifeRegen = TimeSpan.Zero;
+                }
             }
 
             if(RendererInformation != null)

@@ -139,7 +139,7 @@ namespace Simulation.Game.World
                     {
                         lock(containedObject)
                         {
-                            if (containedObject.BlockingType == BlockingType.BLOCKING && containedObject.BlockingBounds.Intersects(blockBounds))
+                            if (containedObject.IsBlocking() && containedObject.BlockingBounds.Intersects(blockBounds))
                                 return false;
                         }
                     }

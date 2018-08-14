@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Enums;
-using Simulation.Game.MetaData;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
@@ -12,9 +11,10 @@ namespace Simulation.Game.Objects
     public abstract class HitableObject: GameObject
     {
         [Serialize]
-        public BlockingType BlockingType;
+        protected BlockingType blockingType;
+
         [Serialize]
-        public bool IsHitable = true;
+        protected bool isHitable = true;
 
         protected Rect relativeHitBoxBounds;
         protected Rect relativeBlockingBounds;
@@ -62,7 +62,7 @@ namespace Simulation.Game.Objects
 
         public void ConnectToOverlappingChunks()
         {
-            if (IsHitable)
+            if (IsHitable())
             {
                 Point positionChunk = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
                 Point chunkTopLeft = GeometryUtils.GetChunkPosition(UnionBounds.Left, UnionBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
@@ -83,7 +83,7 @@ namespace Simulation.Game.Objects
                         }
                     }
 
-                if (BlockingType == BlockingType.BLOCKING)
+                if (blockingType == BlockingType.BLOCKING)
                     SimulationGame.World.WalkableGrid.BlockRect(BlockingBounds);
             }
         }
@@ -109,7 +109,7 @@ namespace Simulation.Game.Objects
                     }
                 }
 
-            if (BlockingType == BlockingType.BLOCKING)
+            if (blockingType == BlockingType.BLOCKING)
                 SimulationGame.World.WalkableGrid.UnblockRect(BlockingBounds);
         }
 
@@ -149,6 +149,26 @@ namespace Simulation.Game.Objects
             {
                 SimulationGame.World.InteriorManager.Get(InteriorID).RemoveContainedObject(this);
             }
+        }
+
+        public void SetBlocking(bool blocking)
+        {
+            blockingType = blocking ? BlockingType.BLOCKING : BlockingType.NOT_BLOCKING;
+        }
+
+        public void SetHitable(bool hitable)
+        {
+            isHitable = hitable;
+        }
+
+        public virtual bool IsBlocking()
+        {
+            return blockingType == BlockingType.BLOCKING;
+        }
+
+        public virtual bool IsHitable()
+        {
+            return isHitable;
         }
 
         public override void UpdatePosition(WorldPosition newPosition)

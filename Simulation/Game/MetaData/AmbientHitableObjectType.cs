@@ -19,7 +19,7 @@ namespace Simulation.Game.MetaData
         public Rect RelativeHitboxRectangle;
 
         public bool IsHitable = true;
-        public BlockingType BlockingType = BlockingType.BLOCKING;
+        public bool IsBlocking = true;
 
         // Render
         public string SpritePath;
@@ -32,17 +32,20 @@ namespace Simulation.Game.MetaData
         public JObject CustomProperties = null;
 
         public int FrameDuration = 180;
+        public long LiveSpan = -1;
 
         public static AmbientHitableObject Create(WorldPosition worldPosition, AmbientHitableObjectType ambientHitableObjectType)
         {
             AmbientHitableObject ambientHitableObject = new AmbientHitableObject(worldPosition)
             {
                 AmbientHitableObjectType = ambientHitableObjectType.ID,
-                BlockingType=ambientHitableObjectType.BlockingType,
-                IsHitable=ambientHitableObjectType.IsHitable,
                 CustomProperties= ambientHitableObjectType.CustomProperties != null ? (JObject)ambientHitableObjectType.CustomProperties.DeepClone() : null,
                 YPositionDepthOffset = ambientHitableObjectType.YPositionDepthOffset,
+                LiveSpan = ambientHitableObjectType.LiveSpan,
             };
+
+            ambientHitableObject.SetBlocking(ambientHitableObjectType.IsBlocking);
+            ambientHitableObject.SetHitable(ambientHitableObjectType.IsHitable);
 
             ambientHitableObject.Init();
 

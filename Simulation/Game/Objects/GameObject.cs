@@ -4,6 +4,7 @@ using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Scripts.Base;
 using Simulation.Util;
+using System;
 
 namespace Simulation.Game.Objects
 {
@@ -29,6 +30,9 @@ namespace Simulation.Game.Objects
 
         [Serialize]
         public int YPositionDepthOffset = 0;
+
+        [Serialize]
+        public long LiveSpan = -1; // In Milliseconds, -1 live forever
 
         public Point BlockPosition
         {
@@ -110,6 +114,14 @@ namespace Simulation.Game.Objects
         public virtual void Update(GameTime gameTime)
         {
             CustomController?.Update(gameTime);
+
+            if(LiveSpanMillis > 0)
+            {
+                LiveSpanMillis -= (long)gameTime.ElapsedGameTime.TotalMilliseconds;
+
+                if(LiveSpanMillis <= 0)
+                    DisconnectFromWorld();
+            }
         }
 
         public abstract void ConnectToWorld();

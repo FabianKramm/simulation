@@ -239,14 +239,11 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
-    <None Include="Data\MetaData\ambientHitableObjectTypes.json" />
-    <None Include="Data\MetaData\ambientObjectTypes.json" />
-    <None Include="Data\MetaData\blockTypes.json" />
-    <None Include="Data\MetaData\livingEntityTypes.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Config\" />
+    <Folder Include="Data\MetaData\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Util\Dialog\InputDialog.resx">

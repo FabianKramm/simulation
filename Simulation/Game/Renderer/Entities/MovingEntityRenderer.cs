@@ -36,7 +36,17 @@ namespace Simulation.Game.Renderer.Entities
 
             var adjustedYPosition = movingEntity.Position.Y + movingEntity.YPositionDepthOffset;
 
-            spriteBatch.Draw(movingEntity.RendererInformation.currentAnimation, new Vector2((int)movingEntity.Position.X, (int)movingEntity.Position.Y), color: GameRenderer.BlendColor, layerDepth: GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, adjustedYPosition));
+            if(movingEntity.IsDead())
+            {
+                movingEntity.RendererInformation.Update(gameTime, WalkingDirection.Left);
+                movingEntity.RendererInformation.currentAnimation.Reset();
+
+                spriteBatch.Draw(movingEntity.RendererInformation.currentAnimation, new Vector2((int)movingEntity.Position.X, (int)movingEntity.Position.Y), rotation: MathHelper.Pi / 2, color: GameRenderer.BlendColor, layerDepth: GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, adjustedYPosition));
+            }
+            else
+            {
+                spriteBatch.Draw(movingEntity.RendererInformation.currentAnimation, new Vector2((int)movingEntity.Position.X, (int)movingEntity.Position.Y), color: GameRenderer.BlendColor, layerDepth: GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, adjustedYPosition));
+            }
 
             // Draw Speech Bubble
             if (movingEntity.RendererInformation.SpeechLine != null)
@@ -74,11 +84,11 @@ namespace Simulation.Game.Renderer.Entities
 
             if (SimulationGame.IsDebug)
             {
-                if (movingEntity.BlockingType == BlockingType.BLOCKING)
+                if (movingEntity.IsBlocking())
                 {
                     SimulationGame.PrimitiveDrawer.Rectangle(movingEntity.UnionBounds.ToXnaRectangle(), Color.Red);
                 }
-                else if (movingEntity.IsHitable)
+                else if (movingEntity.IsHitable())
                 {
                     SimulationGame.PrimitiveDrawer.Rectangle(movingEntity.HitBoxBounds.ToXnaRectangle(), Color.White);
                     SimulationGame.PrimitiveDrawer.Rectangle(movingEntity.BlockingBounds.ToXnaRectangle(), Color.Red);

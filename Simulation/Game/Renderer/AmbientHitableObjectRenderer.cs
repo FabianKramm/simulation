@@ -38,7 +38,7 @@ namespace Simulation.Game.Renderer
 
                 if (SimulationGame.IsDebug)
                 {
-                    if (ambientHitableObject.BlockingType == BlockingType.BLOCKING)
+                    if (ambientHitableObject.IsBlocking())
                     {
                         SimulationGame.PrimitiveDrawer.Rectangle(ambientHitableObject.UnionBounds.ToXnaRectangle(), Color.Red);
                     }

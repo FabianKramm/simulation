@@ -43,7 +43,7 @@ namespace Simulation.Game.Effects
 
             foreach (var hittedObject in hittedObjects)
                 if (hittedObject is LivingEntity)
-                    ((LivingEntity)hittedObject).ModifyHealth((int)-damage);
+                    ((LivingEntity)hittedObject).ModifyHealth((int)-damage, Origin);
         }
 
         public override void Update(GameTime gameTime)
