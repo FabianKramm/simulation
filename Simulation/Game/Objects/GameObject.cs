@@ -115,11 +115,11 @@ namespace Simulation.Game.Objects
         {
             CustomController?.Update(gameTime);
 
-            if(LiveSpanMillis > 0)
+            if(LiveSpan > 0)
             {
-                LiveSpanMillis -= (long)gameTime.ElapsedGameTime.TotalMilliseconds;
+                LiveSpan -= (long)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-                if(LiveSpanMillis <= 0)
+                if(LiveSpan <= 0)
                     DisconnectFromWorld();
             }
         }
