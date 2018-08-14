@@ -27,9 +27,6 @@ namespace Simulation.Game.MetaData.World
             }},
         };
 
-        public int ID;
-        public string Name = null;
-
         public BlockingType BlockingType = BlockingType.NOT_BLOCKING;
         public HitBoxType HitBoxType = HitBoxType.NO_HITBOX;
 

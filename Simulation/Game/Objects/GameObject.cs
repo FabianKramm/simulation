@@ -26,7 +26,10 @@ namespace Simulation.Game.Objects
         {
             get; private set;
         }
-        
+
+        [Serialize]
+        public int YPositionDepthOffset = 0;
+
         public Point BlockPosition
         {
             get; private set;

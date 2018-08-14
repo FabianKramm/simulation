@@ -15,9 +15,6 @@ namespace Simulation.Game.Objects.Entities
         public float Velocity = 0.10f;
 
         [Serialize]
-        public bool CanWalk = true;
-
-        [Serialize]
         public WorldPosition DestRealPosition { get; private set; }
 
         [Serialize]
@@ -25,6 +22,8 @@ namespace Simulation.Game.Objects.Entities
 
         [Serialize]
         public Vector2 Direction;
+
+        public bool CanWalk = true;
 
         public bool IsWalking
         {

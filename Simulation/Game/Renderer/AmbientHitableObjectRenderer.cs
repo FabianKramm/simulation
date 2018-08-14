@@ -29,11 +29,11 @@ namespace Simulation.Game.Renderer
                         
 
                     ambientHitableObject.ObjectAnimation.Update(gameTime);
-                    spriteBatch.Draw(ambientHitableObject.ObjectAnimation, ambientHitableObject.Position.ToVector(), color: GameRenderer.BlendColor, layerDepth: GeometryUtils.GetLayerDepthFromPosition(ambientHitableObject.Position.X, ambientHitableObject.Position.Y));
+                    spriteBatch.Draw(ambientHitableObject.ObjectAnimation, ambientHitableObject.Position.ToVector(), color: GameRenderer.BlendColor, layerDepth: GeometryUtils.GetLayerDepthFromPosition(ambientHitableObject.Position.X, ambientHitableObject.Position.Y + ambientHitableObject.YPositionDepthOffset));
                 }
                 else
                 {
-                    spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(ambientHitableObjectType.SpritePath), ambientHitableObject.Position.ToVector(), new Rectangle(ambientHitableObjectType.SpritePositions[0], ambientHitableObjectType.SpriteBounds), GameRenderer.BlendColor, 0.0f, ambientHitableObjectType.SpriteOrigin, 1.0f, SpriteEffects.None, GeometryUtils.GetLayerDepthFromPosition(ambientHitableObject.Position.X, ambientHitableObject.Position.Y));
+                    spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(ambientHitableObjectType.SpritePath), ambientHitableObject.Position.ToVector(), new Rectangle(ambientHitableObjectType.SpritePositions[0], ambientHitableObjectType.SpriteBounds), GameRenderer.BlendColor, 0.0f, ambientHitableObjectType.SpriteOrigin, 1.0f, SpriteEffects.None, GeometryUtils.GetLayerDepthFromPosition(ambientHitableObject.Position.X, ambientHitableObject.Position.Y + ambientHitableObject.YPositionDepthOffset));
                 }
 
                 if (SimulationGame.IsDebug)

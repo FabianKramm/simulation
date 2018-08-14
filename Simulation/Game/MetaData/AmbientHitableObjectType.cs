@@ -15,9 +15,6 @@ namespace Simulation.Game.MetaData
         public static Dictionary<int, AmbientHitableObjectType> lookup = new Dictionary<int, AmbientHitableObjectType>();
 
         // General
-        public int ID;
-        public string Name;
-
         public Rect RelativeBlockingRectangle;
         public Rect RelativeHitboxRectangle;
 
@@ -43,7 +40,8 @@ namespace Simulation.Game.MetaData
                 AmbientHitableObjectType = ambientHitableObjectType.ID,
                 BlockingType=ambientHitableObjectType.BlockingType,
                 IsHitable=ambientHitableObjectType.IsHitable,
-                CustomProperties= ambientHitableObjectType.CustomProperties != null ? (JObject)ambientHitableObjectType.CustomProperties.DeepClone() : null
+                CustomProperties= ambientHitableObjectType.CustomProperties != null ? (JObject)ambientHitableObjectType.CustomProperties.DeepClone() : null,
+                YPositionDepthOffset = ambientHitableObjectType.YPositionDepthOffset,
             };
 
             ambientHitableObject.Init();

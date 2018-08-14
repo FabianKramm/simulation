@@ -101,9 +101,6 @@ namespace Simulation.Game.MetaData
             }}
         };
 
-        public int ID;
-        public string Name;
-
         public int MaximumLife;
         public int CurrentLife;
         public float LifeRegeneration = 0;
@@ -160,6 +157,7 @@ namespace Simulation.Game.MetaData
                 livingEntity = new MovingEntity(worldPosition);
             }
 
+            livingEntity.YPositionDepthOffset = (livingEntityType.YPositionDepthOffset == 0) ? 15 : livingEntityType.YPositionDepthOffset;
             livingEntity.LivingEntityType = livingEntityType.ID;
 
             livingEntity.MaximumLife = livingEntityType.MaximumLife;

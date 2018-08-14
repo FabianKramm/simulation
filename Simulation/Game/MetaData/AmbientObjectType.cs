@@ -10,14 +10,8 @@ namespace Simulation.Game.MetaData
 {
     public class AmbientObjectType: MetaDataType
     {
-        public static Dictionary<int, AmbientObjectType> lookup = new Dictionary<int, AmbientObjectType>()
-        {
-            
-        };
-
-        public int ID;
-        public string Name;
-
+        public static Dictionary<int, AmbientObjectType> lookup = new Dictionary<int, AmbientObjectType>() {};
+        
         // Render
         public string SpritePath;
         public Vector2 SpriteOrigin;
@@ -36,7 +30,8 @@ namespace Simulation.Game.MetaData
             var ambientObject = new AmbientObject(worldPosition)
             {
                 AmbientObjectType = ambientObjectType.ID,
-                CustomProperties = ambientObjectType.CustomProperties != null ? (JObject)ambientObjectType.CustomProperties.DeepClone() : null
+                CustomProperties = ambientObjectType.CustomProperties != null ? (JObject)ambientObjectType.CustomProperties.DeepClone() : null,
+                YPositionDepthOffset = ambientObjectType.YPositionDepthOffset,
             };
 
             ambientObject.Init();

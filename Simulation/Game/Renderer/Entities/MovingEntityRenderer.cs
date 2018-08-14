@@ -34,7 +34,7 @@ namespace Simulation.Game.Renderer.Entities
                 movingEntity.RendererInformation.currentAnimation.Reset();
             }
 
-            var adjustedYPosition = movingEntity.Position.Y + 15;
+            var adjustedYPosition = movingEntity.Position.Y + movingEntity.YPositionDepthOffset;
 
             spriteBatch.Draw(movingEntity.RendererInformation.currentAnimation, new Vector2((int)movingEntity.Position.X, (int)movingEntity.Position.Y), color: GameRenderer.BlendColor, layerDepth: GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, adjustedYPosition));
 
