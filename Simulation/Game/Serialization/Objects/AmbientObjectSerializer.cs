@@ -16,6 +16,8 @@ namespace Simulation.Game.Serialization.Objects
 
             Deserialize(ref jObject, ambientObject);
 
+            ambientObject.Init();
+
             return ambientObject;
         }
 
@@ -34,8 +36,6 @@ namespace Simulation.Game.Serialization.Objects
             GameObjectSerializer.Deserialize(ref jObject, ambientObject);
 
             SerializationUtils.SetFromObject(jObject, ambientObject, type, serializeableProperties);
-
-            ambientObject.Init();
         }
 
         protected static void Serialize(AmbientObject ambientObject, ref JObject jObject)

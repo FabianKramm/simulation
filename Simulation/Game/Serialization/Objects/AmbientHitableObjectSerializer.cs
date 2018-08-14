@@ -12,19 +12,21 @@ namespace Simulation.Game.Serialization.Objects
 
         public static AmbientHitableObject Deserialize(JObject jObject)
         {
-            AmbientHitableObject staticBlockingObject = ReflectionUtils.CallPrivateConstructor<AmbientHitableObject>();
+            AmbientHitableObject ambientHitableObject = ReflectionUtils.CallPrivateConstructor<AmbientHitableObject>();
 
-            Deserialize(ref jObject, staticBlockingObject);
+            Deserialize(ref jObject, ambientHitableObject);
 
-            return staticBlockingObject;
+            ambientHitableObject.Init();
+
+            return ambientHitableObject;
         }
 
-        public static JObject Serialize(AmbientHitableObject staticBlockingObject)
+        public static JObject Serialize(AmbientHitableObject ambientHitableObject)
         {
             var retObject = new JObject();
 
             SerializationUtils.SerializeType(type, ref retObject);
-            Serialize(staticBlockingObject, ref retObject);
+            Serialize(ambientHitableObject, ref retObject);
 
             return retObject;
         }
@@ -34,8 +36,6 @@ namespace Simulation.Game.Serialization.Objects
             HitableObjectSerializer.Deserialize(ref jObject, ambientHitableObject);
 
             SerializationUtils.SetFromObject(jObject, ambientHitableObject, type, serializeableProperties);
-
-            ambientHitableObject.Init();
         }
 
         protected static void Serialize(AmbientHitableObject staticBlockingObject, ref JObject jObject)

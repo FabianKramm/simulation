@@ -211,25 +211,25 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
         }
 
-        public static bool ReplaceTypeFromString(WorldBuilder.PlacementType placementType, string objectText)
+        public static bool ReplaceTypeFromString(PlacementType placementType, string objectText)
         {
             InputDialog dialog;
 
             switch (placementType)
             {
-                case WorldBuilder.PlacementType.BlockPlacement:
+                case PlacementType.BlockPlacement:
                     BlockType newBlockType = JsonConvert.DeserializeObject<BlockType>(objectText, SerializationUtils.SerializerSettings);
                     BlockType.lookup[newBlockType.ID] = newBlockType;
                     break;
-                case WorldBuilder.PlacementType.AmbientObjectPlacement:
+                case PlacementType.AmbientObjectPlacement:
                     AmbientObjectType newAmbientObjectType = JsonConvert.DeserializeObject<AmbientObjectType>(objectText, SerializationUtils.SerializerSettings);
                     AmbientObjectType.lookup[newAmbientObjectType.ID] = newAmbientObjectType;
                     break;
-                case WorldBuilder.PlacementType.AmbientHitableObjectPlacement:
+                case PlacementType.AmbientHitableObjectPlacement:
                     AmbientHitableObjectType newAmbientHitableObjectType = JsonConvert.DeserializeObject<AmbientHitableObjectType>(objectText, SerializationUtils.SerializerSettings);
                     AmbientHitableObjectType.lookup[newAmbientHitableObjectType.ID] = newAmbientHitableObjectType;
                     break;
-                case WorldBuilder.PlacementType.LivingEntityPlacement:
+                case PlacementType.LivingEntityPlacement:
                     dialog = new InputDialog("Create LivingEntity", objectText);
 
                     if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)

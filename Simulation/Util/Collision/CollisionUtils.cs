@@ -357,13 +357,8 @@ namespace Simulation.Util.Collision
 
                 for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
                     for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
-                    {
-                        Point chunkPos = GeometryUtils.GetChunkPosition(blockX, blockY, WorldGrid.WorldChunkBlockSize.X, WorldGrid.WorldChunkBlockSize.Y);
-                        WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkPos.X, chunkPos.Y);
-
                         if (!SimulationGame.World.WalkableGrid.IsBlockWalkable(blockX, blockY))
                             return true;
-                    }
 
                 return false;
             }
@@ -385,7 +380,7 @@ namespace Simulation.Util.Collision
 
                         int blockType = interior.GetBlockType(blockX, blockY);
 
-                        if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
+                        if (GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
                             return true;
                     }
 
@@ -415,7 +410,7 @@ namespace Simulation.Util.Collision
 
                         int blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
-                        if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
+                        if (GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
                             return true;
                     }
 

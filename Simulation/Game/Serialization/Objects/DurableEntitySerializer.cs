@@ -16,6 +16,8 @@ namespace Simulation.Game.Serialization.Objects
 
             Deserialize(ref jObject, durableEntity);
 
+            durableEntity.Init();
+
             return durableEntity;
         }
 
@@ -31,11 +33,9 @@ namespace Simulation.Game.Serialization.Objects
 
         protected static void Deserialize(ref JObject jObject, DurableEntity durableEntity)
         {
-            MovingEntitySerializer.Deserialize(ref jObject, durableEntity, true);
+            MovingEntitySerializer.Deserialize(ref jObject, durableEntity);
 
             SerializationUtils.SetFromObject(jObject, durableEntity, durableEntityType, serializeableProperties);
-
-            durableEntity.Init();
         }
 
         protected static void Serialize(DurableEntity durableEntity, ref JObject jObject)

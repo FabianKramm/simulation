@@ -16,6 +16,8 @@ namespace Simulation.Game.Serialization.Objects
 
             Deserialize(ref jObject, movingEntity);
 
+            movingEntity.Init();
+
             return movingEntity;
         }
 
@@ -29,16 +31,11 @@ namespace Simulation.Game.Serialization.Objects
             return retObject;
         }
 
-        protected static void Deserialize(ref JObject jObject, MovingEntity movingEntity, bool skipInit = false)
+        protected static void Deserialize(ref JObject jObject, MovingEntity movingEntity)
         {
             LivingEntitySerializer.Deserialize(ref jObject, movingEntity);
 
             SerializationUtils.SetFromObject(jObject, movingEntity, movingEntityType, serializeableProperties);
-
-            if(!skipInit)
-            {
-                movingEntity.Init();
-            }
         }
 
         protected static void Serialize(MovingEntity movingEntity, ref JObject jObject)

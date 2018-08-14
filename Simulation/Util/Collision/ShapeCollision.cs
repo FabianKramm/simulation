@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Util.Geometry;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Simulation.Util.Collision
 {
@@ -66,6 +67,7 @@ namespace Simulation.Util.Collision
             return new Rect((int)minX, (int)minY, ((int)maxX - (int)minX) + 1, ((int)maxY - (int)minY) + 1);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool RectIntersectsPoly(Rect r1, Vector2[] poly2)
         {
             return PolyIntersectsPoly(poly2, new Vector2[] {

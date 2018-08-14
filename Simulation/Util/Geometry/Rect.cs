@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using Simulation.Game.World;
+using System.Runtime.CompilerServices;
 
 namespace Simulation.Util.Geometry
 {
@@ -8,6 +9,7 @@ namespace Simulation.Util.Geometry
     {
         public static readonly Rect Empty = new Rect(0, 0, 0, 0);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rect Union(Rect rect1, Rect rect2)
         {
             // Maybe use ShapeCollision.ConvertPolyToRect idea to implement this?
@@ -85,51 +87,61 @@ namespace Simulation.Util.Geometry
             Height = height;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Point GetPosition()
         {
             return new Point(X, Y);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector2 GetPositionVector()
         {
             return new Vector2(X, Y);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Point GetSize()
         {
             return new Point(Width, Height);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector2 GetSizeVector()
         {
             return new Vector2(Width, Height);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Intersects(Rect rect)
         {
             return (X <= rect.Right) && (Right >= rect.X) && (Y <= rect.Bottom) && (Bottom >= rect.Y);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(Vector2 point)
         {
             return (point.X >= X) && (point.X <= Right) && (point.Y >= Y) && (point.Y <= Bottom);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(WorldPosition point)
         {
             return (point.X >= X) && (point.X <= Right) && (point.Y >= Y) && (point.Y <= Bottom);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(Point point)
         {
             return (point.X >= X) && (point.X <= Right) && (point.Y >= Y) && (point.Y <= Bottom);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(int x, int y)
         {
             return (x >= X) && (x <= Right) && (y >= Y) && (y <= Bottom);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Rectangle ToXnaRectangle()
         {
             return new Rectangle(X, Y, Width, Height);

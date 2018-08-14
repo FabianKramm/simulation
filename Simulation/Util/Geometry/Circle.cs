@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace Simulation.Util.Geometry
 {
@@ -18,15 +19,19 @@ namespace Simulation.Util.Geometry
             Radius = radius;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector2 ToVector()
         {
             return new Vector2(CenterX, CenterY);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(Point point) => (point.X - CenterX) * (point.X - CenterX) + (point.Y - CenterY) * (point.Y - CenterY) <= Radius * Radius;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(int x, int y) => (x - CenterX) * (x - CenterX) + (y - CenterY) * (y - CenterY) <= Radius * Radius;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Intersects(Circle other)
         {
             return (CenterX - other.CenterX) * (CenterX - other.CenterX) + (CenterY - other.CenterY) * (CenterY - other.CenterY) <= (Radius + other.Radius) * (Radius + other.Radius);

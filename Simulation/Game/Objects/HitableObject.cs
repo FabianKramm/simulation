@@ -71,7 +71,8 @@ namespace Simulation.Game.Objects
                 for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                     for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
                     {
-                        if (chunkX == positionChunk.X && chunkY == positionChunk.Y) continue;
+                        if (chunkX == positionChunk.X && chunkY == positionChunk.Y)
+                            continue;
 
                         var chunkPos = GeometryUtils.ConvertPointToLong(chunkX, chunkY);
                         var chunk = SimulationGame.World.Get(chunkPos, false);
@@ -92,11 +93,12 @@ namespace Simulation.Game.Objects
             Point positionChunk = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
             Point chunkTopLeft = GeometryUtils.GetChunkPosition(UnionBounds.Left, UnionBounds.Top, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
             Point chunkBottomRight = GeometryUtils.GetChunkPosition(UnionBounds.Right, UnionBounds.Bottom, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-
+            
             for (int chunkX = chunkTopLeft.X; chunkX <= chunkBottomRight.X; chunkX++)
                 for (int chunkY = chunkTopLeft.Y; chunkY <= chunkBottomRight.Y; chunkY++)
                 {
-                    if (chunkX == positionChunk.X && chunkY == positionChunk.Y) continue;
+                    if (chunkX == positionChunk.X && chunkY == positionChunk.Y)
+                        continue;
 
                     var chunkPos = GeometryUtils.ConvertPointToLong(chunkX, chunkY);
                     var chunk = SimulationGame.World.Get(chunkPos, false);
@@ -118,7 +120,6 @@ namespace Simulation.Game.Objects
                 // Add as contained object to main chunk
                 Point positionChunk = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
 
-                // if (SimulationGame.World.isWorldGridChunkLoaded(positionChunk.X, positionChunk.Y) || forceLoadGridChunk)
                 // We load it here 
                 SimulationGame.World.GetFromChunkPoint(positionChunk.X, positionChunk.Y).AddContainedObject(this);
 
@@ -166,40 +167,35 @@ namespace Simulation.Game.Objects
 
                 if (oldWorldGridChunkPoint.X != newWorldGridChunkPoint.X || oldWorldGridChunkPoint.Y != newWorldGridChunkPoint.Y)
                 {
-                    var oldChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(oldWorldGridChunkPoint.X, oldWorldGridChunkPoint.Y), false);
-                    var newChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y), false);
+                    var newChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y), this is DurableEntity);
 
                     // Remove from old chunk
-                    if (InteriorID == Interior.Outside && oldChunk != null)
-                        oldChunk.RemoveContainedObject(this);
+                    DisconnectFromWorld();
 
-                    // TODO: What happens if not loaded??
-                    // Add to new chunk
-                    if (newPosition.InteriorID == Interior.Outside && newChunk != null)
-                        newChunk.AddContainedObject(this);
+                    // Update Position
+                    base.UpdatePosition(newPosition);
+                    updateHitableBounds(Position);
+
+                    // Connect to world and load chunk if necessary
+                    ConnectToWorld();
+
+                    // Unload chunk if we just loaded it and we are not a durable entity
+                    if (newChunk == null)
+                    {
+                        SimulationGame.World.UnloadChunk(GeometryUtils.ConvertPointToLong(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y));
+                    }
+
+                    return;
                 }
             }
             else if (InteriorID != newPosition.InteriorID)
             {
                 // Remove from old part
-                if (InteriorID == Interior.Outside)
-                {
-                    Point oldWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)Position.X, (int)Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
-                    var oldChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(oldWorldGridChunkPoint.X, oldWorldGridChunkPoint.Y), false);
+                DisconnectFromWorld();
 
-                    // Remove from old chunk
-                    if (InteriorID == Interior.Outside && oldChunk != null)
-                        oldChunk.RemoveContainedObject(this);
-                }
-                else
-                {
-                    Interior interior = SimulationGame.World.InteriorManager.Get(InteriorID, false);
-
-                    if (interior != null)
-                    {
-                        interior.RemoveContainedObject(this);
-                    }
-                }
+                // Update Position
+                base.UpdatePosition(newPosition);
+                updateHitableBounds(Position);
 
                 // Add to new part
                 if (newPosition.InteriorID == Interior.Outside)
@@ -207,37 +203,28 @@ namespace Simulation.Game.Objects
                     var newWorldGridChunkPoint = GeometryUtils.GetChunkPosition((int)newPosition.X, (int)newPosition.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
                     var newChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y), this is DurableEntity);
 
-                    // Add to new chunk
-                    if (newChunk != null)
-                    {
-                        newChunk.AddContainedObject(this);
-                    }
-                    else
-                    {
-                        // Load chunk, add entity, save chunk
-                        newChunk = SimulationGame.World.Get(GeometryUtils.ConvertPointToLong(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y));
-                        newChunk.AddContainedObject(this);
+                    ConnectToWorld();
 
-                        SimulationGame.World.UnloadChunk(GeometryUtils.ConvertPointToLong((int)Position.X, (int)Position.Y));
+                    // Unload if we just loaded
+                    if (newChunk == null)
+                    {
+                        SimulationGame.World.UnloadChunk(GeometryUtils.ConvertPointToLong(newWorldGridChunkPoint.X, newWorldGridChunkPoint.Y));
                     }
                 }
                 else
                 {
                     Interior interior = SimulationGame.World.InteriorManager.Get(newPosition.InteriorID, this is DurableEntity);
 
-                    if (interior != null)
-                    {
-                        interior.AddContainedObject(this);
-                    }
-                    else
-                    {
-                        // Load chunk, add entity, save chunk
-                        interior = SimulationGame.World.InteriorManager.Get(newPosition.InteriorID);
-                        interior.AddContainedObject(this);
+                    ConnectToWorld();
 
+                    // Unload if we just loaded
+                    if (interior == null)
+                    {
                         SimulationGame.World.InteriorManager.UnloadChunk(newPosition.InteriorID);
                     }
                 }
+
+                return;
             }
 
             if (Position.InteriorID == Interior.Outside)
