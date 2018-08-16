@@ -22,6 +22,7 @@ namespace Simulation.Game.MetaData
                 Name="Player",
                 MaximumLife=100,
                 CurrentLife=100,
+                Invincible=true,
                 IsDurableEntity=true,
                 Fraction=FractionType.PLAYER,
                 PreloadedSurroundingWorldGridChunkRadius=3,
