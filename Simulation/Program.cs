@@ -38,10 +38,10 @@ namespace Simulation
         static void Main()
         {
             // WorldLoader.ResetMetaData();
-            // WorldLoader.ResetWorld();
+            WorldLoader.ResetWorld();
 
-            // using (var game = new SimulationGame())
-            //    game.Run(); 
+            using (var game = new SimulationGame())
+                game.Run(); 
 
             /*var fastNoise = new FastNoise(12);
 

@@ -134,7 +134,7 @@ namespace Simulation.Game.MetaData
 
         public bool WithGrid = true;
         public int FrameDuration = 160;
-        public long LiveSpan = -1;
+        public int LiveSpan = -1;
 
         public string CustomRendererScript = null;
         public string CustomControllerScript = null;
@@ -144,16 +144,16 @@ namespace Simulation.Game.MetaData
         {
             MovingEntity livingEntity = null;
 
-            if(livingEntityType.IsDurableEntity)
-            {
-                livingEntity = new DurableEntity(worldPosition)
-                {
-                    PreloadedSurroundingWorldGridChunkRadius=livingEntityType.PreloadedSurroundingWorldGridChunkRadius
-                };
-            }
-            else if(livingEntityType.ID == Player)
+            if(livingEntityType.ID == Player)
             {
                 livingEntity = new Player(worldPosition)
+                {
+                    PreloadedSurroundingWorldGridChunkRadius = livingEntityType.PreloadedSurroundingWorldGridChunkRadius
+                };
+            }
+            else if (livingEntityType.IsDurableEntity)
+            {
+                livingEntity = new DurableEntity(worldPosition)
                 {
                     PreloadedSurroundingWorldGridChunkRadius = livingEntityType.PreloadedSurroundingWorldGridChunkRadius
                 };

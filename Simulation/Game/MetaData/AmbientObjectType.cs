@@ -24,7 +24,7 @@ namespace Simulation.Game.MetaData
         public JObject CustomProperties = null;
 
         public int FrameDuration = 180;
-        public long LiveSpan = -1;
+        public int LiveSpan = -1;
 
         public static AmbientObject Create(WorldPosition worldPosition, AmbientObjectType ambientObjectType)
         {

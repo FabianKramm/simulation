@@ -32,7 +32,7 @@ namespace Simulation.Game.Objects
         public int YPositionDepthOffset = 0;
 
         [Serialize]
-        public long LiveSpan = -1; // In Milliseconds, -1 live forever
+        public int LiveSpan = -1; // In Milliseconds, -1 live forever
 
         public Point BlockPosition
         {
@@ -117,7 +117,7 @@ namespace Simulation.Game.Objects
 
             if(LiveSpan > 0)
             {
-                LiveSpan -= (long)gameTime.ElapsedGameTime.TotalMilliseconds;
+                LiveSpan -= (int)gameTime.ElapsedGameTime.TotalMilliseconds;
 
                 if(LiveSpan <= 0)
                     DisconnectFromWorld();
