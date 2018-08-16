@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.MetaData.World;
 using System.Diagnostics;
+using System;
 
 /*
  * Open Issues:
@@ -297,6 +298,11 @@ namespace Simulation
             Player.ConnectToWorld();
 
             DurableEntityFactory.CreateGeralt().ConnectToWorld();
+
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler((object sender, EventArgs e) =>
+            {
+                SaveAndExit();
+            });
         }
 
         /// <summary>

@@ -20,33 +20,34 @@
     <File>D:/Programmieren/simulation/Simulation/Content/Spells/Slash/Slash.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/GUI/SpeechBubble.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/ArialSmall.spritefont</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior01.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/ArialBig.spritefont</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior01.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior02.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior03.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior04.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior05.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior06.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior07.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior08.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior09.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior10.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior11.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior12.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior13.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior14.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior15.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior/Exterior16.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior01.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior02.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior03.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior04.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Objects/fountain.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Objects/torch.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior03.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior04.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior05.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior06.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior07.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior08.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Objects/clutter01.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior05.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior06.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior07.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior08.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior09.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior10.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Interior/Interior11.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior09.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior10.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior11.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior12.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior13.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Exterior14.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Objects/clutter01.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Objects/fountain.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Objects/torch.png</File>
   </SourceFiles>
 </SourceFileCollection>

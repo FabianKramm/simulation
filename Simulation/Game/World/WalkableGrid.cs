@@ -160,6 +160,11 @@ namespace Simulation.Game.World
                 }
         }
 
+        protected override bool shouldPersist(ulong key, WalkableGridChunk part)
+        {
+            return part.IsPersistent;
+        }
+
         protected override bool shouldRemoveDuringGarbageCollection(ulong key, WalkableGridChunk part)
         {
             foreach (var livingEntity in SimulationGame.World.LivingEntities)

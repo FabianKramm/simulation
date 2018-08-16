@@ -23,6 +23,8 @@ namespace Simulation.Game.World
         protected abstract bool shouldRemoveDuringGarbageCollection(KEY key, PART part);
         protected abstract void unloadPart(KEY key, PART part);
 
+        protected abstract bool shouldPersist(KEY key, PART part);
+
         public WorldPartManager(TimeSpan garbageCollectInterval)
         {
             this.garbageCollectInterval = garbageCollectInterval;
@@ -67,11 +69,12 @@ namespace Simulation.Game.World
 
         public void SaveAll()
         {
-            ThreadingUtils.assertMainThread();
+            // ThreadingUtils.assertMainThread();
 
-            foreach(var part in loadedParts)
+            foreach (var part in loadedParts)
             {
-                saveUnguarded(part.Key, part.Value);
+                if(shouldPersist(part.Key, part.Value))
+                    saveUnguarded(part.Key, part.Value);
             }
         }
 

@@ -230,6 +230,11 @@ namespace Simulation.Game.World
             return true;
         }
 
+        protected override bool shouldPersist(ulong key, WorldGridChunk part)
+        {
+            return part.IsPersistent;
+        }
+
         protected override void unloadPart(ulong key, WorldGridChunk part)
         {
             Point pos = GeometryUtils.GetPointFromLong(key);

@@ -22,7 +22,7 @@ namespace Simulation.Game.MetaData.World
             {
                 ID=1,
                 Name="Grass",
-                SpritePath=@"Tiles\Exterior01",
+                SpritePath=@"Tiles\Exterior\Exterior01",
                 SpritePosition=new Point(0, 0)
             }},
         };

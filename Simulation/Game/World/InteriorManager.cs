@@ -32,6 +32,11 @@ namespace Simulation.Game.World
             WorldLoader.SaveInterior(part);
         }
 
+        protected override bool shouldPersist(string key, Interior part)
+        {
+            return part.IsPersistent;
+        }
+
         protected override bool shouldRemoveDuringGarbageCollection(string key, Interior part)
         {
             foreach (var livingEntity in SimulationGame.World.LivingEntities)
