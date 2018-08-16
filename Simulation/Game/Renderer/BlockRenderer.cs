@@ -16,7 +16,7 @@ namespace Simulation.Game.Renderer
             Color color = GameRenderer.BlendColor;
             var blockType = BlockType.lookup[blockId];
 
-            if(SimulationGame.IsDebug && SimulationGame.Player.InteriorID == Interior.Outside && (!SimulationGame.World.WalkableGrid.IsPositionWalkable(realX, realY) || CollisionUtils.GetBlockingTypeFromBlock(blockType.ID) == Enums.BlockingType.BLOCKING))
+            if(SimulationGame.IsDebug && SimulationGame.Player.InteriorID == Interior.Outside && (!SimulationGame.World.WalkableGrid.IsPositionWalkable(realX, realY) || CollisionUtils.IsBlockBlocking(blockType.ID)))
             {
                 color = Color.Red;
             }

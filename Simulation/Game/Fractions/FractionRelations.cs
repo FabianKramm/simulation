@@ -1,4 +1,4 @@
-﻿using Simulation.Game.Enums;
+﻿using Simulation.Game.Fractions;
 using Simulation.Game.Objects.Entities;
 using System.Collections.Generic;
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Enums;
+using Simulation.Game.Fractions;
 using Simulation.Game.MetaData;
 using Simulation.Game.MetaData.World;
 using Simulation.Game.Objects.Entities;
@@ -124,7 +124,7 @@ namespace Simulation.Game.World
         {
             ThreadingUtils.assertChildThread();
 
-            if(CollisionUtils.GetBlockingTypeFromBlock(GetBlockType(blockX, blockY)) == BlockingType.BLOCKING)
+            if(CollisionUtils.IsBlockBlocking(GetBlockType(blockX, blockY)))
             {
                 return false;
             }

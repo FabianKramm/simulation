@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Enums;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Serialization;
 using Simulation.Game.World;
@@ -11,7 +10,7 @@ namespace Simulation.Game.Objects
     public abstract class HitableObject: GameObject
     {
         [Serialize]
-        protected BlockingType blockingType;
+        protected bool isBlocking;
 
         [Serialize]
         protected bool isHitable = true;
@@ -83,7 +82,7 @@ namespace Simulation.Game.Objects
                         }
                     }
 
-                if (blockingType == BlockingType.BLOCKING)
+                if (isBlocking)
                     SimulationGame.World.WalkableGrid.BlockRect(BlockingBounds);
             }
         }
@@ -109,7 +108,7 @@ namespace Simulation.Game.Objects
                     }
                 }
 
-            if (blockingType == BlockingType.BLOCKING)
+            if (isBlocking)
                 SimulationGame.World.WalkableGrid.UnblockRect(BlockingBounds);
         }
 
@@ -153,7 +152,7 @@ namespace Simulation.Game.Objects
 
         public void SetBlocking(bool blocking)
         {
-            blockingType = blocking ? BlockingType.BLOCKING : BlockingType.NOT_BLOCKING;
+            isBlocking = blocking;
         }
 
         public void SetHitable(bool hitable)
@@ -163,7 +162,7 @@ namespace Simulation.Game.Objects
 
         public virtual bool IsBlocking()
         {
-            return blockingType == BlockingType.BLOCKING;
+            return isBlocking;
         }
 
         public virtual bool IsHitable()

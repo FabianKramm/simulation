@@ -3,7 +3,7 @@ using Simulation.Game.AI.BehaviorTree;
 using Simulation.Game.AI.Evaluation;
 using Simulation.Game.AI.Tasks;
 using Simulation.Game.Effects;
-using Simulation.Game.Enums;
+using Simulation.Game.Fractions;
 using Simulation.Game.MetaData;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;

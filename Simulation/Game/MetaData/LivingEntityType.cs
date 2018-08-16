@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json.Linq;
-using Simulation.Game.Enums;
+using Simulation.Game.Fractions;
 using Simulation.Game.Objects.Entities;
 using Simulation.Game.Renderer.Entities;
 using Simulation.Game.Serialization;

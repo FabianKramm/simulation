@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Enums;
+using Simulation.Game.Fractions;
 using Simulation.Game.MetaData;
 using Simulation.Game.MetaData.World;
 using Simulation.Game.Objects;
@@ -35,7 +35,7 @@ namespace Simulation.Util.Collision
 
             for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
                 for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
-                    if (GetHitBoxTypeFromBlock(blockX, blockY, origin.InteriorID) == HitBoxType.HITABLE_BLOCK && ShapeCollision.RectIntersectsPoly(new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y), polyRect))
+                    if (IsBlockHitable(blockX, blockY, origin.InteriorID) && ShapeCollision.RectIntersectsPoly(new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y), polyRect))
                         return true;
 
             return false;
@@ -62,7 +62,7 @@ namespace Simulation.Util.Collision
 
             for (int blockX = topLeft.X; blockX <= bottomRight.X; blockX++)
                 for (int blockY = topLeft.Y; blockY <= bottomRight.Y; blockY++)
-                    if (GetHitBoxTypeFromBlock(blockX, blockY, origin.InteriorID) == HitBoxType.HITABLE_BLOCK && ShapeCollision.LineIntersectsRectangle(originVector, targetVector, new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
+                    if (IsBlockHitable(blockX, blockY, origin.InteriorID) && ShapeCollision.LineIntersectsRectangle(originVector, targetVector, new Rect(blockX * WorldGrid.BlockSize.X, blockY * WorldGrid.BlockSize.Y, WorldGrid.BlockSize.X, WorldGrid.BlockSize.Y)))
                         return true;
 
             return false;
@@ -323,7 +323,7 @@ namespace Simulation.Util.Collision
 
                         int blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
-                        if (GetHitBoxTypeFromBlock(blockType) == HitBoxType.HITABLE_BLOCK)
+                        if (IsBlockHitable(blockType))
                             return true;
                     }
             }
@@ -340,7 +340,7 @@ namespace Simulation.Util.Collision
                     {
                         int blockType = interior.GetBlockType(blockX, blockY);
 
-                        if (GetHitBoxTypeFromBlock(blockType) == HitBoxType.HITABLE_BLOCK)
+                        if (IsBlockHitable(blockType))
                             return true;
                     }
             }
@@ -383,7 +383,7 @@ namespace Simulation.Util.Collision
 
                         int blockType = interior.GetBlockType(blockX, blockY);
 
-                        if (GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
+                        if (IsBlockBlocking(blockType))
                             return true;
                     }
 
@@ -413,7 +413,7 @@ namespace Simulation.Util.Collision
 
                         int blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
-                        if (GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
+                        if (IsBlockBlocking(blockType))
                             return true;
                     }
 
@@ -457,7 +457,7 @@ namespace Simulation.Util.Collision
 
                         int blockType = interior.GetBlockType(blockX, blockY);
 
-                        if (GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
+                        if (IsBlockBlocking(blockType))
                             return true;
                     }
 
@@ -507,17 +507,17 @@ namespace Simulation.Util.Collision
             }
         }
 
-        public static BlockingType GetBlockingTypeFromBlock(int blockType)
+        public static bool IsBlockBlocking(int blockType)
         {
-            return BlockType.lookup[blockType].BlockingType;
+            return BlockType.lookup[blockType].IsBlocking;
         }
 
-        public static HitBoxType GetHitBoxTypeFromBlock(int blockType)
+        public static bool IsBlockHitable(int blockType)
         {
-            return BlockType.lookup[blockType].HitBoxType;
+            return BlockType.lookup[blockType].IsHitable;
         }
 
-        public static BlockingType GetBlockingTypeFromBlock(int blockX, int blockY, string interiorID)
+        public static bool IsBlockBlocking(int blockX, int blockY, string interiorID)
         {
             if (interiorID == Interior.Outside)
             {
@@ -525,18 +525,18 @@ namespace Simulation.Util.Collision
                 WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkPos.X, chunkPos.Y);
                 int blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
-                return GetBlockingTypeFromBlock(blockType);
+                return IsBlockBlocking(blockType);
             }
             else
             {
                 Interior interior = SimulationGame.World.InteriorManager.Get(interiorID);
                 int blockType = interior.GetBlockType(blockX, blockY);
 
-                return GetBlockingTypeFromBlock(blockType);
+                return IsBlockBlocking(blockType);
             }
         }
 
-        public static HitBoxType GetHitBoxTypeFromBlock(int blockX, int blockY, string interiorID)
+        public static bool IsBlockHitable(int blockX, int blockY, string interiorID)
         {
             if (interiorID == Interior.Outside)
             {
@@ -544,14 +544,14 @@ namespace Simulation.Util.Collision
                 WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(chunkPos.X, chunkPos.Y);
                 int blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
-                return GetHitBoxTypeFromBlock(blockType);
+                return IsBlockHitable(blockType);
             }
             else
             {
                 Interior interior = SimulationGame.World.InteriorManager.Get(interiorID);
                 int blockType = interior.GetBlockType(blockX, blockY);
 
-                return GetHitBoxTypeFromBlock(blockType);
+                return IsBlockHitable(blockType);
             }
         }
     }

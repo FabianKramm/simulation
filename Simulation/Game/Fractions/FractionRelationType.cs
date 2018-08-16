@@ -1,4 +1,4 @@
-﻿namespace Simulation.Game.Enums
+﻿namespace Simulation.Game.Fractions
 {
     public enum FractionRelationType
     {

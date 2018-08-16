@@ -73,10 +73,8 @@
     <Compile Include="Game\AI\Evaluation\TaskDescription.cs" />
     <Compile Include="Game\AI\Evaluation\TaskRater.cs" />
     <Compile Include="Game\AI\WanderAI.cs" />
-    <Compile Include="Game\Enums\BlockingType.cs" />
-    <Compile Include="Game\Enums\FractionRelationType.cs" />
-    <Compile Include="Game\Enums\FractionType.cs" />
-    <Compile Include="Game\Enums\HitBoxType.cs" />
+    <Compile Include="Game\Fractions\FractionRelationType.cs" />
+    <Compile Include="Game\Fractions\FractionType.cs" />
     <Compile Include="Game\Fractions\FractionRelations.cs" />
     <Compile Include="Game\Generator\BlockInformation.cs" />
     <Compile Include="Game\Generator\ElevationGenerator.cs" />

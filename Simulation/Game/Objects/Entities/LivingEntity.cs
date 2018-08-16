@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Enums;
 using Simulation.Game.Fractions;
 using Simulation.Game.MetaData;
 using Simulation.Game.Renderer.Entities;
@@ -149,7 +148,7 @@ namespace Simulation.Game.Objects.Entities
 
         public override bool IsBlocking()
         {
-            return IsDead() == false && blockingType == BlockingType.BLOCKING;
+            return IsDead() == false && isBlocking;
         }
 
         public override bool IsHitable()

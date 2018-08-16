@@ -4,7 +4,7 @@ using Simulation.Game.Objects.Entities;
 using Simulation.Util;
 using Simulation.Spritesheet;
 using Simulation.Util.Geometry;
-using Simulation.Game.Enums;
+using Simulation.Game.Fractions;
 using Simulation.Game.MetaData;
 
 namespace Simulation.Game.Renderer.Entities

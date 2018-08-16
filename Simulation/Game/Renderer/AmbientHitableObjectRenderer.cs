@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Simulation.Game.Enums;
+using Simulation.Game.Fractions;
 using Simulation.Game.MetaData;
 using Simulation.Game.Objects;
 using Simulation.Game.World;

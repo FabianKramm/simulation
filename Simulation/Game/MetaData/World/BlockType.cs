@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Simulation.Game.Enums;
+using Simulation.Game.Fractions;
 using Simulation.Game.World;
 using System.Collections.Generic;
 
@@ -15,8 +15,8 @@ namespace Simulation.Game.MetaData.World
             {
                 ID=0,
                 Name="None",
-                BlockingType=BlockingType.BLOCKING,
-                HitBoxType=HitBoxType.HITABLE_BLOCK
+                IsBlocking=true,
+                IsHitable=true
             }},
             {1, new BlockType()
             {
@@ -27,8 +27,8 @@ namespace Simulation.Game.MetaData.World
             }},
         };
 
-        public BlockingType BlockingType = BlockingType.NOT_BLOCKING;
-        public HitBoxType HitBoxType = HitBoxType.NO_HITBOX;
+        public bool IsBlocking = false;
+        public bool IsHitable = false;
 
         // Render
         public string SpritePath = null;

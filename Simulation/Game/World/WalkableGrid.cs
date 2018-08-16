@@ -4,7 +4,7 @@ using Simulation.Game.Generator;
 using Simulation.Util;
 using System;
 using Simulation.Util.Geometry;
-using Simulation.Game.Enums;
+using Simulation.Game.Fractions;
 using Simulation.Util.Collision;
 using Simulation.Game.Objects.Entities;
 
@@ -87,7 +87,7 @@ namespace Simulation.Game.World
                 WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(worldGridChunkPos.X, worldGridChunkPos.Y);
                 int blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
-                if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
+                if (CollisionUtils.IsBlockBlocking(blockType))
                 {
                     setBlockNotWalkable(blockX, blockY, true);
                     return;
@@ -131,7 +131,7 @@ namespace Simulation.Game.World
                         WorldGridChunk worldGridChunk = SimulationGame.World.GetFromChunkPoint(worldGridChunkPos.X, worldGridChunkPos.Y);
                         int blockType = worldGridChunk.GetBlockType(blockX, blockY);
 
-                        if (CollisionUtils.GetBlockingTypeFromBlock(blockType) == BlockingType.BLOCKING)
+                        if (CollisionUtils.IsBlockBlocking(blockType))
                             continue;
 
                         var found = false;

@@ -162,7 +162,7 @@ namespace Simulation.Game.Generator
 
                             worldGridChunk.SetBlockType(blockPosition.X, blockPosition.Y, Blocks[worldSegmentPosition.X, worldSegmentPosition.Y].BlockId);
 
-                            if(CollisionUtils.GetBlockingTypeFromBlock(Blocks[worldSegmentPosition.X, worldSegmentPosition.Y].BlockId) == Enums.BlockingType.BLOCKING)
+                            if(CollisionUtils.IsBlockBlocking(Blocks[worldSegmentPosition.X, worldSegmentPosition.Y].BlockId))
                                 walkableGridChunk.SetWalkable(blockPosition.X, blockPosition.Y, false);
                         }
 

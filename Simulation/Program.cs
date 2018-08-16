@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Simulation.Game;
 using Simulation.Util.Collision;
-using Simulation.Game.Enums;
+using Simulation.Game.Fractions;
 using Simulation.Util;
 using Simulation.Game.Hud;
 using Simulation.Util.Dialog;
@@ -37,7 +37,7 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
-            // WorldLoader.ResetMetaData();
+            WorldLoader.ResetMetaData();
             WorldLoader.ResetWorld();
 
             using (var game = new SimulationGame())
