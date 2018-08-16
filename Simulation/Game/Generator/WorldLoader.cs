@@ -101,6 +101,12 @@ namespace Simulation.Game.Generator
                 {
                     InteriorSerializer.Serialize(interior).WriteTo(writer);
                 }
+
+                // We delete the other chunk
+                var deletePath = interior.IsPersistent ? chunkPath : chunkPathPersistent;
+
+                if (File.Exists(deletePath))
+                    File.Delete(deletePath);
             }
             finally
             {
@@ -178,6 +184,12 @@ namespace Simulation.Game.Generator
 
                 chunk.copyDataTo(out bytes);
                 File.WriteAllBytes(savePath, bytes);
+
+                // We delete the other chunk
+                var deletePath = chunk.IsPersistent ? chunkPath : chunkPathPersistent;
+
+                if (File.Exists(deletePath))
+                    File.Delete(deletePath);
             }
             finally
             {
@@ -261,6 +273,12 @@ namespace Simulation.Game.Generator
                 {
                     WorldGridChunkSerializer.Serialize(chunk).WriteTo(writer);
                 }
+
+                // We delete the other chunk
+                var deletePath = chunk.IsPersistent ? chunkPath : chunkPathPersistent;
+
+                if (File.Exists(deletePath))
+                    File.Delete(deletePath);
             }
             finally
             {
