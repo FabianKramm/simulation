@@ -10,12 +10,31 @@ using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Util.Dialog;
 using Simulation.Util.Geometry;
+using System.Collections.Generic;
+using System.IO;
 using static Simulation.Game.Hud.WorldBuilder.WorldBuilder;
 
 namespace Simulation.Game.Hud.WorldBuilder
 {
     public static class WorldBuilderUtils
     {
+        public static string[] GetTileSets(string path)
+        {
+            List<string> tilesets = new List<string>();
+
+            var files = Directory.GetFiles(path);
+
+            foreach (var file in files)
+                tilesets.Add(file.Substring(SimulationGame.ContentManager.RootDirectory.Length + 1, file.Length - SimulationGame.ContentManager.RootDirectory.Length - 5));
+
+            var directories = Directory.GetDirectories(path);
+
+            foreach (var directory in directories)
+                tilesets.AddRange(GetTileSets(directory));
+
+            return tilesets.ToArray();
+        }
+
         public static void CreateObjectAtMousePosition(MetaDataType metaDataType)
         {
             var realPosition = SimulationGame.RealWorldMousePosition;

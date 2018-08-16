@@ -18,6 +18,7 @@ using Simulation.Util.UI;
 using Simulation.Util.UI.Elements;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Simulation.Game.Hud.WorldBuilder
 {
@@ -45,39 +46,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             CreateFromJson
         }
 
-        private readonly string[] tilesets = new string[]
-        {
-            @"Tiles\Exterior01",
-            @"Tiles\Exterior02",
-            @"Tiles\Exterior03",
-            @"Tiles\Exterior04",
-            @"Tiles\Exterior05",
-            @"Tiles\Exterior06",
-            @"Tiles\Exterior07",
-            @"Tiles\Exterior08",
-            @"Tiles\Exterior09",
-            @"Tiles\Exterior10",
-            @"Tiles\Exterior11",
-            @"Tiles\Exterior12",
-            @"Tiles\Exterior13",
-            @"Tiles\Exterior14",
-
-            @"Tiles\Interior\Interior01",
-            @"Tiles\Interior\Interior02",
-            @"Tiles\Interior\Interior03",
-            @"Tiles\Interior\Interior04",
-            @"Tiles\Interior\Interior05",
-            @"Tiles\Interior\Interior06",
-            @"Tiles\Interior\Interior07",
-            @"Tiles\Interior\Interior08",
-            @"Tiles\Interior\Interior09",
-            @"Tiles\Interior\Interior10",
-            @"Tiles\Interior\Interior11",
-
-            @"Tiles\Objects\torch",
-            @"Tiles\Objects\fountain",
-            @"Tiles\Objects\clutter01",
-        };
+        private string[] tilesets;
         
         private Button blockTypeBtn;
         private Button ambientObjectTypeBtn;
@@ -129,6 +98,8 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         public void LoadContent()
         {
+            tilesets = WorldBuilderUtils.GetTileSets(SimulationGame.ContentManager.RootDirectory + "\\Tiles");
+
             Bounds = new Rect(SimulationGame.Resolution.Width * 2 / 3, 0, SimulationGame.Resolution.Width / 3, SimulationGame.Resolution.Height);
             tilesetSelectionArea = new Rect(Bounds.X, Bounds.Y + 120, Bounds.Width - 10, Bounds.Height);
 
