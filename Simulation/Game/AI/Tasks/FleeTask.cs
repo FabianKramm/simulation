@@ -48,7 +48,8 @@ namespace Simulation.Game.AI.Tasks
 
                         if (distanceToTarget > originalDistanceToTarget && CollisionUtils.IsBlockPositionWalkable(neighborBlockPosition.X, neighborBlockPosition.Y, movingEntity.InteriorID))
                         {
-                            neighbors.Add(distanceToTarget, neighborBlockPosition);
+                            if(neighbors.ContainsKey(distanceToTarget) == false) 
+                                neighbors.Add(distanceToTarget, neighborBlockPosition);
                         }
                     }
 

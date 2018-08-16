@@ -81,9 +81,9 @@ namespace Simulation.PathFinding
                 switched = true;
             }
 
-            List<string> done = new List<string>() { startBlockPos.InteriorID };
-            SortedList<float, List<WorldLink>> open = new SortedList<float, List<WorldLink>>();
-            Interior startInterior = SimulationGame.World.InteriorManager.Get(startBlockPos.InteriorID);
+            var done = new List<string>() { startBlockPos.InteriorID };
+            var open = new SortedList<float, List<WorldLink>>();
+            var startInterior = SimulationGame.World.InteriorManager.Get(startBlockPos.InteriorID);
 
             foreach (var worldLinkItem in startInterior.WorldLinks)
             {
@@ -92,7 +92,13 @@ namespace Simulation.PathFinding
                 if (worldLinkItem.Value.ToInteriorID == Interior.Outside || done.Contains(worldLinkItem.Value.ToInteriorID))
                     continue;
 
-                open.Add(GeometryUtils.GetDiagonalDistance(startBlockPos.X, startBlockPos.Y, worldLinkItem.Value.FromBlock.X, worldLinkItem.Value.FromBlock.Y), new List<WorldLink>() { worldLinkItem.Value });
+                var distance = GeometryUtils.GetDiagonalDistance(startBlockPos.X, startBlockPos.Y, worldLinkItem.Value.FromBlock.X, worldLinkItem.Value.FromBlock.Y);
+
+                while (open.ContainsKey(distance))
+                    distance += 0.01f;
+
+
+                open.Add(distance, new List<WorldLink>() { worldLinkItem.Value });
                 done.Add(worldLinkItem.Value.ToInteriorID);
             }
 
@@ -118,7 +124,12 @@ namespace Simulation.PathFinding
 
                     clonedList.Add(worldLinkItem.Value);
 
-                    open.Add(distance + GeometryUtils.GetDiagonalDistance(worldLink.ToBlock.X, worldLink.ToBlock.Y, worldLinkItem.Value.FromBlock.X, worldLinkItem.Value.FromBlock.Y), clonedList);
+                    distance = distance + GeometryUtils.GetDiagonalDistance(worldLink.ToBlock.X, worldLink.ToBlock.Y, worldLinkItem.Value.FromBlock.X, worldLinkItem.Value.FromBlock.Y);
+
+                    while (open.ContainsKey(distance))
+                        distance += 0.01f;
+
+                    open.Add(distance, clonedList);
                     done.Add(worldLinkItem.Value.ToInteriorID);
                 }
             }
