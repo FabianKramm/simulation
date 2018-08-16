@@ -81,6 +81,8 @@ namespace Simulation.Game.Objects.Entities
 
             CustomController?.Init(this);
             CustomRenderer?.Init(this);
+
+            SimulationGame.World.LivingEntities[ID] = this;
         }
 
         public int GetAggroTowardsEntity(LivingEntity otherEntity)
@@ -121,6 +123,7 @@ namespace Simulation.Game.Objects.Entities
                     // Add die effect
 
                     DisconnectFromWorld();
+                    Destroy();
                 }
                 else
                 {
@@ -152,6 +155,11 @@ namespace Simulation.Game.Objects.Entities
         public override bool IsHitable()
         {
             return IsDead() == false && isHitable;
+        }
+
+        public override void Destroy()
+        {
+            SimulationGame.World.LivingEntities.Remove(ID);
         }
 
         public override void Update(GameTime gameTime)

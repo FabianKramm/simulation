@@ -24,8 +24,7 @@ namespace Simulation.Game.World
 
         public WalkableGrid WalkableGrid { get; private set; } = new WalkableGrid();
         public InteriorManager InteriorManager = new InteriorManager();
-
-        public Dictionary<string, DurableEntity> DurableEntities = new Dictionary<string, DurableEntity>();
+        public Dictionary<string, LivingEntity> LivingEntities = new Dictionary<string, LivingEntity>();
 
         public WorldGrid(): base(TimeSpan.FromSeconds(20)) { }
 
@@ -111,16 +110,6 @@ namespace Simulation.Game.World
             Point positionChunk = GeometryUtils.GetChunkPosition(blockX, blockY, WorldChunkBlockSize.X, WorldChunkBlockSize.Y);
 
             return Get(GeometryUtils.ConvertPointToLong(positionChunk.X, positionChunk.Y));
-        }
-
-        public void AddHitableObjectToWorld(HitableObject hitableObject)
-        {
-            hitableObject.ConnectToWorld();
-
-            if (hitableObject is DurableEntity)
-            {
-                addDurableEntity((DurableEntity)hitableObject);
-            }
         }
 
         public void AddEffectToWorld(Effect effect)
@@ -230,9 +219,9 @@ namespace Simulation.Game.World
 
         protected override bool shouldRemoveDuringGarbageCollection(ulong key, WorldGridChunk part)
         {
-            foreach (var durableEntity in DurableEntities)
+            foreach (var livingEntity in LivingEntities)
             {
-                if (durableEntity.Value.InteriorID == Interior.Outside && part.RealChunkBounds.Intersects(durableEntity.Value.PreloadedWorldGridChunkPixelBounds))
+                if (livingEntity.Value is DurableEntity && livingEntity.Value.InteriorID == Interior.Outside && part.RealChunkBounds.Intersects(((DurableEntity)livingEntity.Value).PreloadedWorldGridChunkPixelBounds))
                 {
                     return false;
                 }
@@ -273,16 +262,6 @@ namespace Simulation.Game.World
             if (part.ContainedObjects != null)
                 foreach (var containedEntity in part.ContainedObjects)
                     containedEntity.Destroy();
-        }
-
-        private void addDurableEntity(DurableEntity durableEntity)
-        {
-            ThreadingUtils.assertMainThread();
-
-            if (DurableEntities.ContainsKey(durableEntity.ID) == false)
-            {
-                DurableEntities[durableEntity.ID] = durableEntity;
-            }
         }
 
         public override void Update(GameTime gameTime)

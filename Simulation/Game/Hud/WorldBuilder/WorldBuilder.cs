@@ -541,7 +541,10 @@ namespace Simulation.Game.Hud.WorldBuilder
             if(inspectView.SelectedGameObjects.Count > 0)
             {
                 foreach(var selectedObject in inspectView.SelectedGameObjects)
+                {
                     selectedObject.DisconnectFromWorld();
+                    selectedObject.Destroy();
+                }
 
                 inspectView.Deselect();
             }
@@ -569,6 +572,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                 {
                     inspectView.Deselect();
                     selectedObject.DisconnectFromWorld();
+                    selectedObject.Destroy();
 
                     var newObject = WorldObjectSerializer.Deserialize(JObject.Parse(dialog.ResultText));
 

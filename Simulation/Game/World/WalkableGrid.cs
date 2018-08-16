@@ -6,6 +6,7 @@ using System;
 using Simulation.Util.Geometry;
 using Simulation.Game.Enums;
 using Simulation.Util.Collision;
+using Simulation.Game.Objects.Entities;
 
 /*
  * The WalkableGrid is only used for quick pathfinding
@@ -161,9 +162,9 @@ namespace Simulation.Game.World
 
         protected override bool shouldRemoveDuringGarbageCollection(ulong key, WalkableGridChunk part)
         {
-            foreach (var durableEntity in SimulationGame.World.DurableEntities)
+            foreach (var livingEntity in SimulationGame.World.LivingEntities)
             {
-                if (durableEntity.Value.InteriorID == Interior.Outside && part.realChunkBounds.Intersects(durableEntity.Value.PreloadedWorldGridChunkPixelBounds))
+                if (livingEntity.Value is DurableEntity && livingEntity.Value.InteriorID == Interior.Outside && part.realChunkBounds.Intersects(((DurableEntity)livingEntity.Value).PreloadedWorldGridChunkPixelBounds))
                 {
                     return false;
                 }

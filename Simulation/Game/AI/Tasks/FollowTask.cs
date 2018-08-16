@@ -11,17 +11,24 @@ namespace Simulation.Game.AI.Tasks
         public static readonly string ID = "FollowObjectTask";
 
         private float tillDistance;
-        private GameObject target;
+        private string targetID;
 
-        public FollowTask(MovingEntity movingEntity, GameObject target, float realDistance): base(movingEntity)
+        public FollowTask(MovingEntity movingEntity, string targetID, float realDistance): base(movingEntity)
         {
-            this.target = target;
+            this.targetID = targetID;
             this.tillDistance = realDistance;
         }
 
         protected override BehaviourTreeStatus internalUpdate(GameTime gameTime)
         {
             var movingEntity = (MovingEntity)subject;
+            var target = SimulationGame.World.LivingEntities.ContainsKey(targetID) ? SimulationGame.World.LivingEntities[targetID] : null;
+
+            if(target == null)
+            {
+                movingEntity.StopWalking();
+                return BehaviourTreeStatus.Failure;
+            }
 
             if(GeometryUtils.VectorsWithinDistance(movingEntity.Position, target.Position, tillDistance))
             {

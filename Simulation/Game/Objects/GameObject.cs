@@ -120,7 +120,10 @@ namespace Simulation.Game.Objects
                 LiveSpan -= (int)gameTime.ElapsedGameTime.TotalMilliseconds;
 
                 if(LiveSpan <= 0)
+                {
                     DisconnectFromWorld();
+                    Destroy();
+                }
             }
         }
 

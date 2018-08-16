@@ -293,8 +293,10 @@ namespace Simulation
             MovingEntityRenderer.LoadContent();
             GameRenderer.LoadContent();
 
-            World.AddHitableObjectToWorld(Player);
-            World.AddHitableObjectToWorld(DurableEntityFactory.CreateGeralt());
+            Player.Init();
+            Player.ConnectToWorld();
+
+            DurableEntityFactory.CreateGeralt().ConnectToWorld();
         }
 
         /// <summary>

@@ -47,8 +47,6 @@ namespace Simulation.Game.World
             blockingGrid[projectedPosition.X, projectedPosition.Y] = blockType;
         }
 
-       
-
         public void SetBiomeType(BiomeType biomeType)
         {
             biomeId = biomeType.ID;

@@ -7,12 +7,12 @@ namespace Simulation.Game.AI
 {
     public class FollowAI: BaseAI
     {
-        private LivingEntity target;
+        private string targetID;
         private float tillDistance;
 
-        public FollowAI(MovingEntity movingEntity, LivingEntity target, float realDistance): base(movingEntity)
+        public FollowAI(MovingEntity movingEntity, string targetID, float realDistance): base(movingEntity)
         {
-            this.target = target;
+            this.targetID = targetID;
             this.tillDistance = realDistance;
 
             behaviorTree = createBehaviorTree();
@@ -26,7 +26,7 @@ namespace Simulation.Game.AI
                 builder
                 .Sequence()
                     .LongRunningResultCached(() => new WaitTask(Entity, TimeSpan.FromMilliseconds(200)))
-                    .LongRunningResultCached(() => new FollowTask(Entity, target, tillDistance))
+                    .LongRunningResultCached(() => new FollowTask(Entity, targetID, tillDistance))
                 .End()
                 .Build(),
                 Entity

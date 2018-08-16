@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Simulation.Game.Objects.Entities;
 
 namespace Simulation.Game.World
 {
@@ -33,9 +34,9 @@ namespace Simulation.Game.World
 
         protected override bool shouldRemoveDuringGarbageCollection(string key, Interior part)
         {
-            foreach (var durableEntity in SimulationGame.World.DurableEntities)
+            foreach (var livingEntity in SimulationGame.World.LivingEntities)
             {
-                if (key == durableEntity.Value.InteriorID)
+                if (livingEntity.Value is DurableEntity && key == livingEntity.Value.InteriorID)
                 {
                     return false;
                 }

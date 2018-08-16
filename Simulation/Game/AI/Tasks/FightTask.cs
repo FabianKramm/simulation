@@ -78,7 +78,7 @@ namespace Simulation.Game.AI.AITasks
                         }
 
                         if (getCloser)
-                            taskRater.AddTask(FollowTask.ID + hittedEntity.ID, (GameTime _gameTime) => new FollowTask((MovingEntity)subject, hittedEntity, WorldGrid.BlockSize.X), 100 - (distance / WorldGrid.BlockSize.X) + -aggro);
+                            taskRater.AddTask(FollowTask.ID + hittedEntity.ID, (GameTime _gameTime) => new FollowTask((MovingEntity)subject, hittedEntity.ID, WorldGrid.BlockSize.X), 100 - (distance / WorldGrid.BlockSize.X) + -aggro);
 
                         if (subject.CurrentLife / subject.MaximumLife < 0.2f)
                             taskRater.AddTask(FleeTask.ID + hittedEntity.ID, (GameTime _gameTime) => new FleeTask((MovingEntity)subject, hittedEntity, 20 * WorldGrid.BlockSize.X), 1000 - (distance / WorldGrid.BlockSize.X) + -aggro);
