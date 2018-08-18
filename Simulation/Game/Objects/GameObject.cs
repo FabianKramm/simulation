@@ -86,7 +86,7 @@ namespace Simulation.Game.Objects
             return SerializationUtils.GetFromObject<T>(CustomProperties, key);
         }
 
-        public T GetOrAddCustomProperty<T>(string key, object value)
+        public T GetOrAddCustomProperty<T>(string key, T value)
         {
             if (CustomProperties == null)
             {
@@ -101,7 +101,7 @@ namespace Simulation.Game.Objects
             return SerializationUtils.GetFromObject<T>(CustomProperties, key);
         }
 
-        public void SetCustomProperty(string key, object value)
+        public void SetCustomProperty<T>(string key, T value)
         {
             if (CustomProperties == null)
             {

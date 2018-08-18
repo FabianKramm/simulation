@@ -7,6 +7,7 @@ using Simulation.Util.Geometry;
 using Simulation.Game.Fractions;
 using Simulation.Util.Collision;
 using Simulation.Game.Objects.Entities;
+using System.Runtime.CompilerServices;
 
 /*
  * The WalkableGrid is only used for quick pathfinding
@@ -181,6 +182,14 @@ namespace Simulation.Game.World
         protected override void unloadPart(ulong key, WalkableGridChunk part)
         {
             // Noop
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public WalkableGridChunk GetFromRealPoint(int realX, int realY)
+        {
+            Point positionChunk = GeometryUtils.GetChunkPosition(realX, realY, WalkableGridPixelChunkSize.X, WalkableGridPixelChunkSize.Y);
+
+            return Get(GeometryUtils.ConvertPointToLong(positionChunk.X, positionChunk.Y));
         }
     }
 }

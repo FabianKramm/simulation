@@ -80,10 +80,7 @@ namespace Simulation.Game.MetaData
                     }
                 },
                 SpritePath=@"Characters\Geralt",
-                CustomControllerScript=@"Simulation.Scripts.Controller.GuardController",
-                CustomProperties=new JObject(){
-                    {"GuardBlockPosition", SerializationUtils.GetJTokenFromObject(new WorldPosition(5, 5, Interior.Outside))}
-                },
+                CustomControllerScript=@"Simulation.Scripts.Controller.FollowController",
                 DownAnimation=new Point[]
                 {
                     new Point(1, 0), new Point(0, 0), new Point(1, 0), new Point(2, 0)

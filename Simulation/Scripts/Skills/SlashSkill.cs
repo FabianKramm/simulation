@@ -25,7 +25,7 @@ namespace Simulation.Scripts.Skills
             base.Init(owner, parameters);
 
             this.relativeOriginPosition = SerializationUtils.GetFromObject(parameters, "relativeOriginPosition", Vector2.Zero);
-            this.DamagePerHit = SerializationUtils.GetFromObject(parameters, "damagePerHit", 10);
+            this.DamagePerHit = SerializationUtils.GetFromObject(parameters, "damagePerHit", 5);
         }
 
         protected override void trigger(Vector2 targetPosition)

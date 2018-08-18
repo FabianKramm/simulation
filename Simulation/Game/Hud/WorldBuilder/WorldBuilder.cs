@@ -335,6 +335,18 @@ namespace Simulation.Game.Hud.WorldBuilder
             WorldPart currentWorldPart = player.InteriorID == Interior.Outside ? (WorldPart)SimulationGame.World.GetFromRealPoint((int)player.Position.X, (int)player.Position.Y) : SimulationGame.World.InteriorManager.Get(player.InteriorID);
 
             currentWorldPart.SetPersistent(!currentWorldPart.IsPersistent);
+
+            if(currentWorldPart is WorldGridChunk)
+            {
+                var chunkPoint = GeometryUtils.GetChunkPosition((int)player.Position.X, (int)player.Position.Y, WorldGrid.WorldChunkPixelSize.X, WorldGrid.WorldChunkPixelSize.Y);
+
+                WorldLoader.SaveWorldGridChunk(chunkPoint.X, chunkPoint.Y, (WorldGridChunk)currentWorldPart);
+                WorldLoader.SaveWalkableGridChunk(chunkPoint.X, chunkPoint.Y, (WalkableGridChunk)SimulationGame.World.WalkableGrid.GetFromRealPoint(chunkPoint.X, chunkPoint.Y));
+            }
+            else
+            {
+                WorldLoader.SaveInterior(SimulationGame.World.InteriorManager.Get(player.InteriorID));
+            }
         }
 
         private void handleCreateInteriorBtn()

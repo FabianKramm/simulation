@@ -57,6 +57,8 @@ namespace Simulation.PathFinding
     }
     public class JumpPointFinder
     {
+        public static readonly float MaxSearchValue = 1.0f;
+
         public static List<GridPos> GetFullPath(List<GridPos> routeFound)
         {
             if (routeFound == null)
@@ -117,6 +119,13 @@ namespace Simulation.PathFinding
                 if (tNode.Equals(tEndNode))
                 {
                     return Node.Backtrace(tNode); // rebuilding path
+                }
+
+                if (tNode.startToCurNodeLen >= MaxSearchValue)
+                {
+                    Console.WriteLine("Cannot find path because of too long distance from: " + iParam.StartNode.x + "," + iParam.StartNode.y + " to " + iParam.EndNode.x + "," + iParam.EndNode.y + " isOutside: " + (iParam.SearchGrid is DynamicWalkableGrid));
+
+                    return new List<GridPos>();
                 }
 
                 identifySuccessors(iParam, tNode);

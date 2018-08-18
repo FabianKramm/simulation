@@ -26,7 +26,7 @@ namespace Simulation.Game.Effects
             direction.Normalize();
 
             // Get Hitted Targets
-            hitboxCircle = new Circle((int)(newPosition.X + direction.X * WorldGrid.BlockSize.X), (int)(newPosition.Y + direction.Y * WorldGrid.BlockSize.Y), WorldGrid.BlockSize.X);
+            hitboxCircle = new Circle((int)(newPosition.X + direction.X * 40), (int)(newPosition.Y + direction.Y * 40), 16);
 
             newPosition.X += (direction.X * WorldGrid.BlockSize.X * 1.5f);
             newPosition.Y += (direction.Y * WorldGrid.BlockSize.Y * 1.5f);

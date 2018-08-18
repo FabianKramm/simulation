@@ -144,6 +144,7 @@
     <Compile Include="Game\Serialization\Objects\WorldObjectSerializer.cs" />
     <Compile Include="Game\Serialization\WorldPartSerialization.cs" />
     <Compile Include="Scripts\Base\Skill.cs" />
+    <Compile Include="Scripts\Controller\FollowController.cs" />
     <Compile Include="Scripts\Controller\GuardController.cs" />
     <Compile Include="Scripts\Skills\SlashSkill.cs" />
     <Compile Include="Scripts\Controller\WanderController.cs" />
