@@ -27,11 +27,31 @@ namespace Simulation.Util
 
             if(direction.X > 0)
             {
+                if(direction.Y > 0 && direction.Y > direction.X)
+                {
+                    return WalkingDirection.Down;
+                }
+
+                if (direction.Y < 0 && Math.Abs(direction.Y) > direction.X)
+                {
+                    return WalkingDirection.Up;
+                }
+
                 return WalkingDirection.Right;
             }
 
             if (direction.X < 0)
             {
+                if (direction.Y > 0 && direction.Y > Math.Abs(direction.X))
+                {
+                    return WalkingDirection.Down;
+                }
+
+                if (direction.Y < 0 && Math.Abs(direction.Y) > Math.Abs(direction.X))
+                {
+                    return WalkingDirection.Up;
+                }
+
                 return WalkingDirection.Left;
             }
 

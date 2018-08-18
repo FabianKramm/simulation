@@ -12,6 +12,7 @@ using Simulation.Util.Geometry;
 using Simulation.Game.Effects;
 using System.Linq;
 using Simulation.Game.Fractions;
+using Simulation.Util.Collision;
 
 namespace Simulation.Game.World
 {
@@ -176,11 +177,20 @@ namespace Simulation.Game.World
         {
             ThreadingUtils.assertMainThread();
             Point chunkPos = GeometryUtils.GetPointFromLong(key);
+            Point blockPos = GeometryUtils.GetBlockFromReal(part.RealChunkBounds.X, part.RealChunkBounds.Y);
 
             // Set walkable grid blocking for contained objects
             if (part.ContainedObjects != null)
                 foreach (var hitableObject in part.ContainedObjects)
                     hitableObject.ConnectToOverlappingChunks();
+
+            // Set walkable grid blocking for blocks
+            for(int i=0;i<WorldChunkBlockSize.X;i++)
+                for(int j=0;j<WorldChunkBlockSize.Y;j++)
+                {
+                    if (CollisionUtils.IsBlockBlocking(part.GetBlockType(blockPos.X + i, blockPos.Y + j)))
+                        SimulationGame.World.WalkableGrid.SetBlockNotWalkable(blockPos.X + i, blockPos.Y + j, true);
+                }
 
             for (int i = -1; i <= 1; i++)
                 for (int j = -1; j < 1; j++)

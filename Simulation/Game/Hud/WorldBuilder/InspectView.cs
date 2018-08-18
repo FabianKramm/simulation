@@ -62,9 +62,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                     }
                     else
                     {
-                        var halfBlockPosition = GeometryUtils.GetChunkPosition((int)gameObject.Position.X, (int)gameObject.Position.Y, 16, 16);
-
-                        newPosition = new WorldPosition((halfBlockPosition.X - 1) * 16, halfBlockPosition.Y * 16, gameObject.InteriorID);
+                        newPosition = new WorldPosition(gameObject.Position.X - 16, gameObject.Position.Y, gameObject.InteriorID);
                     }
 
                     gameObject.UpdatePosition(newPosition);
@@ -103,9 +101,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                     }
                     else
                     {
-                        var halfBlockPosition = GeometryUtils.GetChunkPosition((int)gameObject.Position.X, (int)gameObject.Position.Y, 16, 16);
-
-                        newPosition = new WorldPosition((halfBlockPosition.X + 1) * 16, halfBlockPosition.Y * 16, gameObject.InteriorID);
+                        newPosition = new WorldPosition(gameObject.Position.X + 16, gameObject.Position.Y, gameObject.InteriorID);
                     }
 
                     gameObject.UpdatePosition(newPosition);
@@ -144,9 +140,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                     }
                     else
                     {
-                        var halfBlockPosition = GeometryUtils.GetChunkPosition((int)gameObject.Position.X, (int)gameObject.Position.Y, 16, 16);
-
-                        newPosition = new WorldPosition((halfBlockPosition.X) * 16, (halfBlockPosition.Y - 1) * 16, gameObject.InteriorID);
+                        newPosition = new WorldPosition(gameObject.Position.X, gameObject.Position.Y - 16, gameObject.InteriorID);
                     }
 
                     gameObject.UpdatePosition(newPosition);
@@ -185,9 +179,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                     }
                     else
                     {
-                        var halfBlockPosition = GeometryUtils.GetChunkPosition((int)gameObject.Position.X, (int)gameObject.Position.Y, 16, 16);
-
-                        newPosition = new WorldPosition((halfBlockPosition.X) * 16, (halfBlockPosition.Y + 1) * 16, gameObject.InteriorID);
+                        newPosition = new WorldPosition(gameObject.Position.X, gameObject.Position.Y + 16, gameObject.InteriorID);
                     }
 
                     gameObject.UpdatePosition(newPosition);

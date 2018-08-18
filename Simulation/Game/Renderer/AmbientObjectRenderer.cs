@@ -15,7 +15,18 @@ namespace Simulation.Game.Renderer
 
             if (ambientObjectType != null)
             {
-                if(ambientObjectType.SpritePositions.Length > 1)
+                var depth = GeometryUtils.GetLayerDepthFromReservedLayer(ReservedDepthLayers.BlockDecoration);
+
+                if (ambientObjectType.InForeground == true)
+                {
+                    depth = 1.0f;
+                }
+                else if(ambientObjectType.HasDepth == true)
+                {
+                    depth = GeometryUtils.GetLayerDepthFromPosition(ambientObject.Position.X, ambientObject.Position.Y + ambientObject.YPositionDepthOffset);
+                }
+
+                if (ambientObjectType.SpritePositions.Length > 1)
                 {
                     if (ambientObject.ObjectAnimation == null)
                     {
@@ -24,11 +35,11 @@ namespace Simulation.Game.Renderer
                     }
 
                     ambientObject.ObjectAnimation.Update(gameTime);
-                    spriteBatch.Draw(ambientObject.ObjectAnimation, ambientObject.Position.ToVector(), color: GameRenderer.BlendColor, layerDepth: ambientObjectType.HasDepth ? GeometryUtils.GetLayerDepthFromPosition(ambientObject.Position.X, ambientObject.Position.Y + ambientObject.YPositionDepthOffset) : GeometryUtils.GetLayerDepthFromReservedLayer(ReservedDepthLayers.BlockDecoration));
+                    spriteBatch.Draw(ambientObject.ObjectAnimation, ambientObject.Position.ToVector(), color: GameRenderer.BlendColor, layerDepth: depth);
                 }
                 else
                 {
-                    spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(ambientObjectType.SpritePath), ambientObject.Position.ToVector(), new Rectangle(ambientObjectType.SpritePositions[0], ambientObjectType.SpriteBounds), GameRenderer.BlendColor, 0.0f, ambientObjectType.SpriteOrigin, 1.0f, SpriteEffects.None, ambientObjectType.HasDepth ? GeometryUtils.GetLayerDepthFromPosition(ambientObject.Position.X, ambientObject.Position.Y + ambientObject.YPositionDepthOffset) : GeometryUtils.GetLayerDepthFromReservedLayer(ReservedDepthLayers.BlockDecoration));
+                    spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(ambientObjectType.SpritePath), ambientObject.Position.ToVector(), new Rectangle(ambientObjectType.SpritePositions[0], ambientObjectType.SpriteBounds), GameRenderer.BlendColor, 0.0f, ambientObjectType.SpriteOrigin, 1.0f, SpriteEffects.None, depth);
                 }
             }
         }

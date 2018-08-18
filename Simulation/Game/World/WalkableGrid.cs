@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Simulation.Game.Objects;
 using Simulation.Game.Generator;
-using Simulation.Util;
 using System;
 using Simulation.Util.Geometry;
-using Simulation.Game.Fractions;
 using Simulation.Util.Collision;
 using Simulation.Game.Objects.Entities;
 using System.Runtime.CompilerServices;
@@ -53,7 +51,7 @@ namespace Simulation.Game.World
             return chunk.IsBlockWalkable(blockX, blockY);
         }
 
-        private void setBlockNotWalkable(int blockX, int blockY, bool notWalkable)
+        public void SetBlockNotWalkable(int blockX, int blockY, bool notWalkable)
         {
             var chunkPosition = GeometryUtils.GetChunkPosition(blockX, blockY, WalkableGridBlockChunkSize.X, WalkableGridBlockChunkSize.Y);
             var chunk = Get(GeometryUtils.ConvertPointToLong(chunkPosition.X, chunkPosition.Y), true);
@@ -73,7 +71,7 @@ namespace Simulation.Game.World
 
                     if (IsLoaded(GeometryUtils.ConvertPointToLong(walkableGridChunkPos.X, walkableGridChunkPos.Y)))
                     {
-                        setBlockNotWalkable(blockX, blockY, true);
+                        SetBlockNotWalkable(blockX, blockY, true);
                     }
                 }
         }
@@ -90,7 +88,7 @@ namespace Simulation.Game.World
 
                 if (CollisionUtils.IsBlockBlocking(blockType))
                 {
-                    setBlockNotWalkable(blockX, blockY, true);
+                    SetBlockNotWalkable(blockX, blockY, true);
                     return;
                 }
                 
@@ -112,7 +110,7 @@ namespace Simulation.Game.World
                             break;
                         }
 
-                setBlockNotWalkable(blockX, blockY, found);
+                SetBlockNotWalkable(blockX, blockY, found);
             }
         }
 
@@ -155,7 +153,7 @@ namespace Simulation.Game.World
                                 
                         if (!found)
                         {
-                            setBlockNotWalkable(blockX, blockY, false);
+                            SetBlockNotWalkable(blockX, blockY, false);
                         }
                     }
                 }

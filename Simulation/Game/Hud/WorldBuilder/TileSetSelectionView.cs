@@ -142,6 +142,7 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         public void SetTileSet(string tileSet)
         {
+            scrollOffset = Point.Zero;
             SelectedObject = null;
             SelectedSpriteBounds = InitialTileSize;
             SelectedSpritePosition = null;

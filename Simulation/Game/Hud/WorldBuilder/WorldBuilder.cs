@@ -880,7 +880,7 @@ namespace Simulation.Game.Hud.WorldBuilder
         {
             if(SimulationGame.IsWorldBuilderOpen)
             {
-                spriteBatch.Draw(backgroundOverlay, new Rectangle(0, 0, SimulationGame.Resolution.Width, SimulationGame.Resolution.Height), backgroundColor);
+                spriteBatch.Draw(backgroundOverlay, Bounds.ToXnaRectangle(), backgroundColor);
                 base.Draw(spriteBatch, gameTime);
 
                 if(placementType != PlacementType.NoType && placementType != PlacementType.Inspect && placementType != PlacementType.WorldPartDetails)

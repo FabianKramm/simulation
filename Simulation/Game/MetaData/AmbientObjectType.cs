@@ -18,6 +18,7 @@ namespace Simulation.Game.MetaData
         public Point SpriteBounds;
         public Point[] SpritePositions;
         public bool HasDepth = true;
+        public bool InForeground = false;
 
         public string CustomRendererScript = null;
         public string CustomControllerScript = null;

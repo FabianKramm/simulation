@@ -125,6 +125,13 @@ namespace Simulation.Game.Hud.WorldBuilder
             switch (placementType)
             {
                 case PlacementType.BlockPlacement:
+                    if(spriteBounds.X != WorldGrid.BlockSize.X || spriteBounds.Y != WorldGrid.BlockSize.Y)
+                    {
+                        System.Windows.Forms.MessageBox.Show("Cannot create block with blocksize != 32,32");
+
+                        return -1;
+                    }
+
                     selectedObject = new BlockType()
                     {
                         ID = newId,

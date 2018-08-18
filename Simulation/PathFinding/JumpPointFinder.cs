@@ -57,7 +57,7 @@ namespace Simulation.PathFinding
     }
     public class JumpPointFinder
     {
-        public static readonly float MaxSearchValue = 1.0f;
+        public static readonly float MaxSearchValue = 100.0f;
 
         public static List<GridPos> GetFullPath(List<GridPos> routeFound)
         {
