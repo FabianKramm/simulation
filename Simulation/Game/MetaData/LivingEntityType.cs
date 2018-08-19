@@ -107,6 +107,45 @@ namespace Simulation.Game.MetaData
                     new Point(1, 2), new Point(0, 2), new Point(1, 2), new Point(2, 2)
                 }
             }},
+            {3, new LivingEntityType(){
+                ID=3,
+                Name="Merlin",
+                MaximumLife=100,
+                CurrentLife=100,
+                LifeRegeneration=0.001f,
+                Fraction=FractionType.PLAYER,
+                IsDurableEntity=true,
+                Invincible=true,
+                Skills=new SkillType[]
+                {
+                    new SkillType()
+                    {
+                        SkillClass="Simulation.Scripts.Skills.FireballSkill"
+                    },
+                    new SkillType()
+                    {
+                        SkillClass="Simulation.Scripts.Skills.BlinkSkill"
+                    }
+                },
+                SpritePath=@"Characters\Merlin",
+                CustomControllerScript=@"Simulation.Scripts.Controller.FollowController",
+                DownAnimation=new Point[]
+                {
+                    new Point(0, 0), new Point(1, 0), new Point(2, 0), new Point(3, 0)
+                },
+                UpAnimation=new Point[]
+                {
+                    new Point(0, 3), new Point(1, 3), new Point(2, 3), new Point(3, 3)
+                },
+                LeftAnimation=new Point[]
+                {
+                    new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(3, 1)
+                },
+                RightAnimation=new Point[]
+                {
+                    new Point(0, 2), new Point(1, 2), new Point(2, 2), new Point(3, 2)
+                }
+            }},
             {2, new LivingEntityType(){
                 ID=2,
                 Name="Spider",
@@ -150,7 +189,7 @@ namespace Simulation.Game.MetaData
 
         public float LifeRegeneration = 0;
         public FractionType Fraction;
-        public int AttentionBlockRadius = 10;
+        public int AttentionBlockRadius = 16;
         public float Velocity = 0.08f;
 
         public SkillType[] Skills = null;

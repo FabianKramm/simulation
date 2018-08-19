@@ -10,11 +10,14 @@ using Simulation.Game.World;
 using Simulation.Scripts.Skills;
 using Simulation.Util.Collision;
 using Simulation.Util.Geometry;
+using System;
 
 namespace Simulation.Game.AI.AITasks
 {
     public class FightTask: BehaviorTask
     {
+        private static Random random = new Random();
+
         private TaskRater taskRater;
         private BehaviorTask activeTask = null;
         private string activeTaskId = null;
@@ -45,6 +48,8 @@ namespace Simulation.Game.AI.AITasks
                         var hittedEntityVector = hittedEntity.Position.ToVector();
                         var getCloser = false;
                         var distance = GeometryUtils.GetEuclideanDistance(subject.Position, hittedEntity.Position);
+                        var possibleBackOffDistance = -1.0f;
+
                         var aggro = subject.GetAggroTowardsEntity(hittedEntity);
 
                         foreach (var skill in subject.Skills)
@@ -57,6 +62,11 @@ namespace Simulation.Game.AI.AITasks
                                 if (distance < Fireball.MaxDistance && CollisionUtils.IsSightBlocked(subject, hittedEntity, 15) == false)
                                 {
                                     skill.Use(hittedEntityVector);
+
+                                    if(Fireball.MaxDistance - distance < possibleBackOffDistance || possibleBackOffDistance == -1)
+                                    {
+                                        possibleBackOffDistance = Fireball.MaxDistance - distance;
+                                    }
                                 }
                                 else
                                 {
@@ -82,9 +92,28 @@ namespace Simulation.Game.AI.AITasks
                             taskRater.AddTask(FollowTask.ID + hittedEntity.ID, () => new FollowTask((MovingEntity)subject, hittedEntity.ID, WorldGrid.BlockSize.X), 100 - (distance / WorldGrid.BlockSize.X) + -aggro);
                             taskRater.AddTask(BlinkTask.ID + hittedEntity.ID, () => new BlinkTask(subject, hittedEntity.Position), 101 - (distance / WorldGrid.BlockSize.X) + -aggro);
                         }
+                        else if(possibleBackOffDistance != -1)
+                        {
+                            possibleBackOffDistance = possibleBackOffDistance - WorldGrid.BlockSize.X;
 
-                        if ((float)subject.CurrentLife / (float)subject.MaximumLife < 0.25f)
+                            if(possibleBackOffDistance > 0)
+                            {
+                                var direction = Vector2.Subtract(
+                                    new Vector2(
+                                        subject.Position.X + random.Next(-WorldGrid.BlockSize.X * 3, WorldGrid.BlockSize.X * 3 + 1),
+                                        subject.Position.Y + random.Next(-WorldGrid.BlockSize.Y * 3, WorldGrid.BlockSize.Y * 3 + 1)),
+                                    hittedEntity.Position.ToVector());
+                                direction.Normalize();
+
+                                taskRater.AddTask(BlinkTask.ID + hittedEntity.ID, () => new BlinkTask(subject, new WorldPosition(subject.Position.X + direction.X * possibleBackOffDistance, subject.Position.Y + direction.Y * possibleBackOffDistance, subject.InteriorID)), 1 - (distance / WorldGrid.BlockSize.X) + -aggro);
+                                taskRater.AddTask(FleeTask.ID + hittedEntity.ID, () => new FleeTask((MovingEntity)subject, hittedEntity, distance + possibleBackOffDistance),  -(distance / WorldGrid.BlockSize.X) + -aggro);
+                            }
+                        }
+
+                        if ((float)subject.CurrentLife / (float)subject.MaximumLife < 0.4f)
+                        {
                             taskRater.AddTask(FleeTask.ID + hittedEntity.ID, () => new FleeTask((MovingEntity)subject, hittedEntity, 20 * WorldGrid.BlockSize.X), 1000 - (distance / WorldGrid.BlockSize.X) + -aggro);
+                        }
                     }
 
                     if(taskRater.HasTask() == false)
@@ -110,6 +139,12 @@ namespace Simulation.Game.AI.AITasks
                             if (activeTask.Status == BehaviourTreeStatus.Failure)
                             {
                                 continue;
+                            }
+
+                            if (activeTask.Status == BehaviourTreeStatus.Success)
+                            {
+                                activeTask = null;
+                                activeTaskId = null;
                             }
                         }
 

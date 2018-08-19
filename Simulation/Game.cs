@@ -301,7 +301,7 @@ namespace Simulation
             Player.Init();
             Player.ConnectToWorld();
 
-            DurableEntityFactory.CreateGeralt().ConnectToWorld();
+            LivingEntityType.Create(new WorldPosition(WorldGrid.BlockSize.X * 3, WorldGrid.BlockSize.Y * 3, Interior.Outside), LivingEntityType.lookup[3]).ConnectToWorld();
 
             AppDomain.CurrentDomain.ProcessExit += new EventHandler((object sender, EventArgs e) =>
             {

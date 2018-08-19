@@ -9,7 +9,7 @@ namespace Simulation.Game.Effects
 {
     public class Fireball: Effect
     {
-        public static readonly float MaxDistance = 16 * WorldGrid.BlockSize.X;
+        public static readonly float MaxDistance = 8 * WorldGrid.BlockSize.X;
 
         public float Angle;
         public bool HasHitTarget = false;
