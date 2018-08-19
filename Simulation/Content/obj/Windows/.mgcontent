@@ -57,5 +57,10 @@
     <File>D:/Programmieren/simulation/Simulation/Content/Monsters/Spider01.gif</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Monsters/Spider02.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Characters/Merlin.gif</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/celianna_taverntiles.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/celianna_taverntiles_candle.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/celianna_taverntiles_fireplace.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/celianna_taverntiles_preset.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Tiles/MiscObjects.png</File>
   </SourceFiles>
 </SourceFileCollection>

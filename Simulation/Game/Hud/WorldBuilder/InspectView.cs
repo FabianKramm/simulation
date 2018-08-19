@@ -321,7 +321,7 @@ namespace Simulation.Game.Hud.WorldBuilder
         private void selectGameObjects(Rect selectionRect)
         {
             // Is Deselection Mode?
-            if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftShift) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightShift))
+            if (SimulationGame.KeyboardState.IsKeyDown(Keys.LeftAlt) || SimulationGame.KeyboardState.IsKeyDown(Keys.RightAlt))
             {
                 if (SimulationGame.Player.InteriorID == Interior.Outside)
                 {
@@ -347,10 +347,13 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
             else
             {
-                SelectedBlockPosition = Point.Zero;
-                SelectedBlockType = null;
-                SelectedWorldLink = null;
-                SelectedGameObjects.Clear();
+                if(SimulationGame.KeyboardState.IsKeyDown(Keys.LeftShift) == false && SimulationGame.KeyboardState.IsKeyDown(Keys.RightShift) == false)
+                {
+                    SelectedBlockPosition = Point.Zero;
+                    SelectedBlockType = null;
+                    SelectedWorldLink = null;
+                    SelectedGameObjects.Clear();
+                }
 
                 if (SimulationGame.Player.InteriorID == Interior.Outside)
                 {

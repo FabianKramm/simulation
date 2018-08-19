@@ -21,14 +21,14 @@ namespace Simulation.Game.Renderer
         private static List<LightningPosition> lightnings = new List<LightningPosition>();
         private static List<(int, Color)> dayNightCycleColors = new List<(int, Color)>()
         {
-            (0 * SimulationGame.TicksPerHour, new Color(160, 160, 225, 255)),
-            (5 * SimulationGame.TicksPerHour, new Color(180, 180, 230, 255)),
-            (7 * SimulationGame.TicksPerHour, new Color(190, 190, 235, 255)),
+            (0 * SimulationGame.TicksPerHour, new Color(150, 150, 240, 255)),
+            (5 * SimulationGame.TicksPerHour, new Color(160, 160, 240, 255)),
+            (7 * SimulationGame.TicksPerHour, new Color(170, 170, 235, 255)),
             (9 * SimulationGame.TicksPerHour, new Color(235, 235, 235, 255)),
             (14 * SimulationGame.TicksPerHour, new Color(245, 245, 245, 255)),
             (18 * SimulationGame.TicksPerHour, new Color(235, 235, 235, 255)),
             (20 * SimulationGame.TicksPerHour, new Color(240, 200, 200, 255)),
-            (22 * SimulationGame.TicksPerHour, new Color(180, 180, 225, 255))
+            (22 * SimulationGame.TicksPerHour, new Color(160, 160, 240, 255))
         };
 
         private static List<(int, int)> dayNightCycleDarkness = new List<(int, int)>()

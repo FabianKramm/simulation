@@ -34,6 +34,8 @@ namespace Simulation.Game.MetaData
         public int FrameDuration = 180;
         public int LiveSpan = -1;
 
+        public bool HasDepth = true;
+
         public static AmbientHitableObject Create(WorldPosition worldPosition, AmbientHitableObjectType ambientHitableObjectType)
         {
             AmbientHitableObject ambientHitableObject = new AmbientHitableObject(worldPosition)
