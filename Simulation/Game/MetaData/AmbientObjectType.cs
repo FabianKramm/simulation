@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json.Linq;
 using Simulation.Game.Objects;
+using Simulation.Game.Renderer;
 using Simulation.Game.World;
 using Simulation.Spritesheet;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ namespace Simulation.Game.MetaData
         public string CustomRendererScript = null;
         public string CustomControllerScript = null;
         public JObject CustomProperties = null;
+
+        public Lightning Lightning = null;
 
         public int FrameDuration = 180;
         public int LiveSpan = -1;

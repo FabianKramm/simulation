@@ -35,11 +35,16 @@ namespace Simulation.Game.Renderer
                     }
 
                     ambientObject.ObjectAnimation.Update(gameTime);
-                    spriteBatch.Draw(ambientObject.ObjectAnimation, ambientObject.Position.ToVector(), color: GameRenderer.BlendColor, layerDepth: depth);
+                    spriteBatch.Draw(ambientObject.ObjectAnimation, ambientObject.Position.ToVector(), color: Color.White, layerDepth: depth);
                 }
                 else
                 {
-                    spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(ambientObjectType.SpritePath), ambientObject.Position.ToVector(), new Rectangle(ambientObjectType.SpritePositions[0], ambientObjectType.SpriteBounds), GameRenderer.BlendColor, 0.0f, ambientObjectType.SpriteOrigin, 1.0f, SpriteEffects.None, depth);
+                    spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(ambientObjectType.SpritePath), ambientObject.Position.ToVector(), new Rectangle(ambientObjectType.SpritePositions[0], ambientObjectType.SpriteBounds), Color.White, 0.0f, ambientObjectType.SpriteOrigin, 1.0f, SpriteEffects.None, depth);
+                }
+
+                if(ambientObjectType.Lightning != null)
+                {
+                    LightningRenderer.AddLightning(ambientObject.Position.ToVector(), ambientObjectType.Lightning);
                 }
             }
         }

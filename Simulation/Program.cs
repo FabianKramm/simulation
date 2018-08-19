@@ -37,6 +37,8 @@ namespace Simulation
         [STAThread]
         static void Main()
         {
+            //Clipboard.SetText(SerializationUtils.ObjectToString(new Lightning()));
+
             // WorldLoader.ResetMetaData();
             WorldLoader.ResetWorld();
 

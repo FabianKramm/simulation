@@ -10,6 +10,7 @@ using Simulation.Game.Serialization;
 using Simulation.Game.World;
 using Simulation.Util.Dialog;
 using Simulation.Util.Geometry;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using static Simulation.Game.Hud.WorldBuilder.WorldBuilder;
@@ -239,37 +240,46 @@ namespace Simulation.Game.Hud.WorldBuilder
 
         public static bool ReplaceTypeFromString(PlacementType placementType, string objectText)
         {
-            InputDialog dialog;
-
-            switch (placementType)
+            try
             {
-                case PlacementType.BlockPlacement:
-                    BlockType newBlockType = JsonConvert.DeserializeObject<BlockType>(objectText, SerializationUtils.SerializerSettings);
-                    BlockType.lookup[newBlockType.ID] = newBlockType;
-                    break;
-                case PlacementType.AmbientObjectPlacement:
-                    AmbientObjectType newAmbientObjectType = JsonConvert.DeserializeObject<AmbientObjectType>(objectText, SerializationUtils.SerializerSettings);
-                    AmbientObjectType.lookup[newAmbientObjectType.ID] = newAmbientObjectType;
-                    break;
-                case PlacementType.AmbientHitableObjectPlacement:
-                    AmbientHitableObjectType newAmbientHitableObjectType = JsonConvert.DeserializeObject<AmbientHitableObjectType>(objectText, SerializationUtils.SerializerSettings);
-                    AmbientHitableObjectType.lookup[newAmbientHitableObjectType.ID] = newAmbientHitableObjectType;
-                    break;
-                case PlacementType.LivingEntityPlacement:
-                    dialog = new InputDialog("Create LivingEntity", objectText);
+                InputDialog dialog;
 
-                    if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    {
-                        LivingEntityType newLivingEntityType = JsonConvert.DeserializeObject<LivingEntityType>(dialog.ResultText, SerializationUtils.SerializerSettings);
-                        LivingEntityType.lookup[newLivingEntityType.ID] = newLivingEntityType;
+                switch (placementType)
+                {
+                    case PlacementType.BlockPlacement:
+                        BlockType newBlockType = JsonConvert.DeserializeObject<BlockType>(objectText, SerializationUtils.SerializerSettings);
+                        BlockType.lookup[newBlockType.ID] = newBlockType;
+                        break;
+                    case PlacementType.AmbientObjectPlacement:
+                        AmbientObjectType newAmbientObjectType = JsonConvert.DeserializeObject<AmbientObjectType>(objectText, SerializationUtils.SerializerSettings);
+                        AmbientObjectType.lookup[newAmbientObjectType.ID] = newAmbientObjectType;
+                        break;
+                    case PlacementType.AmbientHitableObjectPlacement:
+                        AmbientHitableObjectType newAmbientHitableObjectType = JsonConvert.DeserializeObject<AmbientHitableObjectType>(objectText, SerializationUtils.SerializerSettings);
+                        AmbientHitableObjectType.lookup[newAmbientHitableObjectType.ID] = newAmbientHitableObjectType;
+                        break;
+                    case PlacementType.LivingEntityPlacement:
+                        dialog = new InputDialog("Create LivingEntity", objectText);
 
-                        return true;
-                    }
+                        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                        {
+                            LivingEntityType newLivingEntityType = JsonConvert.DeserializeObject<LivingEntityType>(dialog.ResultText, SerializationUtils.SerializerSettings);
+                            LivingEntityType.lookup[newLivingEntityType.ID] = newLivingEntityType;
 
-                    return false;
+                            return true;
+                        }
+
+                        return false;
+                }
+
+                return true;
             }
+            catch(Exception e)
+            {
+                System.Windows.Forms.MessageBox.Show("Error while replacing type: " + e.Message);
 
-            return true;
+                return false;
+            }
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Simulation.Game.Renderer
             if (blockId == BlockType.None)
                 return;
 
-            Color color = GameRenderer.BlendColor;
+            Color color = Color.White;
             var blockType = BlockType.lookup[blockId];
 
             if(SimulationGame.IsDebug && SimulationGame.Player.InteriorID == Interior.Outside && (!SimulationGame.World.WalkableGrid.IsPositionWalkable(realX, realY) || CollisionUtils.IsBlockBlocking(blockType.ID)))

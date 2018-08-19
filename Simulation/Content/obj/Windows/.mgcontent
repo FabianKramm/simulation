@@ -50,5 +50,7 @@
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Objects/fountain.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Objects/torch.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Objects/doors.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Lightning/Soft100.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Lightning/InverseSoft100.png</File>
   </SourceFiles>
 </SourceFileCollection>

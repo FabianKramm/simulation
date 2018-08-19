@@ -22,6 +22,9 @@ namespace Simulation.Game.Serialization
         public static object GetObjectFromToken(Type type, JToken jToken) => Serializer.Deserialize(new JTokenReader(jToken), type);
         public static JToken GetJTokenFromObject(object obj) => JToken.FromObject(obj, Serializer);
 
+        public static string ObjectToString(object obj, Formatting formatting = Formatting.Indented) => JToken.FromObject(obj, Serializer).ToString(formatting);
+        public static T StringToObject<T>(string obj) => Serializer.Deserialize<T>(new JTokenReader(JToken.Parse(obj)));
+
         public static object CreateInstance(string filepath)
         {
             if(filepath.EndsWith(".cs"))

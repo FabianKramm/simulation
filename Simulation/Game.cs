@@ -98,7 +98,7 @@ namespace Simulation
 
         public static float Ticks
         {
-            get; private set;
+            get; set;
         } = TicksPerHour * 12;
 
         public static bool IsDebug
@@ -176,6 +176,10 @@ namespace Simulation
         public SimulationGame()
         {
             Graphics = new GraphicsDeviceManager(this);
+            Graphics.PreparingDeviceSettings += new EventHandler<PreparingDeviceSettingsEventArgs>((object sender, PreparingDeviceSettingsEventArgs eventargs) =>
+            {
+                eventargs.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
+            });
 
             Graphics.PreferredBackBufferWidth = Resolution.Width;  // set this value to the desired width of your window
             Graphics.PreferredBackBufferHeight = Resolution.Height;   // set this value to the desired height of your window

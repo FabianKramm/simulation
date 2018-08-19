@@ -658,6 +658,8 @@ namespace Simulation.Game.Hud.WorldBuilder
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 WorldBuilderUtils.ReplaceTypeFromString(placementType, dialog.ResultText);
+
+                refreshListAndSelectId(((ObjectListItem)selectedElement).GetObject().ID);
             }
         }
 
@@ -685,68 +687,73 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
         }
 
+        private void refreshListAndSelectId(int newId)
+        {
+            placementMode = PlacementMode.Manage;
+            manageObjectList.Clear();
+
+            UIElement selectedItem = null;
+
+            switch (placementType)
+            {
+                case PlacementType.BlockPlacement:
+                    foreach (var item in BlockType.lookup)
+                    {
+                        var newItem = new BlockListItem(item.Value);
+
+                        if (item.Value.ID == newId)
+                            selectedItem = newItem;
+
+                        manageObjectList.AddElement(newItem);
+                    }
+
+                    break;
+                case PlacementType.AmbientObjectPlacement:
+                    foreach (var item in AmbientObjectType.lookup)
+                    {
+                        var newItem = new AmbientObjectListItem(item.Value);
+
+                        if (item.Value.ID == newId)
+                            selectedItem = newItem;
+
+                        manageObjectList.AddElement(newItem);
+                    }
+
+                    break;
+                case PlacementType.AmbientHitableObjectPlacement:
+                    foreach (var item in AmbientHitableObjectType.lookup)
+                    {
+                        var newItem = new AmbientHitableObjectListItem(item.Value);
+
+                        if (item.Value.ID == newId)
+                            selectedItem = newItem;
+
+                        manageObjectList.AddElement(newItem);
+                    }
+                    break;
+                case PlacementType.LivingEntityPlacement:
+                    foreach (var item in LivingEntityType.lookup)
+                    {
+                        var newItem = new LivingEntityListItem(item.Value);
+
+                        if (item.Value.ID == newId)
+                            selectedItem = newItem;
+
+                        manageObjectList.AddElement(newItem);
+                    }
+                    break;
+            }
+
+            manageObjectList.SelectElement(selectedItem);
+        }
+
         private void createNewObject()
         {
             int newId = WorldBuilderUtils.CreateObject(placementType, placementMode, tileSetSelectionView);
 
             if (placementMode == PlacementMode.CreateFromTileset)
             {
-                placementMode = PlacementMode.Manage;
-                manageObjectList.Clear();
-
-                UIElement selectedItem = null;
-
-                switch (placementType)
-                {
-                    case PlacementType.BlockPlacement:
-                        foreach (var item in BlockType.lookup)
-                        {
-                            var newItem = new BlockListItem(item.Value);
-
-                            if (item.Value.ID == newId)
-                                selectedItem = newItem;
-
-                            manageObjectList.AddElement(newItem);
-                        }
-                                
-                        break;
-                    case PlacementType.AmbientObjectPlacement:
-                        foreach (var item in AmbientObjectType.lookup)
-                        {
-                            var newItem = new AmbientObjectListItem(item.Value);
-
-                            if (item.Value.ID == newId)
-                                selectedItem = newItem;
-
-                            manageObjectList.AddElement(newItem);
-                        }
-
-                        break;
-                    case PlacementType.AmbientHitableObjectPlacement:
-                        foreach (var item in AmbientHitableObjectType.lookup)
-                        {
-                            var newItem = new AmbientHitableObjectListItem(item.Value);
-
-                            if (item.Value.ID == newId)
-                                selectedItem = newItem;
-
-                            manageObjectList.AddElement(newItem);
-                        }
-                        break;
-                    case PlacementType.LivingEntityPlacement:
-                        foreach (var item in LivingEntityType.lookup)
-                        {
-                            var newItem = new LivingEntityListItem(item.Value);
-
-                            if (item.Value.ID == newId)
-                                selectedItem = newItem;
-
-                            manageObjectList.AddElement(newItem);
-                        }
-                        break;
-                }
-
-                manageObjectList.SelectElement(selectedItem);
+                refreshListAndSelectId(newId);
             }
         }
 

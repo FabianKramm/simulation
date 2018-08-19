@@ -8,9 +8,14 @@ namespace Simulation.Game.Hud
 {
     public class ConsoleFunctions
     {
-        public static void LoadTileset(string resourcePath)
+        public static void SetNight()
         {
-            DebugHud.ConsoleWrite("Example Output");
+            SimulationGame.Ticks = 0;
+        }
+
+        public static void SetDay()
+        {
+            SimulationGame.Ticks = SimulationGame.TicksPerHour * 12;
         }
     }
 }

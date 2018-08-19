@@ -14,7 +14,7 @@ namespace Simulation.Scripts.Controller
         {
             followAI = new FollowAI((MovingEntity)gameObject,
                 gameObject.GetOrAddCustomProperty<string>("TargetID", SimulationGame.Player.ID),
-                gameObject.GetOrAddCustomProperty<float>("Distance", 40.0f));
+                gameObject.GetOrAddCustomProperty<float>("Distance", 50.0f));
         }
 
         public void Update(GameTime gameTime)

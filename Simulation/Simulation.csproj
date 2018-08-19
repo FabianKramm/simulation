@@ -113,6 +113,8 @@
     <Compile Include="Game\Generator\Factories\DurableEntityFactory.cs" />
     <Compile Include="Game\Generator\InteriorGeneration\InteriorGenerator.cs" />
     <Compile Include="Game\Hud\DebugHud.cs" />
+    <Compile Include="Game\Renderer\Lightning.cs" />
+    <Compile Include="Game\Renderer\LightningRenderer.cs" />
     <Compile Include="Scripts\Base\GameObjectController.cs" />
     <Compile Include="Scripts\Base\GameObjectRenderer.cs" />
     <Compile Include="Game\Renderer\Effects\EffectRenderer.cs" />

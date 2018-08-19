@@ -41,11 +41,11 @@ namespace Simulation.Game.Renderer.Entities
                 movingEntity.RendererInformation.Update(gameTime, WalkingDirection.Left);
                 movingEntity.RendererInformation.currentAnimation.Reset();
 
-                spriteBatch.Draw(movingEntity.RendererInformation.currentAnimation, new Vector2((int)movingEntity.Position.X, (int)movingEntity.Position.Y), rotation: MathHelper.Pi / 2, color: GameRenderer.BlendColor, layerDepth: GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, adjustedYPosition));
+                spriteBatch.Draw(movingEntity.RendererInformation.currentAnimation, new Vector2((int)movingEntity.Position.X, (int)movingEntity.Position.Y), rotation: MathHelper.Pi / 2, color: Color.White, layerDepth: GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, adjustedYPosition));
             }
             else
             {
-                spriteBatch.Draw(movingEntity.RendererInformation.currentAnimation, new Vector2((int)movingEntity.Position.X, (int)movingEntity.Position.Y), color: GameRenderer.BlendColor, layerDepth: GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, adjustedYPosition));
+                spriteBatch.Draw(movingEntity.RendererInformation.currentAnimation, new Vector2((int)movingEntity.Position.X, (int)movingEntity.Position.Y), color: Color.White, layerDepth: GeometryUtils.GetLayerDepthFromPosition(movingEntity.Position.X, adjustedYPosition));
             }
 
             // Draw Speech Bubble
@@ -63,16 +63,16 @@ namespace Simulation.Game.Renderer.Entities
                 var bubbleEndPos = new Vector2((int)movingEntity.Position.X - 10, bubbleYOffset);
 
                 // Draw bubble start
-                spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(@"GUI\SpeechBubble"), bubbleStartPos, new Rectangle(0, 0, 10, 27), GameRenderer.BlendColor, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, depth);
+                spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(@"GUI\SpeechBubble"), bubbleStartPos, new Rectangle(0, 0, 10, 27), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, depth);
 
                 // Draw bubble content
-                spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(@"GUI\SpeechBubble"), bubbleContentPos, new Rectangle(10, 0, 20, 27), GameRenderer.BlendColor, 0.0f, Vector2.Zero, new Vector2((stringWidth-18)/20.0f, 1.0f), SpriteEffects.None, depth);
+                spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(@"GUI\SpeechBubble"), bubbleContentPos, new Rectangle(10, 0, 20, 27), Color.White, 0.0f, Vector2.Zero, new Vector2((stringWidth-18)/20.0f, 1.0f), SpriteEffects.None, depth);
 
                 // Draw string
                 spriteBatch.DrawString(font, movingEntity.RendererInformation.SpeechLine, new Vector2(bubbleContentPos.X, bubbleYOffset + 5), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, depth2);
 
                 // Draw bubble end
-                spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(@"GUI\SpeechBubble"), bubbleEndPos, new Rectangle(110, 0, 27, 27), GameRenderer.BlendColor, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, depth);
+                spriteBatch.Draw(SimulationGame.ContentManager.Load<Texture2D>(@"GUI\SpeechBubble"), bubbleEndPos, new Rectangle(110, 0, 27, 27), Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, depth);
             }
 
             // Draw Health
