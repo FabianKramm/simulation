@@ -107,7 +107,7 @@ namespace Simulation.Game.Hud.WorldBuilder
             return highestNumber + 1;
         }
 
-        public static int CreateObject(WorldBuilder.PlacementType placementType, WorldBuilder.PlacementMode placementMode, TileSetSelectionView tileSetSelectionView)
+        public static int CreateObject(PlacementType placementType, WorldBuilder.PlacementMode placementMode, TileSetSelectionView tileSetSelectionView, bool showDialog = false)
         {
             string spritePath = null;
             Point spritePosition = Point.Zero;
@@ -176,7 +176,27 @@ namespace Simulation.Game.Hud.WorldBuilder
                     break;
             }
 
-            if (ReplaceTypeFromString(placementType, JToken.FromObject(selectedObject, SerializationUtils.Serializer).ToString()) == false)
+            string selectedObjectString;
+
+            if(showDialog)
+            {
+                var dialog = new InputDialog("Create Object", JToken.FromObject(selectedObject, SerializationUtils.Serializer).ToString(Formatting.Indented));
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    selectedObjectString = dialog.ResultText;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                selectedObjectString = JToken.FromObject(selectedObject, SerializationUtils.Serializer).ToString();
+            }
+
+            if (ReplaceTypeFromString(placementType, selectedObjectString) == false)
                 return -1;
 
             return newId;

@@ -73,6 +73,7 @@ namespace Simulation.Game.Hud.WorldBuilder
         // Manage
         private Button editBtn;
         private Button removeBtn;
+        private Button createNewFromBtn;
 
         // CreateFromTileset
         private Button createBtn;
@@ -185,7 +186,7 @@ namespace Simulation.Game.Hud.WorldBuilder
 
             // Create From Json
             createFromJsonBtn = new Button("Create From Json", new Point(manageBtn.Bounds.Right + 10, blockTypeBtn.Bounds.Bottom + 10));
-            createFromJsonBtn.OnClick(createNewObject);
+            createFromJsonBtn.OnClick(createNewObjectFromJson);
 
             // Create From Tileset
             createFromTilesetBtn = new Button("Create From Tileset", new Point(createFromJsonBtn.Bounds.Right + 10, blockTypeBtn.Bounds.Bottom + 10));
@@ -195,8 +196,12 @@ namespace Simulation.Game.Hud.WorldBuilder
             editBtn = new Button("Edit", new Point(Bounds.X, manageBtn.Bounds.Bottom + 10));
             editBtn.OnClick(editObject);
 
+            // Create New From Btn
+            createNewFromBtn = new Button("Create New From", new Point(editBtn.Bounds.Right + 10, manageBtn.Bounds.Bottom + 10));
+            createNewFromBtn.OnClick(createNewFrom);
+
             // Remove Btn
-            removeBtn = new Button("Remove", new Point(editBtn.Bounds.Right + 10, manageBtn.Bounds.Bottom + 10));
+            removeBtn = new Button("Remove", new Point(createNewFromBtn.Bounds.Right + 10, manageBtn.Bounds.Bottom + 10));
             removeBtn.OnClick(removeObject);
 
             // Create If not exist Btn
@@ -632,6 +637,42 @@ namespace Simulation.Game.Hud.WorldBuilder
             }
         }
 
+        private void createNewFrom()
+        {
+            var selectedElement = manageObjectList.SelectedElement;
+            object selectedObject = null;
+
+            switch (placementType)
+            {
+                case PlacementType.BlockPlacement:
+                    selectedObject = ((BlockListItem)selectedElement).BlockType;
+                    break;
+                case PlacementType.AmbientObjectPlacement:
+                    selectedObject = ((AmbientObjectListItem)selectedElement).AmbientObjectType;
+                    break;
+                case PlacementType.AmbientHitableObjectPlacement:
+                    selectedObject = ((AmbientHitableObjectListItem)selectedElement).AmbientHitableObjectType;
+                    break;
+                case PlacementType.LivingEntityPlacement:
+                    selectedObject = ((LivingEntityListItem)selectedElement).LivingEntityType;
+                    break;
+            }
+
+            int newId = WorldBuilderUtils.GenerateNewId(placementType);
+            var selectedJToken = JObject.FromObject(selectedObject, SerializationUtils.Serializer);
+
+            selectedJToken["ID"] = newId;
+
+            var dialog = new InputDialog("Create New Object From", selectedJToken.ToString(Formatting.Indented));
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                WorldBuilderUtils.ReplaceTypeFromString(placementType, dialog.ResultText);
+
+                refreshListAndSelectId(newId);
+            }
+        }
+
         private void editObject()
         {
             var selectedElement = manageObjectList.SelectedElement;
@@ -747,11 +788,21 @@ namespace Simulation.Game.Hud.WorldBuilder
             manageObjectList.SelectElement(selectedItem);
         }
 
+        private void createNewObjectFromJson()
+        {
+            int newId = WorldBuilderUtils.CreateObject(placementType, placementMode, tileSetSelectionView, true);
+
+            if (newId != -1)
+            {
+                refreshListAndSelectId(newId);
+            }
+        }
+
         private void createNewObject()
         {
             int newId = WorldBuilderUtils.CreateObject(placementType, placementMode, tileSetSelectionView);
 
-            if (placementMode == PlacementMode.CreateFromTileset)
+            if (newId != -1 && placementMode == PlacementMode.CreateFromTileset)
             {
                 refreshListAndSelectId(newId);
             }
@@ -803,6 +854,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                             if (manageObjectList.SelectedElement != null)
                             {
                                 editBtn.Update(gameTime);
+                                createNewFromBtn.Update(gameTime);
                                 removeBtn.Update(gameTime);
                             }
                             break;
@@ -900,6 +952,7 @@ namespace Simulation.Game.Hud.WorldBuilder
                             if (manageObjectList.SelectedElement != null)
                             {
                                 editBtn.Draw(spriteBatch, gameTime);
+                                createNewFromBtn.Draw(spriteBatch, gameTime);
                                 removeBtn.Draw(spriteBatch, gameTime);
                             }   
                             break;

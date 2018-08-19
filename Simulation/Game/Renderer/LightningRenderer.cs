@@ -33,14 +33,14 @@ namespace Simulation.Game.Renderer
 
         private static List<(int, int)> dayNightCycleDarkness = new List<(int, int)>()
         {
-            (0 * SimulationGame.TicksPerHour, 180),
-            (5 * SimulationGame.TicksPerHour, 160),
+            (0 * SimulationGame.TicksPerHour, 160),
+            (5 * SimulationGame.TicksPerHour, 140),
             (7 * SimulationGame.TicksPerHour, 100),
             (9 * SimulationGame.TicksPerHour, 20),
             (14 * SimulationGame.TicksPerHour, 0),
             (18 * SimulationGame.TicksPerHour, 20),
             (20 * SimulationGame.TicksPerHour, 100),
-            (22 * SimulationGame.TicksPerHour, 160)
+            (22 * SimulationGame.TicksPerHour, 140)
         };
 
         private static Color blendColor;

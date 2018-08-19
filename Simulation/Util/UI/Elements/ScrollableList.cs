@@ -148,13 +148,9 @@ namespace Simulation.Util.UI.Elements
             {
                 var newScrollWheelValue = SimulationGame.MouseState.ScrollWheelValue;
 
-                if (newScrollWheelValue < previousScrollWheelValue)
+                if (newScrollWheelValue != previousScrollWheelValue)
                 {
-                    relativeTop = relativeTop - 5;
-                }
-                else if (newScrollWheelValue > previousScrollWheelValue)
-                {
-                    relativeTop = Math.Min(0, relativeTop + 5);
+                    relativeTop = Math.Min(0, relativeTop + (int)(0.25f * (newScrollWheelValue - previousScrollWheelValue)));
                 }
 
                 previousScrollWheelValue = newScrollWheelValue;

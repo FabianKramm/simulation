@@ -3,11 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Simulation.Game.Effects;
 using Simulation.Spritesheet;
 using Simulation.Util.Geometry;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Simulation.Game.Renderer.Effects
 {
@@ -28,7 +23,7 @@ namespace Simulation.Game.Renderer.Effects
 
                 if(blink.BlinkAnimation.IsStarted)
                 {
-                    spriteBatch.Draw(blink.BlinkAnimation, blink.Origin.Position.ToVector(), /*scale: new Vector2(2.5f, 2.5f), */layerDepth: GeometryUtils.GetLayerDepthFromPosition(blink.Origin.Position.X, blink.Origin.Position.Y + World.WorldGrid.BlockSize.Y));
+                    spriteBatch.Draw(blink.BlinkAnimation, blink.Origin.Position.ToVector(), new Color(180, 0, 0, 255), /*scale: new Vector2(2.5f, 2.5f), */layerDepth: GeometryUtils.GetLayerDepthFromPosition(blink.Origin.Position.X, blink.Origin.Position.Y + World.WorldGrid.BlockSize.Y));
                 }
             }
         }
