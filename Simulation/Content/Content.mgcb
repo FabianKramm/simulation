@@ -128,12 +128,6 @@
 /processorParam:TextureFormat=Color
 /build:Spells/Fireball/Explode.png
 
-#begin Effects/Night.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/Night.fx
-
 #begin Characters/Geralt.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -567,4 +561,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Lightning/InverseSoft100.png
+
+#begin Spells/Blink/Blink.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Spells/Blink/Blink.png
 

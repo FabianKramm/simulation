@@ -51,6 +51,11 @@ namespace Simulation.Game.Objects.Entities
 
                 if (state.IsKeyDown(Keys.D1))
                 {
+                    Skills[2].Use(SimulationGame.RealWorldMousePosition);
+                }
+
+                if (state.IsKeyDown(Keys.D2))
+                {
                     Skills[1].Use(SimulationGame.RealWorldMousePosition);
                 }
 

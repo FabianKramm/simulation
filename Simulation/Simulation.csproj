@@ -45,6 +45,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game.cs" />
+    <Compile Include="Game\AI\AIUtils.cs" />
     <Compile Include="Game\AI\BehaviorTree\Nodes\ParentBaseNode.cs" />
     <Compile Include="Game\AI\AIExtensions.cs" />
     <Compile Include="Game\AI\GuardAI.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Game\AI\Evaluation\TaskDescription.cs" />
     <Compile Include="Game\AI\Evaluation\TaskRater.cs" />
     <Compile Include="Game\AI\WanderAI.cs" />
+    <Compile Include="Game\Effects\Blink.cs" />
     <Compile Include="Game\Fractions\FractionRelationType.cs" />
     <Compile Include="Game\Fractions\FractionType.cs" />
     <Compile Include="Game\Fractions\FractionRelations.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="Game\Generator\Factories\DurableEntityFactory.cs" />
     <Compile Include="Game\Generator\InteriorGeneration\InteriorGenerator.cs" />
     <Compile Include="Game\Hud\DebugHud.cs" />
+    <Compile Include="Game\Renderer\Effects\BlinkRenderer.cs" />
     <Compile Include="Game\Renderer\Lightning.cs" />
     <Compile Include="Game\Renderer\LightningRenderer.cs" />
     <Compile Include="Scripts\Base\GameObjectController.cs" />
@@ -148,6 +151,7 @@
     <Compile Include="Scripts\Base\Skill.cs" />
     <Compile Include="Scripts\Controller\FollowController.cs" />
     <Compile Include="Scripts\Controller\GuardController.cs" />
+    <Compile Include="Scripts\Skills\BlinkSkill.cs" />
     <Compile Include="Scripts\Skills\SlashSkill.cs" />
     <Compile Include="Scripts\Controller\WanderController.cs" />
     <Compile Include="Util\Collision\ShapeCollision.cs" />

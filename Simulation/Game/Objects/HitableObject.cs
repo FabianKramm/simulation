@@ -52,7 +52,7 @@ namespace Simulation.Game.Objects
             UnionBounds = Rect.Union(HitBoxBounds, BlockingBounds);
         }
 
-        protected bool canMove(WorldPosition newPosition)
+        public bool CanMove(WorldPosition newPosition)
         {
             Rect blockingRect = new Rect((int)(relativeBlockingBounds.X + newPosition.X), (int)(relativeBlockingBounds.Y + newPosition.Y), relativeBlockingBounds.Width, relativeBlockingBounds.Height);
 

@@ -23,7 +23,7 @@ namespace Simulation.Game.Renderer
         {
             (0 * SimulationGame.TicksPerHour, new Color(160, 160, 225, 255)),
             (5 * SimulationGame.TicksPerHour, new Color(180, 180, 230, 255)),
-            (7 * SimulationGame.TicksPerHour, new Color(220, 200, 200, 255)),
+            (7 * SimulationGame.TicksPerHour, new Color(190, 190, 235, 255)),
             (9 * SimulationGame.TicksPerHour, new Color(235, 235, 235, 255)),
             (14 * SimulationGame.TicksPerHour, new Color(245, 245, 245, 255)),
             (18 * SimulationGame.TicksPerHour, new Color(235, 235, 235, 255)),
@@ -218,7 +218,7 @@ namespace Simulation.Game.Renderer
             }
 
             // Player Lightning
-            spriteBatch.Draw(inverseSoftLightning, new Rectangle(SimulationGame.Resolution.Width / 2 - 150, SimulationGame.Resolution.Height / 2 - 150, 300, 300), Color.White);
+            spriteBatch.Draw(inverseSoftLightning, new Rectangle(SimulationGame.Resolution.Width / 2 - 100, SimulationGame.Resolution.Height / 2 - 100, 200, 200), Color.White);
 
             spriteBatch.End();
 
@@ -229,7 +229,7 @@ namespace Simulation.Game.Renderer
             BlendState blendState = new BlendState();
             blendState.ColorSourceBlend = Blend.DestinationColor;
 
-            // Step 1: Draw Time Overlay To World
+            // Step 1: Draw Time Blend Color To World
             spriteBatch.Begin(SpriteSortMode.Immediate, blendState);
             spriteBatch.Draw(backgroundOverlay, new Rectangle(0, 0, SimulationGame.Resolution.Width, SimulationGame.Resolution.Height), blendColor);
             spriteBatch.End();

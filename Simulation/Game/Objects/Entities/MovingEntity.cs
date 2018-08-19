@@ -117,7 +117,6 @@ namespace Simulation.Game.Objects.Entities
                 findPathTask = PathFinder.FindPath(Position.ToBlockPosition(), DestBlockPosition);
             }
 
-
             if (findPathTask != null && findPathTask.IsCompleted)
             {
                 if (findPathTask.Result != null && findPathTask.Result.Count > 1)
@@ -140,7 +139,7 @@ namespace Simulation.Game.Objects.Entities
 
             var newPos = new WorldPosition(newPosX, newPosY, InteriorID);
 
-            if (CanWalk && canMove(newPos))
+            if (CanWalk && CanMove(newPos))
             {
                 UpdatePosition(newPos);
 
@@ -247,7 +246,7 @@ namespace Simulation.Game.Objects.Entities
                     float newPosY = Position.Y + Direction.Y * Velocity * (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                     var newPos = new WorldPosition(newPosX, newPosY, InteriorID);
 
-                    if (SimulationGame.IsGodMode || (CanWalk && canMove(newPos)))
+                    if (SimulationGame.IsGodMode || (CanWalk && CanMove(newPos)))
                     {
                         var executedWorldLink = executeWorldLink(newPos);
 

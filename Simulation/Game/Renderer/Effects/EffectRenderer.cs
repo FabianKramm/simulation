@@ -21,6 +21,10 @@ namespace Simulation.Game.Renderer.Effects
             {
                 FireballRenderer.Draw(spriteBatch, gameTime, (Fireball)effect);
             }
+            else if(effect is Blink)
+            {
+                BlinkRenderer.Draw(spriteBatch, gameTime, (Blink)effect);
+            }
         }
     }
 }

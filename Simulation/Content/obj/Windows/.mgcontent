@@ -14,7 +14,6 @@
     <File>D:/Programmieren/simulation/Simulation/Content/Environment/Rock04.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Environment/Rock05.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Spells/Fireball/Explode.png</File>
-    <File>D:/Programmieren/simulation/Simulation/Content/Effects/Night.fx</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Characters/Geralt.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Characters/Player.gif</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Spells/Slash/Slash.png</File>
@@ -52,5 +51,6 @@
     <File>D:/Programmieren/simulation/Simulation/Content/Tiles/Objects/doors.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Lightning/Soft100.png</File>
     <File>D:/Programmieren/simulation/Simulation/Content/Lightning/InverseSoft100.png</File>
+    <File>D:/Programmieren/simulation/Simulation/Content/Spells/Blink/Blink.png</File>
   </SourceFiles>
 </SourceFileCollection>
