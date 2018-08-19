@@ -25,6 +25,12 @@ namespace Simulation.Game.Fractions
                 {FractionType.PLAYER, FractionRelationType.HOSTILE},
                 {FractionType.MONSTER, FractionRelationType.HOSTILE},
                 {FractionType.NPC, FractionRelationType.HOSTILE}
+            }},
+            {FractionType.PLAYER, new Dictionary<FractionType, FractionRelationType>()
+            {
+                {FractionType.NPC, FractionRelationType.FRIENDLY},
+                {FractionType.MONSTER, FractionRelationType.HOSTILE},
+                {FractionType.BANDIT, FractionRelationType.HOSTILE}
             }}
         };
 

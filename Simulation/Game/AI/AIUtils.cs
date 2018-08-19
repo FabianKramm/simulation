@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using Simulation.Game.Objects.Entities;
 using Simulation.Game.World;
+using Simulation.Scripts.Skills;
 using Simulation.Util.Collision;
 using System;
 using System.Diagnostics;
@@ -9,6 +11,18 @@ namespace Simulation.Game.AI
     public static class AIUtils
     {
         private static Random random = new Random();
+
+        public static BlinkSkill GetBlinkSkill(LivingEntity movingEntity)
+        {
+            if(movingEntity.Skills != null) 
+                foreach(var skill in movingEntity.Skills)
+                {
+                    if (skill is BlinkSkill)
+                        return (BlinkSkill)skill;
+                }
+
+            return null;
+        }
 
         public static WorldPosition GetWalkablePositionFrom(WorldPosition realOrigin, WorldPosition realTarget, int realDistanceFromOrigin)
         {

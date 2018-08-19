@@ -50,6 +50,7 @@
     <Compile Include="Game\AI\AIExtensions.cs" />
     <Compile Include="Game\AI\GuardAI.cs" />
     <Compile Include="Game\AI\ScheduleAI.cs" />
+    <Compile Include="Game\AI\Tasks\BlinkTask.cs" />
     <Compile Include="Game\AI\Tasks\FightTask.cs" />
     <Compile Include="Game\AI\Tasks\FleeTask.cs" />
     <Compile Include="Game\AI\Tasks\FollowTask.cs" />

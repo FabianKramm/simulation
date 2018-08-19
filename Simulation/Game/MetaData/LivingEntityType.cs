@@ -40,6 +40,10 @@ namespace Simulation.Game.MetaData
                         {
                             {"cooldown", 500}
                         }
+                    },
+                    new SkillType()
+                    {
+                        SkillClass="Simulation.Scripts.Skills.BlinkSkill"
                     }
                 },
                 SpritePath=@"Characters\Player",
@@ -65,7 +69,8 @@ namespace Simulation.Game.MetaData
                 Name="Geralt",
                 MaximumLife=100,
                 CurrentLife=100,
-                Fraction=FractionType.NPC,
+                LifeRegeneration=0.001f,
+                Fraction=FractionType.PLAYER,
                 IsDurableEntity=true,
                 Invincible=true,
                 Skills=new SkillType[]
@@ -77,6 +82,10 @@ namespace Simulation.Game.MetaData
                     new SkillType()
                     {
                         SkillClass="Simulation.Scripts.Skills.FireballSkill"
+                    },
+                    new SkillType()
+                    {
+                        SkillClass="Simulation.Scripts.Skills.BlinkSkill"
                     }
                 },
                 SpritePath=@"Characters\Geralt",
@@ -97,7 +106,42 @@ namespace Simulation.Game.MetaData
                 {
                     new Point(1, 2), new Point(0, 2), new Point(1, 2), new Point(2, 2)
                 }
-            }}
+            }},
+            {2, new LivingEntityType(){
+                ID=2,
+                Name="Spider",
+                MaximumLife=100,
+                CurrentLife=100,
+                Fraction=FractionType.MONSTER,
+                Skills=new SkillType[]
+                {
+                    new SkillType()
+                    {
+                        SkillClass="Simulation.Scripts.Skills.SlashSkill"
+                    }
+                },
+                SpritePath=@"Monsters\Spider02",
+                SpriteBounds=new Point(64, 64),
+                SpriteOrigin=new Point(32, 54),
+                CustomControllerScript=@"Simulation.Scripts.Controller.WanderController",
+                DownAnimation=new Point[]
+                {
+                    new Point(0, 0), new Point(1, 0), new Point(2, 0), new Point(3, 0)
+                },
+                UpAnimation=new Point[]
+                {
+                    new Point(0, 3), new Point(1, 3), new Point(2, 3), new Point(3, 3)
+                },
+                LeftAnimation=new Point[]
+                {
+                    new Point(0, 1), new Point(1, 1), new Point(2, 1), new Point(3, 1)
+                },
+                RightAnimation=new Point[]
+                {
+                    new Point(0, 2), new Point(1, 2), new Point(2, 2), new Point(3, 2)
+                }
+            }
+            }
         };
 
         public int MaximumLife;

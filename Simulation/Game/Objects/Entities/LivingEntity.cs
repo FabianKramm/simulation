@@ -13,7 +13,7 @@ namespace Simulation.Game.Objects.Entities
     public abstract class LivingEntity: HitableObject
     {
         private static readonly TimeSpan resurrectionTimespan = TimeSpan.FromMilliseconds(10000);
-        private static readonly TimeSpan lifeRegenInterval = TimeSpan.FromMilliseconds(500);
+        private static readonly TimeSpan lifeRegenInterval = TimeSpan.FromMilliseconds(1000);
 
         public LivingEntityRendererInformation RendererInformation;
         public Skill[] Skills;

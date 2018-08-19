@@ -78,29 +78,42 @@ namespace Simulation.Game.AI.AITasks
                         }
 
                         if (getCloser)
-                            taskRater.AddTask(FollowTask.ID + hittedEntity.ID, (GameTime _gameTime) => new FollowTask((MovingEntity)subject, hittedEntity.ID, WorldGrid.BlockSize.X), 100 - (distance / WorldGrid.BlockSize.X) + -aggro);
-
-                        if ((float)subject.CurrentLife / (float)subject.MaximumLife < 0.2f)
-                            taskRater.AddTask(FleeTask.ID + hittedEntity.ID, (GameTime _gameTime) => new FleeTask((MovingEntity)subject, hittedEntity, 20 * WorldGrid.BlockSize.X), 1000 - (distance / WorldGrid.BlockSize.X) + -aggro);
-                    }
-
-                    var highestTask = taskRater.GetHighestRanked();
-
-                    if(highestTask != null)
-                    {
-                        if(highestTask.TaskIdentifier != activeTaskId)
                         {
-                            activeTask = highestTask.TaskCreator(gameTime);
-                            activeTaskId = highestTask.TaskIdentifier;
+                            taskRater.AddTask(FollowTask.ID + hittedEntity.ID, () => new FollowTask((MovingEntity)subject, hittedEntity.ID, WorldGrid.BlockSize.X), 100 - (distance / WorldGrid.BlockSize.X) + -aggro);
+                            taskRater.AddTask(BlinkTask.ID + hittedEntity.ID, () => new BlinkTask(subject, hittedEntity.Position), 101 - (distance / WorldGrid.BlockSize.X) + -aggro);
                         }
 
-                        if(activeTask.Status == BehaviourTreeStatus.Running)
-                            activeTask.Update(gameTime);
+                        if ((float)subject.CurrentLife / (float)subject.MaximumLife < 0.25f)
+                            taskRater.AddTask(FleeTask.ID + hittedEntity.ID, () => new FleeTask((MovingEntity)subject, hittedEntity, 20 * WorldGrid.BlockSize.X), 1000 - (distance / WorldGrid.BlockSize.X) + -aggro);
                     }
-                    else
+
+                    if(taskRater.HasTask() == false)
                     {
                         activeTask = null;
                         activeTaskId = null;
+                    }
+
+                    while (taskRater.HasTask())
+                    {
+                        var highestTask = taskRater.GetHighestRanked();
+
+                        if (highestTask.TaskIdentifier != activeTaskId)
+                        {
+                            activeTask = highestTask.TaskCreator();
+                            activeTaskId = highestTask.TaskIdentifier;
+                        }
+
+                        if (activeTask.Status == BehaviourTreeStatus.Running)
+                        {
+                            activeTask.Update(gameTime);
+
+                            if (activeTask.Status == BehaviourTreeStatus.Failure)
+                            {
+                                continue;
+                            }
+                        }
+
+                        break;
                     }
 
                     if(enemyInSight == true)

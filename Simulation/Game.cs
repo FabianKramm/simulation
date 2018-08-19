@@ -237,14 +237,14 @@ namespace Simulation
                     AmbientHitableObjectType.lookup = (Dictionary<int, AmbientHitableObjectType>)SerializationUtils.Serializer.Deserialize(new JTokenReader(jToken), AmbientHitableObjectType.lookup.GetType());
                 }
 
-            if (File.Exists(Util.Util.GetLivingEntityTypesSavePath()))
+            /*if (File.Exists(Util.Util.GetLivingEntityTypesSavePath()))
                 using (var stream = new StreamReader(Util.Util.GetLivingEntityTypesSavePath()))
                 using (var reader = new JsonTextReader(stream))
                 {
                     JToken jToken = JToken.ReadFrom(reader);
 
                     LivingEntityType.lookup = (Dictionary<int, LivingEntityType>)SerializationUtils.Serializer.Deserialize(new JTokenReader(jToken), LivingEntityType.lookup.GetType());
-                }
+                }*/
 
             if (File.Exists(Util.Util.GetBiomeTypesSavePath()))
                 using (var stream = new StreamReader(Util.Util.GetBiomeTypesSavePath()))
@@ -350,13 +350,13 @@ namespace Simulation
                 JToken.FromObject(AmbientHitableObjectType.lookup, SerializationUtils.Serializer).WriteTo(writer);
             }
 
-            using (var stream = new StreamWriter(Util.Util.GetLivingEntityTypesSavePath()))
+            /*using (var stream = new StreamWriter(Util.Util.GetLivingEntityTypesSavePath()))
             using (var writer = new JsonTextWriter(stream))
             {
                 writer.Formatting = Formatting.Indented;
 
                 JToken.FromObject(LivingEntityType.lookup, SerializationUtils.Serializer).WriteTo(writer);
-            }
+            }*/
 
             Exit();
         }
