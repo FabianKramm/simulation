@@ -24,12 +24,11 @@ using System.Diagnostics;
 using System;
 
 /*
- * Open Issues:
- * - Save World on exit
- * 
-    Open Points:
-    - World Generation
-    - AI
+TODOS:
+- Commit World Data (MetaData, World)
+- Implement OnClick for GameObjects / HitableObjects
+- Change World Link from auto enter to enter on click
+- Implement AI click
 */
 
 namespace Simulation
