@@ -39,12 +39,15 @@ namespace Simulation.Game.Effects
                     if(BlinkAnimation.IsStarted == false)
                         moveOrigin();
                 }
+                else 
+                {
+                    moveOrigin();
+                }
             }
             else
             {
                 moveOrigin();
             }
-
         }
     }
 }
